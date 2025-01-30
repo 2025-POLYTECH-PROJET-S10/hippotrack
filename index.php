@@ -17,14 +17,14 @@
 /**
  * Display information about all the hippotrack modules in the requested course.
  *
- * @package     hippotrack
+ * @package     mod_hippotrack
  * @copyright   2025 Lionel Di Marco <LDiMarco@chu-grenoble.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require(__DIR__.'/../../config.php');
+require(__DIR__ . '/../../config.php');
 
-require_once(__DIR__.'/lib.php');
+require_once(__DIR__ . '/lib.php');
 
 $id = required_param('id', PARAM_INT);
 
@@ -59,13 +59,13 @@ $table = new html_table();
 $table->attributes['class'] = 'generaltable mod_index';
 
 if ($course->format == 'weeks') {
-    $table->head  = array(get_string('week'), get_string('name'));
+    $table->head = array(get_string('week'), get_string('name'));
     $table->align = array('center', 'left');
 } else if ($course->format == 'topics') {
-    $table->head  = array(get_string('topic'), get_string('name'));
+    $table->head = array(get_string('topic'), get_string('name'));
     $table->align = array('center', 'left', 'left', 'left');
 } else {
-    $table->head  = array(get_string('name'));
+    $table->head = array(get_string('name'));
     $table->align = array('left', 'left', 'left');
 }
 
@@ -74,11 +74,13 @@ foreach ($hippotracks as $hippotrack) {
         $link = html_writer::link(
             new moodle_url('/mod/hippotrack/view.php', array('id' => $hippotrack->coursemodule)),
             format_string($hippotrack->name, true),
-            array('class' => 'dimmed'));
+            array('class' => 'dimmed')
+        );
     } else {
         $link = html_writer::link(
             new moodle_url('/mod/hippotrack/view.php', array('id' => $hippotrack->coursemodule)),
-            format_string($hippotrack->name, true));
+            format_string($hippotrack->name, true)
+        );
     }
 
     if ($course->format == 'weeks' || $course->format == 'topics') {

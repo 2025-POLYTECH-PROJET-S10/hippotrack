@@ -17,7 +17,7 @@
 /**
  * Library of interface functions and constants.
  *
- * @package     hippotrack
+ * @package     mod_hippotrack
  * @copyright   2025 Lionel Di Marco <LDiMarco@chu-grenoble.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,7 +28,8 @@
  * @param string $feature Constant representing the feature.
  * @return true | null True if the feature is supported, null otherwise.
  */
-function hippotrack_supports($feature) {
+function hippotrack_supports($feature)
+{
     switch ($feature) {
         case FEATURE_MOD_INTRO:
             return true;
@@ -48,7 +49,8 @@ function hippotrack_supports($feature) {
  * @param mod_hippotrack_mod_form $mform The form.
  * @return int The id of the newly inserted record.
  */
-function hippotrack_add_instance($moduleinstance, $mform = null) {
+function hippotrack_add_instance($moduleinstance)
+{
     global $DB;
 
     $moduleinstance->timecreated = time();
@@ -68,7 +70,8 @@ function hippotrack_add_instance($moduleinstance, $mform = null) {
  * @param mod_hippotrack_mod_form $mform The form.
  * @return bool True if successful, false otherwise.
  */
-function hippotrack_update_instance($moduleinstance, $mform = null) {
+function hippotrack_update_instance($moduleinstance)
+{
     global $DB;
 
     $moduleinstance->timemodified = time();
@@ -83,7 +86,8 @@ function hippotrack_update_instance($moduleinstance, $mform = null) {
  * @param int $id Id of the module instance.
  * @return bool True if successful, false on failure.
  */
-function hippotrack_delete_instance($id) {
+function hippotrack_delete_instance($id)
+{
     global $DB;
 
     $exists = $DB->get_record('hippotrack', array('id' => $id));
