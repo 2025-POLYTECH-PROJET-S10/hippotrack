@@ -17,64 +17,47 @@
 /**
  * The main hippotrack configuration form.
  *
- * @package     hippotrack
+ * @package     mod_hippotrack
  * @copyright   2025 Lionel Di Marco <LDiMarco@chu-grenoble.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
+require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
 /**
  * Module instance settings form.
  *
- * @package     hippotrack
+ * @package     mod_hippotrack
  * @copyright   2025 Lionel Di Marco <LDiMarco@chu-grenoble.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_hippotrack_mod_form extends moodleform_mod {
+class mod_hippotrack_mod_form extends moodleform_mod
+{
 
-    /**
-     * Defines forms elements
-     */
-    public function definition() {
-        global $CFG;
+	/**
+	 * Defines forms elements
+	 */
+	public function definition()
+	{
 
-        $mform = $this->_form;
+		global $CFG, $DB, $PAGE, $USER, $COURSE;
 
-        // Adding the "general" fieldset, where all the common settings are shown.
-        $mform->addElement('header', 'general', get_string('general', 'form'));
+		$mform = &$this->_form;
 
-        // Adding the standard "name" field.
-        $mform->addElement('text', 'name', get_string('hippotrackname', 'hippotrack'), array('size' => '64'));
+		//Add header
+		$mform->addElement('header', 'general', "Option du cours:");
+		$mform->addElement('text', 'name', 'Name', array('size' => '20'));
+		$mform->setType('name', PARAM_TEXT);// $mform -> addElement('course', $COURSE -> id);
 
-        if (!empty($CFG->formatstringstriptags)) {
-            $mform->setType('name', PARAM_TEXT);
-        } else {
-            $mform->setType('name', PARAM_CLEANHTML);
-        }
+		// Adding the standard "Description" field.
+		$this->standard_intro_elements('Description');
 
-        $mform->addRule('name', null, 'required', null, 'client');
-        $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'hippotrackname', 'hippotrack');
+		// Add standard elements, common to all modules.
+		$this->standard_coursemodule_elements();
+		// Add standard buttons, common to all modules.
+		$this->add_action_buttons();
 
-        // Adding the standard "intro" and "introformat" fields.
-        if ($CFG->branch >= 29) {
-            $this->standard_intro_elements();
-        } else {
-            $this->add_intro_editor();
-        }
-
-        // Adding the rest of hippotrack settings, spreading all them into this fieldset
-        // ... or adding more fieldsets ('header' elements) if needed for better logic.
-        $mform->addElement('static', 'label1', 'hippotracksettings', get_string('hippotracksettings', 'hippotrack'));
-        $mform->addElement('header', 'hippotrackfieldset', get_string('hippotrackfieldset', 'hippotrack'));
-
-        // Add standard elements.
-        $this->standard_coursemodule_elements();
-
-        // Add standard buttons.
-        $this->add_action_buttons();
-    }
+	}
 }
