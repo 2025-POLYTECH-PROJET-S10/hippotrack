@@ -17,7 +17,7 @@
 /**
  * Code to be executed after the plugin's database scheme has been installed is defined here.
  *
- * @package     hippotrack
+ * @package     mod_hippotrack
  * @category    upgrade
  * @copyright   2025 Lionel Di Marco <LDiMarco@chu-grenoble.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,7 +26,8 @@
 /**
  * Custom code to be run on installing the plugin.
  */
-function xmldb_hippotrack_install() {
+function xmldb_hippotrack_install()
+{
 
     return true;
 }

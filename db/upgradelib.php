@@ -17,7 +17,7 @@
 /**
  * Plugin upgrade helper functions are defined here.
  *
- * @package     hippotrack
+ * @package     mod_hippotrack
  * @category    upgrade
  * @copyright   2025 Lionel Di Marco <LDiMarco@chu-grenoble.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,7 +26,8 @@
 /**
  * Helper function used by the upgrade.php file.
  */
-function hippotrack_helper_function() {
+function hippotrack_helper_function()
+{
     global $DB;
 
     // Please note: you can only use raw low level database access here.

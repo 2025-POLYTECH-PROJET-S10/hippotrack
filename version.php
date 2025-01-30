@@ -17,15 +17,15 @@
 /**
  * Plugin version and other meta-data are defined here.
  *
- * @package     hippotrack
+ * @package     mod_hippotrack
  * @copyright   2025 Lionel Di Marco <LDiMarco@chu-grenoble.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'hippotrack';
+$plugin->component = 'mod_hippotrack';// Full name of the plugin (used for diagnostics)
 $plugin->release = '0.1.0';
-$plugin->version = 2025012900;
-$plugin->requires = 2022112800;
+$plugin->version = 2025013000;  // The current module version (Date: YYYYMMDDXX) 
+$plugin->requires = 2022112800;// Requires this Moodle version
 $plugin->maturity = MATURITY_ALPHA;

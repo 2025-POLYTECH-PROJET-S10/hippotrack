@@ -17,13 +17,13 @@
 /**
  * Prints an instance of hippotrack.
  *
- * @package     hippotrack
+ * @package     mod_hippotrack
  * @copyright   2025 Lionel Di Marco <LDiMarco@chu-grenoble.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require(__DIR__.'/../../config.php');
-require_once(__DIR__.'/lib.php');
+require(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
 
 // Course module id.
 $id = optional_param('id', 0, PARAM_INT);
@@ -41,23 +41,38 @@ if ($id) {
     $cm = get_coursemodule_from_instance('hippotrack', $moduleinstance->id, $course->id, false, MUST_EXIST);
 }
 
-require_login($course, true, $cm);
 
-$modulecontext = context_module::instance($cm->id);
 
-$event = \mod_hippotrack\event\course_module_viewed::create(array(
-    'objectid' => $moduleinstance->id,
-    'context' => $modulecontext
-));
-$event->add_record_snapshot('course', $course);
-$event->add_record_snapshot('hippotrack', $moduleinstance);
-$event->trigger();
+// if (!$cm = get_coursemodule_from_id('hippotrack', $id)) {
+//     throw new moodle_exception('invalidcoursemodule');
+// }
 
-$PAGE->set_url('/mod/hippotrack/view.php', array('id' => $cm->id));
-$PAGE->set_title(format_string($moduleinstance->name));
-$PAGE->set_heading(format_string($course->fullname));
-$PAGE->set_context($modulecontext);
+// if (!$course = $DB->get_record("course", array("id" => $cm->course))) {
+//     throw new moodle_exception('coursemisconf');
+// }
 
+// if (!$module = $DB->get_record('hippotrack', ['id' => $cm->instance])) {
+//     throw new moodle_exception('DataBase for hippotrack not found');
+// }
+
+
+$PAGE->set_cm($cm);
+$PAGE->set_context($context);
+$PAGE->set_url('/mod/hippotrack/view.php', array('id' => $id));
+
+//Debut de l'affichage
 echo $OUTPUT->header();
+
+
+// Title Poll
+$divTitle = '<div id=divTitle>';
+$divTitle .= '<h2 id=namePoll>';
+$divTitle .= get_string('title', 'mod_nouveauplugin', $cm->name);
+$divTitle .= '</h2>';
+$divTitle .= '<div>';
+
+echo $divTitle;
+
+
 
 echo $OUTPUT->footer();

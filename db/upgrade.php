@@ -17,7 +17,7 @@
 /**
  * Plugin upgrade steps are defined here.
  *
- * @package     hippotrack
+ * @package     mod_hippotrack
  * @category    upgrade
  * @copyright   2025 Lionel Di Marco <LDiMarco@chu-grenoble.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/upgradelib.php');
+require_once(__DIR__ . '/upgradelib.php');
 
 /**
  * Execute hippotrack upgrade from the given old version.
@@ -33,7 +33,8 @@ require_once(__DIR__.'/upgradelib.php');
  * @param int $oldversion
  * @return bool
  */
-function xmldb_hippotrack_upgrade($oldversion) {
+function xmldb_hippotrack_upgrade($oldversion)
+{
     global $DB;
 
     $dbman = $DB->get_manager();

@@ -17,7 +17,7 @@
 /**
  * Plugin strings are defined here.
  *
- * @package     hippotrack
+ * @package     mod_hippotrack
  * @category    string
  * @copyright   2025 Lionel Di Marco <LDiMarco@chu-grenoble.fr>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,3 +26,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'hippotrack';
+
+$string['pluginname'] = 'hippotrack';
+$string['modulename'] = 'Hippotrack';
+$string['modulenameplural'] = 'Hippotrack';
+$string['pluginadministration'] = 'hippotrack Administration';
+$string['hippotrack:hostquizz'] = 'hippotrack  Hôte du Quizz';
+$string['hippotrack:addinstance'] = 'hippotrack Ajouter une instance';
