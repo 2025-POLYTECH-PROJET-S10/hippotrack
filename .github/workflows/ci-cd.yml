@@ -35,6 +35,24 @@ jobs:
           if [ "$VERSION_CHANGED" = "false" ]; then
             echo "❌ ERROR: The 'version.php' file was not changed. Update it before pushing."
             exit 1
+          else
+            echo "✅ SUCCESS: The 'version.php' file has correctly been updated."
+            exit 0
           fi
         env:
           VERSION_CHANGED: ${{ env.version_changed }}
+
+      - name: Check if version.php contains an updated version
+        run: |
+          OLD_VERSION=$(git show HEAD~1:version.php | grep -oP '\$plugin->version\s*=\s*\K\d+')
+          NEW_VERSION=$(grep -oP '\$plugin->version\s*=\s*\K\d+' version.php)
+
+          echo "Ancienne version : $OLD_VERSION"
+          echo "Nouvelle version : $NEW_VERSION"
+
+          if [ "$NEW_VERSION" -le "$OLD_VERSION" ]; then
+            echo "❌ ERROR: La version dans version.php n'a pas été mise à jour. Augmentez-la avant de pousser."
+            exit 1
+          else
+            echo "✅ SUCCESS: La version a bien été mise à jour."
+          fi
