@@ -31,3 +31,8 @@ $string['modulenameplural'] = 'Hippotrack';
 $string['pluginadministration'] = 'hippotrack Administration';
 $string['hippotrack:hostquizz'] = 'hippotrack HostQuizz';
 $string['hippotrack:addinstance'] = 'hippotrack Add Instance';
+
+$string['title'] = 'This is the title : {$a}';
+$string['statsPageLink'] = 'This is the link to the stats page';
+$string['dbPageLink'] = 'This is the link to the db page';
+$string['exercisePageLink'] = 'This is the link to the exercise page';

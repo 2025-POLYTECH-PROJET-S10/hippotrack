@@ -33,3 +33,6 @@ $string['modulenameplural'] = 'Hippotrack';
 $string['pluginadministration'] = 'hippotrack Administration';
 $string['hippotrack:hostquizz'] = 'hippotrack  Hôte du Quizz';
 $string['hippotrack:addinstance'] = 'hippotrack Ajouter une instance';
+
+$string['title'] = 'Ceci est le titre';
+$string['secondPageLink'] = 'Cest le lien de la deuxieme page';
