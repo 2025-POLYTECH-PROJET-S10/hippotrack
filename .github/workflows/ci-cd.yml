@@ -5,12 +5,12 @@ on:
     branches:
       - '**'
     paths:
-      - 'bd/**'  # Exécuter ce workflow seulement si des fichiers dans /bd changent
+      - 'db/**'  # Exécuter ce workflow seulement si des fichiers dans /bd changent
   pull_request:
     branches:
       - '**'
     paths:
-      - 'bd/**'
+      - 'db/**'
 
 jobs:
   database-update:  # Correction : Ajout sous 'jobs:'
