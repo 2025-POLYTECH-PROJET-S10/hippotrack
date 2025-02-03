@@ -18,7 +18,7 @@
  * Fallback page of /mod/quiz/edit.php add random question dialog,
  * for users who do not use javascript.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2008 Olli Savolainen
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

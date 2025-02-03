@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Attempt a quiz
   As a student
   In order to demonstrate what I know
@@ -64,7 +64,7 @@ Feature: Attempt a quiz
       | slot | response |
       |   1  | True     |
       |   2  | False    |
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I follow "Review"
     Then I should see "Started on"
     And I should see "State"
@@ -78,7 +78,7 @@ Feature: Attempt a quiz
 
   @javascript
   Scenario: Attempt a quiz with multiple sections
-    Given I am on the "Quiz 2" "mod_quiz > View" page logged in as "student"
+    Given I am on the "Quiz 2" "mod_hippotrack > View" page logged in as "student"
     When I press "Attempt quiz"
 
     Then I should see "Section 1" in the "Quiz navigation" "block"
@@ -124,7 +124,7 @@ Feature: Attempt a quiz
 
   @javascript
   Scenario: Next and previous navigation
-    Given I am on the "Quiz 3" "mod_quiz > View" page logged in as "student"
+    Given I am on the "Quiz 3" "mod_hippotrack > View" page logged in as "student"
     When I press "Attempt quiz"
     Then I should see "First question"
     And I should not see "Second question"
@@ -158,7 +158,7 @@ Feature: Attempt a quiz
 
   @javascript
   Scenario: Next and previous with sequential navigation method
-    Given I am on the "Quiz 4" "mod_quiz > View" page logged in as "student"
+    Given I am on the "Quiz 4" "mod_hippotrack > View" page logged in as "student"
     When I press "Attempt quiz"
     Then I should see "First question"
     And I should not see "Second question"
@@ -198,7 +198,7 @@ Feature: Attempt a quiz
     And user "student" has attempted "Quiz 5" with responses:
       | slot | response |
       |   1  | True     |
-    When I am on the "Quiz 5" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 5" "mod_hippotrack > View" page logged in as "student"
     Then I should see "Attempts allowed: 2"
     And I should not see "No more attempts are allowed"
     And I press "Re-attempt quiz"

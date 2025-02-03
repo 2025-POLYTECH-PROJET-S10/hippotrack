@@ -1,4 +1,4 @@
-@mod @mod_quiz @javascript
+@mod @mod_hippotrack @javascript
 Feature: Adding questions to a quiz from the question bank
   In order to re-use questions
   As a teacher
@@ -34,7 +34,7 @@ Feature: Adding questions to a quiz from the question bank
     And I set the following fields to these values:
       | Tags | bar |
     And I press "id_submitbutton"
-    When I am on the "Quiz 1" "mod_quiz > Edit" page
+    When I am on the "Quiz 1" "mod_hippotrack > Edit" page
     And I open the "last" add to quiz menu
     And I follow "from question bank"
     Then I should see "foo" in the "question 01 name" "table_row"
@@ -69,7 +69,7 @@ Feature: Adding questions to a quiz from the question bank
       | Test questions   | essay     | question 21 name | teacher1 | Question 21 text |
       | Test questions   | essay     | question 22 name | teacher1 | Question 22 text |
     And I log in as "teacher1"
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
     And I open the "last" add to quiz menu
     And I follow "from question bank"
     And I click on "2" "link" in the ".pagination" "css_element"
@@ -93,7 +93,7 @@ Feature: Adding questions to a quiz from the question bank
       | Section 1 | 1         | 0       |
       | Section 2 | 2         | 0       |
     And I log in as "teacher1"
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
     When I open the "Page 1" add to quiz menu
     And I follow "from question bank"
     And I set the field with xpath "//tr[contains(normalize-space(.), 'question 03 name')]//input[@type='checkbox']" to "1"
@@ -102,7 +102,7 @@ Feature: Adding questions to a quiz from the question bank
     And I should see "question 01 name" before "question 03 name" on the edit quiz page
 
   Scenario: Add several selected questions from the question bank
-    Given I am on the "Quiz 1" "mod_quiz > Edit" page logged in as "teacher1"
+    Given I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
     When I open the "last" add to quiz menu
     And I follow "from question bank"
     And I set the field with xpath "//input[@type='checkbox' and @id='qbheadercheckbox']" to "1"
@@ -115,7 +115,7 @@ Feature: Adding questions to a quiz from the question bank
     Given the following "questions" exist:
       | questioncategory | qtype       | name              | questiontext          |
       | Test questions   | multichoice | question 03 name  | question 03 name text |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page logged in as "teacher1"
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
     When I open the "last" add to quiz menu
     And I follow "from question bank"
     And I click on "Sort by Question ascending" "link"
@@ -132,7 +132,7 @@ Feature: Adding questions to a quiz from the question bank
       | questioncategory | qtype | name             | questiontext     |
       | Test questions   | essay | question 03 name | question 03 text |
     And I log in as "teacher1"
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
     When I set the field "Shuffle" to "1"
     And I open the "last" add to quiz menu
     And I follow "from question bank"

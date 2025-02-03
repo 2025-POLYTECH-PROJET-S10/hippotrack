@@ -17,7 +17,7 @@
 /**
  * This script controls the display of the quiz reports.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -107,7 +107,7 @@ $params = array(
         'reportname' => $mode
     )
 );
-$event = \mod_quiz\event\report_viewed::create($params);
+$event = \mod_hippotrack\event\report_viewed::create($params);
 $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('quiz', $quiz);
 $event->trigger();

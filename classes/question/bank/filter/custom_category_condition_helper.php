@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz\question\bank\filter;
+namespace mod_hippotrack\question\bank\filter;
 
 use core_question\local\bank\question_version_status;
 
@@ -23,7 +23,7 @@ use core_question\local\bank\question_version_status;
  *
  * This is required as quiz will only use ready questions and the count should show according to that.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   question
  * @copyright  2021 Catalyst IT Australia Pty Ltd
  * @author     Safat Shahin <safatshahin@catalyst-au.net>

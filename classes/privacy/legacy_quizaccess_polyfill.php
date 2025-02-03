@@ -17,11 +17,11 @@
 /**
  * This file contains the polyfil to allow a plugin to operate with Moodle 3.3 up.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_quiz\privacy;
+namespace mod_hippotrack\privacy;
 
 use core_privacy\local\request\approved_userlist;
 
@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * The trait used to provide a backwards compatibility for third-party plugins.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

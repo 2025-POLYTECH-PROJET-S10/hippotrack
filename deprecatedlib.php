@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * List of deprecated mod_quiz functions.
+ * List of deprecated mod_hippotrack functions.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -27,7 +27,7 @@
  *
  * @deprecated since Moodle 3.11
  * @todo MDL-71196 Final deprecation in Moodle 4.3
- * @see \mod_quiz\completion\custom_completion
+ * @see \mod_hippotrack\completion\custom_completion
  * @param stdClass $course
  * @param cm_info|stdClass $cm
  * @param int $userid
@@ -80,7 +80,7 @@ function quiz_completion_check_passing_grade_or_all_attempts($course, $cm, $user
  *
  * @deprecated since Moodle 3.11
  * @todo MDL-71196 Final deprecation in Moodle 4.3
- * @see \mod_quiz\completion\custom_completion
+ * @see \mod_hippotrack\completion\custom_completion
  * @param int $userid
  * @param stdClass $quiz
  * @return bool True if minimum attempts requirement is disabled or met.
@@ -104,7 +104,7 @@ function quiz_completion_check_min_attempts($userid, $quiz) {
  *
  * @deprecated since Moodle 3.11
  * @todo MDL-71196 Final deprecation in Moodle 4.3
- * @see \mod_quiz\completion\custom_completion
+ * @see \mod_hippotrack\completion\custom_completion
  * @param stdClass $course Course
  * @param cm_info|stdClass $cm Course-module
  * @param int $userid User ID

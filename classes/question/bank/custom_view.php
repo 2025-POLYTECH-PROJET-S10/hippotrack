@@ -17,16 +17,16 @@
 /**
  * Defines the custom question bank view used on the Edit quiz page.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @category  question
  * @copyright 1999 onwards Martin Dougiamas and others {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz\question\bank;
+namespace mod_hippotrack\question\bank;
 
 use core_question\local\bank\question_version_status;
-use mod_quiz\question\bank\filter\custom_category_condition;
+use mod_hippotrack\question\bank\filter\custom_category_condition;
 
 /**
  * Subclass to customise the view of the question bank for the quiz editing screen.
@@ -78,8 +78,8 @@ class custom_view extends \core_question\local\bank\view {
 
         foreach ($corequestionbankcolumns as $fullname) {
             $shortname = $fullname;
-            if (class_exists('mod_quiz\\question\\bank\\' . $fullname)) {
-                $fullname = 'mod_quiz\\question\\bank\\' . $fullname;
+            if (class_exists('mod_hippotrack\\question\\bank\\' . $fullname)) {
+                $fullname = 'mod_hippotrack\\question\\bank\\' . $fullname;
                 $questionbankclasscolumns[$shortname] = new $fullname($this);
             } else if (class_exists('core_question\\local\\bank\\' . $fullname)) {
                 $fullname = 'core_question\\local\\bank\\' . $fullname;
@@ -126,14 +126,14 @@ class custom_view extends \core_question\local\bank\view {
     }
 
     protected function heading_column(): string {
-        return 'mod_quiz\\question\\bank\\question_name_text_column';
+        return 'mod_hippotrack\\question\\bank\\question_name_text_column';
     }
 
     protected function default_sort(): array {
         // Using the extended class for quiz specific sort.
         return [
             'qbank_viewquestiontype\\question_type_column' => 1,
-            'mod_quiz\\question\\bank\\question_name_text_column' => 1,
+            'mod_hippotrack\\question\\bank\\question_name_text_column' => 1,
         ];
     }
 

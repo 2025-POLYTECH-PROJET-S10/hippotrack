@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Behat data generator for mod_quiz.
+ * Behat data generator for mod_hippotrack.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @category  test
  * @copyright 2019 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,12 +27,12 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * Behat data generator for mod_quiz.
+ * Behat data generator for mod_hippotrack.
  *
  * @copyright 2019 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class behat_mod_quiz_generator extends behat_generator_base {
+class behat_mod_hippotrack_generator extends behat_generator_base {
 
     protected function get_creatable_entities(): array {
         return [

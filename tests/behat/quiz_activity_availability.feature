@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Quiz availability can be set
   In order to see quiz availability
   As a teacher

@@ -4,8 +4,8 @@
  * This class is responsible for managing AJAX interactions with activities and resources
  * when viewing a quiz in editing mode.
  *
- * @module mod_quiz-resource-toolbox
- * @namespace M.mod_quiz.resource_toolbox
+ * @module mod_hippotrack-resource-toolbox
+ * @namespace M.mod_hippotrack.resource_toolbox
  */
 
 /**
@@ -20,7 +20,7 @@
  * @constructor
  * @extends M.course.toolboxes.toolbox
  */
-var RESOURCETOOLBOX = function() {
+var RESOURCETOOLBOX = function () {
     RESOURCETOOLBOX.superclass.constructor.apply(this, arguments);
 };
 
@@ -58,8 +58,8 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @method initializer
      * @protected
      */
-    initializer: function() {
-        M.mod_quiz.quizbase.register_module(this);
+    initializer: function () {
+        M.mod_hippotrack.quizbase.register_module(this);
         Y.delegate('click', this.handle_data_action, BODY, SELECTOR.ACTIVITYACTION, this);
         Y.delegate('click', this.handle_data_action, BODY, SELECTOR.DEPENDENCY_LINK, this);
         this.initialise_select_multiple();
@@ -73,15 +73,15 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @method initialise_select_multiple
      * @protected
      */
-    initialise_select_multiple: function() {
+    initialise_select_multiple: function () {
         // Click select multiple button to show the select all options.
-        Y.one(SELECTOR.SELECTMULTIPLEBUTTON).on('click', function(e) {
+        Y.one(SELECTOR.SELECTMULTIPLEBUTTON).on('click', function (e) {
             e.preventDefault();
             Y.one('body').addClass(CSS.SELECTMULTIPLE);
         });
 
         // Click cancel button to show the select all options.
-        Y.one(SELECTOR.SELECTMULTIPLECANCELBUTTON).on('click', function(e) {
+        Y.one(SELECTOR.SELECTMULTIPLECANCELBUTTON).on('click', function (e) {
             e.preventDefault();
             Y.one('body').removeClass(CSS.SELECTMULTIPLE);
         });
@@ -100,7 +100,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @param {EventFacade} ev The event that was triggered.
      * @returns {boolean}
      */
-    handle_data_action: function(ev) {
+    handle_data_action: function (ev) {
         // We need to get the anchor element that triggered this event.
         var node = ev.target;
         if (!node.test('a')) {
@@ -152,7 +152,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @param {Node} activity The activity to add a loading icon to
      * @return {Node|null} The newly created icon, or null if the action area was not found.
      */
-    add_spinner: function(activity) {
+    add_spinner: function (activity) {
         var actionarea = activity.one(SELECTOR.ACTIONAREA);
         if (actionarea) {
             return M.util.add_spinner(Y, actionarea);
@@ -169,7 +169,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @param {Node} button The button that triggered this action.
      * @param {Node} activity The activity node that this action will be performed on.
      */
-    delete_with_confirmation: function(ev, button, activity) {
+    delete_with_confirmation: function (ev, button, activity) {
         // Prevent the default button action.
         ev.preventDefault();
 
@@ -178,7 +178,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
             // Create confirm string (different if element has or does not have name)
             confirmstring = '',
             qtypename = M.util.get_string('pluginname',
-                        'qtype_' + element.getAttribute('class').match(/qtype_([^\s]*)/)[1]);
+                'qtype_' + element.getAttribute('class').match(/qtype_([^\s]*)/)[1]);
         confirmstring = M.util.get_string('confirmremovequestion', 'quiz', qtypename);
 
         // Create the confirmation dialogue.
@@ -188,17 +188,17 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
         });
 
         // If it is confirmed.
-        confirm.on('complete-yes', function() {
+        confirm.on('complete-yes', function () {
             var spinner = this.add_spinner(element);
             var data = {
                 'class': 'resource',
                 'action': 'DELETE',
-                'id': Y.Moodle.mod_quiz.util.slot.getId(element)
+                'id': Y.Moodle.mod_hippotrack.util.slot.getId(element)
             };
-            this.send_request(data, spinner, function(response) {
+            this.send_request(data, spinner, function (response) {
                 if (response.deleted) {
                     // Actually remove the element.
-                    Y.Moodle.mod_quiz.util.slot.remove(element);
+                    Y.Moodle.mod_hippotrack.util.slot.remove(element);
                     this.reorganise_edit_page();
                     if (M.core.actionmenu && M.core.actionmenu.instance) {
                         M.core.actionmenu.instance.hideMenu(ev);
@@ -216,12 +216,12 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @method find_sections_that_would_become_empty
      * @returns {String} The name of the first section found
      */
-    find_sections_that_would_become_empty: function() {
+    find_sections_that_would_become_empty: function () {
         var section;
         var sectionnodes = Y.all(SELECTOR.SECTIONLI);
 
         if (sectionnodes.size() > 1) {
-            sectionnodes.some(function(node) {
+            sectionnodes.some(function (node) {
                 var sectionname = node.one(SELECTOR.INSTANCESECTION).getContent();
                 var checked = node.all(SELECTOR.SELECTMULTIPLECHECKBOX + ':checked');
                 var unchecked = node.all(SELECTOR.SELECTMULTIPLECHECKBOX + ':not(:checked)');
@@ -244,7 +244,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @method delete_multiple_action
      * @param {EventFacade} ev The event that was fired.
      */
-    delete_multiple_action: function(ev) {
+    delete_multiple_action: function (ev) {
         var problemsection = this.find_sections_that_would_become_empty();
 
         if (typeof problemsection !== 'undefined') {
@@ -266,15 +266,15 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @method delete_multiple_with_confirmation
      * @param {EventFacade} ev The event that was fired.
      */
-    delete_multiple_with_confirmation: function(ev) {
+    delete_multiple_with_confirmation: function (ev) {
         ev.preventDefault();
 
         var ids = '';
         var slots = [];
-        Y.all(SELECTOR.SELECTMULTIPLECHECKBOX + ':checked').each(function(node) {
-            var slot = Y.Moodle.mod_quiz.util.slot.getSlotFromComponent(node);
+        Y.all(SELECTOR.SELECTMULTIPLECHECKBOX + ':checked').each(function (node) {
+            var slot = Y.Moodle.mod_hippotrack.util.slot.getSlotFromComponent(node);
             ids += ids === '' ? '' : ',';
-            ids += Y.Moodle.mod_quiz.util.slot.getId(slot);
+            ids += Y.Moodle.mod_hippotrack.util.slot.getId(slot);
             slots.push(slot);
         });
         var element = Y.one('div.mod-quiz-edit-content');
@@ -291,7 +291,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
         });
 
         // If it is confirmed.
-        confirm.on('complete-yes', function() {
+        confirm.on('complete-yes', function () {
             var spinner = this.add_spinner(element);
             var data = {
                 'class': 'resource',
@@ -299,12 +299,12 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
                 ids: ids
             };
             // Delete items on server.
-            this.send_request(data, spinner, function(response) {
+            this.send_request(data, spinner, function (response) {
                 // Delete locally if deleted on server.
                 if (response.deleted) {
                     // Actually remove the element.
-                    Y.all(SELECTOR.SELECTMULTIPLECHECKBOX + ':checked').each(function(node) {
-                        Y.Moodle.mod_quiz.util.slot.remove(node.ancestor('li.activity'));
+                    Y.all(SELECTOR.SELECTMULTIPLECHECKBOX + ':checked').each(function (node) {
+                        Y.Moodle.mod_hippotrack.util.slot.remove(node.ancestor('li.activity'));
                     });
                     // Update the page numbers and sections.
                     this.reorganise_edit_page();
@@ -328,7 +328,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @param {String} action The action that has been requested.
      * @return Boolean
      */
-    edit_maxmark: function(ev, button, activity) {
+    edit_maxmark: function (ev, button, activity) {
         // Get the element we're working on
         var instancemaxmark = activity.one(SELECTOR.INSTANCEMAXMARK),
             instance = activity.one(SELECTOR.ACTIVITYINSTANCE),
@@ -340,13 +340,13 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
             data = {
                 'class': 'resource',
                 'field': 'getmaxmark',
-                'id': Y.Moodle.mod_quiz.util.slot.getId(activity)
+                'id': Y.Moodle.mod_hippotrack.util.slot.getId(activity)
             };
 
         // Prevent the default actions.
         ev.preventDefault();
 
-        this.send_request(data, null, function(response) {
+        this.send_request(data, null, function (response) {
             if (M.core.actionmenu && M.core.actionmenu.instance) {
                 M.core.actionmenu.instance.hideMenu(ev);
             }
@@ -401,7 +401,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @param {Node} activity The activity whose maxmark we are altering.
      * @param {String} originalmaxmark The original maxmark the activity or resource had.
      */
-    edit_maxmark_submit: function(ev, activity, originalmaxmark) {
+    edit_maxmark_submit: function (ev, activity, originalmaxmark) {
         // We don't actually want to submit anything.
         ev.preventDefault();
         var newmaxmark = Y.Lang.trim(activity.one(SELECTOR.ACTIVITYFORM + ' ' + SELECTOR.ACTIVITYMAXMARK).get('value'));
@@ -413,9 +413,9 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
                 'class': 'resource',
                 'field': 'updatemaxmark',
                 'maxmark': newmaxmark,
-                'id': Y.Moodle.mod_quiz.util.slot.getId(activity)
+                'id': Y.Moodle.mod_hippotrack.util.slot.getId(activity)
             };
-            this.send_request(data, spinner, function(response) {
+            this.send_request(data, spinner, function (response) {
                 if (response.instancemaxmark) {
                     activity.one(SELECTOR.INSTANCEMAXMARK).setContent(response.instancemaxmark);
                 }
@@ -432,7 +432,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @param {Node} activity The activity whose maxmark we are altering.
      * @param {Boolean} preventdefault If true we should prevent the default action from occuring.
      */
-    edit_maxmark_cancel: function(ev, activity, preventdefault) {
+    edit_maxmark_cancel: function (ev, activity, preventdefault) {
         if (preventdefault) {
             ev.preventDefault();
         }
@@ -446,7 +446,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @method edit_maxmark_clear
      * @param {Node} activity  The activity whose maxmark we were altering.
      */
-    edit_maxmark_clear: function(activity) {
+    edit_maxmark_clear: function (activity) {
         // Detach all listen events to prevent duplicate triggers
         new Y.EventHandle(this.editmaxmarkevents).detach();
 
@@ -463,7 +463,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
         activity.removeClass(CSS.EDITINGMAXMARK);
 
         // Refocus the link which was clicked originally so the user can continue using keyboard nav.
-        Y.later(100, this, function() {
+        Y.later(100, this, function () {
             activity.one(SELECTOR.EDITMAXMARK).focus();
         });
 
@@ -487,7 +487,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @param {String} action The action, addpagebreak or removepagebreak.
      * @chainable
      */
-    update_page_break: function(ev, button, activity, action) {
+    update_page_break: function (ev, button, activity, action) {
         // Prevent the default button action
         ev.preventDefault();
 
@@ -498,17 +498,17 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
         var data = {
             'class': 'resource',
             'field': 'updatepagebreak',
-            'id':    Y.Moodle.mod_quiz.util.slot.getId(nextactivity),
+            'id': Y.Moodle.mod_hippotrack.util.slot.getId(nextactivity),
             'value': value
         };
 
-        this.send_request(data, spinner, function(response) {
+        this.send_request(data, spinner, function (response) {
             if (response.slots) {
                 if (action === 'addpagebreak') {
-                    Y.Moodle.mod_quiz.util.page.add(activity);
+                    Y.Moodle.mod_hippotrack.util.page.add(activity);
                 } else {
-                    var page = activity.next(Y.Moodle.mod_quiz.util.page.SELECTORS.PAGE);
-                    Y.Moodle.mod_quiz.util.page.remove(page, true);
+                    var page = activity.next(Y.Moodle.mod_hippotrack.util.page.SELECTORS.PAGE);
+                    Y.Moodle.mod_hippotrack.util.page.remove(page, true);
                 }
                 this.reorganise_edit_page();
             }
@@ -529,7 +529,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @param {String} action The action, adddependency or removedependency.
      * @chainable
      */
-    update_dependency: function(ev, button, activity, action) {
+    update_dependency: function (ev, button, activity, action) {
         // Prevent the default button action.
         ev.preventDefault();
         var spinner = this.add_spinner(activity);
@@ -537,13 +537,13 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
         var data = {
             'class': 'resource',
             'field': 'updatedependency',
-            'id':    Y.Moodle.mod_quiz.util.slot.getId(activity),
+            'id': Y.Moodle.mod_hippotrack.util.slot.getId(activity),
             'value': action === 'adddependency' ? 1 : 0
         };
 
-        this.send_request(data, spinner, function(response) {
+        this.send_request(data, spinner, function (response) {
             if (response.hasOwnProperty('requireprevious')) {
-                Y.Moodle.mod_quiz.util.slot.updateDependencyIcon(activity, response.requireprevious);
+                Y.Moodle.mod_hippotrack.util.slot.updateDependencyIcon(activity, response.requireprevious);
             }
         });
 
@@ -556,15 +556,15 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
      * @protected
      * @method reorganise_edit_page
      */
-    reorganise_edit_page: function() {
-        Y.Moodle.mod_quiz.util.slot.reorderSlots();
-        Y.Moodle.mod_quiz.util.slot.reorderPageBreaks();
-        Y.Moodle.mod_quiz.util.page.reorderPages();
-        Y.Moodle.mod_quiz.util.slot.updateOneSlotSections();
-        Y.Moodle.mod_quiz.util.slot.updateAllDependencyIcons();
+    reorganise_edit_page: function () {
+        Y.Moodle.mod_hippotrack.util.slot.reorderSlots();
+        Y.Moodle.mod_hippotrack.util.slot.reorderPageBreaks();
+        Y.Moodle.mod_hippotrack.util.page.reorderPages();
+        Y.Moodle.mod_hippotrack.util.slot.updateOneSlotSections();
+        Y.Moodle.mod_hippotrack.util.slot.updateAllDependencyIcons();
     },
 
-    NAME: 'mod_quiz-resource-toolbox',
+    NAME: 'mod_hippotrack-resource-toolbox',
     ATTRS: {
         courseid: {
             'value': 0
@@ -576,8 +576,8 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
 
 });
 
-M.mod_quiz.resource_toolbox = null;
-M.mod_quiz.init_resource_toolbox = function(config) {
-    M.mod_quiz.resource_toolbox = new RESOURCETOOLBOX(config);
-    return M.mod_quiz.resource_toolbox;
+M.mod_hippotrack.resource_toolbox = null;
+M.mod_hippotrack.init_resource_toolbox = function (config) {
+    M.mod_hippotrack.resource_toolbox = new RESOURCETOOLBOX(config);
+    return M.mod_hippotrack.resource_toolbox;
 };

@@ -1,4 +1,4 @@
-@mod @mod_quiz @core_completion
+@mod @mod_hippotrack @core_completion
 Feature: Set a quiz to be marked complete when the student uses all attempts allowed
   In order to ensure a student has learned the material before being marked complete
   As a teacher

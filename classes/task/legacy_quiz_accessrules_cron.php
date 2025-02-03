@@ -17,12 +17,12 @@
 /**
  * Legacy Cron Quiz Access Rules Task
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2017 Michael Hughes
  * @author Michael Hughes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_quiz\task;
+namespace mod_hippotrack\task;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 /**
  * Legacy Cron Quiz Access Rules Task
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2017 Michael Hughes
  * @author Michael Hughes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -40,7 +40,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 class legacy_quiz_accessrules_cron extends \core\task\scheduled_task {
 
     public function get_name() {
-        return get_string('legacyquizaccessrulescron', 'mod_quiz');
+        return get_string('legacyquizaccessrulescron', 'mod_hippotrack');
     }
 
     /**

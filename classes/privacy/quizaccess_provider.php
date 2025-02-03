@@ -17,11 +17,11 @@
 /**
  * The quizaccess_provider interface provides the expected interface for all 'quizaccess' quizaccesss.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_quiz\privacy;
+namespace mod_hippotrack\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -31,7 +31,7 @@ use \core_privacy\local\request\approved_contextlist;
 /**
  * The quizaccess_provider interface provides the expected interface for all 'quizaccess' quizaccesss.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

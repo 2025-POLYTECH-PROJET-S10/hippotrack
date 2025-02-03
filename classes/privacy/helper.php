@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem helper for mod_quiz.
+ * Privacy Subsystem helper for mod_hippotrack.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz\privacy;
+namespace mod_hippotrack\privacy;
 
 use \core_privacy\local\request\writer;
 use \core_privacy\local\request\transform;
@@ -38,7 +38,7 @@ require_once($CFG->dirroot . '/mod/quiz/lib.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 
 /**
- * Privacy Subsystem implementation for mod_quiz.
+ * Privacy Subsystem implementation for mod_hippotrack.
  *
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -53,7 +53,7 @@ class helper {
      */
     public static function get_quiz_attempt_subcontext(\stdClass $attempt, \stdClass $user) {
         $subcontext = [
-            get_string('attempts', 'mod_quiz'),
+            get_string('attempts', 'mod_hippotrack'),
         ];
         if ($attempt->userid != $user->id) {
             $subcontext[] = fullname($user);

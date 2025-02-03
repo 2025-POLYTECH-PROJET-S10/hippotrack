@@ -17,7 +17,7 @@
 /**
  * Defines the Moodle forum used to add random questions to the quiz.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2008 Olli Savolainen
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -68,8 +68,8 @@ class quiz_add_random_form extends moodleform {
                 'multiple' => true,
                 'noselectionstring' => get_string('anytags', 'quiz'),
             );
-            $mform->addElement('autocomplete', 'fromtags', get_string('randomquestiontags', 'mod_quiz'), $tagstrings, $options);
-            $mform->addHelpButton('fromtags', 'randomquestiontags', 'mod_quiz');
+            $mform->addElement('autocomplete', 'fromtags', get_string('randomquestiontags', 'mod_hippotrack'), $tagstrings, $options);
+            $mform->addHelpButton('fromtags', 'randomquestiontags', 'mod_hippotrack');
         }
 
         // TODO: in the past, the drop-down used to only show sensible choices for
@@ -80,7 +80,7 @@ class quiz_add_random_form extends moodleform {
         $mform->addElement('select', 'numbertoadd', get_string('randomnumber', 'quiz'),
                 $this->get_number_of_questions_to_add_choices());
 
-        $previewhtml = $OUTPUT->render_from_template('mod_quiz/random_question_form_preview', []);
+        $previewhtml = $OUTPUT->render_from_template('mod_hippotrack/random_question_form_preview', []);
         $mform->addElement('html', $previewhtml);
 
         $mform->addElement('submit', 'existingcategory', get_string('addrandomquestion', 'quiz'));
@@ -114,7 +114,7 @@ class quiz_add_random_form extends moodleform {
         $mform->setType('returnurl', PARAM_LOCALURL);
 
         // Add the javascript required to enhance this mform.
-        $PAGE->requires->js_call_amd('mod_quiz/add_random_form', 'init', [
+        $PAGE->requires->js_call_amd('mod_hippotrack/add_random_form', 'init', [
             $mform->getAttribute('id'),
             $contexts->lowest()->id,
             $tops,

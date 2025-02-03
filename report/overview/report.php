@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_quiz\question\bank\qbank_helper;
+use mod_hippotrack\question\bank\qbank_helper;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -224,7 +224,7 @@ class quiz_overview_report extends quiz_attempts_report {
         }
 
         if (!$table->is_downloading() && $options->usercanseegrades) {
-            $output = $PAGE->get_renderer('mod_quiz');
+            $output = $PAGE->get_renderer('mod_hippotrack');
             list($bands, $bandwidth) = self::get_bands_count_and_width($quiz);
             $labels = self::get_bands_labels($bands, $bandwidth, $quiz);
 
@@ -393,7 +393,7 @@ class quiz_overview_report extends quiz_attempts_report {
                 'quizid' => $attempt->quiz
               )
             );
-            $event = \mod_quiz\event\attempt_regraded::create($params);
+            $event = \mod_hippotrack\event\attempt_regraded::create($params);
             $event->trigger();
         }
 

@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Settings form fields disabled if not required
   In to create quizzes as simply as possible
   As a teacher

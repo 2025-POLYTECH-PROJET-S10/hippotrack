@@ -14,16 +14,16 @@ var CSS = {
  * @protected
  * @extends M.core.chooserdialogue
  */
-var QUESTIONCHOOSER = function() {
+var QUESTIONCHOOSER = function () {
     QUESTIONCHOOSER.superclass.constructor.apply(this, arguments);
 };
 
 Y.extend(QUESTIONCHOOSER, M.core.chooserdialogue, {
-    initializer: function() {
+    initializer: function () {
         Y.one('body').delegate('click', this.display_dialogue, CSS.ADDNEWQUESTIONBUTTONS, this);
     },
 
-    display_dialogue: function(e) {
+    display_dialogue: function (e) {
         e.preventDefault();
         var dialogue = Y.one(CSS.CREATENEWQUESTION + ' ' + CSS.CHOOSERDIALOGUE),
             header = Y.one(CSS.CREATENEWQUESTION + ' ' + CSS.CHOOSERHEADER);
@@ -47,7 +47,7 @@ Y.extend(QUESTIONCHOOSER, M.core.chooserdialogue, {
         this.display_chooser(e);
     },
 
-    parameters_to_hidden_input: function(parameters, form, name) {
+    parameters_to_hidden_input: function (parameters, form, name) {
         var value;
         if (parameters.hasOwnProperty(name)) {
             value = parameters[name];
@@ -62,11 +62,11 @@ Y.extend(QUESTIONCHOOSER, M.core.chooserdialogue, {
         input.set('value', value);
     }
 }, {
-    NAME: 'mod_quiz-questionchooser'
+    NAME: 'mod_hippotrack-questionchooser'
 });
 
-M.mod_quiz = M.mod_quiz || {};
-M.mod_quiz.init_questionchooser = function() {
-    M.mod_quiz.question_chooser = new QUESTIONCHOOSER({});
-    return M.mod_quiz.question_chooser;
+M.mod_hippotrack = M.mod_hippotrack || {};
+M.mod_hippotrack.init_questionchooser = function () {
+    M.mod_hippotrack.question_chooser = new QUESTIONCHOOSER({});
+    return M.mod_hippotrack.question_chooser;
 };

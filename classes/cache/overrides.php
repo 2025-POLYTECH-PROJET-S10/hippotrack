@@ -17,21 +17,21 @@
 /**
  * Cache data source for the quiz overrides.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 declare(strict_types=1);
 
-namespace mod_quiz\cache;
+namespace mod_hippotrack\cache;
 
 use cache_definition;
 
 /**
  * Class quiz_overrides
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

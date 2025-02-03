@@ -19,7 +19,7 @@ namespace quiz_statistics\event\observer;
 use quiz_statistics\task\recalculate;
 
 /**
- * Event observer for \mod_quiz\event\attempt_submitted
+ * Event observer for \mod_hippotrack\event\attempt_submitted
  *
  * @package   quiz_statistics
  * @copyright 2023 onwards Catalyst IT EU {@link https://catalyst-eu.net}
@@ -33,10 +33,10 @@ class attempt_submitted {
      * This will defer running the task for 1 hour, to give other attempts in progress
      * a chance to submit.
      *
-     * @param \mod_quiz\event\attempt_submitted $event
+     * @param \mod_hippotrack\event\attempt_submitted $event
      * @return void
      */
-    public static function process(\mod_quiz\event\attempt_submitted $event): void {
+    public static function process(\mod_hippotrack\event\attempt_submitted $event): void {
         $data = $event->get_data();
         recalculate::queue_future_run($data['other']['quizid']);
     }

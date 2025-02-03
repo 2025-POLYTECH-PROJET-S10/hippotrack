@@ -16,13 +16,13 @@
 
 declare(strict_types=1);
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 use advanced_testcase;
 use cm_info;
 use core_completion\cm_completion_details;
 use grade_item;
-use mod_quiz\completion\custom_completion;
+use mod_hippotrack\completion\custom_completion;
 use question_engine;
 use quiz;
 use quiz_attempt;
@@ -33,12 +33,12 @@ global $CFG;
 require_once($CFG->libdir . '/completionlib.php');
 
 /**
- * Class for unit testing mod_quiz/custom_completion.
+ * Class for unit testing mod_hippotrack/custom_completion.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @coversDefaultClass \mod_quiz\completion\custom_completion
+ * @coversDefaultClass \mod_hippotrack\completion\custom_completion
  */
 class custom_completion_test extends advanced_testcase {
 
@@ -68,7 +68,7 @@ class custom_completion_test extends advanced_testcase {
         }
 
         // Make a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $data = array_merge([
             'course' => $course->id,
             'grade' => 100.0,
@@ -116,7 +116,7 @@ class custom_completion_test extends advanced_testcase {
         $quizobj = quiz::create($attemptoptions['quiz']->id);
 
         // Start the passing attempt.
-        $quba = question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         $timenow = time();

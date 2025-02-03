@@ -54,7 +54,7 @@ class quizaccess_password extends quiz_access_rule_base {
         return empty($SESSION->passwordcheckedquizzes[$this->quiz->id]);
     }
 
-    public function add_preflight_check_form_fields(mod_quiz_preflight_check_form $quizform,
+    public function add_preflight_check_form_fields(mod_hippotrack_preflight_check_form $quizform,
             MoodleQuickForm $mform, $attemptid) {
 
         $mform->addElement('header', 'passwordheader', get_string('password'));

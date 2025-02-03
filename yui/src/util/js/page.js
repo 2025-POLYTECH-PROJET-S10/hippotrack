@@ -3,19 +3,19 @@
 /**
  * A collection of utility classes for use with pages.
  *
- * @module moodle-mod_quiz-util
- * @submodule moodle-mod_quiz-util-page
+ * @module moodle-mod_hippotrack-util
+ * @submodule moodle-mod_hippotrack-util-page
  */
 
-Y.namespace('Moodle.mod_quiz.util.page');
+Y.namespace('Moodle.mod_hippotrack.util.page');
 
 /**
  * A collection of utility classes for use with pages.
  *
- * @class Moodle.mod_quiz.util.page
+ * @class Moodle.mod_hippotrack.util.page
  * @static
  */
-Y.Moodle.mod_quiz.util.page = {
+Y.Moodle.mod_hippotrack.util.page = {
     CSS: {
         PAGE: 'page'
     },
@@ -43,7 +43,7 @@ Y.Moodle.mod_quiz.util.page = {
      * @param pagecomponent {Node} The component Node.
      * @return {Node|null} The Page Node.
      */
-    getPageFromComponent: function(pagecomponent) {
+    getPageFromComponent: function (pagecomponent) {
         return Y.one(pagecomponent).ancestor(this.SELECTORS.PAGE, true);
     },
 
@@ -54,7 +54,7 @@ Y.Moodle.mod_quiz.util.page = {
      * @param pagecomponent {Node} The component Node.
      * @return {Node|null} The Page Node.
      */
-    getPageFromSlot: function(slot) {
+    getPageFromSlot: function (slot) {
         return Y.one(slot).previous(this.SELECTORS.PAGE);
     },
 
@@ -65,10 +65,10 @@ Y.Moodle.mod_quiz.util.page = {
      * @param page {Node} The page to find an ID for.
      * @return {Number|false} The ID of the page in question or false if no ID was found.
      */
-    getId: function(page) {
+    getId: function (page) {
         // We perform a simple substitution operation to get the ID.
         var id = page.get('id').replace(
-                this.CONSTANTS.PAGEIDPREFIX, '');
+            this.CONSTANTS.PAGEIDPREFIX, '');
 
         // Attempt to validate the ID.
         id = parseInt(id, 10);
@@ -86,7 +86,7 @@ Y.Moodle.mod_quiz.util.page = {
      * @param id int The id value.
      * @return void
      */
-    setId: function(page, id) {
+    setId: function (page, id) {
         page.set('id', this.CONSTANTS.PAGEIDPREFIX + id);
     },
 
@@ -97,7 +97,7 @@ Y.Moodle.mod_quiz.util.page = {
      * @param page {Node} The page to find a name for.
      * @return {string|false} The name of the page in question or false if no ID was found.
      */
-    getName: function(page) {
+    getName: function (page) {
         var instance = page.one(this.SELECTORS.INSTANCENAME);
         if (instance) {
             return instance.get('firstChild').get('data');
@@ -112,10 +112,10 @@ Y.Moodle.mod_quiz.util.page = {
      * @param page {Node} The page to find a number for.
      * @return {Number|false} The number of the page in question or false if no number was found.
      */
-    getNumber: function(page) {
+    getNumber: function (page) {
         // We perform a simple substitution operation to get the number.
         var number = page.one(this.SELECTORS.NUMBER).get('text').replace(
-                this.CONSTANTS.PAGENUMBERPREFIX, '');
+            this.CONSTANTS.PAGENUMBERPREFIX, '');
 
         // Attempt to validate the ID.
         number = parseInt(number, 10);
@@ -132,7 +132,7 @@ Y.Moodle.mod_quiz.util.page = {
      * @param page {Node} The page to update the number for.
      * @return void
      */
-    setNumber: function(page, number) {
+    setNumber: function (page, number) {
         page.one(this.SELECTORS.NUMBER).set('text', this.CONSTANTS.PAGENUMBERPREFIX + number);
     },
 
@@ -142,10 +142,10 @@ Y.Moodle.mod_quiz.util.page = {
      * @method getPages
      * @return {node[]} An array containing page nodes.
      */
-    getPages: function() {
-        return Y.all(Y.Moodle.mod_quiz.util.slot.SELECTORS.PAGECONTENT + ' ' +
-                     Y.Moodle.mod_quiz.util.slot.SELECTORS.SECTIONUL + ' ' +
-                    this.SELECTORS.PAGE);
+    getPages: function () {
+        return Y.all(Y.Moodle.mod_hippotrack.util.slot.SELECTORS.PAGECONTENT + ' ' +
+            Y.Moodle.mod_hippotrack.util.slot.SELECTORS.SECTIONUL + ' ' +
+            this.SELECTORS.PAGE);
     },
 
     /**
@@ -155,7 +155,7 @@ Y.Moodle.mod_quiz.util.page = {
      * @param page Page node
      * @return boolean
      */
-    isPage: function(page) {
+    isPage: function (page) {
         if (!page) {
             return false;
         }
@@ -169,7 +169,7 @@ Y.Moodle.mod_quiz.util.page = {
      * @param page Page node
      * @return boolean
      */
-    isEmpty: function(page) {
+    isEmpty: function (page) {
         var activity = page.next('li.activity');
         if (!activity) {
             return true;
@@ -184,9 +184,9 @@ Y.Moodle.mod_quiz.util.page = {
      * @param beforenode Int | Node | HTMLElement | String to add
      * @return page Page node
      */
-    add: function(beforenode) {
+    add: function (beforenode) {
         var pagenumber = this.getNumber(this.getPageFromSlot(beforenode)) + 1;
-        var pagehtml = M.mod_quiz.resource_toolbox.get('config').pagehtml;
+        var pagehtml = M.mod_hippotrack.resource_toolbox.get('config').pagehtml;
 
         // Normalise the page number.
         pagehtml = pagehtml.replace(/%%PAGENUMBER%%/g, pagenumber);
@@ -195,10 +195,10 @@ Y.Moodle.mod_quiz.util.page = {
         var page = Y.Node.create(pagehtml);
 
         // Assign is as a drop target.
-        YUI().use('dd-drop', function(Y) {
+        YUI().use('dd-drop', function (Y) {
             var drop = new Y.DD.Drop({
                 node: page,
-                groups: M.mod_quiz.dragres.groups
+                groups: M.mod_hippotrack.dragres.groups
             });
             page.drop = drop;
         });
@@ -220,11 +220,11 @@ Y.Moodle.mod_quiz.util.page = {
      * @param page Page node
      * @return void
      */
-    remove: function(page, keeppagebreak) {
+    remove: function (page, keeppagebreak) {
         // Remove page break from previous slot.
-        var previousslot = page.previous(Y.Moodle.mod_quiz.util.slot.SELECTORS.SLOT);
+        var previousslot = page.previous(Y.Moodle.mod_hippotrack.util.slot.SELECTORS.SLOT);
         if (!keeppagebreak && previousslot) {
-            Y.Moodle.mod_quiz.util.slot.removePageBreak(previousslot);
+            Y.Moodle.mod_hippotrack.util.slot.removePageBreak(previousslot);
         }
         page.remove();
     },
@@ -235,12 +235,12 @@ Y.Moodle.mod_quiz.util.page = {
      * @method reorderPages
      * @return void
      */
-    reorderPages: function() {
+    reorderPages: function () {
         // Get list of page nodes.
         var pages = this.getPages();
         var currentpagenumber = 0;
         // Loop through pages incrementing the number each time.
-        pages.each(function(page) {
+        pages.each(function (page) {
             // Is the page empty?
             if (this.isEmpty(page)) {
                 var keeppagebreak = page.next('li.slot') ? true : false;
@@ -264,11 +264,11 @@ Y.Moodle.mod_quiz.util.page = {
      * @method reorderActionMenus
      * @return void
      */
-    reorderActionMenus: function() {
+    reorderActionMenus: function () {
         // Get list of action menu nodes.
         var actionmenus = this.getActionMenus();
         // Loop through pages incrementing the number each time.
-        actionmenus.each(function(actionmenu, key) {
+        actionmenus.each(function (actionmenu, key) {
             var previousActionMenu = actionmenus.item(key - 1),
                 previousActionMenunumber = 0;
             if (previousActionMenu) {
@@ -300,10 +300,10 @@ Y.Moodle.mod_quiz.util.page = {
      * @method getActionMenus
      * @return {node[]} An array containing page nodes.
      */
-    getActionMenus: function() {
-        return Y.all(Y.Moodle.mod_quiz.util.slot.SELECTORS.PAGECONTENT + ' ' +
-                     Y.Moodle.mod_quiz.util.slot.SELECTORS.SECTIONUL + ' ' +
-                     this.SELECTORS.ACTIONMENU);
+    getActionMenus: function () {
+        return Y.all(Y.Moodle.mod_hippotrack.util.slot.SELECTORS.PAGECONTENT + ' ' +
+            Y.Moodle.mod_hippotrack.util.slot.SELECTORS.SECTIONUL + ' ' +
+            this.SELECTORS.ACTIONMENU);
     },
 
     /**
@@ -313,10 +313,10 @@ Y.Moodle.mod_quiz.util.page = {
      * @param actionmenu {Node} The actionmenu to find an ID for.
      * @return {Number|false} The ID of the actionmenu in question or false if no ID was found.
      */
-    getActionMenuId: function(actionmenu) {
+    getActionMenuId: function (actionmenu) {
         // We perform a simple substitution operation to get the ID.
         var id = actionmenu.get('id').replace(
-                this.CONSTANTS.ACTIONMENUIDPREFIX, '');
+            this.CONSTANTS.ACTIONMENUIDPREFIX, '');
 
         // Attempt to validate the ID.
         id = parseInt(id, 10);
@@ -334,7 +334,7 @@ Y.Moodle.mod_quiz.util.page = {
      * @param id int The id value.
      * @return void
      */
-    setActionMenuId: function(actionmenu, id) {
+    setActionMenuId: function (actionmenu, id) {
         actionmenu.set('id', this.CONSTANTS.ACTIONMENUIDPREFIX + id);
     }
 };

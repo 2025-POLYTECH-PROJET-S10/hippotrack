@@ -14,16 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 /**
  * PHPUnit data generator testcase
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   phpunit
  * @copyright  2012 Matt Petro
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers \mod_quiz_generator
+ * @covers \mod_hippotrack_generator
  */
 class generator_test extends \advanced_testcase {
     public function test_generator() {
@@ -33,9 +33,9 @@ class generator_test extends \advanced_testcase {
 
         $this->assertEquals(0, $DB->count_records('quiz'));
 
-        /** @var \mod_quiz_generator $generator */
-        $generator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
-        $this->assertInstanceOf('mod_quiz_generator', $generator);
+        /** @var \mod_hippotrack_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $this->assertInstanceOf('mod_hippotrack_generator', $generator);
         $this->assertEquals('quiz', $generator->get_modulename());
 
         $generator->create_instance(array('course'=>$SITE->id));
@@ -65,8 +65,8 @@ class generator_test extends \advanced_testcase {
         $quiz = $generator->create_module('quiz', ['course' => $course->id]);
         $generator->enrol_user($user->id, $course->id, 'student');
 
-        /** @var \mod_quiz_generator $quizgenerator */
-        $quizgenerator = $generator->get_plugin_generator('mod_quiz');
+        /** @var \mod_hippotrack_generator $quizgenerator */
+        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
         $quizgenerator->create_override([
             'quiz' => $quiz->id,
             'userid' => $user->id,
@@ -95,8 +95,8 @@ class generator_test extends \advanced_testcase {
         $quiz = $generator->create_module('quiz', ['course' => $course->id]);
         $group = $generator->create_group(['courseid' => $course->id]);
 
-        /** @var \mod_quiz_generator $quizgenerator */
-        $quizgenerator = $generator->get_plugin_generator('mod_quiz');
+        /** @var \mod_hippotrack_generator $quizgenerator */
+        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
         $quizgenerator->create_override([
             'quiz' => $quiz->id,
             'groupid' => $group->id,

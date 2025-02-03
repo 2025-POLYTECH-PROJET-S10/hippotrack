@@ -17,12 +17,12 @@
 /**
  * Update Overdue Attempts Task
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2017 Michael Hughes
  * @author Michael Hughes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_quiz\task;
+namespace mod_hippotrack\task;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 /**
  * Update Overdue Attempts Task
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2017 Michael Hughes
  * @author Michael Hughes
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -40,7 +40,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 class update_overdue_attempts extends \core\task\scheduled_task {
 
     public function get_name() {
-        return get_string('updateoverdueattemptstask', 'mod_quiz');
+        return get_string('updateoverdueattemptstask', 'mod_hippotrack');
     }
 
     /**
@@ -52,7 +52,7 @@ class update_overdue_attempts extends \core\task\scheduled_task {
 
         require_once($CFG->dirroot . '/mod/quiz/cronlib.php');
         $timenow = time();
-        $overduehander = new \mod_quiz_overdue_attempt_updater();
+        $overduehander = new \mod_hippotrack_overdue_attempt_updater();
 
         $processto = $timenow - get_config('quiz', 'graceperiodmin');
 

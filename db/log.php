@@ -17,7 +17,7 @@
 /**
  * Definition of log events for the quiz module.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   log
  * @copyright  2010 Petr Skoda (http://skodak.org)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz\question\bank;
+namespace mod_hippotrack\question\bank;
 
 /**
  * A column type for the add this question to the quiz action.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   question
  * @copyright  2009 Tim Hunt
  * @author     2021 Safat Shahin <safatshahin@catalyst-au.net>

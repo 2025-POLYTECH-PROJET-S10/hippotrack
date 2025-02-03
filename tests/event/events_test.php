@@ -17,13 +17,13 @@
 /**
  * Quiz events tests.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   phpunit
  * @copyright  2013 Adrian Greeve
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz\event;
+namespace mod_hippotrack\event;
 
 use quiz;
 use quiz_attempt;
@@ -37,7 +37,7 @@ require_once($CFG->dirroot . '/mod/quiz/attemptlib.php');
 /**
  * Unit tests for quiz events.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   phpunit
  * @copyright  2013 Adrian Greeve
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -57,7 +57,7 @@ class events_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
 
         // Make a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         $quiz = $quizgenerator->create_instance(array('course' => $course->id, 'questionsperpage' => 0,
                 'grade' => 100.0, 'sumgrades' => 2));
@@ -91,7 +91,7 @@ class events_test extends \advanced_testcase {
      */
     protected function prepare_quiz_attempt($quizobj, $ispreview = false) {
         // Start the attempt.
-        $quba = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         $timenow = time();
@@ -129,14 +129,14 @@ class events_test extends \advanced_testcase {
         // Validate the event.
         $this->assertCount(3, $events);
         $event = $events[2];
-        $this->assertInstanceOf('\mod_quiz\event\attempt_submitted', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\attempt_submitted', $event);
         $this->assertEquals('quiz_attempts', $event->objecttable);
         $this->assertEquals($quizobj->get_context(), $event->get_context());
         $this->assertEquals($attempt->userid, $event->relateduserid);
         $this->assertEquals(null, $event->other['submitterid']); // Should be the user, but PHP Unit complains...
         $this->assertEquals('quiz_attempt_submitted', $event->get_legacy_eventname());
         $legacydata = new \stdClass();
-        $legacydata->component = 'mod_quiz';
+        $legacydata->component = 'mod_hippotrack';
         $legacydata->attemptid = (string) $attempt->id;
         $legacydata->timestamp = $timefinish;
         $legacydata->userid = $attempt->userid;
@@ -164,7 +164,7 @@ class events_test extends \advanced_testcase {
 
         $this->assertCount(1, $events);
         $event = $events[0];
-        $this->assertInstanceOf('\mod_quiz\event\attempt_becameoverdue', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\attempt_becameoverdue', $event);
         $this->assertEquals('quiz_attempts', $event->objecttable);
         $this->assertEquals($quizobj->get_context(), $event->get_context());
         $this->assertEquals($attempt->userid, $event->relateduserid);
@@ -173,7 +173,7 @@ class events_test extends \advanced_testcase {
         $this->assertEquals(null, $event->other['submitterid']);
         $this->assertEquals('quiz_attempt_overdue', $event->get_legacy_eventname());
         $legacydata = new \stdClass();
-        $legacydata->component = 'mod_quiz';
+        $legacydata->component = 'mod_hippotrack';
         $legacydata->attemptid = (string) $attempt->id;
         $legacydata->timestamp = $timefinish;
         $legacydata->userid = $attempt->userid;
@@ -199,7 +199,7 @@ class events_test extends \advanced_testcase {
 
         $this->assertCount(1, $events);
         $event = $events[0];
-        $this->assertInstanceOf('\mod_quiz\event\attempt_abandoned', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\attempt_abandoned', $event);
         $this->assertEquals('quiz_attempts', $event->objecttable);
         $this->assertEquals($quizobj->get_context(), $event->get_context());
         $this->assertEquals($attempt->userid, $event->relateduserid);
@@ -207,7 +207,7 @@ class events_test extends \advanced_testcase {
         $this->assertEquals(null, $event->other['submitterid']);
         $this->assertEquals('quiz_attempt_abandoned', $event->get_legacy_eventname());
         $legacydata = new \stdClass();
-        $legacydata->component = 'mod_quiz';
+        $legacydata->component = 'mod_hippotrack';
         $legacydata->attemptid = (string) $attempt->id;
         $legacydata->timestamp = $timefinish;
         $legacydata->userid = $attempt->userid;
@@ -222,7 +222,7 @@ class events_test extends \advanced_testcase {
     public function test_attempt_started() {
         $quizobj = $this->prepare_quiz();
 
-        $quba = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         $timenow = time();
@@ -236,7 +236,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\attempt_started', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\attempt_started', $event);
         $this->assertEquals('quiz_attempts', $event->objecttable);
         $this->assertEquals($attempt->id, $event->objectid);
         $this->assertEquals($attempt->userid, $event->relateduserid);
@@ -249,7 +249,7 @@ class events_test extends \advanced_testcase {
         $this->assertEventLegacyLogData($expected, $event);
         // Check legacy event data.
         $legacydata = new \stdClass();
-        $legacydata->component = 'mod_quiz';
+        $legacydata->component = 'mod_hippotrack';
         $legacydata->attemptid = $attempt->id;
         $legacydata->timestart = $attempt->timestart;
         $legacydata->timestamp = $attempt->timestart;
@@ -282,7 +282,7 @@ class events_test extends \advanced_testcase {
                 'newquestionid' => 2
             ]
         ];
-        $event = \mod_quiz\event\attempt_question_restarted::create($params);
+        $event = \mod_hippotrack\event\attempt_question_restarted::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -291,7 +291,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\attempt_question_restarted', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\attempt_question_restarted', $event);
         $this->assertEquals(\context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -315,7 +315,7 @@ class events_test extends \advanced_testcase {
                 'page' => 0
             ]
         ];
-        $event = \mod_quiz\event\attempt_updated::create($params);
+        $event = \mod_hippotrack\event\attempt_updated::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -324,7 +324,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\attempt_updated', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\attempt_updated', $event);
         $this->assertEquals(\context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -349,7 +349,7 @@ class events_test extends \advanced_testcase {
             ]
         ];
 
-        $event = \mod_quiz\event\attempt_autosaved::create($params);
+        $event = \mod_hippotrack\event\attempt_autosaved::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -358,7 +358,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\attempt_autosaved', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\attempt_autosaved', $event);
         $this->assertEquals(\context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -383,7 +383,7 @@ class events_test extends \advanced_testcase {
                 'quizid' => $quiz->id
             )
         );
-        $event = \mod_quiz\event\edit_page_viewed::create($params);
+        $event = \mod_hippotrack\event\edit_page_viewed::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -392,7 +392,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\edit_page_viewed', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\edit_page_viewed', $event);
         $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
         $expected = array($course->id, 'quiz', 'editquestions', 'view.php?id=' . $quiz->cmid, $quiz->id, $quiz->cmid);
         $this->assertEventLegacyLogData($expected, $event);
@@ -412,7 +412,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\attempt_deleted', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\attempt_deleted', $event);
         $this->assertEquals(\context_module::instance($quizobj->get_cmid()), $event->get_context());
         $expected = array($quizobj->get_courseid(), 'quiz', 'delete attempt', 'report.php?id=' . $quizobj->get_cmid(),
             $attempt->id, $quizobj->get_cmid());
@@ -455,7 +455,7 @@ class events_test extends \advanced_testcase {
                 'reportname' => 'overview'
             )
         );
-        $event = \mod_quiz\event\report_viewed::create($params);
+        $event = \mod_hippotrack\event\report_viewed::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -464,7 +464,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\report_viewed', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\report_viewed', $event);
         $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
         $expected = array($course->id, 'quiz', 'report', 'report.php?id=' . $quiz->cmid . '&mode=overview',
             $quiz->id, $quiz->cmid);
@@ -494,7 +494,7 @@ class events_test extends \advanced_testcase {
                 'quizid' => $quiz->id
             )
         );
-        $event = \mod_quiz\event\attempt_reviewed::create($params);
+        $event = \mod_hippotrack\event\attempt_reviewed::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -503,7 +503,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\attempt_reviewed', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\attempt_reviewed', $event);
         $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
         $expected = array($course->id, 'quiz', 'review', 'review.php?attempt=1', $quiz->id, $quiz->cmid);
         $this->assertEventLegacyLogData($expected, $event);
@@ -532,7 +532,7 @@ class events_test extends \advanced_testcase {
                 'quizid' => $quiz->id
             )
         );
-        $event = \mod_quiz\event\attempt_summary_viewed::create($params);
+        $event = \mod_hippotrack\event\attempt_summary_viewed::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -541,7 +541,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\attempt_summary_viewed', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\attempt_summary_viewed', $event);
         $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
         $expected = array($course->id, 'quiz', 'view summary', 'summary.php?attempt=1', $quiz->id, $quiz->cmid);
         $this->assertEventLegacyLogData($expected, $event);
@@ -569,7 +569,7 @@ class events_test extends \advanced_testcase {
                 'quizid' => $quiz->id
             )
         );
-        $event = \mod_quiz\event\user_override_created::create($params);
+        $event = \mod_hippotrack\event\user_override_created::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -578,7 +578,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\user_override_created', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\user_override_created', $event);
         $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -604,7 +604,7 @@ class events_test extends \advanced_testcase {
                 'groupid' => 2
             )
         );
-        $event = \mod_quiz\event\group_override_created::create($params);
+        $event = \mod_hippotrack\event\group_override_created::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -613,7 +613,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\group_override_created', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\group_override_created', $event);
         $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -639,7 +639,7 @@ class events_test extends \advanced_testcase {
                 'quizid' => $quiz->id
             )
         );
-        $event = \mod_quiz\event\user_override_updated::create($params);
+        $event = \mod_hippotrack\event\user_override_updated::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -648,7 +648,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\user_override_updated', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\user_override_updated', $event);
         $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
         $expected = array($course->id, 'quiz', 'edit override', 'overrideedit.php?id=1', $quiz->id, $quiz->cmid);
         $this->assertEventLegacyLogData($expected, $event);
@@ -676,7 +676,7 @@ class events_test extends \advanced_testcase {
                 'groupid' => 2
             )
         );
-        $event = \mod_quiz\event\group_override_updated::create($params);
+        $event = \mod_hippotrack\event\group_override_updated::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -685,7 +685,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\group_override_updated', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\group_override_updated', $event);
         $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
         $expected = array($course->id, 'quiz', 'edit override', 'overrideedit.php?id=1', $quiz->id, $quiz->cmid);
         $this->assertEventLegacyLogData($expected, $event);
@@ -717,7 +717,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\user_override_deleted', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\user_override_deleted', $event);
         $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
         $expected = array($course->id, 'quiz', 'delete override', 'overrides.php?cmid=' . $quiz->cmid, $quiz->id, $quiz->cmid);
         $this->assertEventLegacyLogData($expected, $event);
@@ -749,7 +749,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\group_override_deleted', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\group_override_deleted', $event);
         $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
         $expected = array($course->id, 'quiz', 'delete override', 'overrides.php?cmid=' . $quiz->cmid, $quiz->id, $quiz->cmid);
         $this->assertEventLegacyLogData($expected, $event);
@@ -779,7 +779,7 @@ class events_test extends \advanced_testcase {
                 'page' => 0
             )
         );
-        $event = \mod_quiz\event\attempt_viewed::create($params);
+        $event = \mod_hippotrack\event\attempt_viewed::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -788,7 +788,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\attempt_viewed', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\attempt_viewed', $event);
         $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
         $expected = array($course->id, 'quiz', 'continue attempt', 'review.php?attempt=1', $quiz->id, $quiz->cmid);
         $this->assertEventLegacyLogData($expected, $event);
@@ -801,7 +801,7 @@ class events_test extends \advanced_testcase {
     public function test_attempt_preview_started() {
         $quizobj = $this->prepare_quiz();
 
-        $quba = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         $timenow = time();
@@ -815,7 +815,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\attempt_preview_started', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\attempt_preview_started', $event);
         $this->assertEquals(\context_module::instance($quizobj->get_cmid()), $event->get_context());
         $expected = array($quizobj->get_courseid(), 'quiz', 'preview', 'view.php?id=' . $quizobj->get_cmid(),
             $quizobj->get_quizid(), $quizobj->get_cmid());
@@ -842,7 +842,7 @@ class events_test extends \advanced_testcase {
                 'slot' => 3
             )
         );
-        $event = \mod_quiz\event\question_manually_graded::create($params);
+        $event = \mod_hippotrack\event\question_manually_graded::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -851,7 +851,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\question_manually_graded', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\question_manually_graded', $event);
         $this->assertEquals(\context_module::instance($quizobj->get_cmid()), $event->get_context());
         $expected = array($quizobj->get_courseid(), 'quiz', 'manualgrade', 'comment.php?attempt=2&slot=3',
             $quizobj->get_quizid(), $quizobj->get_cmid());
@@ -881,7 +881,7 @@ class events_test extends \advanced_testcase {
           'quizid' => $quiz->id
         )
       );
-      $event = \mod_quiz\event\attempt_regraded::create($params);
+      $event = \mod_hippotrack\event\attempt_regraded::create($params);
 
       // Trigger and capture the event.
       $sink = $this->redirectEvents();
@@ -890,7 +890,7 @@ class events_test extends \advanced_testcase {
       $event = reset($events);
 
       // Check that the event data is valid.
-      $this->assertInstanceOf('\mod_quiz\event\attempt_regraded', $event);
+      $this->assertInstanceOf('\mod_hippotrack\event\attempt_regraded', $event);
       $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
       $this->assertEventContextNotUsed($event);
     }
@@ -914,7 +914,7 @@ class events_test extends \advanced_testcase {
                 'quizid' => $attemptobj->get_quizid()
             ]
         ];
-        $event = \mod_quiz\event\attempt_manual_grading_completed::create($params);
+        $event = \mod_hippotrack\event\attempt_manual_grading_completed::create($params);
 
         // Catch the event.
         $sink = $this->redirectEvents();
@@ -925,7 +925,7 @@ class events_test extends \advanced_testcase {
         // Validate the event.
         $this->assertCount(1, $events);
         $event = reset($events);
-        $this->assertInstanceOf('\mod_quiz\event\attempt_manual_grading_completed', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\attempt_manual_grading_completed', $event);
         $this->assertEquals('quiz_attempts', $event->objecttable);
         $this->assertEquals($quizobj->get_context(), $event->get_context());
         $this->assertEquals($attempt->userid, $event->relateduserid);
@@ -950,7 +950,7 @@ class events_test extends \advanced_testcase {
                 'slotnumber' => 3,
             ]
         ];
-        $event = \mod_quiz\event\page_break_created::create($params);
+        $event = \mod_hippotrack\event\page_break_created::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -959,7 +959,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\page_break_created', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\page_break_created', $event);
         $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -981,7 +981,7 @@ class events_test extends \advanced_testcase {
                 'slotnumber' => 3,
             ]
         ];
-        $event = \mod_quiz\event\page_break_deleted::create($params);
+        $event = \mod_hippotrack\event\page_break_deleted::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -990,7 +990,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\page_break_deleted', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\page_break_deleted', $event);
         $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -1012,7 +1012,7 @@ class events_test extends \advanced_testcase {
                 'newgrade' => 3,
             ]
         ];
-        $event = \mod_quiz\event\quiz_grade_updated::create($params);
+        $event = \mod_hippotrack\event\quiz_grade_updated::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -1021,7 +1021,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\quiz_grade_updated', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\quiz_grade_updated', $event);
         $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -1042,7 +1042,7 @@ class events_test extends \advanced_testcase {
                 'slotsperpage' => 3,
             ]
         ];
-        $event = \mod_quiz\event\quiz_repaginated::create($params);
+        $event = \mod_hippotrack\event\quiz_repaginated::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -1051,7 +1051,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\quiz_repaginated', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\quiz_repaginated', $event);
         $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -1075,7 +1075,7 @@ class events_test extends \advanced_testcase {
                 'title' => 'New title'
             ]
         ];
-        $event = \mod_quiz\event\section_break_created::create($params);
+        $event = \mod_hippotrack\event\section_break_created::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -1084,7 +1084,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\section_break_created', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\section_break_created', $event);
         $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertStringContainsString($params['other']['title'], $event->get_description());
         $this->assertEventContextNotUsed($event);
@@ -1108,7 +1108,7 @@ class events_test extends \advanced_testcase {
                 'firstslotnumber' => 2
             ]
         ];
-        $event = \mod_quiz\event\section_break_deleted::create($params);
+        $event = \mod_hippotrack\event\section_break_deleted::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -1117,7 +1117,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\section_break_deleted', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\section_break_deleted', $event);
         $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -1140,7 +1140,7 @@ class events_test extends \advanced_testcase {
                 'shuffle' => true
             ]
         ];
-        $event = \mod_quiz\event\section_shuffle_updated::create($params);
+        $event = \mod_hippotrack\event\section_shuffle_updated::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -1149,7 +1149,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\section_shuffle_updated', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\section_shuffle_updated', $event);
         $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -1173,7 +1173,7 @@ class events_test extends \advanced_testcase {
                 'newtitle' => 'New title'
             ]
         ];
-        $event = \mod_quiz\event\section_title_updated::create($params);
+        $event = \mod_hippotrack\event\section_title_updated::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -1182,7 +1182,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\section_title_updated', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\section_title_updated', $event);
         $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertStringContainsString($params['other']['newtitle'], $event->get_description());
         $this->assertEventContextNotUsed($event);
@@ -1206,7 +1206,7 @@ class events_test extends \advanced_testcase {
                 'page' => 1
             ]
         ];
-        $event = \mod_quiz\event\slot_created::create($params);
+        $event = \mod_hippotrack\event\slot_created::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -1215,7 +1215,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\slot_created', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\slot_created', $event);
         $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -1237,7 +1237,7 @@ class events_test extends \advanced_testcase {
                 'slotnumber' => 1,
             ]
         ];
-        $event = \mod_quiz\event\slot_deleted::create($params);
+        $event = \mod_hippotrack\event\slot_deleted::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -1246,7 +1246,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\slot_deleted', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\slot_deleted', $event);
         $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -1269,7 +1269,7 @@ class events_test extends \advanced_testcase {
                 'newmaxmark' => 2,
             ]
         ];
-        $event = \mod_quiz\event\slot_mark_updated::create($params);
+        $event = \mod_hippotrack\event\slot_mark_updated::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -1278,7 +1278,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\slot_mark_updated', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\slot_mark_updated', $event);
         $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -1302,7 +1302,7 @@ class events_test extends \advanced_testcase {
                 'page' => 1
             ]
         ];
-        $event = \mod_quiz\event\slot_moved::create($params);
+        $event = \mod_hippotrack\event\slot_moved::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -1311,7 +1311,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\slot_moved', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\slot_moved', $event);
         $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }
@@ -1333,7 +1333,7 @@ class events_test extends \advanced_testcase {
                 'requireprevious' => true
             ]
         ];
-        $event = \mod_quiz\event\slot_requireprevious_updated::create($params);
+        $event = \mod_hippotrack\event\slot_requireprevious_updated::create($params);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
@@ -1342,7 +1342,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Check that the event data is valid.
-        $this->assertInstanceOf('\mod_quiz\event\slot_requireprevious_updated', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\slot_requireprevious_updated', $event);
         $this->assertEquals(context_module::instance($quizobj->get_cmid()), $event->get_context());
         $this->assertEventContextNotUsed($event);
     }

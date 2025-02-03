@@ -17,13 +17,13 @@
 /**
  * A {@link qubaid_condition} representing all the attempts by one user at a given quiz.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @category  question
  * @copyright 2015 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz\question;
+namespace mod_hippotrack\question;
 
 defined('MOODLE_INTERNAL') || die();
 

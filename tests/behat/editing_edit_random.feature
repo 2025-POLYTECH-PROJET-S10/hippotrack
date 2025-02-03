@@ -1,4 +1,4 @@
-@mod @mod_quiz @javascript
+@mod @mod_hippotrack @javascript
 Feature: Editing random questions already in a quiz based on category and tags
   In order to have better assessment
   As a teacher
@@ -33,7 +33,7 @@ Feature: Editing random questions already in a quiz based on category and tags
       | question 2 name | essay |
 
   Scenario: Editing tags on one slot does not delete the rest
-    Given I am on the "Quiz 1" "mod_quiz > Edit" page logged in as "teacher1"
+    Given I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
     And I open the "last" add to quiz menu
     And I follow "a random question"
     # To actually reproduce MDL-68733 it would be better to set tags easy,essay here, and then below just delete one tag.

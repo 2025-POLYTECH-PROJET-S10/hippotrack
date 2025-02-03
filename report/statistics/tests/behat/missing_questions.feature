@@ -1,4 +1,4 @@
-@mod @mod_quiz @quiz @quiz_statistics
+@mod @mod_hippotrack @quiz @quiz_statistics
 Feature: Robustness of the statistics calculations with missing qusetions
   In order to be able to install and uninstall plugins
   As a teacher
@@ -37,7 +37,7 @@ Feature: Robustness of the statistics calculations with missing qusetions
     And question "Test question 1" is changed to simulate being of an uninstalled type
     And question "Test question 2" no longer exists in the database
 
-    When I am on the "Quiz 1" "mod_quiz > Statistics report" page logged in as teacher
+    When I am on the "Quiz 1" "mod_hippotrack > Statistics report" page logged in as teacher
 
     Then I should see "Quiz structure analysis"
     And "1" row "Question name" column of "questionstatistics" table should contain "Missing question"

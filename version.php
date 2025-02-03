@@ -17,7 +17,7 @@
 /**
  * Quiz activity version information.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,4 +26,4 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version   = 2022112800;
 $plugin->requires  = 2022111800;
-$plugin->component = 'mod_quiz';
+$plugin->component = 'mod_hippotrack';

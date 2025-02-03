@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Add a quiz
   In order to evaluate students
   As a teacher

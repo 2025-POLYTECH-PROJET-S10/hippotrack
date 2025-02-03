@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz\task;
+namespace mod_hippotrack\task;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -22,7 +22,7 @@ use context_course;
 use core_user;
 use moodle_recordset;
 use question_display_options;
-use mod_quiz_display_options;
+use mod_hippotrack_display_options;
 use quiz_attempt;
 
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
@@ -30,7 +30,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 /**
  * Cron Quiz Notify Attempts Graded Task.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2021 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
@@ -47,7 +47,7 @@ class quiz_notify_attempt_manual_grading_completed extends \core\task\scheduled_
      * @return string
      */
     public function get_name(): string {
-        return get_string('notifyattemptsgradedtask', 'mod_quiz');
+        return get_string('notifyattemptsgradedtask', 'mod_hippotrack');
     }
 
     /**
@@ -103,7 +103,7 @@ class quiz_notify_attempt_manual_grading_completed extends \core\task\scheduled_
 
             $quiz = quiz_update_effective_access($quiz, $attempt->userid);
             $attemptobj = new quiz_attempt($attempt, $quiz, $cm, $course, false);
-            $options = mod_quiz_display_options::make_from_quiz($quiz, quiz_attempt_state($quiz, $attempt));
+            $options = mod_hippotrack_display_options::make_from_quiz($quiz, quiz_attempt_state($quiz, $attempt));
 
             if ($options->manualcomment == question_display_options::HIDDEN) {
                 // User cannot currently see the feedback, so don't message them.

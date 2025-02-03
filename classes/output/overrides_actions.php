@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz\output;
+namespace mod_hippotrack\output;
 
 use moodle_url;
 use renderable;
@@ -29,7 +29,7 @@ use url_select;
  * This class provides the data for the templates to handle the data for
  * overrides tab.
  *
- * @package mod_quiz
+ * @package mod_hippotrack
  * @copyright 2021 Sujith Haridasan <sujith@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

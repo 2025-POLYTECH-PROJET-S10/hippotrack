@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Teachers can override the grade for any question
   As a teacher
   In order to correct errors
@@ -31,7 +31,7 @@ Feature: Teachers can override the grade for any question
     And the following "user private files" exist:
       | user     | filepath                                |
       | teacher1 | mod/quiz/tests/fixtures/moodle_logo.jpg |
-    And I am on the "Quiz 1" "mod_quiz > View" page logged in as "student1"
+    And I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student1"
     And I press "Attempt quiz"
     And I follow "Finish attempt ..."
     And I press "Submit all and finish"
@@ -40,7 +40,7 @@ Feature: Teachers can override the grade for any question
 
   @javascript @_switch_window @_bug_phantomjs
   Scenario: Validating the marking of an essay question attempt.
-    When I am on the "Quiz 1 > student1 > Attempt 1" "mod_quiz > Attempt review" page logged in as "teacher1"
+    When I am on the "Quiz 1 > student1 > Attempt 1" "mod_hippotrack > Attempt review" page logged in as "teacher1"
     And I follow "Make comment or override mark"
     And I switch to "commentquestion" window
     And I set the field "Mark" to "25"
@@ -59,7 +59,7 @@ Feature: Teachers can override the grade for any question
   @javascript @_switch_window @_file_upload @_bug_phantomjs @editor_tiny
   Scenario: Comment on a response to an essay question attempt.
     When I log in as "teacher1"
-    And I am on the "Quiz 1 > student1 > Attempt 1" "mod_quiz > Attempt review" page
+    And I am on the "Quiz 1 > student1 > Attempt 1" "mod_hippotrack > Attempt review" page
     And I follow "Make comment or override mark"
     And I switch to "commentquestion" window
     And I set the field "Comment" to "Administrator's comment"

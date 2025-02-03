@@ -1,8 +1,8 @@
 This files describes API changes in the quiz code.
 
 === 4.1.15 ===
-* A new test-case, `\mod_quiz\tests\attempt_walkthrough_testcase`, has been extracted from the
-  `\mod_quiz\attempt_walkthrough_from_csv_test` unit test and should be used instead.
+* A new test-case, `\mod_hippotrack\tests\attempt_walkthrough_testcase`, has been extracted from the
+  `\mod_hippotrack\attempt_walkthrough_from_csv_test` unit test and should be used instead.
   To support this testcase the existing `$files` instance property should be replaced with a new static method,
   `::get_test_files`. Both the existing instance property and the new static method can co-exist.
 
@@ -16,11 +16,11 @@ This files describes API changes in the quiz code.
 
 === 4.1 ===
 
-* quiz_has_question_use is now deprecated. Use mod_quiz\structure::has_use_capability istead.
+* quiz_has_question_use is now deprecated. Use mod_hippotrack\structure::has_use_capability istead.
 
 === 4.0.3, 4.1 ===
 
-* If a quiz is sequential the external functions mod_quiz_external::get_attempt_data, mod_quiz_external::get_attempt_summary will not return any data
+* If a quiz is sequential the external functions mod_hippotrack_external::get_attempt_data, mod_hippotrack_external::get_attempt_summary will not return any data
 related to out of sequence question except while reviewing the quiz (MDL-75210).
 
 === 4.0.2, 4.1 ===
@@ -41,7 +41,7 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
 * The completionpass criteria has been moved to core as 'completionpassgrade'. Refer to completion/upgrade.txt for
   further information.
 * New argument quizhasquestions has been added to public methods: view_information in mod/quiz/renderer.php.
-* The function no_questions_message() in class mod_quiz_renderer is deprecated. There is no replacement.
+* The function no_questions_message() in class mod_hippotrack_renderer is deprecated. There is no replacement.
 * Related to the Moodle 4.0 question bank changes, the quiz_slots database table.
   The fields removed are now manage by new core_question tables:
   - question_references -> Records where a specific question is used.
@@ -54,20 +54,20 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
 
 === 3.11 ===
 
-* External function mod_quiz_external::get_user_best_grade now returns and additional optional field:
+* External function mod_hippotrack_external::get_user_best_grade now returns and additional optional field:
   - gradetopass: The grade to pass the quiz (if set)
 
 
 === 3.10.1 ===
 
-* External functions mod_quiz_external::get_attempt_data, mod_quiz_external::get_attempt_summary
-  and mod_quiz_external::get_attempt_review now return a new additional optional field:
+* External functions mod_hippotrack_external::get_attempt_data, mod_hippotrack_external::get_attempt_summary
+  and mod_hippotrack_external::get_attempt_review now return a new additional optional field:
    - settings: Containing the question definition settings for displaying the question in an external system.
 
 === 3.10 ===
 
-* External functions mod_quiz_external::get_attempt_data, mod_quiz_external::get_attempt_summary
-  and mod_quiz_external::get_attempt_review now return a new additional optional field:
+* External functions mod_hippotrack_external::get_attempt_data, mod_hippotrack_external::get_attempt_summary
+  and mod_hippotrack_external::get_attempt_review now return a new additional optional field:
    - responsefileareas: Containing the user responses to questions file area names including files.
 
 === 3.7 ===
@@ -78,9 +78,9 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
 === 3.6 ===
 
 * The following renamed classes have been completely removed:
-  - quiz_question_bank_view (now: mod_quiz\question\bank\custom_view)
-  - question_bank_add_to_quiz_action_column (now: mod_quiz\question\bank\add_action_column)
-  - question_bank_question_name_text_column (now: mod_quiz\question\bank\question_name_text_column)
+  - quiz_question_bank_view (now: mod_hippotrack\question\bank\custom_view)
+  - question_bank_add_to_quiz_action_column (now: mod_hippotrack\question\bank\add_action_column)
+  - question_bank_question_name_text_column (now: mod_hippotrack\question\bank\question_name_text_column)
 
 === 3.5 ===
 * Removed questionbank.ajax.php. Please use the quiz_question_bank fragment instead.
@@ -94,8 +94,8 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
 
 === 3.2 ===
 
-* External functions mod_quiz_external::get_attempt_data, mod_quiz_external::get_attempt_summary
-  and mod_quiz_external::get_attempt_review now return additional optional fields:
+* External functions mod_hippotrack_external::get_attempt_data, mod_hippotrack_external::get_attempt_summary
+  and mod_hippotrack_external::get_attempt_review now return additional optional fields:
    - blockedbyprevious: Whether a question is blocked by the previous question.
 
 === 3.1 ===
@@ -103,17 +103,17 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
 * quiz_attempt::question_print_comment_fields() has been removed. It was broken
   since at least Moodle 2.0.
 
-* quiz::confirm_start_attempt_message and mod_quiz_view_object::$startattemptwarning
+* quiz::confirm_start_attempt_message and mod_hippotrack_view_object::$startattemptwarning
   have been deprecated. This functionality is now entirely handled within the
   quiz access rule plugins.
 
-* The third argument to mod_quiz_renderer::start_attempt_button has been changed
-  from a warning string to a mod_quiz_preflight_check_form.
+* The third argument to mod_hippotrack_renderer::start_attempt_button has been changed
+  from a warning string to a mod_hippotrack_preflight_check_form.
 
-* mod_quiz_renderer::review_next_navigation has a new optional argument. If you
+* mod_hippotrack_renderer::review_next_navigation has a new optional argument. If you
   have overridden that method, consider updating your code to match.
 
-* mod_quiz\output\edit_renderer::start_section_list now takes $structure as an
+* mod_hippotrack\output\edit_renderer::start_section_list now takes $structure as an
   argument. If you have overridden this method (it's hard to believe anyone ever
   would) you will need to update your renderer.
 
@@ -137,15 +137,15 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
   may want to call $attemptobj->get_original_slot to find where the question
   originally came from.
 
-* You now need to pass an instance of the mod_quiz_renderer if you call
+* You now need to pass an instance of the mod_hippotrack_renderer if you call
   $attemptobj->render_question or $attemptobj->render_question_at_step.
 
-* The array values in mod_quiz_links_to_other_attempts may now be either a moodle_url,
+* The array values in mod_hippotrack_links_to_other_attempts may now be either a moodle_url,
   or renderable (or null). Previously they could only be a moodle_url or null.
 
 * The contents of the navigation block is now not just quiz_nav_question_button-s.
   It can also contain quiz_nav_section_heading-s. If you have overridden
-  mod_quiz_renderer::navigation_panel, then you may need to account for this.
+  mod_hippotrack_renderer::navigation_panel, then you may need to account for this.
   This change also has implications for the Edit quiz page.
 
 
@@ -155,7 +155,7 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
   folder to take advantage of auto-loading. This has involved renaming them.
   see the list in mod/quiz/db/renamedclasses.php.
 
-* The quiz no longer handles its own \mod_quiz\event\attempt_becameoverdue event,
+* The quiz no longer handles its own \mod_hippotrack\event\attempt_becameoverdue event,
   and so the event handler function quiz_attempt_overdue_handler has been deleted.
   Also, the internal function quiz_send_overdue_message has add the arguments
   changed. It now takes the $attemptobj object, not separate stdClass objects.
@@ -166,10 +166,10 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
   enough that it will be possible to add new features in future.
 
   Display of mod/quiz/edit.php is now entirely generated by
-  mod_quiz\output\edit_renderer. This uses a helper class mod_quiz\structure
-  to provide details of the structure of the quiz, and mod_quiz\repaginate to
+  mod_hippotrack\output\edit_renderer. This uses a helper class mod_hippotrack\structure
+  to provide details of the structure of the quiz, and mod_hippotrack\repaginate to
   alter that structure. (Actually, there are still some modification methods on
-  mod_quiz\structure. Expect that to be cleaned up in future.)
+  mod_hippotrack\structure. Expect that to be cleaned up in future.)
 
   The new code uses much more ajax, and there are new scripts mod/quiz/edit_rest.php
   and mod/quiz/repaginate.php to handle this. (Again, don't be surprised if those
@@ -254,13 +254,13 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
 * As part of improving the page usability and accessibility, we updated the
   heading levels for quiz module so it has a proper nesting. (MDL-41615)
 
-* mod_quiz_renderer::view_best_score has been removed. (It did not do what the
+* mod_hippotrack_renderer::view_best_score has been removed. (It did not do what the
   name suggested anyway.)
 
 
 === 2.4 ===
 
-* mod_quiz_renderer::finish_review_link now requires $attemptobj to be passed in
+* mod_hippotrack_renderer::finish_review_link now requires $attemptobj to be passed in
   instead of a moodle_url.
 
 

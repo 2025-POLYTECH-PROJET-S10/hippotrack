@@ -20,7 +20,7 @@
  * There are classes for loading all the information about a quiz and attempts,
  * and for displaying the navigation panel.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2008 onwards Tim Hunt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,7 +28,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 use core_question\local\bank\question_version_status;
-use mod_quiz\question\bank\qbank_helper;
+use mod_hippotrack\question\bank\qbank_helper;
 
 
 /**
@@ -184,11 +184,11 @@ class quiz {
     }
 
     /**
-     * Get an instance of the {@link \mod_quiz\structure} class for this quiz.
-     * @return \mod_quiz\structure describes the questions in the quiz.
+     * Get an instance of the {@link \mod_hippotrack\structure} class for this quiz.
+     * @return \mod_hippotrack\structure describes the questions in the quiz.
      */
     public function get_structure() {
-        return \mod_quiz\structure::create_for_quiz($this);
+        return \mod_hippotrack\structure::create_for_quiz($this);
     }
 
     // Simple getters ==========================================================
@@ -477,7 +477,7 @@ class quiz {
      * If $reviewoptions->attempt is false, meaning that students can't review this
      * attempt at the moment, return an appropriate string explaining why.
      *
-     * @param int $when One of the mod_quiz_display_options::DURING,
+     * @param int $when One of the mod_hippotrack_display_options::DURING,
      *      IMMEDIATELY_AFTER, LATER_WHILE_OPEN or AFTER_CLOSE constants.
      * @param bool $short if true, return a shorter string.
      * @return string an appropraite message.
@@ -492,11 +492,11 @@ class quiz {
             $dateformat = '';
         }
 
-        if ($when == mod_quiz_display_options::DURING ||
-                $when == mod_quiz_display_options::IMMEDIATELY_AFTER) {
+        if ($when == mod_hippotrack_display_options::DURING ||
+                $when == mod_hippotrack_display_options::IMMEDIATELY_AFTER) {
             return '';
-        } else if ($when == mod_quiz_display_options::LATER_WHILE_OPEN && $this->quiz->timeclose &&
-                $this->quiz->reviewattempt & mod_quiz_display_options::AFTER_CLOSE) {
+        } else if ($when == mod_hippotrack_display_options::LATER_WHILE_OPEN && $this->quiz->timeclose &&
+                $this->quiz->reviewattempt & mod_hippotrack_display_options::AFTER_CLOSE) {
             return get_string('noreviewuntil' . $langstrsuffix, 'quiz',
                     userdate($this->quiz->timeclose, $dateformat));
         } else {
@@ -636,7 +636,7 @@ class quiz_attempt {
     /** @var array slot => page number for this slot. */
     protected $questionpages;
 
-    /** @var mod_quiz_display_options cache for the appropriate review options. */
+    /** @var mod_hippotrack_display_options cache for the appropriate review options. */
     protected $reviewoptions = null;
 
     // Constructor =============================================================
@@ -1085,7 +1085,7 @@ class quiz_attempt {
      * If not, prints an error.
      */
     public function check_review_capability() {
-        if ($this->get_attempt_state() == mod_quiz_display_options::IMMEDIATELY_AFTER) {
+        if ($this->get_attempt_state() == mod_hippotrack_display_options::IMMEDIATELY_AFTER) {
             $capability = 'mod/quiz:attempt';
         } else {
             $capability = 'mod/quiz:reviewmyattempts';
@@ -1137,7 +1137,7 @@ class quiz_attempt {
     }
 
     /**
-     * @return int one of the mod_quiz_display_options::DURING,
+     * @return int one of the mod_hippotrack_display_options::DURING,
      *      IMMEDIATELY_AFTER, LATER_WHILE_OPEN or AFTER_CLOSE constants.
      */
     public function get_attempt_state() {
@@ -1145,7 +1145,7 @@ class quiz_attempt {
     }
 
     /**
-     * Wrapper that the correct mod_quiz_display_options for this quiz at the
+     * Wrapper that the correct mod_hippotrack_display_options for this quiz at the
      * moment.
      *
      * @param bool $reviewing true for options when reviewing, false for when attempting.
@@ -1165,15 +1165,15 @@ class quiz_attempt {
             return $this->reviewoptions;
 
         } else {
-            $options = mod_quiz_display_options::make_from_quiz($this->get_quiz(),
-                    mod_quiz_display_options::DURING);
+            $options = mod_hippotrack_display_options::make_from_quiz($this->get_quiz(),
+                    mod_hippotrack_display_options::DURING);
             $options->flags = quiz_get_flag_option($this->attempt, $this->quizobj->get_context());
             return $options;
         }
     }
 
     /**
-     * Wrapper that the correct mod_quiz_display_options for this quiz at the
+     * Wrapper that the correct mod_hippotrack_display_options for this quiz at the
      * moment.
      *
      * @param bool $reviewing true for review page, else attempt page.
@@ -1724,11 +1724,11 @@ class quiz_attempt {
      *
      * @param int $slot identifies the question in the attempt.
      * @param bool $reviewing is the being printed on an attempt or a review page.
-     * @param mod_quiz_renderer $renderer the quiz renderer.
+     * @param mod_hippotrack_renderer $renderer the quiz renderer.
      * @param moodle_url $thispageurl the URL of the page this question is being printed on.
      * @return string HTML for the question in its current state.
      */
-    public function render_question($slot, $reviewing, mod_quiz_renderer $renderer, $thispageurl = null) {
+    public function render_question($slot, $reviewing, mod_hippotrack_renderer $renderer, $thispageurl = null) {
         if ($this->is_blocked_by_previous_question($slot)) {
             $placeholderqa = $this->make_blocked_question_placeholder($slot);
 
@@ -1739,7 +1739,7 @@ class quiz_attempt {
 
             return html_writer::div($placeholderqa->render($displayoptions,
                     $this->get_question_number($this->get_original_slot($slot))),
-                    'mod_quiz-blocked_question_warning');
+                    'mod_hippotrack-blocked_question_warning');
         }
 
         return $this->render_question_helper($slot, $reviewing, $thispageurl, $renderer, null);
@@ -1751,12 +1751,12 @@ class quiz_attempt {
      * @param int $slot identifies the question in the attempt.
      * @param bool $reviewing is the being printed on an attempt or a review page.
      * @param moodle_url $thispageurl the URL of the page this question is being printed on.
-     * @param mod_quiz_renderer $renderer the quiz renderer.
+     * @param mod_hippotrack_renderer $renderer the quiz renderer.
      * @param int|null $seq the seq number of the past state to display.
      * @return string HTML fragment.
      */
     protected function render_question_helper($slot, $reviewing, $thispageurl,
-            mod_quiz_renderer $renderer, $seq) {
+            mod_hippotrack_renderer $renderer, $seq) {
         $originalslot = $this->get_original_slot($slot);
         $number = $this->get_question_number($originalslot);
         $displayoptions = $this->get_display_options_with_edit_link($reviewing, $slot, $thispageurl);
@@ -1837,12 +1837,12 @@ class quiz_attempt {
      * @param int $slot the slot number of a question in this quiz attempt.
      * @param int $seq the seq number of the past state to display.
      * @param bool $reviewing is the being printed on an attempt or a review page.
-     * @param mod_quiz_renderer $renderer the quiz renderer.
+     * @param mod_hippotrack_renderer $renderer the quiz renderer.
      * @param moodle_url $thispageurl the URL of the page this question is being printed on.
      * @return string HTML for the question in its current state.
      */
     public function render_question_at_step($slot, $seq, $reviewing,
-            mod_quiz_renderer $renderer, $thispageurl = null) {
+            mod_hippotrack_renderer $renderer, $thispageurl = null) {
         return $this->render_question_helper($slot, $reviewing, $thispageurl, $renderer, $seq);
     }
 
@@ -1893,18 +1893,18 @@ class quiz_attempt {
     /**
      * Get the navigation panel object for this attempt.
      *
-     * @param mod_quiz_renderer $output the quiz renderer to use to output things.
+     * @param mod_hippotrack_renderer $output the quiz renderer to use to output things.
      * @param string $panelclass The type of panel, quiz_attempt_nav_panel or quiz_review_nav_panel
      * @param int $page the current page number.
      * @param bool $showall whether we are showing the whole quiz on one page. (Used by review.php.)
      * @return block_contents the requested object.
      */
-    public function get_navigation_panel(mod_quiz_renderer $output,
+    public function get_navigation_panel(mod_hippotrack_renderer $output,
              $panelclass, $page, $showall = false) {
         $panel = new $panelclass($this, $this->get_display_options(true), $page, $showall);
 
         $bc = new block_contents();
-        $bc->attributes['id'] = 'mod_quiz_navblock';
+        $bc->attributes['id'] = 'mod_hippotrack_navblock';
         $bc->attributes['role'] = 'navigation';
         $bc->title = get_string('quiznavigation', 'quiz');
         $bc->content = $output->navigation_panel($panel);
@@ -1916,14 +1916,14 @@ class quiz_attempt {
      *
      * The $url passed in must contain an attempt parameter.
      *
-     * The {@link mod_quiz_links_to_other_attempts} object returned contains an
+     * The {@link mod_hippotrack_links_to_other_attempts} object returned contains an
      * array with keys that are the attempt number, 1, 2, 3.
      * The array values are either a {@link moodle_url} with the attempt parameter
      * updated to point to the attempt id of the other attempt, or null corresponding
      * to the current attempt number.
      *
      * @param moodle_url $url a URL.
-     * @return mod_quiz_links_to_other_attempts|bool containing array int => null|moodle_url.
+     * @return mod_hippotrack_links_to_other_attempts|bool containing array int => null|moodle_url.
      *      False if none.
      */
     public function links_to_other_attempts(moodle_url $url) {
@@ -1932,7 +1932,7 @@ class quiz_attempt {
             return false;
         }
 
-        $links = new mod_quiz_links_to_other_attempts();
+        $links = new mod_hippotrack_links_to_other_attempts();
         foreach ($attempts as $at) {
             if ($at->id == $this->attempt->id) {
                 $links->links[$at->attempt] = null;
@@ -1948,7 +1948,7 @@ class quiz_attempt {
      *
      * The $url passed in must contain a slot parameter.
      *
-     * The {@link mod_quiz_links_to_other_attempts} object returned contains an
+     * The {@link mod_hippotrack_links_to_other_attempts} object returned contains an
      * array with keys that are the redo number, 1, 2, 3.
      * The array values are either a {@link moodle_url} with the slot parameter
      * updated to point to the slot that has that redo of this question; or null
@@ -1956,7 +1956,7 @@ class quiz_attempt {
      *
      * @param int $slot identifies a question in this attempt.
      * @param moodle_url $baseurl the base URL to modify to generate each link.
-     * @return mod_quiz_links_to_other_attempts|null containing array int => null|moodle_url,
+     * @return mod_hippotrack_links_to_other_attempts|null containing array int => null|moodle_url,
      *      or null if the question in this slot has not been redone.
      */
     public function links_to_other_redos($slot, moodle_url $baseurl) {
@@ -1967,7 +1967,7 @@ class quiz_attempt {
             return null;
         }
 
-        $links = new mod_quiz_links_to_other_attempts();
+        $links = new mod_hippotrack_links_to_other_attempts();
         $index = 1;
         foreach ($qas as $qa) {
             if ($qa->get_slot() == $slot) {
@@ -2110,7 +2110,7 @@ class quiz_attempt {
                     ' when it is not in a state to be restarted.');
         }
 
-        $qubaids = new \mod_quiz\question\qubaids_for_users_attempts(
+        $qubaids = new \mod_hippotrack\question\qubaids_for_users_attempts(
                 $this->get_quizid(), $this->get_userid(), 'all', true);
 
         $transaction = $DB->start_delegated_transaction();
@@ -2217,7 +2217,7 @@ class quiz_attempt {
             quiz_save_best_grade($this->get_quiz(), $this->attempt->userid);
 
             // Trigger event.
-            $this->fire_state_transition_event('\mod_quiz\event\attempt_submitted', $timestamp, $studentisonline);
+            $this->fire_state_transition_event('\mod_hippotrack\event\attempt_submitted', $timestamp, $studentisonline);
 
             // Tell any access rules that care that the attempt is over.
             $this->get_access_manager($timestamp)->current_attempt_finished();
@@ -2256,7 +2256,7 @@ class quiz_attempt {
         $this->attempt->timecheckstate = $timestamp;
         $DB->update_record('quiz_attempts', $this->attempt);
 
-        $this->fire_state_transition_event('\mod_quiz\event\attempt_becameoverdue', $timestamp, $studentisonline);
+        $this->fire_state_transition_event('\mod_hippotrack\event\attempt_becameoverdue', $timestamp, $studentisonline);
 
         $transaction->allow_commit();
 
@@ -2278,7 +2278,7 @@ class quiz_attempt {
         $this->attempt->timecheckstate = null;
         $DB->update_record('quiz_attempts', $this->attempt);
 
-        $this->fire_state_transition_event('\mod_quiz\event\attempt_abandoned', $timestamp, $studentisonline);
+        $this->fire_state_transition_event('\mod_hippotrack\event\attempt_abandoned', $timestamp, $studentisonline);
 
         $transaction->allow_commit();
     }
@@ -2567,7 +2567,7 @@ class quiz_attempt {
                 'page' => $this->get_currentpage()
             )
         );
-        $event = \mod_quiz\event\attempt_viewed::create($params);
+        $event = \mod_hippotrack\event\attempt_viewed::create($params);
         $event->add_record_snapshot('quiz_attempts', $this->get_attempt());
         $event->trigger();
     }
@@ -2588,7 +2588,7 @@ class quiz_attempt {
                 'page' => $this->get_currentpage()
             ]
         ];
-        $event = \mod_quiz\event\attempt_updated::create($params);
+        $event = \mod_hippotrack\event\attempt_updated::create($params);
         $event->add_record_snapshot('quiz_attempts', $this->get_attempt());
         $event->trigger();
     }
@@ -2609,7 +2609,7 @@ class quiz_attempt {
                 'page' => $this->get_currentpage()
             ]
         ];
-        $event = \mod_quiz\event\attempt_autosaved::create($params);
+        $event = \mod_hippotrack\event\attempt_autosaved::create($params);
         $event->add_record_snapshot('quiz_attempts', $this->get_attempt());
         $event->trigger();
     }
@@ -2634,7 +2634,7 @@ class quiz_attempt {
                 'newquestionid' => $newquestionid
             ]
         ];
-        $event = \mod_quiz\event\attempt_question_restarted::create($params);
+        $event = \mod_hippotrack\event\attempt_question_restarted::create($params);
         $event->add_record_snapshot('quiz_attempts', $this->get_attempt());
         $event->trigger();
     }
@@ -2655,7 +2655,7 @@ class quiz_attempt {
                 'quizid' => $this->get_quizid()
             )
         );
-        $event = \mod_quiz\event\attempt_summary_viewed::create($params);
+        $event = \mod_hippotrack\event\attempt_summary_viewed::create($params);
         $event->add_record_snapshot('quiz_attempts', $this->get_attempt());
         $event->trigger();
     }
@@ -2676,7 +2676,7 @@ class quiz_attempt {
                 'quizid' => $this->get_quizid()
             )
         );
-        $event = \mod_quiz\event\attempt_reviewed::create($params);
+        $event = \mod_hippotrack\event\attempt_reviewed::create($params);
         $event->add_record_snapshot('quiz_attempts', $this->get_attempt());
         $event->trigger();
     }
@@ -2695,7 +2695,7 @@ class quiz_attempt {
             ]
         ];
 
-        $event = \mod_quiz\event\attempt_manual_grading_completed::create($params);
+        $event = \mod_hippotrack\event\attempt_manual_grading_completed::create($params);
         $event->add_record_snapshot('quiz_attempts', $this->get_attempt());
         $event->trigger();
     }
@@ -2874,19 +2874,19 @@ abstract class quiz_nav_panel_base {
     /**
      * Hook for subclasses to override.
      *
-     * @param mod_quiz_renderer $output the quiz renderer to use.
+     * @param mod_hippotrack_renderer $output the quiz renderer to use.
      * @return string HTML to output.
      */
-    public function render_before_button_bits(mod_quiz_renderer $output) {
+    public function render_before_button_bits(mod_hippotrack_renderer $output) {
         return '';
     }
 
-    abstract public function render_end_bits(mod_quiz_renderer $output);
+    abstract public function render_end_bits(mod_hippotrack_renderer $output);
 
     /**
      * Render the restart preview button.
      *
-     * @param mod_quiz_renderer $output the quiz renderer to use.
+     * @param mod_hippotrack_renderer $output the quiz renderer to use.
      * @return string HTML to output.
      */
     protected function render_restart_preview_link($output) {
@@ -2946,12 +2946,12 @@ class quiz_attempt_nav_panel extends quiz_nav_panel_base {
         }
     }
 
-    public function render_before_button_bits(mod_quiz_renderer $output) {
+    public function render_before_button_bits(mod_hippotrack_renderer $output) {
         return html_writer::tag('div', get_string('navnojswarning', 'quiz'),
                 array('id' => 'quiznojswarning'));
     }
 
-    public function render_end_bits(mod_quiz_renderer $output) {
+    public function render_end_bits(mod_hippotrack_renderer $output) {
         if ($this->page == -1) {
             // Don't link from the summary page to itself.
             return '';
@@ -2975,7 +2975,7 @@ class quiz_review_nav_panel extends quiz_nav_panel_base {
         return $this->attemptobj->review_url($slot, -1, $this->showall, $this->page);
     }
 
-    public function render_end_bits(mod_quiz_renderer $output) {
+    public function render_end_bits(mod_hippotrack_renderer $output) {
         $html = '';
         if ($this->attemptobj->get_num_pages() > 1) {
             if ($this->showall) {

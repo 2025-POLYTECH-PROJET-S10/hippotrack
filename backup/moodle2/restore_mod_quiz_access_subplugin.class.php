@@ -17,7 +17,7 @@
 /**
  * Restore code for the quizaccess_honestycheck plugin.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2011 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -33,7 +33,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restore_mod_quiz_access_subplugin extends restore_subplugin {
+class restore_mod_hippotrack_access_subplugin extends restore_subplugin {
 
     /**
      * Use this method to describe the XML paths that store your sub-plugin's

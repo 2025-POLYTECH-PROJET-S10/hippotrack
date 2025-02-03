@@ -23,7 +23,7 @@
  * the module-indpendent code for handling questions and which in turn
  * initialises all the questiontype classes.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  1999 onwards Martin Dougiamas and others {@link http://moodle.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -39,7 +39,7 @@ require_once($CFG->libdir . '/completionlib.php');
 require_once($CFG->libdir . '/filelib.php');
 require_once($CFG->libdir . '/questionlib.php');
 
-use mod_quiz\question\bank\qbank_helper;
+use mod_hippotrack\question\bank\qbank_helper;
 use qbank_previewquestion\question_preview_options;
 
 /**
@@ -163,7 +163,7 @@ function quiz_start_new_attempt($quizobj, $quba, $attempt, $attemptnumber, $time
                                 $questionids = array(), $forcedvariantsbyslot = array()) {
 
     // Usages for this user's previous quiz attempts.
-    $qubaids = new \mod_quiz\question\qubaids_for_users_attempts(
+    $qubaids = new \mod_hippotrack\question\qubaids_for_users_attempts(
             $quizobj->get_quizid(), $attempt->userid);
 
     // Fully load all the questions in this quiz.
@@ -181,7 +181,7 @@ function quiz_start_new_attempt($quizobj, $quba, $attempt, $attemptnumber, $time
         $maxmark[$slot] = $questiondata->maxmark;
         $page[$slot] = $questiondata->page;
         if ($questiondata->status == \core_question\local\bank\question_version_status::QUESTION_STATUS_DRAFT) {
-            throw new moodle_exception('questiondraftonly', 'mod_quiz', '', $questiondata->name);
+            throw new moodle_exception('questiondraftonly', 'mod_hippotrack', '', $questiondata->name);
         }
         if ($questiondata->qtype == 'random') {
             $randomfound = true;
@@ -323,7 +323,7 @@ function quiz_start_attempt_built_on_last($quba, $attempt, $lastattempt) {
     foreach ($oldquba->get_attempt_iterator() as $oldslot => $oldqa) {
         $question = $oldqa->get_question(false);
         if ($question->status == \core_question\local\bank\question_version_status::QUESTION_STATUS_DRAFT) {
-            throw new moodle_exception('questiondraftonly', 'mod_quiz', '', $question->name);
+            throw new moodle_exception('questiondraftonly', 'mod_hippotrack', '', $question->name);
         }
         $newslot = $quba->add_question($question, $oldqa->get_max_mark());
 
@@ -372,9 +372,9 @@ function quiz_attempt_save_started($quizobj, $quba, $attempt) {
         $params['other'] = array(
             'quizid' => $quizobj->get_quizid()
         );
-        $event = \mod_quiz\event\attempt_preview_started::create($params);
+        $event = \mod_hippotrack\event\attempt_preview_started::create($params);
     } else {
-        $event = \mod_quiz\event\attempt_started::create($params);
+        $event = \mod_hippotrack\event\attempt_started::create($params);
 
     }
 
@@ -442,7 +442,7 @@ function quiz_delete_attempt($attempt, $quiz) {
                 'quizid' => $quiz->id
             )
         );
-        $event = \mod_quiz\event\attempt_deleted::create($params);
+        $event = \mod_hippotrack\event\attempt_deleted::create($params);
         $event->add_record_snapshot('quiz_attempts', $attempt);
         $event->trigger();
 
@@ -532,7 +532,7 @@ function quiz_repaginate_questions($quizid, $slotsperpage) {
 
     // Log quiz re-paginated event.
     $cm = get_coursemodule_from_instance('quiz', $quizid);
-    $event = \mod_quiz\event\quiz_repaginated::create([
+    $event = \mod_hippotrack\event\quiz_repaginated::create([
         'context' => \context_module::instance($cm->id),
         'objectid' => $quizid,
         'other' => [
@@ -618,7 +618,7 @@ function quiz_feedback_for_grade($grade, $quiz, $context) {
     $formatoptions = new stdClass();
     $formatoptions->noclean = true;
     $feedbacktext = file_rewrite_pluginfile_urls($feedback->feedbacktext, 'pluginfile.php',
-            $context->id, 'mod_quiz', 'feedback', $feedback->id);
+            $context->id, 'mod_hippotrack', 'feedback', $feedback->id);
     $feedbacktext = format_text($feedbacktext, $feedback->feedbacktextformat, $formatoptions);
 
     return $feedbacktext;
@@ -759,7 +759,7 @@ function quiz_set_grade($newgrade, $quiz) {
     // Log quiz grade updated event.
     // We use $num + 0 as a trick to remove the useless 0 digits from decimals.
     $cm = get_coursemodule_from_instance('quiz', $quiz->id);
-    $event = \mod_quiz\event\quiz_grade_updated::create([
+    $event = \mod_hippotrack\event\quiz_grade_updated::create([
         'context' => \context_module::instance($cm->id),
         'objectid' => $quiz->id,
         'other' => [
@@ -1469,8 +1469,8 @@ function quiz_question_edit_button($cmid, $question, $returnurl, $contentafteric
  */
 function quiz_question_preview_url($quiz, $question, $variant = null, $restartversion = null) {
     // Get the appropriate display options.
-    $displayoptions = mod_quiz_display_options::make_from_quiz($quiz,
-            mod_quiz_display_options::DURING);
+    $displayoptions = mod_hippotrack_display_options::make_from_quiz($quiz,
+            mod_hippotrack_display_options::DURING);
 
     $maxmark = null;
     if (isset($question->maxmark)) {
@@ -1502,7 +1502,7 @@ function quiz_question_preview_button($quiz, $question, $label = false, $variant
     } else {
         $requestedversion = question_preview_options::ALWAYS_LATEST;
     }
-    return $PAGE->get_renderer('mod_quiz', 'edit')->question_preview_icon(
+    return $PAGE->get_renderer('mod_hippotrack', 'edit')->question_preview_icon(
             $quiz, $question, $label, $variant, $requestedversion);
 }
 
@@ -1527,33 +1527,33 @@ function quiz_get_flag_option($attempt, $context) {
  * quiz_get_review_options, not in the sense of $attempt->state.
  * @param object $quiz the quiz settings
  * @param object $attempt the quiz_attempt database row.
- * @return int one of the mod_quiz_display_options::DURING,
+ * @return int one of the mod_hippotrack_display_options::DURING,
  *      IMMEDIATELY_AFTER, LATER_WHILE_OPEN or AFTER_CLOSE constants.
  */
 function quiz_attempt_state($quiz, $attempt) {
     if ($attempt->state == quiz_attempt::IN_PROGRESS) {
-        return mod_quiz_display_options::DURING;
+        return mod_hippotrack_display_options::DURING;
     } else if ($quiz->timeclose && time() >= $quiz->timeclose) {
-        return mod_quiz_display_options::AFTER_CLOSE;
+        return mod_hippotrack_display_options::AFTER_CLOSE;
     } else if (time() < $attempt->timefinish + 120) {
-        return mod_quiz_display_options::IMMEDIATELY_AFTER;
+        return mod_hippotrack_display_options::IMMEDIATELY_AFTER;
     } else {
-        return mod_quiz_display_options::LATER_WHILE_OPEN;
+        return mod_hippotrack_display_options::LATER_WHILE_OPEN;
     }
 }
 
 /**
- * The the appropraite mod_quiz_display_options object for this attempt at this
+ * The the appropraite mod_hippotrack_display_options object for this attempt at this
  * quiz right now.
  *
  * @param stdClass $quiz the quiz instance.
  * @param stdClass $attempt the attempt in question.
  * @param context $context the quiz context.
  *
- * @return mod_quiz_display_options
+ * @return mod_hippotrack_display_options
  */
 function quiz_get_review_options($quiz, $attempt, $context) {
-    $options = mod_quiz_display_options::make_from_quiz($quiz, quiz_attempt_state($quiz, $attempt));
+    $options = mod_hippotrack_display_options::make_from_quiz($quiz, quiz_attempt_state($quiz, $attempt));
 
     $options->readonly = true;
     $options->flags = quiz_get_flag_option($attempt, $context);
@@ -1622,7 +1622,7 @@ function quiz_get_combined_reviewoptions($quiz, $attempts) {
     }
 
     foreach ($attempts as $attempt) {
-        $attemptoptions = mod_quiz_display_options::make_from_quiz($quiz,
+        $attemptoptions = mod_hippotrack_display_options::make_from_quiz($quiz,
                 quiz_attempt_state($quiz, $attempt));
         foreach ($fields as $field) {
             $someoptions->$field = $someoptions->$field || $attemptoptions->$field;
@@ -1655,7 +1655,7 @@ function quiz_send_confirmation($recipient, $a, $studentisonline) {
     // Prepare the message.
     $eventdata = new \core\message\message();
     $eventdata->courseid          = $a->courseid;
-    $eventdata->component         = 'mod_quiz';
+    $eventdata->component         = 'mod_hippotrack';
     $eventdata->name              = 'confirmation';
     $eventdata->notification      = 1;
 
@@ -1704,7 +1704,7 @@ function quiz_send_notification($recipient, $submitter, $a) {
     // Prepare the message.
     $eventdata = new \core\message\message();
     $eventdata->courseid          = $a->courseid;
-    $eventdata->component         = 'mod_quiz';
+    $eventdata->component         = 'mod_hippotrack';
     $eventdata->name              = 'submission';
     $eventdata->notification      = 1;
 
@@ -1885,7 +1885,7 @@ function quiz_send_overdue_message($attemptobj) {
     // Prepare the message.
     $eventdata = new \core\message\message();
     $eventdata->courseid          = $a->courseid;
-    $eventdata->component         = 'mod_quiz';
+    $eventdata->component         = 'mod_hippotrack';
     $eventdata->name              = 'attempt_overdue';
     $eventdata->notification      = 1;
 
@@ -1968,7 +1968,7 @@ function quiz_send_notify_manual_graded_message(quiz_attempt $attemptobj, object
     $a->studentname        = fullname($userto);
 
     $eventdata = new \core\message\message();
-    $eventdata->component = 'mod_quiz';
+    $eventdata->component = 'mod_hippotrack';
     $eventdata->name = 'attempt_grading_complete';
     $eventdata->userfrom = core_user::get_noreply_user();
     $eventdata->userto = $userto;
@@ -1990,11 +1990,11 @@ function quiz_send_notify_manual_graded_message(quiz_attempt $attemptobj, object
  * Handle groups_member_added event
  *
  * @param object $event the event object.
- * @deprecated since 2.6, see {@link \mod_quiz\group_observers::group_member_added()}.
+ * @deprecated since 2.6, see {@link \mod_hippotrack\group_observers::group_member_added()}.
  */
 function quiz_groups_member_added_handler($event) {
     debugging('quiz_groups_member_added_handler() is deprecated, please use ' .
-        '\mod_quiz\group_observers::group_member_added() instead.', DEBUG_DEVELOPER);
+        '\mod_hippotrack\group_observers::group_member_added() instead.', DEBUG_DEVELOPER);
     quiz_update_open_attempts(array('userid'=>$event->userid, 'groupid'=>$event->groupid));
 }
 
@@ -2002,11 +2002,11 @@ function quiz_groups_member_added_handler($event) {
  * Handle groups_member_removed event
  *
  * @param object $event the event object.
- * @deprecated since 2.6, see {@link \mod_quiz\group_observers::group_member_removed()}.
+ * @deprecated since 2.6, see {@link \mod_hippotrack\group_observers::group_member_removed()}.
  */
 function quiz_groups_member_removed_handler($event) {
     debugging('quiz_groups_member_removed_handler() is deprecated, please use ' .
-        '\mod_quiz\group_observers::group_member_removed() instead.', DEBUG_DEVELOPER);
+        '\mod_hippotrack\group_observers::group_member_removed() instead.', DEBUG_DEVELOPER);
     quiz_update_open_attempts(array('userid'=>$event->userid, 'groupid'=>$event->groupid));
 }
 
@@ -2014,12 +2014,12 @@ function quiz_groups_member_removed_handler($event) {
  * Handle groups_group_deleted event
  *
  * @param object $event the event object.
- * @deprecated since 2.6, see {@link \mod_quiz\group_observers::group_deleted()}.
+ * @deprecated since 2.6, see {@link \mod_hippotrack\group_observers::group_deleted()}.
  */
 function quiz_groups_group_deleted_handler($event) {
     global $DB;
     debugging('quiz_groups_group_deleted_handler() is deprecated, please use ' .
-        '\mod_quiz\group_observers::group_deleted() instead.', DEBUG_DEVELOPER);
+        '\mod_hippotrack\group_observers::group_deleted() instead.', DEBUG_DEVELOPER);
     quiz_process_group_deleted_in_course($event->courseid);
 }
 
@@ -2047,7 +2047,7 @@ function quiz_process_group_deleted_in_course($courseid) {
         return; // Nothing to do.
     }
     $DB->delete_records_list('quiz_overrides', 'id', array_keys($records));
-    $cache = cache::make('mod_quiz', 'overrides');
+    $cache = cache::make('mod_hippotrack', 'overrides');
     foreach ($records as $record) {
         $cache->delete("{$record->quiz}_g_{$record->groupid}");
     }
@@ -2058,11 +2058,11 @@ function quiz_process_group_deleted_in_course($courseid) {
  * Handle groups_members_removed event
  *
  * @param object $event the event object.
- * @deprecated since 2.6, see {@link \mod_quiz\group_observers::group_member_removed()}.
+ * @deprecated since 2.6, see {@link \mod_hippotrack\group_observers::group_member_removed()}.
  */
 function quiz_groups_members_removed_handler($event) {
     debugging('quiz_groups_members_removed_handler() is deprecated, please use ' .
-        '\mod_quiz\group_observers::group_member_removed() instead.', DEBUG_DEVELOPER);
+        '\mod_hippotrack\group_observers::group_member_removed() instead.', DEBUG_DEVELOPER);
     if ($event->userid == 0) {
         quiz_update_open_attempts(array('courseid'=>$event->courseid));
     } else {
@@ -2078,7 +2078,7 @@ function quiz_get_js_module() {
     global $PAGE;
 
     return array(
-        'name' => 'mod_quiz',
+        'name' => 'mod_hippotrack',
         'fullpath' => '/mod/quiz/module.js',
         'requires' => array('base', 'dom', 'event-delegate', 'event-key',
                 'core_question_engine'),
@@ -2100,7 +2100,7 @@ function quiz_get_js_module() {
  * @copyright  2010 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_quiz_display_options extends question_display_options {
+class mod_hippotrack_display_options extends question_display_options {
     /**#@+
      * @var integer bits used to indicate various times in relation to a
      * quiz attempt.
@@ -2128,7 +2128,7 @@ class mod_quiz_display_options extends question_display_options {
      * @param object $quiz the quiz settings.
      * @param int $one of the {@link DURING}, {@link IMMEDIATELY_AFTER},
      * {@link LATER_WHILE_OPEN} or {@link AFTER_CLOSE} constants.
-     * @return mod_quiz_display_options set up appropriately.
+     * @return mod_hippotrack_display_options set up appropriately.
      */
     public static function make_from_quiz($quiz, $when) {
         $options = new self();
@@ -2294,7 +2294,7 @@ function quiz_require_question_use($questionid) {
 /**
  * Verify that the question exists, and the user has permission to use it.
  *
- * @deprecated in 4.1 use mod_quiz\structure::has_use_capability(...) instead.
+ * @deprecated in 4.1 use mod_hippotrack\structure::has_use_capability(...) instead.
  *
  * @param object $quiz the quiz settings.
  * @param int $slot which question in the quiz to test.
@@ -2303,7 +2303,7 @@ function quiz_require_question_use($questionid) {
 function quiz_has_question_use($quiz, $slot) {
     global $DB;
 
-    debugging('Deprecated. Please use mod_quiz\structure::has_use_capability instead.');
+    debugging('Deprecated. Please use mod_hippotrack\structure::has_use_capability instead.');
 
     $sql = 'SELECT q.*
               FROM {quiz_slots} slot
@@ -2316,7 +2316,7 @@ function quiz_has_question_use($quiz, $slot) {
                AND qre.component = ?
                AND qre.questionarea = ?';
 
-    $question = $DB->get_record_sql($sql, [$quiz->id, $slot, 'mod_quiz', 'slot']);
+    $question = $DB->get_record_sql($sql, [$quiz->id, $slot, 'mod_hippotrack', 'slot']);
 
     if (!$question) {
         return false;
@@ -2365,7 +2365,7 @@ function quiz_add_quiz_question($questionid, $quiz, $page = 0, $maxmark = null) 
                AND qr.questionarea = ?
                AND qr.usingcontextid = ?";
 
-    $questionslots = $DB->get_records_sql($sql, [$quiz->id, 'mod_quiz', 'slot',
+    $questionslots = $DB->get_records_sql($sql, [$quiz->id, 'mod_hippotrack', 'slot',
             context_module::instance($quiz->cmid)->id]);
 
     $currententry = get_question_bank_entry($questionid);
@@ -2446,13 +2446,13 @@ function quiz_add_quiz_question($questionid, $quiz, $page = 0, $maxmark = null) 
                AND qs.id = ?
                AND qr.component = ?
                AND qr.questionarea = ?";
-    $qreferenceitem = $DB->get_record_sql($sql, [$questionid, $slotid, 'mod_quiz', 'slot']);
+    $qreferenceitem = $DB->get_record_sql($sql, [$questionid, $slotid, 'mod_hippotrack', 'slot']);
 
     if (!$qreferenceitem) {
         // Create a new reference record for questions created already.
         $questionreferences = new \StdClass();
         $questionreferences->usingcontextid = context_module::instance($quiz->cmid)->id;
-        $questionreferences->component = 'mod_quiz';
+        $questionreferences->component = 'mod_hippotrack';
         $questionreferences->questionarea = 'slot';
         $questionreferences->itemid = $slotid;
         $questionreferences->questionbankentryid = get_question_bank_entry($questionid)->id;
@@ -2468,7 +2468,7 @@ function quiz_add_quiz_question($questionid, $quiz, $page = 0, $maxmark = null) 
         // If the reference record exits for another quiz.
         $questionreferences = new \StdClass();
         $questionreferences->usingcontextid = context_module::instance($quiz->cmid)->id;
-        $questionreferences->component = 'mod_quiz';
+        $questionreferences->component = 'mod_hippotrack';
         $questionreferences->questionarea = 'slot';
         $questionreferences->itemid = $slotid;
         $questionreferences->questionbankentryid = get_question_bank_entry($questionid)->id;
@@ -2480,7 +2480,7 @@ function quiz_add_quiz_question($questionid, $quiz, $page = 0, $maxmark = null) 
 
     // Log slot created event.
     $cm = get_coursemodule_from_instance('quiz', $quiz->id);
-    $event = \mod_quiz\event\slot_created::create([
+    $event = \mod_hippotrack\event\slot_created::create([
         'context' => context_module::instance($cm->id),
         'objectid' => $slotid,
         'other' => [
@@ -2562,7 +2562,7 @@ function quiz_add_random_questions($quiz, $addonpage, $categoryid, $number,
         $randomslotdata->questionscontextid = $category->contextid;
         $randomslotdata->maxmark = 1;
 
-        $randomslot = new \mod_quiz\local\structure\slot_random($randomslotdata);
+        $randomslot = new \mod_hippotrack\local\structure\slot_random($randomslotdata);
         $randomslot->set_quiz($quiz);
         $randomslot->set_filter_condition($filtercondition);
         $randomslot->insert($addonpage);
@@ -2585,7 +2585,7 @@ function quiz_view($quiz, $course, $cm, $context) {
         'context' => $context
     );
 
-    $event = \mod_quiz\event\course_module_viewed::create($params);
+    $event = \mod_hippotrack\event\course_module_viewed::create($params);
     $event->add_record_snapshot('quiz', $quiz);
     $event->trigger();
 
@@ -2707,7 +2707,7 @@ function quiz_prepare_and_start_new_attempt(quiz $quizobj, $attemptnumber, $last
     // Delete any previous preview attempts belonging to this user.
     quiz_delete_previews($quizobj->get_quiz(), $userid);
 
-    $quba = question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+    $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
     $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
     // Create the new attempt and initialize the question sessions

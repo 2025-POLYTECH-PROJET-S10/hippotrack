@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/backup_mod_quiz_access_subplugin.class.php');
+require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/backup_mod_hippotrack_access_subplugin.class.php');
 
 /**
  * Backup instructions for the seb (Safe Exam Browser) quiz access subplugin.
@@ -34,7 +34,7 @@ require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/backup_mod_quiz_access_su
  * @copyright  2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class backup_quizaccess_seb_subplugin extends backup_mod_quiz_access_subplugin {
+class backup_quizaccess_seb_subplugin extends backup_mod_hippotrack_access_subplugin {
 
     /**
      * Stores the data related to the Safe Exam Browser quiz settings and management for a particular quiz.

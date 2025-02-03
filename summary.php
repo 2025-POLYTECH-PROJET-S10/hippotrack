@@ -17,7 +17,7 @@
 /**
  * This page prints a summary of a quiz attempt before it is submitted.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2009 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -60,7 +60,7 @@ if ($attemptobj->is_preview_user()) {
 // Check access.
 $accessmanager = $attemptobj->get_access_manager(time());
 $accessmanager->setup_attempt_page($PAGE);
-$output = $PAGE->get_renderer('mod_quiz');
+$output = $PAGE->get_renderer('mod_hippotrack');
 $messages = $accessmanager->prevent_access();
 if (!$attemptobj->is_preview_user() && $messages) {
     throw new \moodle_exception('attempterror', 'quiz', $attemptobj->view_url(),

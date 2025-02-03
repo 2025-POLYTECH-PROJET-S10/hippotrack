@@ -14,19 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz\adminpresets;
+namespace mod_hippotrack\adminpresets;
 
 use core_adminpresets\local\setting\adminpresets_admin_setting_configselect_with_advanced;
 
 /**
  * Admin settings class for the choices for how to display the user's image.
  *
- * @package          mod_quiz
+ * @package          mod_hippotrack
  * @copyright        2021 Pimenko <support@pimenko.com><pimenko.com>
  * @author           Jordan Kesraoui | Sylvain Revenu | Pimenko based on David Monllaó <david.monllao@urv.cat> code
  * @license          http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class adminpresets_mod_quiz_admin_setting_user_image extends adminpresets_admin_setting_configselect_with_advanced {
+class adminpresets_mod_hippotrack_admin_setting_user_image extends adminpresets_admin_setting_configselect_with_advanced {
 
     public function set_behaviors() {
         $this->behaviors['loadchoices'] = &$this->settingdata;

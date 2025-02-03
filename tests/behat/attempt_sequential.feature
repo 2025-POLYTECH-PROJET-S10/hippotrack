@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Attempt a quiz in a sequential mode
   As a student I should not be able to see the previous questions
 
@@ -35,10 +35,10 @@ Feature: Attempt a quiz in a sequential mode
 
   @javascript
   Scenario Outline: As a student I should not be able to navigate out of sequence if sequential navigation is on.
-    Given I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    Given I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
     And I should see "First question"
-    When I am on the "Quiz 1 > student > Attempt 1 > <pagenumber>" "mod_quiz > Attempt view" page
+    When I am on the "Quiz 1 > student > Attempt 1 > <pagenumber>" "mod_hippotrack > Attempt view" page
     And I should see "<canseequestion>"
     Then I should not see "<cannotseequestion>"
     Examples:
@@ -52,16 +52,16 @@ Feature: Attempt a quiz in a sequential mode
     Given the following config values are set as admin:
       | config         | value | plugin |
       | autosaveperiod | 60    | quiz   |
-    And I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    And I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
     And I should see "First question"
     And I click on "True" "radio" in the "First question" "question"
     And I click on "Next page" "button"
-    When I am on the "Quiz 1 > student > Attempt 1 > 3" "mod_quiz > Attempt view" page
+    When I am on the "Quiz 1 > student > Attempt 1 > 3" "mod_hippotrack > Attempt view" page
     And I click on "True" "radio" in the "Third question" "question"
     And I should see "Third question"
     And I click on "Next page" "button"
-    And I am on the "Quiz 1 > student > Attempt 1 > 1" "mod_quiz > Attempt view" page
+    And I am on the "Quiz 1 > student > Attempt 1 > 1" "mod_hippotrack > Attempt view" page
     Then I should see "Fourth question"
 
   @javascript
@@ -69,13 +69,13 @@ Feature: Attempt a quiz in a sequential mode
     Given the following config values are set as admin:
       | config         | value | plugin |
       | autosaveperiod | 1     | quiz   |
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
-    And I am on the "Quiz 1 > student > Attempt 1 > 2" "mod_quiz > Attempt view" page
+    And I am on the "Quiz 1 > student > Attempt 1 > 2" "mod_hippotrack > Attempt view" page
     And I should see "Second question"
     And I click on "True" "radio" in the "Second question" "question"
     And I wait "2" seconds
-    And I am on the "Quiz 1 > student > Attempt 1 > 1" "mod_quiz > Attempt view" page
+    And I am on the "Quiz 1 > student > Attempt 1 > 1" "mod_hippotrack > Attempt view" page
     Then I should see "Second question"
 
   @javascript
@@ -86,9 +86,9 @@ Feature: Attempt a quiz in a sequential mode
       |   2  | False    |
       |   3  | False    |
       |   4  | False    |
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I follow "Review"
-    And I am on the "Quiz 1 > student > Attempt 1 > 3" "mod_quiz > Attempt view" page
+    And I am on the "Quiz 1 > student > Attempt 1 > 3" "mod_hippotrack > Attempt view" page
     And I should see "Third question"
-    And I am on the "Quiz 1 > student > Attempt 1 > 2" "mod_quiz > Attempt view" page
+    And I am on the "Quiz 1 > student > Attempt 1 > 2" "mod_hippotrack > Attempt view" page
     Then I should see "Second question"

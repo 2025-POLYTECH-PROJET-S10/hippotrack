@@ -19,12 +19,12 @@
  *
  * Quiz sub plugins should implement this if they store personal information and can retrieve a userid.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2018 Shamim Rezaie <shamim@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz\privacy;
+namespace mod_hippotrack\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 

@@ -33,7 +33,7 @@ class settings_provider_test extends \advanced_testcase {
 
     /**
      * Mocked quiz form instance.
-     * @var \mod_quiz_mod_form
+     * @var \mod_hippotrack_mod_form
      */
     protected $mockedquizform;
 
@@ -69,7 +69,7 @@ class settings_provider_test extends \advanced_testcase {
             $this->context = \context_module::instance($this->quiz->cmid);
         }
 
-        $this->mockedquizform = $this->createMock('mod_quiz_mod_form');
+        $this->mockedquizform = $this->createMock('mod_hippotrack_mod_form');
         $this->mockedquizform->method('get_context')->willReturn($this->context);
         $this->mockedquizform->method('get_instance')->willReturn($this->quiz->id);
         $this->mockedform = new \MoodleQuickForm('test', 'post', '');

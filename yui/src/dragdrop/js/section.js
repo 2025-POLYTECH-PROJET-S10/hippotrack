@@ -1,17 +1,17 @@
 /**
  * Section drag and drop.
  *
- * @class M.mod_quiz.dragdrop.section
+ * @class M.mod_hippotrack.dragdrop.section
  * @constructor
  * @extends M.core.dragdrop
  */
-var DRAGSECTION = function() {
+var DRAGSECTION = function () {
     DRAGSECTION.superclass.constructor.apply(this, arguments);
 };
 Y.extend(DRAGSECTION, M.core.dragdrop, {
     sectionlistselector: null,
 
-    initializer: function() {
+    initializer: function () {
         // Set group for parent class
         this.groups = [CSS.SECTIONDRAGGABLE];
         this.samenodeclass = 'section';
@@ -34,7 +34,7 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
                 nodes: '.' + CSS.SECTIONDRAGGABLE,
                 target: true,
                 handles: ['.' + CSS.LEFT],
-                dragConfig: {groups: this.groups}
+                dragConfig: { groups: this.groups }
             });
             del.dd.plug(Y.Plugin.DDProxy, {
                 // Don't move the node at the end of the drag
@@ -55,8 +55,8 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
      * @method setup_for_section
      * @param {String} baseselector The CSS selector or node to limit scope to
      */
-    setup_for_section: function(baseselector) {
-        Y.Node.all(baseselector).each(function(sectionnode) {
+    setup_for_section: function (baseselector) {
+        Y.Node.all(baseselector).each(function (sectionnode) {
             // Determine the section ID
             var sectionid = Y.Moodle.core_course.util.section.getId(sectionnode);
 
@@ -91,7 +91,7 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
     /*
      * Drag-dropping related functions
      */
-    drag_start: function(e) {
+    drag_start: function (e) {
         // Get our drag object
         var drag = e.target;
         // Creat a dummy structure of the outer elemnents for clean styles application
@@ -104,14 +104,14 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
         drag.get('dragNode').addClass(CSS.COURSECONTENT);
     },
 
-    drag_dropmiss: function(e) {
+    drag_dropmiss: function (e) {
         // Missed the target, but we assume the user intended to drop it
         // on the last last ghost node location, e.drag and e.drop should be
         // prepared by global_drag_dropmiss parent so simulate drop_hit(e).
         this.drop_hit(e);
     },
 
-    get_section_index: function(node) {
+    get_section_index: function (node) {
         var sectionlistselector = '.' + CSS.COURSECONTENT + ' li.section',
             sectionList = Y.all(sectionlistselector),
             nodeIndex = sectionList.indexOf(node),
@@ -120,7 +120,7 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
         return (nodeIndex - zeroIndex);
     },
 
-    drop_hit: function(e) {
+    drop_hit: function (e) {
         var drag = e.drag;
 
         // Get references to our nodes and their IDs.
@@ -133,11 +133,11 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
 
         if (dragnodeid === dropnodeindex) {
             Y.log("Skipping move - same location moving " + dragnodeid + " to " + dropnodeindex,
-                  'debug', 'moodle-mod_quiz-dragdrop');
+                'debug', 'moodle-mod_hippotrack-dragdrop');
             return;
         }
 
-        Y.log("Moving from position " + dragnodeid + " to position " + dropnodeindex, 'debug', 'moodle-mod_quiz-dragdrop');
+        Y.log("Moving from position " + dragnodeid + " to position " + dropnodeindex, 'debug', 'moodle-mod_hippotrack-dragdrop');
 
         if (loopstart > loopend) {
             // If we're going up, we need to swap the loop order
@@ -180,10 +180,10 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
             method: 'POST',
             data: params,
             on: {
-                start: function() {
+                start: function () {
                     lightbox.show();
                 },
-                success: function(tid, response) {
+                success: function (tid, response) {
                     // Update section titles, we can't simply swap them as
                     // they might have custom title
                     try {
@@ -191,7 +191,7 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
                         if (responsetext.error) {
                             new M.core.ajaxException(responsetext);
                         }
-                        M.mod_quiz.edit.process_sections(Y, sectionlist, responsetext, loopstart, loopend);
+                        M.mod_hippotrack.edit.process_sections(Y, sectionlist, responsetext, loopstart, loopend);
                     } catch (e) {
                         // Ignore.
                     }
@@ -207,17 +207,17 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
                         swapped = false;
                         for (index = loopstart; index <= loopend; index++) {
                             if (Y.Moodle.core_course.util.section.getId(sectionlist.item(index - 1)) >
-                                        Y.Moodle.core_course.util.section.getId(sectionlist.item(index))) {
+                                Y.Moodle.core_course.util.section.getId(sectionlist.item(index))) {
                                 Y.log("Swapping " + Y.Moodle.core_course.util.section.getId(sectionlist.item(index - 1)) +
-                                        " with " + Y.Moodle.core_course.util.section.getId(sectionlist.item(index)),
-                                        "debug", "moodle-mod_quiz-dragdrop");
+                                    " with " + Y.Moodle.core_course.util.section.getId(sectionlist.item(index)),
+                                    "debug", "moodle-mod_hippotrack-dragdrop");
                                 // Swap section id.
                                 var sectionid = sectionlist.item(index - 1).get('id');
                                 sectionlist.item(index - 1).set('id', sectionlist.item(index).get('id'));
                                 sectionlist.item(index).set('id', sectionid);
 
                                 // See what format needs to swap.
-                                M.mod_quiz.edit.swap_sections(Y, index - 1, index);
+                                M.mod_hippotrack.edit.swap_sections(Y, index - 1, index);
 
                                 // Update flag.
                                 swapped = true;
@@ -226,12 +226,12 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
                         loopend = loopend - 1;
                     } while (swapped);
 
-                    window.setTimeout(function() {
+                    window.setTimeout(function () {
                         lightbox.hide();
                     }, 250);
                 },
 
-                failure: function(tid, response) {
+                failure: function (tid, response) {
                     this.ajax_failure(response);
                     lightbox.hide();
                 }
@@ -241,7 +241,7 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
     }
 
 }, {
-    NAME: 'mod_quiz-dragdrop-section',
+    NAME: 'mod_hippotrack-dragdrop-section',
     ATTRS: {
         courseid: {
             value: null
@@ -258,7 +258,7 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
     }
 });
 
-M.mod_quiz = M.mod_quiz || {};
-M.mod_quiz.init_section_dragdrop = function(params) {
+M.mod_hippotrack = M.mod_hippotrack || {};
+M.mod_hippotrack.init_section_dragdrop = function (params) {
     new DRAGSECTION(params);
 };

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 use core_question\local\bank\question_version_status;
 use question_engine;
@@ -29,7 +29,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 /**
  * Tests for the quiz_attempt class.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @category  test
  * @copyright 2014 Tim Hunt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -50,14 +50,14 @@ class attempt_test extends \advanced_testcase {
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
         // Make a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(['course' => $course->id,
             'grade' => 100.0, 'sumgrades' => 2, 'layout' => $layout, 'navmethod' => $navmethod]);
 
         $quizobj = quiz::create($quiz->id, $user->id);
 
 
-        $quba = question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
@@ -332,7 +332,7 @@ class attempt_test extends \advanced_testcase {
         $student1 = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $student2 = $this->getDataGenerator()->create_and_enrol($course, 'student');
         // Create quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(['course' => $course->id, 'grade' => 100.0, 'sumgrades' => 2, 'layout' => '1,0']);
         // Create question and add it to quiz.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
@@ -448,7 +448,7 @@ class attempt_test extends \advanced_testcase {
         $student1 = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $student2 = $this->getDataGenerator()->create_and_enrol($course, 'student');
         // Create quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(['course' => $course->id, 'grade' => 100.0, 'sumgrades' => 2, 'layout' => '1,0']);
         // Create question and add it to quiz.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
@@ -458,11 +458,11 @@ class attempt_test extends \advanced_testcase {
         quiz_add_quiz_question($question->id, $quiz, 1);
 
         $quizobj = quiz::create($quiz->id);
-        $quba = question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
         $attempt = quiz_create_attempt($quizobj, 1, false, time(), false, $student1->id);
 
-        $this->expectExceptionObject(new \moodle_exception('questiondraftonly', 'mod_quiz', '', $question->name));
+        $this->expectExceptionObject(new \moodle_exception('questiondraftonly', 'mod_hippotrack', '', $question->name));
         quiz_start_new_attempt($quizobj, $quba, $attempt, 1, time());
     }
 
@@ -482,7 +482,7 @@ class attempt_test extends \advanced_testcase {
         $student1 = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $student2 = $this->getDataGenerator()->create_and_enrol($course, 'student');
         // Create quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(['course' => $course->id, 'grade' => 100.0, 'sumgrades' => 2, 'layout' => '1,0']);
         // Create question and add it to quiz.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
@@ -491,7 +491,7 @@ class attempt_test extends \advanced_testcase {
         quiz_add_quiz_question($question->id, $quiz, 1);
 
         $quizobj = quiz::create($quiz->id);
-        $quba = question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
         $attempt = quiz_create_attempt($quizobj, 1, false, time(), false, $student1->id);
         $attempt = quiz_start_new_attempt($quizobj, $quba, $attempt, 1, time());
@@ -500,11 +500,11 @@ class attempt_test extends \advanced_testcase {
         $DB->set_field('question_versions', 'status', question_version_status::QUESTION_STATUS_DRAFT,
                 ['questionid' => $question->id]);
         $quizobj = quiz::create($quiz->id);
-        $quba = question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
         $newattempt = quiz_create_attempt($quizobj, 2, $attempt, time(), false, $student1->id);
 
-        $this->expectExceptionObject(new \moodle_exception('questiondraftonly', 'mod_quiz', '', $question->name));
+        $this->expectExceptionObject(new \moodle_exception('questiondraftonly', 'mod_hippotrack', '', $question->name));
         quiz_start_attempt_built_on_last($quba, $newattempt, $attempt);
     }
 
@@ -527,7 +527,7 @@ class attempt_test extends \advanced_testcase {
         $context = $attempt->get_quizobj()->get_context();
 
         // Prepare view object.
-        $viewobj = new \mod_quiz_view_object();
+        $viewobj = new \mod_hippotrack_view_object();
         $viewobj->attemptcolumn = true;
         $viewobj->markcolumn = true;
         $viewobj->gradecolumn = true;
@@ -541,7 +541,7 @@ class attempt_test extends \advanced_testcase {
             has_capability('mod/quiz:ignoretimelimits', $context, null, false));
 
         // Render summary previous attempts table.
-        $renderer = $PAGE->get_renderer('mod_quiz');
+        $renderer = $PAGE->get_renderer('mod_hippotrack');
         $table = $renderer->view_table($quiz, $context, $viewobj);
         $captionpattern = '/<caption\b[^>]*>' . get_string('summaryofattempts', 'quiz') . '<\/caption>/';
 

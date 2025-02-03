@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Edit quiz page - remove multiple questions
   In order to change the layout of a quiz I built efficiently
   As a teacher
@@ -34,7 +34,7 @@ Feature: Edit quiz page - remove multiple questions
       | Question A | 1    |
       | Question B | 1    |
       | Question C | 2    |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
 
     # Confirm the starting point.
     Then I should see "Question A" on quiz page "1"
@@ -68,7 +68,7 @@ Feature: Edit quiz page - remove multiple questions
       | Question A | 1    |
       | Question B | 2    |
       | Question C | 2    |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
 
   # Confirm the starting point.
     Then I should see "Question A" on quiz page "1"
@@ -98,7 +98,7 @@ Feature: Edit quiz page - remove multiple questions
     And quiz "Quiz 1" contains the following questions:
       | question   | page |
       | Question A | 1    |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
     When I click on "Select multiple items" "button"
     And I click on "selectquestion-1" "checkbox"
     And I click on "Delete selected" "button"
@@ -117,7 +117,7 @@ Feature: Edit quiz page - remove multiple questions
       | Question A | 1    |
       | Question B | 1    |
       | Question C | 2    |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
 
     # Confirm the starting point.
     Then I should see "Question A" on quiz page "1"
@@ -151,7 +151,7 @@ Feature: Edit quiz page - remove multiple questions
       | Question A | 1    |
       | Question B | 1    |
       | Question C | 2    |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
 
   # Confirm the starting point.
     Then I should see "Question A" on quiz page "1"
@@ -189,7 +189,7 @@ Feature: Edit quiz page - remove multiple questions
       | Section 1 | 1         | 0       |
       | Section 2 | 2         | 0       |
       | Section 3 | 4         | 0       |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
 
     When I click on "Select multiple items" "button"
     And I click on "selectquestion-3" "checkbox"
@@ -228,7 +228,7 @@ Feature: Edit quiz page - remove multiple questions
       | Section 1 | 1         | 0       |
       | Section 2 | 2         | 0       |
       | Section 3 | 4         | 0       |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
 
     When I click on "Select multiple items" "button"
     And I click on "selectquestion-2" "checkbox"
@@ -247,7 +247,7 @@ Feature: Edit quiz page - remove multiple questions
       | Test questions   | truefalse | Question D | Fourth question |
       | Test questions   | truefalse | Question E | Fifth question  |
       | Test questions   | truefalse | Question F | Sixth question  |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
 
     When I open the "last" add to quiz menu
     And I follow "a random question"
@@ -276,7 +276,7 @@ Feature: Edit quiz page - remove multiple questions
       | Test questions   | truefalse | Question D | Fourth question |
       | Test questions   | truefalse | Question E | Fifth question  |
       | Test questions   | truefalse | Question F | Sixth question  |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
 
     # Delete all questions in page. Page contains multiple questions.
     When I open the "last" add to quiz menu

@@ -17,7 +17,7 @@
 /**
  * Rest endpoint for ajax editing of quiz structure.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 1999 Martin Dougiamas  http://dougiamas.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

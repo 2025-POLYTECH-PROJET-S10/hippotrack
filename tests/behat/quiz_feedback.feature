@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Enable deferred or immediate feedback for quiz
   As a teacher
   I should be able to set how questions behave to deferred or immediate feedback

@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Set a quiz to be interactive with multiple tries
   In order to attempt an interactive quiz multiple times
   As a teacher

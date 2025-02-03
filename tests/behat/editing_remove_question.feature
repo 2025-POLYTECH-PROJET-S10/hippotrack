@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Edit quiz page - remove questions
   In order to change the layout of a quiz I built
   As a teacher
@@ -34,7 +34,7 @@ Feature: Edit quiz page - remove questions
       | Question A | 1    |
       | Question B | 1    |
       | Question C | 2    |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
 
     # Confirm the starting point.
     Then I should see "Question A" on quiz page "1"
@@ -79,7 +79,7 @@ Feature: Edit quiz page - remove questions
       | heading   | firstslot | shuffle |
       | Heading 1 | 1         | 1       |
       | Heading 2 | 2         | 1       |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
     Then "Delete" "link" in the "Question A" "list_item" should not be visible
     Then "Delete" "link" in the "Question B" "list_item" should be visible
     Then "Delete" "link" in the "Question C" "list_item" should be visible
@@ -92,6 +92,6 @@ Feature: Edit quiz page - remove questions
     And quiz "Quiz 1" contains the following questions:
       | question   | page |
       | Question A | 1    |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
     When I delete "Question A" in the quiz by clicking the delete icon
     Then I should see "Questions: 0"

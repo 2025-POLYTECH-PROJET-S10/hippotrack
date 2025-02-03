@@ -17,7 +17,7 @@
 /**
  * Definition of Quiz scheduled tasks.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @category  task
  * @copyright 2017 Michael Hughes <michaelhughes@strath.ac.uk>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $tasks = [
     [
-        'classname' => 'mod_quiz\task\update_overdue_attempts',
+        'classname' => 'mod_hippotrack\task\update_overdue_attempts',
         'blocking' => 0,
         'minute' => '*',
         'hour' => '*',
@@ -36,7 +36,7 @@ $tasks = [
         'month' => '*'
     ],
     [
-        'classname' => 'mod_quiz\task\legacy_quiz_reports_cron',
+        'classname' => 'mod_hippotrack\task\legacy_quiz_reports_cron',
         'blocking' => 0,
         'minute' => '*',
         'hour' => '*',
@@ -45,7 +45,7 @@ $tasks = [
         'month' => '*'
     ],
     [
-        'classname' => 'mod_quiz\task\legacy_quiz_accessrules_cron',
+        'classname' => 'mod_hippotrack\task\legacy_quiz_accessrules_cron',
         'blocking' => 0,
         'minute' => '*',
         'hour' => '*',
@@ -54,7 +54,7 @@ $tasks = [
         'month' => '*'
     ],
     [
-        'classname' => 'mod_quiz\task\quiz_notify_attempt_manual_grading_completed',
+        'classname' => 'mod_hippotrack\task\quiz_notify_attempt_manual_grading_completed',
         'blocking' => 0,
         'minute' => 'R',
         'hour' => '*',

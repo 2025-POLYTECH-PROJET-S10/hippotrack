@@ -17,7 +17,7 @@
 /**
  * This page handles deleting quiz overrides
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2010 Matt Petro
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

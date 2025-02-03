@@ -15,15 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the \mod_quiz\structure class.
+ * Defines the \mod_hippotrack\structure class.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2013 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz;
-use mod_quiz\question\bank\qbank_helper;
+namespace mod_hippotrack;
+use mod_hippotrack\question\bank\qbank_helper;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -210,7 +210,7 @@ class structure {
         }
 
         try {
-            $quba = \question_engine::make_questions_usage_by_activity('mod_quiz', $this->quizobj->get_context());
+            $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $this->quizobj->get_context());
             $tempslot = $quba->add_question(\question_bank::load_question(
                     $this->slotsinorder[$slotnumber]->questionid));
             $quba->set_preferred_behaviour($this->quizobj->get_quiz()->preferredbehaviour);
@@ -874,7 +874,7 @@ class structure {
         $trans->allow_commit();
 
         // Log slot moved event.
-        $event = \mod_quiz\event\slot_moved::create([
+        $event = \mod_hippotrack\event\slot_moved::create([
             'context' => $this->quizobj->get_context(),
             'objectid' => $idmove,
             'other' => [
@@ -961,16 +961,16 @@ class structure {
         $trans = $DB->start_delegated_transaction();
         // Delete the reference if its a question.
         $questionreference = $DB->get_record('question_references',
-                ['component' => 'mod_quiz', 'questionarea' => 'slot', 'itemid' => $slot->id]);
+                ['component' => 'mod_hippotrack', 'questionarea' => 'slot', 'itemid' => $slot->id]);
         if ($questionreference) {
             $DB->delete_records('question_references', ['id' => $questionreference->id]);
         }
         // Delete the set reference if its a random question.
         $questionsetreference = $DB->get_record('question_set_references',
-                ['component' => 'mod_quiz', 'questionarea' => 'slot', 'itemid' => $slot->id]);
+                ['component' => 'mod_hippotrack', 'questionarea' => 'slot', 'itemid' => $slot->id]);
         if ($questionsetreference) {
             $DB->delete_records('question_set_references',
-                ['id' => $questionsetreference->id, 'component' => 'mod_quiz', 'questionarea' => 'slot']);
+                ['id' => $questionsetreference->id, 'component' => 'mod_hippotrack', 'questionarea' => 'slot']);
         }
         $DB->delete_records('quiz_slots', array('id' => $slot->id));
         for ($i = $slot->slot + 1; $i <= $maxslot; $i++) {
@@ -996,7 +996,7 @@ class structure {
         $trans->allow_commit();
 
         // Log slot deleted event.
-        $event = \mod_quiz\event\slot_deleted::create([
+        $event = \mod_hippotrack\event\slot_deleted::create([
             'context' => $this->quizobj->get_context(),
             'objectid' => $slot->id,
             'other' => [
@@ -1049,7 +1049,7 @@ class structure {
 
         // Log slot mark updated event.
         // We use $num + 0 as a trick to remove the useless 0 digits from decimals.
-        $event = \mod_quiz\event\slot_mark_updated::create([
+        $event = \mod_hippotrack\event\slot_mark_updated::create([
             'context' => $this->quizobj->get_context(),
             'objectid' => $slot->id,
             'other' => [
@@ -1073,7 +1073,7 @@ class structure {
         $DB->set_field('quiz_slots', 'requireprevious', $requireprevious, array('id' => $slotid));
 
         // Log slot require previous event.
-        $event = \mod_quiz\event\slot_requireprevious_updated::create([
+        $event = \mod_hippotrack\event\slot_requireprevious_updated::create([
             'context' => $this->quizobj->get_context(),
             'objectid' => $slotid,
             'other' => [
@@ -1100,13 +1100,13 @@ class structure {
         $this->check_can_be_edited();
 
         $quizslots = $DB->get_records('quiz_slots', array('quizid' => $this->get_quizid()), 'slot');
-        $repaginate = new \mod_quiz\repaginate($this->get_quizid(), $quizslots);
+        $repaginate = new \mod_hippotrack\repaginate($this->get_quizid(), $quizslots);
         $repaginate->repaginate_slots($quizslots[$slotid]->slot, $type);
         $slots = $this->refresh_page_numbers_and_update_db();
 
         if ($type == repaginate::LINK) {
             // Log page break created event.
-            $event = \mod_quiz\event\page_break_deleted::create([
+            $event = \mod_hippotrack\event\page_break_deleted::create([
                 'context' => $this->quizobj->get_context(),
                 'objectid' => $slotid,
                 'other' => [
@@ -1117,7 +1117,7 @@ class structure {
             $event->trigger();
         } else {
             // Log page deleted created event.
-            $event = \mod_quiz\event\page_break_created::create([
+            $event = \mod_hippotrack\event\page_break_created::create([
                 'context' => $this->quizobj->get_context(),
                 'objectid' => $slotid,
                 'other' => [
@@ -1152,7 +1152,7 @@ class structure {
         $sectionid = $DB->insert_record('quiz_sections', $section);
 
         // Log section break created event.
-        $event = \mod_quiz\event\section_break_created::create([
+        $event = \mod_hippotrack\event\section_break_created::create([
             'context' => $this->quizobj->get_context(),
             'objectid' => $sectionid,
             'other' => [
@@ -1180,7 +1180,7 @@ class structure {
 
         // Log section title updated event.
         $firstslot = $DB->get_record('quiz_slots', array('quizid' => $this->get_quizid(), 'slot' => $section->firstslot));
-        $event = \mod_quiz\event\section_title_updated::create([
+        $event = \mod_hippotrack\event\section_title_updated::create([
             'context' => $this->quizobj->get_context(),
             'objectid' => $id,
             'other' => [
@@ -1205,7 +1205,7 @@ class structure {
         $DB->update_record('quiz_sections', $section);
 
         // Log section shuffle updated event.
-        $event = \mod_quiz\event\section_shuffle_updated::create([
+        $event = \mod_hippotrack\event\section_shuffle_updated::create([
             'context' => $this->quizobj->get_context(),
             'objectid' => $id,
             'other' => [
@@ -1231,7 +1231,7 @@ class structure {
 
         // Log page deleted created event.
         $firstslot = $DB->get_record('quiz_slots', array('quizid' => $this->get_quizid(), 'slot' => $section->firstslot));
-        $event = \mod_quiz\event\section_break_deleted::create([
+        $event = \mod_hippotrack\event\section_break_deleted::create([
             'context' => $this->quizobj->get_context(),
             'objectid' => $sectionid,
             'other' => [

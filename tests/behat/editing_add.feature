@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Edit quiz page - adding things
   In order to build the quiz I want my students to attempt
   As a teacher
@@ -17,7 +17,7 @@ Feature: Edit quiz page - adding things
     And the following "activities" exist:
       | activity   | name   | intro                           | course | idnumber |
       | quiz       | Quiz 1 | Quiz 1 for testing the Add menu | C1     | quiz1    |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page logged in as "teacher1"
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
 
   @javascript
   Scenario: Add some new question to the quiz using '+ a new question' options of the 'Add' menu.
@@ -182,7 +182,7 @@ Feature: Edit quiz page - adding things
 
     # Add questions from question bank using the Add menu.
     # Add Essay 03 from question bank.
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
     And I open the "last" add to quiz menu
     And I follow "from question bank"
     Then the "Add selected questions to the quiz" "button" should be disabled

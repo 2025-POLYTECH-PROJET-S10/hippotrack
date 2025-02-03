@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Edit quiz page - pagination
   In order to build a quiz laid out in pages the way I want
   As a teacher
@@ -19,7 +19,7 @@ Feature: Edit quiz page - pagination
       | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    |
 
     When I log in as "teacher1"
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
 
   @javascript
   Scenario: Repaginate questions with N question(s) per page as well as clicking

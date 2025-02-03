@@ -14,15 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
-use mod_quiz\question\bank\qbank_helper;
+use mod_hippotrack\question\bank\qbank_helper;
 use quiz;
 
 /**
  * Test the restore of random question tags.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   test
  * @copyright  2018 Shamim Rezaie <shamim@moodle.com>
  * @author     2021 Safat Shahin <safatshahin@catalyst-au.net>
@@ -88,7 +88,7 @@ class tags_test extends \advanced_testcase {
         $defaultcategory = question_get_default_category(\context_course::instance($newcourseid)->id);
         $this->assertEquals($defaultcategory->id, $question->category);
         $randomincludingsubcategories = $DB->get_record('question_set_references',
-            ['itemid' => reset($slots)->id, 'component' => 'mod_quiz', 'questionarea' => 'slot']);
+            ['itemid' => reset($slots)->id, 'component' => 'mod_hippotrack', 'questionarea' => 'slot']);
         $filtercondition = json_decode($randomincludingsubcategories->filtercondition);
         $this->assertEquals(0, $filtercondition->includingsubcategories);
     }
@@ -102,7 +102,7 @@ class tags_test extends \advanced_testcase {
     protected function get_tags_for_slot(int $slotid): array {
         global $DB;
         $referencedata = $DB->get_record('question_set_references',
-                ['itemid' => $slotid, 'component' => 'mod_quiz', 'questionarea' => 'slot']);
+                ['itemid' => $slotid, 'component' => 'mod_hippotrack', 'questionarea' => 'slot']);
         if (isset($referencedata->filtercondition)) {
             $filtercondition = json_decode($referencedata->filtercondition);
             if (isset($filtercondition->tags)) {

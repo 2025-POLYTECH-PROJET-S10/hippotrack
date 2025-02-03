@@ -17,7 +17,7 @@
 /**
  * This page handles editing and creation of quiz overrides
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2010 Matt Petro
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -67,7 +67,7 @@ if ($overrideid) {
 $PAGE->set_url($url);
 
 // Activate the secondary nav tab.
-$PAGE->set_secondary_active_tab("mod_quiz_useroverrides");
+$PAGE->set_secondary_active_tab("mod_hippotrack_useroverrides");
 
 require_login($course, false, $cm);
 
@@ -180,16 +180,16 @@ if ($mform->is_cancelled()) {
         $fromform->id = $override->id;
         $DB->update_record('quiz_overrides', $fromform);
         $cachekey = $groupmode ? "{$fromform->quiz}_g_{$fromform->groupid}" : "{$fromform->quiz}_u_{$fromform->userid}";
-        cache::make('mod_quiz', 'overrides')->delete($cachekey);
+        cache::make('mod_hippotrack', 'overrides')->delete($cachekey);
 
         // Determine which override updated event to fire.
         $params['objectid'] = $override->id;
         if (!$groupmode) {
             $params['relateduserid'] = $fromform->userid;
-            $event = \mod_quiz\event\user_override_updated::create($params);
+            $event = \mod_hippotrack\event\user_override_updated::create($params);
         } else {
             $params['other']['groupid'] = $fromform->groupid;
-            $event = \mod_quiz\event\group_override_updated::create($params);
+            $event = \mod_hippotrack\event\group_override_updated::create($params);
         }
 
         // Trigger the override updated event.
@@ -198,16 +198,16 @@ if ($mform->is_cancelled()) {
         unset($fromform->id);
         $fromform->id = $DB->insert_record('quiz_overrides', $fromform);
         $cachekey = $groupmode ? "{$fromform->quiz}_g_{$fromform->groupid}" : "{$fromform->quiz}_u_{$fromform->userid}";
-        cache::make('mod_quiz', 'overrides')->delete($cachekey);
+        cache::make('mod_hippotrack', 'overrides')->delete($cachekey);
 
         // Determine which override created event to fire.
         $params['objectid'] = $fromform->id;
         if (!$groupmode) {
             $params['relateduserid'] = $fromform->userid;
-            $event = \mod_quiz\event\user_override_created::create($params);
+            $event = \mod_hippotrack\event\user_override_created::create($params);
         } else {
             $params['other']['groupid'] = $fromform->groupid;
-            $event = \mod_quiz\event\group_override_created::create($params);
+            $event = \mod_hippotrack\event\group_override_created::create($params);
         }
 
         // Trigger the override created event.

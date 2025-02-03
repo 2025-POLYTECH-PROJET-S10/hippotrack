@@ -28,7 +28,7 @@ use quiz_attempt;
  * @author     Jamie Pratt <me@jamiep.org>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class responses_from_steps_walkthrough_test extends \mod_quiz\tests\attempt_walkthrough_testcase {
+final class responses_from_steps_walkthrough_test extends \mod_hippotrack\tests\attempt_walkthrough_testcase {
     #[\Override]
     public static function setUpBeforeClass(): void {
         global $CFG;

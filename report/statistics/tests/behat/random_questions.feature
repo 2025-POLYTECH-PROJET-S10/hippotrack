@@ -1,4 +1,4 @@
-@mod @mod_quiz @quiz @quiz_statistics
+@mod @mod_hippotrack @quiz @quiz_statistics
 Feature: Statistics calculations with random questions
   In order to verify my quizzes are performing well
   As a teacher
@@ -35,7 +35,7 @@ Feature: Statistics calculations with random questions
     And user "student" has attempted "Quiz 1" with responses:
       | slot | response                   |
       |   1  | Here is my wonderful essay |
-    When I am on the "Quiz 1" "mod_quiz > Statistics report" page logged in as teacher
+    When I am on the "Quiz 1" "mod_hippotrack > Statistics report" page logged in as teacher
     Then I should see "No attempts have been made at this quiz, or all attempts have questions that need manual grading."
 
   Scenario: View details works for random questions
@@ -53,6 +53,6 @@ Feature: Statistics calculations with random questions
     And user "student" has attempted "Quiz 1" with responses:
       | slot | response |
       |   1  | One      |
-    When I am on the "Quiz 1" "mod_quiz > Statistics report" page logged in as teacher
+    When I am on the "Quiz 1" "mod_hippotrack > Statistics report" page logged in as teacher
     And I follow "View details"
     Then I should see "Structural analysis for question number 1"

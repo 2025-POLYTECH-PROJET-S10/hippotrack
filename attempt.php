@@ -17,7 +17,7 @@
 /**
  * This script displays a particular page of a quiz attempt that is in progress.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -82,7 +82,7 @@ if ($attemptobj->is_finished()) {
 // Check the access rules.
 $accessmanager = $attemptobj->get_access_manager(time());
 $accessmanager->setup_attempt_page($PAGE);
-$output = $PAGE->get_renderer('mod_quiz');
+$output = $PAGE->get_renderer('mod_hippotrack');
 $messages = $accessmanager->prevent_access();
 if (!$attemptobj->is_preview_user() && $messages) {
     throw new \moodle_exception('attempterror', 'quiz', $attemptobj->view_url(),
@@ -95,8 +95,8 @@ if ($accessmanager->is_preflight_check_required($attemptobj->get_attemptid())) {
 // Set up auto-save if required.
 $autosaveperiod = get_config('quiz', 'autosaveperiod');
 if ($autosaveperiod) {
-    $PAGE->requires->yui_module('moodle-mod_quiz-autosave',
-            'M.mod_quiz.autosave.init', array($autosaveperiod));
+    $PAGE->requires->yui_module('moodle-mod_hippotrack-autosave',
+            'M.mod_hippotrack.autosave.init', array($autosaveperiod));
 }
 
 // Log this page view.
@@ -117,7 +117,7 @@ if (!$attemptobj->set_currentpage($page)) {
 
 // Initialise the JavaScript.
 $headtags = $attemptobj->get_html_head_contributions($page);
-$PAGE->requires->js_init_call('M.mod_quiz.init_attempt_form', null, false, quiz_get_js_module());
+$PAGE->requires->js_init_call('M.mod_hippotrack.init_attempt_form', null, false, quiz_get_js_module());
 \core\session\manager::keepalive(); // Try to prevent sessions expiring during quiz attempts.
 
 // Arrange for the navigation to be displayed in the first region on the page.

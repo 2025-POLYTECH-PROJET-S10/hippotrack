@@ -18,7 +18,7 @@
  * This page allows the teacher to enter a manual grade for a particular question.
  * This page is expected to only be used in a popup window.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright gustav delius 2006
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -51,7 +51,7 @@ $PAGE->set_title(get_string('manualgradequestion', 'quiz', array(
         'question' => format_string($attemptobj->get_question_name($slot)),
         'quiz' => format_string($attemptobj->get_quiz_name()), 'user' => fullname($student))));
 $PAGE->set_heading($attemptobj->get_course()->fullname);
-$output = $PAGE->get_renderer('mod_quiz');
+$output = $PAGE->get_renderer('mod_hippotrack');
 echo $output->header();
 
 // Prepare summary information about this question attempt.
@@ -97,7 +97,7 @@ if (data_submitted() && confirm_sesskey()) {
                 'slot' => $slot
             )
         );
-        $event = \mod_quiz\event\question_manually_graded::create($params);
+        $event = \mod_hippotrack\event\question_manually_graded::create($params);
         $event->trigger();
 
         echo $output->notification(get_string('changessaved'), 'notifysuccess');
@@ -132,7 +132,7 @@ echo $attemptobj->render_question_for_commenting($slot);
 </fieldset>
 <?php
 echo '</form>';
-$PAGE->requires->js_init_call('M.mod_quiz.init_comment_popup', null, false, quiz_get_js_module());
+$PAGE->requires->js_init_call('M.mod_hippotrack.init_comment_popup', null, false, quiz_get_js_module());
 
 // End of the page.
 echo $output->footer();

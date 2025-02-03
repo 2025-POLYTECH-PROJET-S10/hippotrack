@@ -15,21 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Contains the class for fetching the important dates in mod_quiz for a given module instance and a user.
+ * Contains the class for fetching the important dates in mod_hippotrack for a given module instance and a user.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 declare(strict_types=1);
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 use core\activity_dates;
 
 /**
- * Class for fetching the important dates in mod_quiz for a given module instance and a user.
+ * Class for fetching the important dates in mod_hippotrack for a given module instance and a user.
  *
  * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -37,7 +37,7 @@ use core\activity_dates;
 class dates extends activity_dates {
 
     /**
-     * Returns a list of important dates in mod_quiz
+     * Returns a list of important dates in mod_hippotrack
      *
      * @return array
      */

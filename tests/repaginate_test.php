@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Unit tests for the {@link \mod_quiz\repaginate} class.
- * @package   mod_quiz
+ * Unit tests for the {@link \mod_hippotrack\repaginate} class.
+ * @package   mod_hippotrack
  * @category  test
  * @copyright 2014 The Open Univsersity
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 use quiz;
 
@@ -33,11 +33,11 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 require_once($CFG->dirroot . '/mod/quiz/classes/repaginate.php');
 
 /**
- * Testable subclass, giving access to the protected methods of {@link \mod_quiz\repaginate}
+ * Testable subclass, giving access to the protected methods of {@link \mod_hippotrack\repaginate}
  * @copyright 2014 The Open Univsersity
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_quiz_repaginate_testable extends repaginate {
+class mod_hippotrack_repaginate_testable extends repaginate {
 
     public function __construct($quizid = 0, $slots = null) {
         return parent::__construct($quizid, $slots);
@@ -68,12 +68,12 @@ class repaginate_test extends \advanced_testcase {
 
     /** @var array stores the slots. */
     private $quizslots;
-    /** @var mod_quiz_repaginate_testable the object being tested. */
+    /** @var mod_hippotrack_repaginate_testable the object being tested. */
     private $repaginate = null;
 
     public function setUp(): void {
         $this->set_quiz_slots($this->get_quiz_object()->get_slots());
-        $this->repaginate = new mod_quiz_repaginate_testable(0, $this->quizslots);
+        $this->repaginate = new mod_hippotrack_repaginate_testable(0, $this->quizslots);
     }
 
     public function tearDown(): void {
@@ -89,7 +89,7 @@ class repaginate_test extends \advanced_testcase {
         $this->resetAfterTest(true);
 
         // Make a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         $quiz = $quizgenerator->create_instance(array(
                 'course' => $SITE->id, 'questionsperpage' => 0, 'grade' => 100.0, 'sumgrades' => 2));

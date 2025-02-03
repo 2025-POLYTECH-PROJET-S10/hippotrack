@@ -1,4 +1,4 @@
-@mod @mod_quiz @core_completion
+@mod @mod_hippotrack @core_completion
 Feature: Activity completion in the quiz activity with unlocked and re-grading.
   In order to have visibility of quiz completion requirements
   As a student

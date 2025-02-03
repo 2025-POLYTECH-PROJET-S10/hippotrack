@@ -17,7 +17,7 @@
 /**
  * Defines the quiz module ettings form.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2006 Jamie Pratt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -35,7 +35,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
  * @copyright  2006 Jamie Pratt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_quiz_mod_form extends moodleform_mod {
+class mod_hippotrack_mod_form extends moodleform_mod {
     /** @var array options to be used with date_time_selector fields in the quiz. */
     public static $datefieldoptions = array('optional' => true);
 
@@ -204,13 +204,13 @@ class mod_quiz_mod_form extends moodleform_mod {
 
         // Review options.
         $this->add_review_options_group($mform, $quizconfig, 'during',
-                mod_quiz_display_options::DURING, true);
+                mod_hippotrack_display_options::DURING, true);
         $this->add_review_options_group($mform, $quizconfig, 'immediately',
-                mod_quiz_display_options::IMMEDIATELY_AFTER);
+                mod_hippotrack_display_options::IMMEDIATELY_AFTER);
         $this->add_review_options_group($mform, $quizconfig, 'open',
-                mod_quiz_display_options::LATER_WHILE_OPEN);
+                mod_hippotrack_display_options::LATER_WHILE_OPEN);
         $this->add_review_options_group($mform, $quizconfig, 'closed',
-                mod_quiz_display_options::AFTER_CLOSE);
+                mod_hippotrack_display_options::AFTER_CLOSE);
 
         foreach ($behaviours as $behaviour => $notused) {
             $unusedoptions = question_engine::get_behaviour_unused_display_options($behaviour);
@@ -366,7 +366,7 @@ class mod_quiz_mod_form extends moodleform_mod {
         $this->apply_admin_defaults();
         $this->add_action_buttons();
 
-        $PAGE->requires->yui_module('moodle-mod_quiz-modform', 'M.mod_quiz.modform.init');
+        $PAGE->requires->yui_module('moodle-mod_hippotrack-modform', 'M.mod_hippotrack.modform.init');
     }
 
     protected function add_review_options_group($mform, $quizconfig, $whenname,
@@ -428,7 +428,7 @@ class mod_quiz_mod_form extends moodleform_mod {
                 $toform['feedbacktext['.$key.']']['text'] = file_prepare_draft_area(
                     $draftid,               // Draftid.
                     $this->context->id,     // Context.
-                    'mod_quiz',             // Component.
+                    'mod_hippotrack',             // Component.
                     'feedback',             // Filarea.
                     !empty($feedback->id) ? (int) $feedback->id : null, // Itemid.
                     null,
@@ -459,13 +459,13 @@ class mod_quiz_mod_form extends moodleform_mod {
         }
 
         $this->preprocessing_review_settings($toform, 'during',
-                mod_quiz_display_options::DURING);
+                mod_hippotrack_display_options::DURING);
         $this->preprocessing_review_settings($toform, 'immediately',
-                mod_quiz_display_options::IMMEDIATELY_AFTER);
+                mod_hippotrack_display_options::IMMEDIATELY_AFTER);
         $this->preprocessing_review_settings($toform, 'open',
-                mod_quiz_display_options::LATER_WHILE_OPEN);
+                mod_hippotrack_display_options::LATER_WHILE_OPEN);
         $this->preprocessing_review_settings($toform, 'closed',
-                mod_quiz_display_options::AFTER_CLOSE);
+                mod_hippotrack_display_options::AFTER_CLOSE);
         $toform['attemptduring'] = true;
         $toform['overallfeedbackduring'] = false;
 

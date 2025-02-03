@@ -17,17 +17,17 @@
 /**
  * Auto-save functionality for during quiz attempts.
  *
- * @module moodle-mod_quiz-autosave
+ * @module moodle-mod_hippotrack-autosave
  */
 
 /**
  * Auto-save functionality for during quiz attempts.
  *
- * @class M.mod_quiz.autosave
+ * @class M.mod_hippotrack.autosave
  */
 
-M.mod_quiz = M.mod_quiz || {};
-M.mod_quiz.autosave = {
+M.mod_hippotrack = M.mod_hippotrack || {};
+M.mod_hippotrack.autosave = {
     /**
      * The amount of time (in milliseconds) to wait between TinyMCE detections.
      *
@@ -36,7 +36,7 @@ M.mod_quiz.autosave = {
      * @default 500
      * @private
      */
-    TINYMCE_DETECTION_DELAY:  500,
+    TINYMCE_DETECTION_DELAY: 500,
 
     /**
      * The number of times to try redetecting TinyMCE.
@@ -56,7 +56,7 @@ M.mod_quiz.autosave = {
      * @default 1000
      * @private
      */
-    WATCH_HIDDEN_DELAY:      1000,
+    WATCH_HIDDEN_DELAY: 1000,
 
     /**
      * The number of failures to ignore before notifying the user.
@@ -66,7 +66,7 @@ M.mod_quiz.autosave = {
      * @default 1
      * @private
      */
-    FAILURES_BEFORE_NOTIFY:     1,
+    FAILURES_BEFORE_NOTIFY: 1,
 
     /**
      * The value to use when resetting the successful save counter.
@@ -77,7 +77,7 @@ M.mod_quiz.autosave = {
      * @default -1
      * @private
      */
-    FIRST_SUCCESSFUL_SAVE:     -1,
+    FIRST_SUCCESSFUL_SAVE: -1,
 
     /**
      * The selectors used throughout this class.
@@ -88,12 +88,12 @@ M.mod_quiz.autosave = {
      * @static
      */
     SELECTORS: {
-        QUIZ_FORM:             '#responseform',
+        QUIZ_FORM: '#responseform',
         VALUE_CHANGE_ELEMENTS: 'input, textarea, [contenteditable="true"]',
-        CHANGE_ELEMENTS:       'input, select',
-        HIDDEN_INPUTS:         'input[type=hidden]',
-        CONNECTION_ERROR:      '#connection-error',
-        CONNECTION_OK:         '#connection-ok'
+        CHANGE_ELEMENTS: 'input, select',
+        HIDDEN_INPUTS: 'input[type=hidden]',
+        CONNECTION_ERROR: '#connection-error',
+        CONNECTION_OK: '#connection-ok'
     },
 
     /**
@@ -189,10 +189,10 @@ M.mod_quiz.autosave = {
      * @param {Number} delay the delay, in seconds, between a change being detected, and
      * a save happening.
      */
-    init: function(delay) {
+    init: function (delay) {
         this.form = Y.one(this.SELECTORS.QUIZ_FORM);
         if (!this.form) {
-            Y.log('No response form found. Why did you try to set up autosave?', 'debug', 'moodle-mod_quiz-autosave');
+            Y.log('No response form found. Why did you try to set up autosave?', 'debug', 'moodle-mod_hippotrack-autosave');
             return;
         }
 
@@ -202,7 +202,7 @@ M.mod_quiz.autosave = {
         this.form.delegate('change', this.value_changed, this.SELECTORS.CHANGE_ELEMENTS, this);
         this.form.on('submit', this.stop_autosaving, this);
 
-        require(['core_form/events'], function(FormEvent) {
+        require(['core_form/events'], function (FormEvent) {
             window.addEventListener(FormEvent.eventTypes.uploadChanged, this.value_changed.bind(this));
         }.bind(this));
 
@@ -212,8 +212,8 @@ M.mod_quiz.autosave = {
         this.watch_hidden_fields();
     },
 
-    save_hidden_field_values: function() {
-        this.form.all(this.SELECTORS.HIDDEN_INPUTS).each(function(hidden) {
+    save_hidden_field_values: function () {
+        this.form.all(this.SELECTORS.HIDDEN_INPUTS).each(function (hidden) {
             var name = hidden.get('name');
             if (!name) {
                 return;
@@ -222,13 +222,13 @@ M.mod_quiz.autosave = {
         }, this);
     },
 
-    watch_hidden_fields: function() {
+    watch_hidden_fields: function () {
         this.detect_hidden_field_changes();
         Y.later(this.WATCH_HIDDEN_DELAY, this, this.watch_hidden_fields);
     },
 
-    detect_hidden_field_changes: function() {
-        this.form.all(this.SELECTORS.HIDDEN_INPUTS).each(function(hidden) {
+    detect_hidden_field_changes: function () {
+        this.form.all(this.SELECTORS.HIDDEN_INPUTS).each(function (hidden) {
             var name = hidden.get('name'),
                 value = hidden.get('value');
             if (!name) {
@@ -236,7 +236,7 @@ M.mod_quiz.autosave = {
             }
             if (!(name in this.hidden_field_values) || value !== this.hidden_field_values[name]) {
                 this.hidden_field_values[name] = value;
-                this.value_changed({target: hidden});
+                this.value_changed({ target: hidden });
             }
         }, this);
     },
@@ -253,23 +253,23 @@ M.mod_quiz.autosave = {
      * @method init_tinymce
      * @param {Number} repeatcount The number of attempts made so far.
      */
-    init_tinymce: function(repeatcount) {
+    init_tinymce: function (repeatcount) {
         if (typeof window.tinyMCE === 'undefined') {
             if (repeatcount > 0) {
                 Y.later(this.TINYMCE_DETECTION_DELAY, this, this.init_tinymce, [repeatcount - 1]);
             } else {
-                Y.log('Gave up looking for TinyMCE.', 'debug', 'moodle-mod_quiz-autosave');
+                Y.log('Gave up looking for TinyMCE.', 'debug', 'moodle-mod_hippotrack-autosave');
             }
             return;
         }
 
-        Y.log('Found TinyMCE.', 'debug', 'moodle-mod_quiz-autosave');
+        Y.log('Found TinyMCE.', 'debug', 'moodle-mod_hippotrack-autosave');
         this.editor_change_handler = Y.bind(this.editor_changed, this);
         if (window.tinyMCE.onAddEditor) {
             window.tinyMCE.onAddEditor.add(Y.bind(this.init_tinymce_editor, this));
         } else if (window.tinyMCE.on) {
             var startSaveTimer = this.start_save_timer_if_necessary.bind(this);
-            window.tinyMCE.on('AddEditor', function(event) {
+            window.tinyMCE.on('AddEditor', function (event) {
                 event.editor.on('Change Undo Redo keydown', startSaveTimer);
             });
         }
@@ -282,15 +282,15 @@ M.mod_quiz.autosave = {
      * @param {EventFacade} e
      * @param {Object} editor The TinyMCE editor object
      */
-    init_tinymce_editor: function(e, editor) {
-        Y.log('Found TinyMCE editor ' + editor.id + '.', 'debug', 'moodle-mod_quiz-autosave');
+    init_tinymce_editor: function (e, editor) {
+        Y.log('Found TinyMCE editor ' + editor.id + '.', 'debug', 'moodle-mod_hippotrack-autosave');
         editor.onChange.add(this.editor_change_handler);
         editor.onRedo.add(this.editor_change_handler);
         editor.onUndo.add(this.editor_change_handler);
         editor.onKeyDown.add(this.editor_change_handler);
     },
 
-    value_changed: function(e) {
+    value_changed: function (e) {
         var name = e.target.getAttribute('name');
         if (name === 'thispage' || name === 'scrollpos' || (name && name.match(/_:flagged$/))) {
             return; // Not interesting.
@@ -298,16 +298,16 @@ M.mod_quiz.autosave = {
 
         // Fallback to the ID when the name is not present (in the case of content editable).
         name = name || '#' + e.target.getAttribute('id');
-        Y.log('Detected a value change in element ' + name + '.', 'debug', 'moodle-mod_quiz-autosave');
+        Y.log('Detected a value change in element ' + name + '.', 'debug', 'moodle-mod_hippotrack-autosave');
         this.start_save_timer_if_necessary();
     },
 
-    editor_changed: function(editor) {
-        Y.log('Detected a value change in editor ' + editor.id + '.', 'debug', 'moodle-mod_quiz-autosave');
+    editor_changed: function (editor) {
+        Y.log('Detected a value change in editor ' + editor.id + '.', 'debug', 'moodle-mod_hippotrack-autosave');
         this.start_save_timer_if_necessary();
     },
 
-    start_save_timer_if_necessary: function() {
+    start_save_timer_if_necessary: function () {
         this.dirty = true;
 
         if (this.delay_timer || this.save_transaction) {
@@ -318,29 +318,29 @@ M.mod_quiz.autosave = {
         this.start_save_timer();
     },
 
-    start_save_timer: function() {
+    start_save_timer: function () {
         this.cancel_delay();
         this.delay_timer = Y.later(this.delay, this, this.save_changes);
     },
 
-    cancel_delay: function() {
+    cancel_delay: function () {
         if (this.delay_timer && this.delay_timer !== true) {
             this.delay_timer.cancel();
         }
         this.delay_timer = null;
     },
 
-    save_changes: function() {
+    save_changes: function () {
         this.cancel_delay();
         this.dirty = false;
 
         if (this.is_time_nearly_over()) {
-            Y.log('No more saving, time is nearly over.', 'debug', 'moodle-mod_quiz-autosave');
+            Y.log('No more saving, time is nearly over.', 'debug', 'moodle-mod_hippotrack-autosave');
             this.stop_autosaving();
             return;
         }
 
-        Y.log('Doing a save.', 'debug', 'moodle-mod_quiz-autosave');
+        Y.log('Doing a save.', 'debug', 'moodle-mod_hippotrack-autosave');
         if (typeof window.tinyMCE !== 'undefined') {
             window.tinyMCE.triggerSave();
         }
@@ -353,9 +353,9 @@ M.mod_quiz.autosave = {
         allsubmitbuttons.setAttribute('type', 'button');
 
         this.save_transaction = Y.io(this.AUTOSAVE_HANDLER, {
-            method:  'POST',
-            form:    {id: this.form},
-            on:      {
+            method: 'POST',
+            form: { id: this.form },
+            on: {
                 success: this.save_done,
                 failure: this.save_failed
             },
@@ -366,7 +366,7 @@ M.mod_quiz.autosave = {
         allsubmitbuttons.setAttribute('type', 'submit');
     },
 
-    save_done: function(transactionid, response) {
+    save_done: function (transactionid, response) {
         var autosavedata = JSON.parse(response.responseText);
         if (autosavedata.status !== 'OK') {
             // Because IIS is useless, Moodle can't send proper HTTP response
@@ -376,15 +376,15 @@ M.mod_quiz.autosave = {
         }
 
         if (typeof autosavedata.timeleft !== 'undefined') {
-            Y.log('Updating timer: ' + autosavedata.timeleft + ' seconds remain.', 'debug', 'moodle-mod_quiz-timer');
-            M.mod_quiz.timer.updateEndTime(autosavedata.timeleft);
+            Y.log('Updating timer: ' + autosavedata.timeleft + ' seconds remain.', 'debug', 'moodle-mod_hippotrack-timer');
+            M.mod_hippotrack.timer.updateEndTime(autosavedata.timeleft);
         }
 
-        Y.log('Save completed.', 'debug', 'moodle-mod_quiz-autosave');
+        Y.log('Save completed.', 'debug', 'moodle-mod_hippotrack-autosave');
         this.save_transaction = null;
 
         if (this.dirty) {
-            Y.log('Dirty after save.', 'debug', 'moodle-mod_quiz-autosave');
+            Y.log('Dirty after save.', 'debug', 'moodle-mod_hippotrack-autosave');
             this.start_save_timer();
         }
 
@@ -398,8 +398,8 @@ M.mod_quiz.autosave = {
         }
     },
 
-    save_failed: function() {
-        Y.log('Save failed.', 'debug', 'moodle-mod_quiz-autosave');
+    save_failed: function () {
+        Y.log('Save failed.', 'debug', 'moodle-mod_hippotrack-autosave');
         this.save_transaction = null;
 
         // We want to retry soon.
@@ -412,12 +412,12 @@ M.mod_quiz.autosave = {
         }
     },
 
-    is_time_nearly_over: function() {
-        return M.mod_quiz.timer && M.mod_quiz.timer.endtime &&
-                (new Date().getTime() + 2 * this.delay) > M.mod_quiz.timer.endtime;
+    is_time_nearly_over: function () {
+        return M.mod_hippotrack.timer && M.mod_hippotrack.timer.endtime &&
+            (new Date().getTime() + 2 * this.delay) > M.mod_hippotrack.timer.endtime;
     },
 
-    stop_autosaving: function() {
+    stop_autosaving: function () {
         this.cancel_delay();
         this.delay_timer = true;
         if (this.save_transaction) {

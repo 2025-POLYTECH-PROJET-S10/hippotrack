@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Several attempts in a quiz
   As a student
   In order to demonstrate what I know
@@ -49,7 +49,7 @@ Feature: Several attempts in a quiz
 
   @javascript
   Scenario: The redo question buttons are visible after 2 attempts are preset for student1.
-    Given I am on the "Quiz 1" "mod_quiz > View" page logged in as "student1"
+    Given I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student1"
     Then "Re-attempt quiz" "button" should exist
     And "1" row "Marks / 2.00" column of "quizattemptsummary" table should contain "1.00"
     And "2" row "Marks / 2.00" column of "quizattemptsummary" table should contain "0.00"

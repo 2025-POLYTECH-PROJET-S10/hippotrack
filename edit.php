@@ -35,7 +35,7 @@
  * delete       Removes a question from the quiz
  * savechanges  Saves the order and grades for questions in the quiz
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  1999 onwards Martin Dougiamas and others {@link http://moodle.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -59,7 +59,7 @@ $defaultcategory = $defaultcategoryobj->id . ',' . $defaultcategoryobj->contexti
 $quizhasattempts = quiz_has_attempts($quiz->id);
 
 $PAGE->set_url($thispageurl);
-$PAGE->set_secondary_active_tab("mod_quiz_edit");
+$PAGE->set_secondary_active_tab("mod_hippotrack_edit");
 
 // Get the course object and related bits.
 $course = $DB->get_record('course', array('id' => $quiz->course), '*', MUST_EXIST);
@@ -159,7 +159,7 @@ if (optional_param('savechanges', false, PARAM_BOOL) && confirm_sesskey()) {
 }
 
 // Log this visit.
-$event = \mod_quiz\event\edit_page_viewed::create([
+$event = \mod_hippotrack\event\edit_page_viewed::create([
     'courseid' => $course->id,
     'context' => $contexts->lowest(),
     'other' => [
@@ -169,7 +169,7 @@ $event = \mod_quiz\event\edit_page_viewed::create([
 $event->trigger();
 
 // Get the question bank view.
-$questionbank = new mod_quiz\question\bank\custom_view($contexts, $thispageurl, $course, $cm, $quiz);
+$questionbank = new mod_hippotrack\question\bank\custom_view($contexts, $thispageurl, $course, $cm, $quiz);
 $questionbank->set_quiz_has_attempts($quizhasattempts);
 
 // End of process commands =====================================================.
@@ -177,12 +177,12 @@ $questionbank->set_quiz_has_attempts($quizhasattempts);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_pagetype('mod-quiz-edit');
 
-$output = $PAGE->get_renderer('mod_quiz', 'edit');
+$output = $PAGE->get_renderer('mod_hippotrack', 'edit');
 
 $PAGE->set_title(get_string('editingquizx', 'quiz', format_string($quiz->name)));
 $PAGE->set_heading($course->fullname);
 $PAGE->activityheader->disable();
-$node = $PAGE->settingsnav->find('mod_quiz_edit', navigation_node::TYPE_SETTING);
+$node = $PAGE->settingsnav->find('mod_hippotrack_edit', navigation_node::TYPE_SETTING);
 if ($node) {
     $node->make_active();
 }

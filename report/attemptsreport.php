@@ -18,7 +18,7 @@
  * The file defines a base class that can be used to build a report like the
  * overview or responses report, that has one row per attempt.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2010 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -54,7 +54,7 @@ abstract class quiz_attempts_report extends quiz_default_report {
     /** @var context_module the quiz context. */
     protected $context;
 
-    /** @var mod_quiz_attempts_report_form The settings form to use. */
+    /** @var mod_hippotrack_attempts_report_form The settings form to use. */
     protected $form;
 
     /** @var string SQL fragment for selecting the attempt that gave the final grade,
@@ -149,7 +149,7 @@ abstract class quiz_attempts_report extends quiz_default_report {
      * @param stdClass $cm the course_module information.
      * @param stdClass $course the course settings.
      * @param stdClass $quiz the quiz settings.
-     * @param mod_quiz_attempts_report_options $options the current report settings.
+     * @param mod_hippotrack_attempts_report_options $options the current report settings.
      * @param int $currentgroup the current group.
      * @param bool $hasquestions whether there are any questions in the quiz.
      * @param bool $hasstudents whether there are any relevant students.
@@ -283,11 +283,11 @@ abstract class quiz_attempts_report extends quiz_default_report {
      * @param array $columns the list of columns.
      * @param array $headers the columns headings.
      * @param moodle_url $reporturl the URL of this report.
-     * @param mod_quiz_attempts_report_options $options the display options.
+     * @param mod_hippotrack_attempts_report_options $options the display options.
      * @param bool $collapsible whether to allow columns in the report to be collapsed.
      */
     protected function set_up_table_columns($table, $columns, $headers, $reporturl,
-            mod_quiz_attempts_report_options $options, $collapsible) {
+            mod_hippotrack_attempts_report_options $options, $collapsible) {
         $table->define_columns($columns);
         $table->define_headers($headers);
         $table->sortable(true, 'uniqueid');

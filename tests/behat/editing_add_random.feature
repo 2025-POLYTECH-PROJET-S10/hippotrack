@@ -1,4 +1,4 @@
-@mod @mod_quiz @javascript
+@mod @mod_hippotrack @javascript
 Feature: Adding random questions to a quiz based on category and tags
   In order to have better assessment
   As a teacher
@@ -40,7 +40,7 @@ Feature: Adding random questions to a quiz based on category and tags
       | "listen" & "answer" | foo |
 
   Scenario: Available tags are shown in the autocomplete tag field
-    Given I am on the "Quiz 1" "mod_quiz > Edit" page logged in as "teacher1"
+    Given I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
     When I open the "last" add to quiz menu
     And I follow "a random question"
     And I open the autocomplete suggestions list
@@ -48,7 +48,7 @@ Feature: Adding random questions to a quiz based on category and tags
     And "bar" "autocomplete_suggestions" should exist
 
   Scenario: Questions can be filtered by tags
-    Given I am on the "Quiz 1" "mod_quiz > Edit" page logged in as "teacher1"
+    Given I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
     When I open the "last" add to quiz menu
     And I follow "a random question"
     And I set the field "Category" to "Top for Course 1"
@@ -73,7 +73,7 @@ Feature: Adding random questions to a quiz based on category and tags
     And I should not see "question 4 name"
 
   Scenario: A random question can be added to the quiz
-    Given I am on the "Quiz 1" "mod_quiz > Edit" page logged in as "teacher1"
+    Given I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
     When I open the "last" add to quiz menu
     And I follow "a random question"
     And I set the field "Tags" to "foo"
@@ -90,12 +90,12 @@ Feature: Adding random questions to a quiz based on category and tags
       | capability             | permission | role           | contextlevel | reference |
       | moodle/question:useall | Prevent    | editingteacher | Course       | C1        |
     And I log in as "teacher1"
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
     When I open the "last" add to quiz menu
     Then I should not see "a random question"
 
   Scenario: A random question can be added to the quiz by creating a new category
-    Given I am on the "Quiz 1" "mod_quiz > Edit" page logged in as "teacher1"
+    Given I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
     When I open the "last" add to quiz menu
     And I follow "a random question"
     And I follow "New category"

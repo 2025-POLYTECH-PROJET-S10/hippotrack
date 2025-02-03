@@ -17,7 +17,7 @@
 /**
  * Upgrade script for the quiz module.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2006 Eloy Lafuente (stronk7)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

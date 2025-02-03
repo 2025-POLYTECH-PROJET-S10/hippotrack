@@ -1,4 +1,4 @@
-@mod @mod_quiz @core_completion
+@mod @mod_hippotrack @core_completion
 Feature: View activity completion in the quiz activity
   In order to have visibility of quiz completion requirements
   As a student

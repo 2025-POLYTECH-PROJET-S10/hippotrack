@@ -21,8 +21,8 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
 
 use core\progress\none;
-use mod_quiz\grade_calculator;
-use mod_quiz\quiz_settings;
+use mod_hippotrack\grade_calculator;
+use mod_hippotrack\quiz_settings;
 
 /**
  * Unit tests for quiz_statistics\event\observer\slots_updated

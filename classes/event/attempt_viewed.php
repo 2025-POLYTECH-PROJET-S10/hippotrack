@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_quiz attempt viewed event.
+ * The mod_hippotrack attempt viewed event.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2014 Mark Nelson <markn@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz\event;
+namespace mod_hippotrack\event;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_quiz attempt viewed event class.
+ * The mod_hippotrack attempt viewed event class.
  *
  * @property-read array $other {
  *      Extra information about event.
@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  *      - int page: the page number of attempt.
  * }
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @since      Moodle 2.7
  * @copyright  2014 Mark Nelson <markn@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -58,7 +58,7 @@ class attempt_viewed extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('eventattemptviewed', 'mod_quiz');
+        return get_string('eventattemptviewed', 'mod_hippotrack');
     }
 
     /**

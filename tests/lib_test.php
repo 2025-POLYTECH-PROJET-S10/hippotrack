@@ -17,12 +17,12 @@
 /**
  * Unit tests for (some of) mod/quiz/locallib.php.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   test
  * @copyright  2008 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 use quiz;
 use quiz_attempt;
@@ -101,7 +101,7 @@ class lib_test extends \advanced_testcase {
         $this->setAdminUser();
 
         // Setup a quiz with 1 standard and 1 random question.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
 
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
@@ -159,7 +159,7 @@ class lib_test extends \advanced_testcase {
         }
 
         // Make a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $data = array_merge([
             'course' => $course->id,
             'grade' => 100.0,
@@ -201,7 +201,7 @@ class lib_test extends \advanced_testcase {
         $quizobj = quiz::create($attemptoptions['quiz']->id);
 
         // Start the passing attempt.
-        $quba = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         $timenow = time();
@@ -432,7 +432,7 @@ class lib_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         $dg = $this->getDataGenerator();
-        $quizgen = $dg->get_plugin_generator('mod_quiz');
+        $quizgen = $dg->get_plugin_generator('mod_hippotrack');
         $course = $dg->create_course();
         $u1 = $dg->create_user();
         $u2 = $dg->create_user();
@@ -462,15 +462,15 @@ class lib_test extends \advanced_testcase {
         $quizobj2a = quiz::create($quiz2->id, $u1->id);
 
         // Set attempts.
-        $quba1a = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj1a->get_context());
+        $quba1a = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj1a->get_context());
         $quba1a->set_preferred_behaviour($quizobj1a->get_quiz()->preferredbehaviour);
-        $quba1b = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj1b->get_context());
+        $quba1b = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj1b->get_context());
         $quba1b->set_preferred_behaviour($quizobj1b->get_quiz()->preferredbehaviour);
-        $quba1c = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj1c->get_context());
+        $quba1c = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj1c->get_context());
         $quba1c->set_preferred_behaviour($quizobj1c->get_quiz()->preferredbehaviour);
-        $quba1d = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj1d->get_context());
+        $quba1d = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj1d->get_context());
         $quba1d->set_preferred_behaviour($quizobj1d->get_quiz()->preferredbehaviour);
-        $quba2a = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj2a->get_context());
+        $quba2a = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj2a->get_context());
         $quba2a->set_preferred_behaviour($quizobj2a->get_quiz()->preferredbehaviour);
 
         $timenow = time();
@@ -503,7 +503,7 @@ class lib_test extends \advanced_testcase {
         $attemptobj->process_abandon($timenow, true);
 
         // User 1 attempts the quiz three times (abandon, finish, in progress).
-        $quba2a = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj2a->get_context());
+        $quba2a = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj2a->get_context());
         $quba2a->set_preferred_behaviour($quizobj2a->get_quiz()->preferredbehaviour);
 
         $attempt = quiz_create_attempt($quizobj2a, 1, false, $timenow, false, $u1->id);
@@ -512,7 +512,7 @@ class lib_test extends \advanced_testcase {
         $attemptobj = quiz_attempt::create($attempt->id);
         $attemptobj->process_abandon($timenow, true);
 
-        $quba2a = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj2a->get_context());
+        $quba2a = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj2a->get_context());
         $quba2a->set_preferred_behaviour($quizobj2a->get_quiz()->preferredbehaviour);
 
         $attempt = quiz_create_attempt($quizobj2a, 2, false, $timenow, false, $u1->id);
@@ -521,7 +521,7 @@ class lib_test extends \advanced_testcase {
         $attemptobj = quiz_attempt::create($attempt->id);
         $attemptobj->process_finish($timenow, false);
 
-        $quba2a = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj2a->get_context());
+        $quba2a = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj2a->get_context());
         $quba2a->set_preferred_behaviour($quizobj2a->get_quiz()->preferredbehaviour);
 
         $attempt = quiz_create_attempt($quizobj2a, 3, false, $timenow, false, $u1->id);
@@ -656,7 +656,7 @@ class lib_test extends \advanced_testcase {
         $this->resetAfterTest();
 
         $dg = $this->getDataGenerator();
-        $quizgen = $dg->get_plugin_generator('mod_quiz');
+        $quizgen = $dg->get_plugin_generator('mod_hippotrack');
         $course = $dg->create_course();
 
         $quiz = $quizgen->create_instance(['course' => $course->id, 'sumgrades' => 2]);
@@ -718,7 +718,7 @@ class lib_test extends \advanced_testcase {
         $factory = new \core_calendar\action_factory();
 
         // Decorate action event.
-        $actionevent = mod_quiz_core_calendar_provide_event_action($event, $factory);
+        $actionevent = mod_hippotrack_core_calendar_provide_event_action($event, $factory);
 
         // Confirm the event was decorated.
         $this->assertInstanceOf('\core_calendar\local\event\value_objects\action', $actionevent);
@@ -748,7 +748,7 @@ class lib_test extends \advanced_testcase {
         $factory = new \core_calendar\action_factory();
 
         // Decorate action event for the student.
-        $actionevent = mod_quiz_core_calendar_provide_event_action($event, $factory, $student->id);
+        $actionevent = mod_hippotrack_core_calendar_provide_event_action($event, $factory, $student->id);
 
         // Confirm the event was decorated.
         $this->assertInstanceOf('\core_calendar\local\event\value_objects\action', $actionevent);
@@ -777,7 +777,7 @@ class lib_test extends \advanced_testcase {
         $factory = new \core_calendar\action_factory();
 
         // Confirm the result was null.
-        $this->assertNull(mod_quiz_core_calendar_provide_event_action($event, $factory));
+        $this->assertNull(mod_hippotrack_core_calendar_provide_event_action($event, $factory));
     }
 
     public function test_quiz_core_calendar_provide_event_action_closed_for_user() {
@@ -802,7 +802,7 @@ class lib_test extends \advanced_testcase {
         $factory = new \core_calendar\action_factory();
 
         // Confirm the result was null.
-        $this->assertNull(mod_quiz_core_calendar_provide_event_action($event, $factory, $student->id));
+        $this->assertNull(mod_hippotrack_core_calendar_provide_event_action($event, $factory, $student->id));
     }
 
     public function test_quiz_core_calendar_provide_event_action_open_in_future() {
@@ -826,7 +826,7 @@ class lib_test extends \advanced_testcase {
         $factory = new \core_calendar\action_factory();
 
         // Decorate action event.
-        $actionevent = mod_quiz_core_calendar_provide_event_action($event, $factory);
+        $actionevent = mod_hippotrack_core_calendar_provide_event_action($event, $factory);
 
         // Confirm the event was decorated.
         $this->assertInstanceOf('\core_calendar\local\event\value_objects\action', $actionevent);
@@ -856,7 +856,7 @@ class lib_test extends \advanced_testcase {
         $factory = new \core_calendar\action_factory();
 
         // Decorate action event for the student.
-        $actionevent = mod_quiz_core_calendar_provide_event_action($event, $factory, $student->id);
+        $actionevent = mod_hippotrack_core_calendar_provide_event_action($event, $factory, $student->id);
 
         // Confirm the event was decorated.
         $this->assertInstanceOf('\core_calendar\local\event\value_objects\action', $actionevent);
@@ -900,7 +900,7 @@ class lib_test extends \advanced_testcase {
         $this->setUser($student);
 
         // Confirm null is returned.
-        $this->assertNull(mod_quiz_core_calendar_provide_event_action($event, $factory));
+        $this->assertNull(mod_hippotrack_core_calendar_provide_event_action($event, $factory));
     }
 
     public function test_quiz_core_calendar_provide_event_action_no_capability_for_user() {
@@ -934,7 +934,7 @@ class lib_test extends \advanced_testcase {
         $factory = new \core_calendar\action_factory();
 
         // Confirm null is returned.
-        $this->assertNull(mod_quiz_core_calendar_provide_event_action($event, $factory, $student->id));
+        $this->assertNull(mod_hippotrack_core_calendar_provide_event_action($event, $factory, $student->id));
     }
 
     public function test_quiz_core_calendar_provide_event_action_already_finished() {
@@ -970,7 +970,7 @@ class lib_test extends \advanced_testcase {
         // Create an attempt for the student in the quiz.
         $timenow = time();
         $attempt = quiz_create_attempt($quizobj, 1, false, $timenow, false, $student->id);
-        $quba = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
         quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $timenow);
         quiz_attempt_save_started($quizobj, $quba, $attempt);
@@ -989,7 +989,7 @@ class lib_test extends \advanced_testcase {
         $this->setUser($student);
 
         // Confirm null is returned.
-        $this->assertNull(mod_quiz_core_calendar_provide_event_action($event, $factory));
+        $this->assertNull(mod_hippotrack_core_calendar_provide_event_action($event, $factory));
     }
 
     public function test_quiz_core_calendar_provide_event_action_already_finished_for_user() {
@@ -1025,7 +1025,7 @@ class lib_test extends \advanced_testcase {
         // Create an attempt for the student in the quiz.
         $timenow = time();
         $attempt = quiz_create_attempt($quizobj, 1, false, $timenow, false, $student->id);
-        $quba = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
         quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $timenow);
         quiz_attempt_save_started($quizobj, $quba, $attempt);
@@ -1041,7 +1041,7 @@ class lib_test extends \advanced_testcase {
         $factory = new \core_calendar\action_factory();
 
         // Confirm null is returned.
-        $this->assertNull(mod_quiz_core_calendar_provide_event_action($event, $factory, $student->id));
+        $this->assertNull(mod_hippotrack_core_calendar_provide_event_action($event, $factory, $student->id));
     }
 
     public function test_quiz_core_calendar_provide_event_action_already_completed() {
@@ -1069,7 +1069,7 @@ class lib_test extends \advanced_testcase {
         $factory = new \core_calendar\action_factory();
 
         // Decorate action event.
-        $actionevent = mod_quiz_core_calendar_provide_event_action($event, $factory);
+        $actionevent = mod_hippotrack_core_calendar_provide_event_action($event, $factory);
 
         // Ensure result was null.
         $this->assertNull($actionevent);
@@ -1103,7 +1103,7 @@ class lib_test extends \advanced_testcase {
         $factory = new \core_calendar\action_factory();
 
         // Decorate action event for the student.
-        $actionevent = mod_quiz_core_calendar_provide_event_action($event, $factory, $student->id);
+        $actionevent = mod_hippotrack_core_calendar_provide_event_action($event, $factory, $student->id);
 
         // Ensure result was null.
         $this->assertNull($actionevent);
@@ -1135,7 +1135,7 @@ class lib_test extends \advanced_testcase {
      * This function should work given either an instance of the module (cm_info), such as when checking the active rules,
      * or if passed a stdClass of similar structure, such as when checking the the default completion settings for a mod type.
      */
-    public function test_mod_quiz_completion_get_active_rule_descriptions() {
+    public function test_mod_hippotrack_completion_get_active_rule_descriptions() {
         $this->resetAfterTest();
         $this->setAdminUser();
 
@@ -1168,10 +1168,10 @@ class lib_test extends \advanced_testcase {
         $activeruledescriptions = [
             get_string('completionpassorattemptsexhausteddesc', 'quiz'),
         ];
-        $this->assertEquals(mod_quiz_get_completion_active_rule_descriptions($cm1), $activeruledescriptions);
-        $this->assertEquals(mod_quiz_get_completion_active_rule_descriptions($cm2), []);
-        $this->assertEquals(mod_quiz_get_completion_active_rule_descriptions($moddefaults), $activeruledescriptions);
-        $this->assertEquals(mod_quiz_get_completion_active_rule_descriptions(new \stdClass()), []);
+        $this->assertEquals(mod_hippotrack_get_completion_active_rule_descriptions($cm1), $activeruledescriptions);
+        $this->assertEquals(mod_hippotrack_get_completion_active_rule_descriptions($cm2), []);
+        $this->assertEquals(mod_hippotrack_get_completion_active_rule_descriptions($moddefaults), $activeruledescriptions);
+        $this->assertEquals(mod_hippotrack_get_completion_active_rule_descriptions(new \stdClass()), []);
     }
 
     /**
@@ -1185,7 +1185,7 @@ class lib_test extends \advanced_testcase {
         $roleid = self::getDataGenerator()->create_role();
         self::getDataGenerator()->role_assign($roleid, $user->id, $context->id);
         assign_capability('moodle/calendar:manageentries', CAP_PROHIBIT, $roleid, $context, true);
-        $generator = self::getDataGenerator()->get_plugin_generator('mod_quiz');
+        $generator = self::getDataGenerator()->get_plugin_generator('mod_hippotrack');
         // Create an instance as a user without the calendar capabilities.
         $this->setUser($user);
         $time = time();

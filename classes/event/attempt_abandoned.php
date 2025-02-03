@@ -15,17 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_quiz attempt abandoned event.
+ * The mod_hippotrack attempt abandoned event.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2013 Adrian Greeve <adrian@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_quiz\event;
+namespace mod_hippotrack\event;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_quiz attempt abandoned event class.
+ * The mod_hippotrack attempt abandoned event class.
  *
  * @property-read array $other {
  *      Extra information about event.
@@ -34,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
  *      - int quizid: (optional) id of the quiz.
  * }
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @since      Moodle 2.6
  * @copyright  2013 Adrian Greeve <adrian@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -66,7 +66,7 @@ class attempt_abandoned extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('eventquizattemptabandoned', 'mod_quiz');
+        return get_string('eventquizattemptabandoned', 'mod_hippotrack');
     }
 
     /**
@@ -96,7 +96,7 @@ class attempt_abandoned extends \core\event\base {
         $attempt = $this->get_record_snapshot('quiz_attempts', $this->objectid);
 
         $legacyeventdata = new \stdClass();
-        $legacyeventdata->component = 'mod_quiz';
+        $legacyeventdata->component = 'mod_hippotrack';
         $legacyeventdata->attemptid = $this->objectid;
         $legacyeventdata->timestamp = $attempt->timemodified;
         $legacyeventdata->userid = $this->relateduserid;

@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_quiz/submission_confirmation
+    @template mod_hippotrack/submission_confirmation
 
     Submission confirmation dialogue template
 
@@ -27,11 +27,11 @@
 }}
 <div class="quiz-submission-confirmation-content">
     <div class="mb-3">
-        {{#str}} confirmclose, mod_quiz {{/str}}
+        {{#str}} confirmclose, mod_hippotrack {{/str}}
     </div>
     {{#hasunanswered}}
         <div class="alert alert-warning">
-            {{#str}} submission_confirmation_unanswered, mod_quiz, {{totalunanswered}} {{/str}}
+            {{#str}} submission_confirmation_unanswered, mod_hippotrack, {{totalunanswered}} {{/str}}
         </div>
     {{/hasunanswered}}
 </div>

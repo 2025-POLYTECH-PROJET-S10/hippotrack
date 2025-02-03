@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz\adminpresets;
+namespace mod_hippotrack\adminpresets;
 
 use ReflectionMethod;
 use core_adminpresets\local\setting\adminpresets_setting;
@@ -22,20 +22,20 @@ use core_adminpresets\local\setting\adminpresets_setting;
 /**
  * Admin settings class for the quiz review options.
  *
- * @package          mod_quiz
+ * @package          mod_hippotrack
  * @copyright        2021 Pimenko <support@pimenko.com><pimenko.com>
  * @author           Jordan Kesraoui | Sylvain Revenu | Pimenko based on David Monllaó <david.monllao@urv.cat> code
  * @license          http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class adminpresets_mod_quiz_admin_review_setting extends adminpresets_setting {
+class adminpresets_mod_hippotrack_admin_review_setting extends adminpresets_setting {
 
     /**
-     * The setting value is a sum of 'mod_quiz_admin_review_setting::times'
+     * The setting value is a sum of 'mod_hippotrack_admin_review_setting::times'
      */
     protected function set_visiblevalue() {
 
-        // Getting the masks descriptions (mod_quiz_admin_review_setting protected method).
-        $reflectiontimes = new ReflectionMethod('mod_quiz_admin_review_setting', 'times');
+        // Getting the masks descriptions (mod_hippotrack_admin_review_setting protected method).
+        $reflectiontimes = new ReflectionMethod('mod_hippotrack_admin_review_setting', 'times');
         $reflectiontimes->setAccessible(true);
         $times = $reflectiontimes->invoke(null);
 

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz\tests;
+namespace mod_hippotrack\tests;
 
 use core_question_generator;
 use question_engine;
@@ -25,7 +25,7 @@ use stdClass;
 /**
  * Quiz attempt walk through using data from csv file.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   test
  * @copyright  2013 The Open University
  * @author     Jamie Pratt <me@jamiep.org>
@@ -153,7 +153,7 @@ abstract class attempt_walkthrough_testcase extends \advanced_testcase {
         ksort($slots);
 
         // Make a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         // Settings from param override defaults.
         $aggregratedsettings = $quizsettings + array('course' => $SITE->id,
@@ -272,7 +272,7 @@ abstract class attempt_walkthrough_testcase extends \advanced_testcase {
             if (!isset($attemptids[$step['quizattempt']])) {
                 // Start the attempt.
                 $quizobj = quiz::create($this->quiz->id, $user->id);
-                $quba = question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+                $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
                 $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
                 $prevattempts = quiz_get_user_attempts($this->quiz->id, $user->id, 'all', true);

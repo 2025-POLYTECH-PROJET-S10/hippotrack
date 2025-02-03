@@ -17,7 +17,7 @@
 /**
  * Capability definitions for the quiz module.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2006 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

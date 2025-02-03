@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 use backup;
 use core_user;
@@ -24,7 +24,7 @@ use restore_dbops;
 /**
  * Unit tests restoring quiz attempts
  *
- * @package     mod_quiz
+ * @package     mod_hippotrack
  * @copyright   2021 Paul Holden <paulh@moodle.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

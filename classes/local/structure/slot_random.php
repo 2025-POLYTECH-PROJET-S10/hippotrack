@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz\local\structure;
+namespace mod_hippotrack\local\structure;
 
 /**
  * Class slot_random, represents a random question slot type.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2018 Shamim Rezaie <shamim@moodle.com>
  * @author     2021 Safat Shahin <safatshahin@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -199,7 +199,7 @@ class slot_random {
 
         $this->record->id = $DB->insert_record('quiz_slots', $this->record);
 
-        $this->referencerecord->component = 'mod_quiz';
+        $this->referencerecord->component = 'mod_hippotrack';
         $this->referencerecord->questionarea = 'slot';
         $this->referencerecord->itemid = $this->record->id;
         $this->referencerecord->filtercondition = $this->filtercondition;
@@ -209,7 +209,7 @@ class slot_random {
 
         // Log slot created event.
         $cm = get_coursemodule_from_instance('quiz', $quiz->id);
-        $event = \mod_quiz\event\slot_created::create([
+        $event = \mod_hippotrack\event\slot_created::create([
             'context' => \context_module::instance($cm->id),
             'objectid' => $this->record->id,
             'other' => [

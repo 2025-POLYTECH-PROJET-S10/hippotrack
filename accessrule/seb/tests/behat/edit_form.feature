@@ -1,4 +1,4 @@
-@javascript @mod_quiz @quizaccess @quizaccess_seb
+@javascript @mod_hippotrack @quizaccess @quizaccess_seb
 Feature: Safe Exam Browser settings in quiz edit form
 
   Background:

@@ -17,7 +17,7 @@
 /**
  * This page handles listing of quiz overrides
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2010 Matt Petro
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -72,7 +72,7 @@ $PAGE->set_heading($course->fullname);
 $PAGE->activityheader->disable();
 
 // Activate the secondary nav tab.
-$PAGE->set_secondary_active_tab("mod_quiz_useroverrides");
+$PAGE->set_secondary_active_tab("mod_hippotrack_useroverrides");
 
 // Delete orphaned group overrides.
 $sql = 'SELECT o.id
@@ -338,8 +338,8 @@ if ($canedit) {
 
 // Tertiary navigation.
 echo $OUTPUT->header();
-$renderer = $PAGE->get_renderer('mod_quiz');
-$tertiarynav = new \mod_quiz\output\overrides_actions($cmid, $mode, $canedit, $addenabled);
+$renderer = $PAGE->get_renderer('mod_hippotrack');
+$tertiarynav = new \mod_hippotrack\output\overrides_actions($cmid, $mode, $canedit, $addenabled);
 echo $renderer->render($tertiarynav);
 
 if ($mode === 'user') {

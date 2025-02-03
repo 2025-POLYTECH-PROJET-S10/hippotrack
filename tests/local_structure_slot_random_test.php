@@ -14,15 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
-use mod_quiz\question\bank\qbank_helper;
+use mod_hippotrack\question\bank\qbank_helper;
 
 /**
- * Class mod_quiz_local_structure_slot_random_test
- * Class for tests related to the {@link \mod_quiz\local\structure\slot_random} class.
+ * Class mod_hippotrack_local_structure_slot_random_test
+ * Class for tests related to the {@link \mod_hippotrack\local\structure\slot_random} class.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   test
  * @copyright  2018 Shamim Rezaie <shamim@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -38,7 +38,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $this->setAdminUser();
 
         // Create a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
 
         // Create a question category in the system context.
@@ -68,10 +68,10 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $randomslotdata->questionscontextid = $category->contextid;
 
         // Insert the random question to the quiz.
-        $randomslot = new \mod_quiz\local\structure\slot_random($randomslotdata);
+        $randomslot = new \mod_hippotrack\local\structure\slot_random($randomslotdata);
         $randomslot->set_filter_condition($filtercondition);
 
-        $rc = new \ReflectionClass('\mod_quiz\local\structure\slot_random');
+        $rc = new \ReflectionClass('\mod_hippotrack\local\structure\slot_random');
         $rcp = $rc->getProperty('filtercondition');
         $rcp->setAccessible(true);
         $record = json_decode($rcp->getValue($randomslot));
@@ -93,7 +93,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $this->setAdminUser();
 
         // Create a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
 
         // Create a question category in the system context.
@@ -114,7 +114,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $randomslotdata->usingcontextid = \context_module::instance($quiz->cmid)->id;
         $randomslotdata->questionscontextid = $category->contextid;
 
-        $randomslot = new \mod_quiz\local\structure\slot_random($randomslotdata);
+        $randomslot = new \mod_hippotrack\local\structure\slot_random($randomslotdata);
         $randomslot->set_filter_condition($filtercondition);
 
         // The create_instance had injected an additional cmid propery to the quiz. Let's remove that.
@@ -130,7 +130,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $this->setAdminUser();
 
         // Create a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
 
         // Create a question category in the system context.
@@ -151,7 +151,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $randomslotdata->usingcontextid = \context_module::instance($quiz->cmid)->id;
         $randomslotdata->questionscontextid = $category->contextid;
 
-        $randomslot = new \mod_quiz\local\structure\slot_random($randomslotdata);
+        $randomslot = new \mod_hippotrack\local\structure\slot_random($randomslotdata);
         $randomslot->set_filter_condition($filtercondition);
 
         // The create_instance had injected an additional cmid propery to the quiz. Let's remove that.
@@ -159,7 +159,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
 
         $randomslot->set_quiz($quiz);
 
-        $rc = new \ReflectionClass('\mod_quiz\local\structure\slot_random');
+        $rc = new \ReflectionClass('\mod_hippotrack\local\structure\slot_random');
         $rcp = $rc->getProperty('quiz');
         $rcp->setAccessible(true);
         $quizpropery = $rcp->getValue($randomslot);
@@ -171,7 +171,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         global $SITE, $DB;
 
         // Create a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
 
         // Create a question category in the system context.
@@ -187,7 +187,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $randomslotdata->usingcontextid = \context_module::instance($quiz->cmid)->id;
         $randomslotdata->questionscontextid = $category->contextid;
 
-        $randomslot = new \mod_quiz\local\structure\slot_random($randomslotdata);
+        $randomslot = new \mod_hippotrack\local\structure\slot_random($randomslotdata);
 
         // Create tags.
         foreach ($tagnames as $tagname) {
@@ -212,7 +212,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $randomslot->set_tags([$tags['foo'], $tags['bar']]);
         $randomslot->set_filter_condition($filtercondition);
 
-        $rc = new \ReflectionClass('\mod_quiz\local\structure\slot_random');
+        $rc = new \ReflectionClass('\mod_hippotrack\local\structure\slot_random');
         $rcp = $rc->getProperty('filtercondition');
         $rcp->setAccessible(true);
         $tagspropery = $rcp->getValue($randomslot);
@@ -236,7 +236,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $randomslot->set_tags([$tags['baz']]);
         $randomslot->set_filter_condition($filtercondition);
 
-        $rc = new \ReflectionClass('\mod_quiz\local\structure\slot_random');
+        $rc = new \ReflectionClass('\mod_hippotrack\local\structure\slot_random');
         $rcp = $rc->getProperty('filtercondition');
         $rcp->setAccessible(true);
         $tagspropery = $rcp->getValue($randomslot);
@@ -255,7 +255,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $randomslot->set_tags([$tags['foo'], $tags['bar'], $tags['foo']]);
         $randomslot->set_filter_condition($filtercondition);
 
-        $rc = new \ReflectionClass('\mod_quiz\local\structure\slot_random');
+        $rc = new \ReflectionClass('\mod_hippotrack\local\structure\slot_random');
         $rcp = $rc->getProperty('filtercondition');
         $rcp->setAccessible(true);
         $tagspropery = $rcp->getValue($randomslot);
@@ -275,7 +275,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $randomslot->set_tags_by_id([$tags['foo']->id, $tags['bar']->id]);
         $randomslot->set_filter_condition($filtercondition);
 
-        $rc = new \ReflectionClass('\mod_quiz\local\structure\slot_random');
+        $rc = new \ReflectionClass('\mod_hippotrack\local\structure\slot_random');
         $rcp = $rc->getProperty('tags');
         $rcp->setAccessible(true);
         $tagspropery = $rcp->getValue($randomslot);
@@ -305,7 +305,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         // Now set the tags again.
         $randomslot->set_tags_by_id([$tags['baz']->id]);
 
-        $rc = new \ReflectionClass('\mod_quiz\local\structure\slot_random');
+        $rc = new \ReflectionClass('\mod_hippotrack\local\structure\slot_random');
         $rcp = $rc->getProperty('tags');
         $rcp->setAccessible(true);
         $tagspropery = $rcp->getValue($randomslot);
@@ -327,7 +327,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
 
         $randomslot->set_tags_by_id([$tags['foo']->id, $tags['bar']->id], $tags['foo']->id);
 
-        $rc = new \ReflectionClass('\mod_quiz\local\structure\slot_random');
+        $rc = new \ReflectionClass('\mod_hippotrack\local\structure\slot_random');
         $rcp = $rc->getProperty('tags');
         $rcp->setAccessible(true);
         $tagspropery = $rcp->getValue($randomslot);
@@ -353,7 +353,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $this->setAdminUser();
 
         // Create a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
         $quizcontext = \context_module::instance($quiz->cmid);
 
@@ -400,7 +400,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $randomslotdata->questionscontextid = $category->contextid;
 
         // Insert the random question to the quiz.
-        $randomslot = new \mod_quiz\local\structure\slot_random($randomslotdata);
+        $randomslot = new \mod_hippotrack\local\structure\slot_random($randomslotdata);
         $randomslot->set_tags([$footag, $bartag]);
         $randomslot->set_filter_condition($filtercondition);
         $randomslot->insert(1); // Put the question on the first page of the quiz.

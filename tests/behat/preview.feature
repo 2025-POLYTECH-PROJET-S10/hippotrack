@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Preview a quiz as a teacher
   In order to verify my quizzes are ready for my students
   As a teacher
@@ -35,7 +35,7 @@ Feature: Preview a quiz as a teacher
 
   @javascript
   Scenario: Review the quiz attempt
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "teacher"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "teacher"
     And I follow "Review"
     Then I should see "25.00 out of 100.00"
     And I follow "Finish review"
@@ -46,7 +46,7 @@ Feature: Preview a quiz as a teacher
     Given the following "language customisations" exist:
       | component       | stringid | value |
       | core_langconfig | decsep   | #     |
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "teacher"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "teacher"
     And I follow "Review"
     Then I should see "1#00/4#00"
     And I should see "25#00 out of 100#00"
@@ -55,7 +55,7 @@ Feature: Preview a quiz as a teacher
     And "Review" "link" in the "Preview" "table_row" should be visible
 
   Scenario: Preview the quiz
-    Given I am on the "Quiz 1" "mod_quiz > View" page logged in as "teacher"
+    Given I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "teacher"
     When I press "Preview quiz"
     Then I should see "Question 1"
     And "Start a new preview" "button" should exist
@@ -68,13 +68,13 @@ Feature: Preview a quiz as a teacher
       | question | page | maxmark |
       | TF1      | 1    |         |
       | TF2      | 1    | 3.0     |
-    When I am on the "Quiz 2" "mod_quiz > View" page logged in as "admin"
+    When I am on the "Quiz 2" "mod_hippotrack > View" page logged in as "admin"
     And I should see "This quiz is currently not available."
     And I press "Preview quiz"
     Then I should see "if this were a real attempt, you would be blocked" in the ".alert-warning" "css_element"
 
   Scenario: Admins should be able to preview a quiz
-    Given I am on the "Quiz 1" "mod_quiz > View" page logged in as "admin"
+    Given I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "admin"
     When I press "Preview quiz"
     Then I should see "Question 1"
     And "Start a new preview" "button" should exist

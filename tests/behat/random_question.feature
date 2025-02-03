@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 
 Feature: Moving a question to another category should not affect random questions in a quiz
   In order for a quiz with random questions to work as expected
@@ -30,7 +30,7 @@ Feature: Moving a question to another category should not affect random question
 
   @javascript
   Scenario: Moving a question should not change the random question
-    Given I am on the "Quiz 1" "mod_quiz > Edit" page logged in as "teacher1"
+    Given I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
     When I open the "last" add to quiz menu
     And I follow "a random question"
     And I set the field "Category" to "Used category"
@@ -47,14 +47,14 @@ Feature: Moving a question to another category should not affect random question
     And the field "Select a category" matches value "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Subcategory (1)"
     And the "Select a category" select box should contain "Used category"
     And the "Select a category" select box should not contain "Used category (1)"
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
     And I should see "Random (Used category)" on quiz page "1"
     And I click on "(See questions)" "link"
     And I should see "Used category"
 
   @javascript
   Scenario: Renaming a random question category should update the random question
-    Given I am on the "Quiz 1" "mod_quiz > Edit" page logged in as "teacher1"
+    Given I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
     When I open the "last" add to quiz menu
     And I follow "a random question"
     And I set the field "Category" to "Used category"
@@ -68,5 +68,5 @@ Feature: Moving a question to another category should not affect random question
     And I press "Save changes"
     Then I should see "Used category new"
     And I should see "I was edited" in the "Used category new" "list_item"
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
     And I should see "Random (Used category new)" on quiz page "1"

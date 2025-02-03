@@ -17,17 +17,17 @@
 /**
  * Contains the class containing unit tests for the quiz notify attempt manual grading completed cron task.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2021 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 use advanced_testcase;
 use context_course;
 use context_module;
-use mod_quiz\task\quiz_notify_attempt_manual_grading_completed;
+use mod_hippotrack\task\quiz_notify_attempt_manual_grading_completed;
 use question_engine;
 use quiz;
 use quiz_attempt;
@@ -39,7 +39,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Class containing unit tests for the quiz notify attempt manual grading completed cron task.
  *
- * @package mod_quiz
+ * @package mod_hippotrack
  * @copyright 2021 The Open University
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -104,7 +104,7 @@ class quiz_notify_attempt_manual_grading_completed_test extends advanced_testcas
         $this->getDataGenerator()->enrol_user($this->teacher->id, $this->course->id, $teacherrole->id);
 
         // Make a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $this->quiz = $quizgenerator->create_instance(['course' => $this->course->id, 'questionsperpage' => 0,
             'grade' => 100.0, 'sumgrades' => 2]);
 
@@ -119,7 +119,7 @@ class quiz_notify_attempt_manual_grading_completed_test extends advanced_testcas
         quiz_add_quiz_question($essay->id, $this->quiz);
 
         $this->quizobj = quiz::create($this->quiz->id);
-        $this->quba = question_engine::make_questions_usage_by_activity('mod_quiz', $this->quizobj->get_context());
+        $this->quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $this->quizobj->get_context());
         $this->quba->set_preferred_behaviour($this->quizobj->get_quiz()->preferredbehaviour);
     }
 

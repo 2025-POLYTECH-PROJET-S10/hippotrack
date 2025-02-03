@@ -11,26 +11,26 @@
 
 // The CSS classes we use.
 var CSS = {
-        ACTIVITYINSTANCE: 'activityinstance',
-        AVAILABILITYINFODIV: 'div.availabilityinfo',
-        CONTENTWITHOUTLINK: 'contentwithoutlink',
-        CONDITIONALHIDDEN: 'conditionalhidden',
-        DIMCLASS: 'dimmed',
-        DIMMEDTEXT: 'dimmed_text',
-        EDITINSTRUCTIONS: 'editinstructions',
-        EDITINGMAXMARK: 'editor_displayed',
-        HIDE: 'hide',
-        JOIN: 'page_join',
-        MODINDENTCOUNT: 'mod-indent-',
-        MODINDENTHUGE: 'mod-indent-huge',
-        PAGE: 'page',
-        SECTIONHIDDENCLASS: 'hidden',
-        SECTIONIDPREFIX: 'section-',
-        SELECTMULTIPLE: 'select-multiple',
-        SLOT: 'slot',
-        SHOW: 'editing_show',
-        TITLEEDITOR: 'titleeditor'
-    },
+    ACTIVITYINSTANCE: 'activityinstance',
+    AVAILABILITYINFODIV: 'div.availabilityinfo',
+    CONTENTWITHOUTLINK: 'contentwithoutlink',
+    CONDITIONALHIDDEN: 'conditionalhidden',
+    DIMCLASS: 'dimmed',
+    DIMMEDTEXT: 'dimmed_text',
+    EDITINSTRUCTIONS: 'editinstructions',
+    EDITINGMAXMARK: 'editor_displayed',
+    HIDE: 'hide',
+    JOIN: 'page_join',
+    MODINDENTCOUNT: 'mod-indent-',
+    MODINDENTHUGE: 'mod-indent-huge',
+    PAGE: 'page',
+    SECTIONHIDDENCLASS: 'hidden',
+    SECTIONIDPREFIX: 'section-',
+    SELECTMULTIPLE: 'select-multiple',
+    SLOT: 'slot',
+    SHOW: 'editing_show',
+    TITLEEDITOR: 'titleeditor'
+},
     // The CSS selectors we use.
     SELECTOR = {
         ACTIONAREA: '.actions',
@@ -72,12 +72,12 @@ var CSS = {
         SELECTALL: '#questionselectall',
         SHOW: 'a.' + CSS.SHOW,
         SLOTLI: 'li.slot',
-        SUMMARKS: '.mod_quiz_summarks'
+        SUMMARKS: '.mod_hippotrack_summarks'
     },
     BODY = Y.one(document.body);
 
 // Setup the basic namespace.
-M.mod_quiz = M.mod_quiz || {};
+M.mod_hippotrack = M.mod_hippotrack || {};
 
 /**
  * The toolbox class is a generic class which should never be directly
@@ -88,7 +88,7 @@ M.mod_quiz = M.mod_quiz || {};
  * @protected
  * @extends Base
  */
-var TOOLBOX = function() {
+var TOOLBOX = function () {
     TOOLBOX.superclass.constructor.apply(this, arguments);
 };
 
@@ -103,7 +103,7 @@ Y.extend(TOOLBOX, Y.Base, {
      * @param {Object} [optionalconfig] Any additional configuration to submit
      * @chainable
      */
-    send_request: function(data, statusspinner, success_callback, optionalconfig) {
+    send_request: function (data, statusspinner, success_callback, optionalconfig) {
         // Default data structure
         if (!data) {
             data = {};
@@ -128,7 +128,7 @@ Y.extend(TOOLBOX, Y.Base, {
             method: 'POST',
             data: data,
             on: {
-                success: function(tid, response) {
+                success: function (tid, response) {
                     try {
                         responsetext = Y.JSON.parse(response.responseText);
                         if (responsetext.error) {
@@ -144,20 +144,20 @@ Y.extend(TOOLBOX, Y.Base, {
                     }
                     if (responsetext.hasOwnProperty('newnumquestions')) {
                         Y.one(SELECTOR.NUMQUESTIONS).setHTML(
-                                M.util.get_string('numquestionsx', 'quiz', responsetext.newnumquestions)
-                            );
+                            M.util.get_string('numquestionsx', 'quiz', responsetext.newnumquestions)
+                        );
                     }
                     if (success_callback) {
                         Y.bind(success_callback, this, responsetext)();
                     }
 
                     if (statusspinner) {
-                        window.setTimeout(function() {
+                        window.setTimeout(function () {
                             statusspinner.hide();
                         }, 400);
                     }
                 },
-                failure: function(tid, response) {
+                failure: function (tid, response) {
                     if (statusspinner) {
                         statusspinner.hide();
                     }
@@ -183,49 +183,49 @@ Y.extend(TOOLBOX, Y.Base, {
         return this;
     }
 },
-{
-    NAME: 'mod_quiz-toolbox',
-    ATTRS: {
-        /**
-         * The ID of the Moodle Course being edited.
-         *
-         * @attribute courseid
-         * @default 0
-         * @type Number
-         */
-        courseid: {
-            'value': 0
-        },
+    {
+        NAME: 'mod_hippotrack-toolbox',
+        ATTRS: {
+            /**
+             * The ID of the Moodle Course being edited.
+             *
+             * @attribute courseid
+             * @default 0
+             * @type Number
+             */
+            courseid: {
+                'value': 0
+            },
 
-        /**
-         * The Moodle course format.
-         *
-         * @attribute format
-         * @default 'topics'
-         * @type String
-         */
-        quizid: {
-            'value': 0
-        },
-        /**
-         * The URL to use when submitting requests.
-         * @attribute ajaxurl
-         * @default null
-         * @type String
-         */
-        ajaxurl: {
-            'value': null
-        },
-        /**
-         * Any additional configuration passed when creating the instance.
-         *
-         * @attribute config
-         * @default {}
-         * @type Object
-         */
-        config: {
-            'value': {}
+            /**
+             * The Moodle course format.
+             *
+             * @attribute format
+             * @default 'topics'
+             * @type String
+             */
+            quizid: {
+                'value': 0
+            },
+            /**
+             * The URL to use when submitting requests.
+             * @attribute ajaxurl
+             * @default null
+             * @type String
+             */
+            ajaxurl: {
+                'value': null
+            },
+            /**
+             * Any additional configuration passed when creating the instance.
+             *
+             * @attribute config
+             * @default {}
+             * @type Object
+             */
+            config: {
+                'value': {}
+            }
         }
     }
-}
 );

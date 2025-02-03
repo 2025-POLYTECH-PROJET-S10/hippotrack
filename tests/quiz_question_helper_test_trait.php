@@ -17,11 +17,11 @@
 /**
  * Trait helper.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @category  test
  * @copyright 2013 The Open University
  * @author    Jamie Pratt <me@jamiep.org>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class_alias(\mod_quiz\tests\question_helper_test_trait::class, \quiz_question_helper_test_trait::class);
+class_alias(\mod_hippotrack\tests\question_helper_test_trait::class, \quiz_question_helper_test_trait::class);

@@ -1,20 +1,20 @@
-YUI.add('moodle-mod_quiz-util-base', function (Y, NAME) {
+YUI.add('moodle-mod_hippotrack-util-base', function (Y, NAME) {
 
-/**
- * The Moodle.mod_quiz.util classes provide quiz-related utility functions.
- *
- * @module moodle-mod_quiz-util
- * @main
- */
+    /**
+     * The Moodle.mod_hippotrack.util classes provide quiz-related utility functions.
+     *
+     * @module moodle-mod_hippotrack-util
+     * @main
+     */
 
-Y.namespace('Moodle.mod_quiz.util');
+    Y.namespace('Moodle.mod_hippotrack.util');
 
-/**
- * A collection of general utility functions for use in quiz.
- *
- * @class Moodle.mod_quiz.util
- * @static
- */
+    /**
+     * A collection of general utility functions for use in quiz.
+     *
+     * @class Moodle.mod_hippotrack.util
+     * @static
+     */
 
 
 }, '@VERSION@');

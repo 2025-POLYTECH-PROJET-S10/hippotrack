@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz\question\bank;
+namespace mod_hippotrack\question\bank;
 
 use core_question\local\bank\question_version_status;
 use core_question\local\bank\random_question_loader;
@@ -28,7 +28,7 @@ require_once($CFG->dirroot . '/mod/quiz/attemptlib.php');
 /**
  * Helper class for question bank and its associated data.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   question
  * @copyright  2021 Catalyst IT Australia Pty Ltd
  * @author     Safat Shahin <safatshahin@catalyst-au.net>
@@ -123,7 +123,7 @@ class qbank_helper {
                   FROM {quiz_slots} slot
 
              -- case where a particular question has been added to the quiz.
-             LEFT JOIN {question_references} qr ON qr.usingcontextid = :quizcontextid AND qr.component = 'mod_quiz'
+             LEFT JOIN {question_references} qr ON qr.usingcontextid = :quizcontextid AND qr.component = 'mod_hippotrack'
                                         AND qr.questionarea = 'slot' AND qr.itemid = slot.id
              LEFT JOIN {question_bank_entries} qbe ON qbe.id = qr.questionbankentryid
 
@@ -138,7 +138,7 @@ class qbank_helper {
                           MAX(CASE WHEN lv.status <> :draft THEN lv.version END) AS usableversion,
                           MAX(lv.version) AS anyversion
                      FROM {quiz_slots} lslot
-                     JOIN {question_references} lqr ON lqr.usingcontextid = :quizcontextid2 AND lqr.component = 'mod_quiz'
+                     JOIN {question_references} lqr ON lqr.usingcontextid = :quizcontextid2 AND lqr.component = 'mod_hippotrack'
                                         AND lqr.questionarea = 'slot' AND lqr.itemid = lslot.id
                      JOIN {question_versions} lv ON lv.questionbankentryid = lqr.questionbankentryid
                     WHERE lslot.quizid = :quizid2
@@ -156,7 +156,7 @@ class qbank_helper {
              LEFT JOIN {question} q ON q.id = qv.questionid
 
              -- Case where a random question has been added.
-             LEFT JOIN {question_set_references} qsr ON qsr.usingcontextid = :quizcontextid3 AND qsr.component = 'mod_quiz'
+             LEFT JOIN {question_set_references} qsr ON qsr.usingcontextid = :quizcontextid3 AND qsr.component = 'mod_hippotrack'
                                         AND qsr.questionarea = 'slot' AND qsr.itemid = slot.id
 
                  WHERE slot.quizid = :quizid

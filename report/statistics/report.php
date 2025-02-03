@@ -613,7 +613,7 @@ class quiz_statistics_report extends quiz_default_report {
         $yaxis->set_stepsize(10);
         $yaxis->set_label('%');
 
-        $output = $PAGE->get_renderer('mod_quiz');
+        $output = $PAGE->get_renderer('mod_hippotrack');
         $graphname = get_string('statisticsreportgraph', 'quiz_statistics');
         echo $output->chart($chart, $graphname);
     }

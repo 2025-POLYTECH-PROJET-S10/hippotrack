@@ -4,8 +4,8 @@
  * This class is responsible for managing AJAX interactions with sections
  * when adding, editing, removing section headings.
  *
- * @module moodle-mod_quiz-toolboxes
- * @namespace M.mod_quiz.toolboxes
+ * @module moodle-mod_hippotrack-toolboxes
+ * @namespace M.mod_hippotrack.toolboxes
  */
 
 /**
@@ -16,9 +16,9 @@
  *
  * @class section
  * @constructor
- * @extends M.mod_quiz.toolboxes.toolbox
+ * @extends M.mod_hippotrack.toolboxes.toolbox
  */
-var SECTIONTOOLBOX = function() {
+var SECTIONTOOLBOX = function () {
     SECTIONTOOLBOX.superclass.constructor.apply(this, arguments);
 };
 
@@ -42,8 +42,8 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
      * @method initializer
      * @protected
      */
-    initializer: function() {
-        M.mod_quiz.quizbase.register_module(this);
+    initializer: function () {
+        M.mod_hippotrack.quizbase.register_module(this);
 
         BODY.delegate('key', this.handle_data_action, 'down:enter', SELECTOR.ACTIVITYACTION, this);
         Y.delegate('click', this.handle_data_action, BODY, SELECTOR.ACTIVITYACTION, this);
@@ -60,7 +60,7 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
      * @param {EventFacade} ev The event that was triggered.
      * @returns {boolean}
      */
-    handle_data_action: function(ev) {
+    handle_data_action: function (ev) {
         // We need to get the anchor element that triggered this event.
         var node = ev.target;
         if (!node.test('a') && !node.test('input[data-action]')) {
@@ -107,7 +107,7 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
      * @param {Node} activity The activity node that this action will be performed on.
      * @chainable
      */
-    delete_section_with_confirmation: function(ev, button, activity) {
+    delete_section_with_confirmation: function (ev, button, activity) {
         // Prevent the default button action.
         ev.preventDefault();
 
@@ -118,15 +118,15 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
         });
 
         // If it is confirmed.
-        confirm.on('complete-yes', function() {
+        confirm.on('complete-yes', function () {
 
             var spinner = M.util.add_spinner(Y, activity.one(SELECTOR.ACTIONAREA));
             var data = {
-                'class':  'section',
+                'class': 'section',
                 'action': 'DELETE',
-                'id':     activity.get('id').replace('section-', '')
+                'id': activity.get('id').replace('section-', '')
             };
-            this.send_request(data, spinner, function(response) {
+            this.send_request(data, spinner, function (response) {
                 if (response.deleted) {
                     window.location.reload(true);
                 }
@@ -146,7 +146,7 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
      * @param {String} action The action that has been requested.
      * @return Boolean
      */
-    edit_section_title: function(ev, button, activity) {
+    edit_section_title: function (ev, button, activity) {
         // Get the element we're working on
         var activityid = activity.get('id').replace('section-', ''),
             instancesection = activity.one(SELECTOR.INSTANCESECTION),
@@ -155,13 +155,13 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
             data = {
                 'class': 'section',
                 'field': 'getsectiontitle',
-                'id':    activityid
+                'id': activityid
             };
 
         // Prevent the default actions.
         ev.preventDefault();
 
-        this.send_request(data, null, function(response) {
+        this.send_request(data, null, function (response) {
             // Try to retrieve the existing string from the server.
             var oldtext = response.instancesection;
 
@@ -204,8 +204,8 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
      * @param {Node} activity The activity whose maxmark we are altering.
      * @param {String} oldtext The original maxmark the activity or resource had.
      */
-    edit_section_title_submit: function(ev, activity, oldtext) {
-         // We don't actually want to submit anything.
+    edit_section_title_submit: function (ev, activity, oldtext) {
+        // We don't actually want to submit anything.
         ev.preventDefault();
         var newtext = Y.Lang.trim(activity.one(SELECTOR.SECTIONFORM + ' ' + SELECTOR.SECTIONINPUT).get('value'));
         var spinner = M.util.add_spinner(Y, activity.one(SELECTOR.INSTANCESECTIONAREA));
@@ -224,12 +224,12 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
             instancesection.setContent(instancesectiontext);
 
             var data = {
-                'class':      'section',
-                'field':      'updatesectiontitle',
+                'class': 'section',
+                'field': 'updatesectiontitle',
                 'newheading': newtext,
-                'id':         activity.get('id').replace('section-', '')
+                'id': activity.get('id').replace('section-', '')
             };
-            this.send_request(data, spinner, function(response) {
+            this.send_request(data, spinner, function (response) {
                 if (response) {
                     // Set the content of the section heading if for some reason the response is different from the new text.
                     // e.g. filters were applied, the update failed, etc.
@@ -247,9 +247,9 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
                     }
 
                     activity.one(SELECTOR.EDITSECTIONICON).set('title',
-                            M.util.get_string('sectionheadingedit', 'quiz', response.instancesection));
+                        M.util.get_string('sectionheadingedit', 'quiz', response.instancesection));
                     activity.one(SELECTOR.EDITSECTIONICON).set('alt',
-                            M.util.get_string('sectionheadingedit', 'quiz', response.instancesection));
+                        M.util.get_string('sectionheadingedit', 'quiz', response.instancesection));
                     var deleteicon = activity.one(SELECTOR.DELETESECTIONICON);
                     if (deleteicon) {
                         deleteicon.set('title', M.util.get_string('sectionheadingremove', 'quiz', response.instancesection));
@@ -269,7 +269,7 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
      * @param {Node} activity The activity whose maxmark we are altering.
      * @param {Boolean} preventdefault If true we should prevent the default action from occuring.
      */
-    edit_section_title_cancel: function(ev, activity, preventdefault) {
+    edit_section_title_cancel: function (ev, activity, preventdefault) {
         if (preventdefault) {
             ev.preventDefault();
         }
@@ -283,7 +283,7 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
      * @method edit_maxmark_clear
      * @param {Node} activity  The activity whose maxmark we were altering.
      */
-    edit_section_title_clear: function(activity) {
+    edit_section_title_clear: function (activity) {
         // Detach all listen events to prevent duplicate triggers
         new Y.EventHandle(this.editsectionevents).detach();
 
@@ -297,7 +297,7 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
         }
 
         // Refocus the link which was clicked originally so the user can continue using keyboard nav.
-        Y.later(100, this, function() {
+        Y.later(100, this, function () {
             activity.one(SELECTOR.EDITSECTION).focus();
         });
 
@@ -320,7 +320,7 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
      * @param {String} action The action that has been requested.
      * @return Boolean
      */
-    edit_shuffle_questions: function(ev, button, activity) {
+    edit_shuffle_questions: function (ev, button, activity) {
         var newvalue;
         if (activity.one(SELECTOR.EDITSHUFFLEQUESTIONSACTION).get('checked')) {
             newvalue = 1;
@@ -345,7 +345,7 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
     }
 
 }, {
-    NAME: 'mod_quiz-section-toolbox',
+    NAME: 'mod_hippotrack-section-toolbox',
     ATTRS: {
         courseid: {
             'value': 0
@@ -356,6 +356,6 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
     }
 });
 
-M.mod_quiz.init_section_toolbox = function(config) {
+M.mod_hippotrack.init_section_toolbox = function (config) {
     return new SECTIONTOOLBOX(config);
 };

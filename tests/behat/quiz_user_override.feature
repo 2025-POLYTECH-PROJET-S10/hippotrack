@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Quiz user override
   In order to grant a student special access to a quiz
   As a teacher
@@ -31,7 +31,7 @@ Feature: Quiz user override
     Given the following "activities" exist:
       | activity   | name      | course | idnumber |
       | quiz       | Test quiz | C1     | quiz1    |
-    And I am on the "Test quiz" "mod_quiz > View" page logged in as "teacher"
+    And I am on the "Test quiz" "mod_hippotrack > View" page logged in as "teacher"
     And I change window size to "large"
     And I navigate to "Overrides" in current page administration
     And I press "Add user override"
@@ -64,7 +64,7 @@ Feature: Quiz user override
     Given the following "activities" exist:
       | activity   | name      | course | idnumber | visible |
       | quiz       | Test quiz | C1     | quiz1    | 0       |
-    When I am on the "Test quiz" "mod_quiz > User overrides" page logged in as "teacher"
+    When I am on the "Test quiz" "mod_hippotrack > User overrides" page logged in as "teacher"
     And I press "Add user override"
     And I set the following fields to these values:
       | Override user    | Student One (student1@example.com) |
@@ -87,7 +87,7 @@ Feature: Quiz user override
     And the following "activities" exist:
       | activity   | name      | course | idnumber | visible |
       | quiz       | Test quiz | C1     | quiz1    | 0       |
-    When I am on the "Test quiz" "mod_quiz > User overrides" page logged in as "teacher"
+    When I am on the "Test quiz" "mod_hippotrack > User overrides" page logged in as "teacher"
     And I press "Add user override"
     And I set the following fields to these values:
       | Override user    | Student One |
@@ -116,7 +116,7 @@ Feature: Quiz user override
     And the following "activities" exist:
       | activity | name      | course | idnumber | groupmode |
       | quiz     | Test quiz | C1     | quiz1    | 1         |
-    When I am on the "Test quiz" "mod_quiz > User overrides" page logged in as "teacher"
+    When I am on the "Test quiz" "mod_hippotrack > User overrides" page logged in as "teacher"
     And I press "Add user override"
     Then the "Override user" select box should contain "Student One (student1@example.com)"
     And the "Override user" select box should not contain "Student Two (student2@example.com)"
@@ -134,7 +134,7 @@ Feature: Quiz user override
     And the following "activities" exist:
       | activity | name      | course | idnumber | groupmode |
       | quiz     | Test quiz | C1     | quiz1    | 1         |
-    When I am on the "Test quiz" "mod_quiz > User overrides" page logged in as "teacher"
+    When I am on the "Test quiz" "mod_hippotrack > User overrides" page logged in as "teacher"
     Then I should see "No groups you can access."
     And the "Add user override" "button" should be disabled
 
@@ -142,11 +142,11 @@ Feature: Quiz user override
     Given the following "activities" exist:
       | activity   | name      | course | idnumber |
       | quiz       | Test quiz | C1     | quiz1    |
-    And the following "mod_quiz > user overrides" exist:
+    And the following "mod_hippotrack > user overrides" exist:
       | quiz      | user     | attempts |
       | Test quiz | student1 | 2        |
       | Test quiz | student2 | 2        |
-    And I am on the "Test quiz" "mod_quiz > View" page logged in as "helper"
+    And I am on the "Test quiz" "mod_hippotrack > View" page logged in as "helper"
     When I navigate to "Overrides" in current page administration
     Then "Student One" "table_row" should exist
     And "Student Two" "table_row" should exist
@@ -155,7 +155,7 @@ Feature: Quiz user override
     And "Edit" "link" should not exist in the "Student One" "table_row"
     And "Copy" "link" should not exist in the "Student One" "table_row"
     And "Delete" "link" should not exist in the "Student One" "table_row"
-    And I am on the "Test quiz" "mod_quiz > View" page
+    And I am on the "Test quiz" "mod_hippotrack > View" page
     And I should see "Settings overrides exist (Users: 2)"
 
   @javascript
@@ -165,11 +165,11 @@ Feature: Quiz user override
     And the following "activities" exist:
       | activity   | name      | course | idnumber |
       | quiz       | Test quiz | C1     | quiz1    |
-    And the following "mod_quiz > user overrides" exist:
+    And the following "mod_hippotrack > user overrides" exist:
       | quiz      | user     | attempts |
       | Test quiz | student1 | 2        |
       | Test quiz | student2 | 2        |
-    When I am on the "Test quiz" "mod_quiz > User overrides" page logged in as "teacher"
+    When I am on the "Test quiz" "mod_hippotrack > User overrides" page logged in as "teacher"
     Then I should see "yellow frog" in the "Student One" "table_row"
     And I should see "prince frog" in the "Student Two" "table_row"
 
@@ -194,5 +194,5 @@ Feature: Quiz user override
     And the following "activities" exist:
       | activity   | name       | course | idnumber |
       | quiz       | Other quiz | C2     | quiz2    |
-    When I am on the "Other quiz" "mod_quiz > User overrides" page logged in as "admin"
+    When I am on the "Other quiz" "mod_hippotrack > User overrides" page logged in as "admin"
     Then the "Add user override" "button" should be disabled

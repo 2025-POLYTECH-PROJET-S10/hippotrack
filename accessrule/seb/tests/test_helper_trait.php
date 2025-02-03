@@ -154,7 +154,7 @@ trait quizaccess_seb_test_helper_trait {
      * @return  array
      */
     protected function create_test_quiz($course, $requiresafeexambrowser = settings_provider::USE_SEB_NO) {
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         $quiz = $quizgenerator->create_instance([
             'course' => $course->id,
@@ -191,7 +191,7 @@ trait quizaccess_seb_test_helper_trait {
         $starttime = time();
         $quizobj = \quiz::create($quiz->id, $user->id);
 
-        $quba = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         // Start the attempt.

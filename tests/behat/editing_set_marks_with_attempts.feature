@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Edit quiz marks with attempts
   In order to create a quiz that awards marks the way I want
   As a teacher
@@ -29,11 +29,11 @@ Feature: Edit quiz marks with attempts
       | Question text | Answer again    |
       | Default mark  | 3.0             |
     And I log out
-    And I am on the "Quiz 1" "mod_quiz > View" page logged in as "student1"
+    And I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student1"
     And I press "Attempt quiz"
     And I log out
     And I log in as "teacher1"
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
 
   @javascript
   Scenario: Set the max mark for a question.
@@ -74,7 +74,7 @@ Feature: Edit quiz marks with attempts
       | Decimal places in grades | 3 |
       | Decimal places in marks for questions | 5 |
     And I press "Save and display"
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
     # Then the field "maxgrade" matches value "20.000" -- with exact match on decimal places.
     Then "//input[@name = 'maxgrade' and @value = '20.000']" "xpath_element" should exist
     And I should see "2.00000"

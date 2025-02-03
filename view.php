@@ -18,7 +18,7 @@
  * This page is the entry page into the quiz UI. Displays information about the
  * quiz to students and teachers, and lets students see their previous attempts.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -76,7 +76,7 @@ quiz_view($quiz, $course, $cm, $context);
 $PAGE->set_url('/mod/quiz/view.php', array('id' => $cm->id));
 
 // Create view object which collects all the information the renderer will need.
-$viewobj = new mod_quiz_view_object();
+$viewobj = new mod_hippotrack_view_object();
 $viewobj->accessmanager = $accessmanager;
 $viewobj->canreviewmine = $canreviewmine || $canpreview;
 
@@ -147,8 +147,8 @@ if (html_is_blank($quiz->intro)) {
     $PAGE->activityheader->set_description('');
 }
 $PAGE->add_body_class('limitedwidth');
-/** @var mod_quiz_renderer $output */
-$output = $PAGE->get_renderer('mod_quiz');
+/** @var mod_hippotrack_renderer $output */
+$output = $PAGE->get_renderer('mod_hippotrack');
 
 // Print table with existing attempts.
 if ($attempts) {

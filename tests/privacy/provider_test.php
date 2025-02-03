@@ -17,17 +17,17 @@
 /**
  * Privacy provider tests.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_quiz\privacy;
+namespace mod_hippotrack\privacy;
 
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\deletion_criteria;
 use core_privacy\local\request\writer;
-use mod_quiz\privacy\provider;
-use mod_quiz\privacy\helper;
+use mod_hippotrack\privacy\provider;
+use mod_hippotrack\privacy\helper;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -37,7 +37,7 @@ require_once($CFG->dirroot . '/question/tests/privacy_helper.php');
 /**
  * Privacy provider tests class.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -97,7 +97,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
 
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
             \core_user::get_user($USER->id),
-            'mod_quiz',
+            'mod_hippotrack',
             []
         );
 
@@ -119,7 +119,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
 
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
             \core_user::get_user($USER->id),
-            'mod_quiz',
+            'mod_hippotrack',
             []
         );
 
@@ -163,7 +163,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->setUser($user);
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
             \core_user::get_user($user->id),
-            'mod_quiz',
+            'mod_hippotrack',
             $contextlist->get_contextids()
         );
         provider::export_user_data($approvedcontextlist);
@@ -181,7 +181,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         // Fetch the attempt data.
         $attempt = $attemptobj->get_attempt();
         $attemptsubcontext = [
-            get_string('attempts', 'mod_quiz'),
+            get_string('attempts', 'mod_hippotrack'),
             $attempt->attempt,
         ];
         $attemptdata = writer::with_context($context)->get_data($attemptsubcontext);
@@ -225,7 +225,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         // Make a quiz.
         $course = $this->getDataGenerator()->create_course();
         $user = $this->getDataGenerator()->create_user();
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         $quiz = $quizgenerator->create_instance([
                 'course' => $course->id,
@@ -249,7 +249,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $quizobj = \quiz::create($quiz->id, $user->id);
         $context = $quizobj->get_context();
 
-        $quba = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         // Start the attempt.
@@ -359,7 +359,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->setUser($user);
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
             \core_user::get_user($user->id),
-            'mod_quiz',
+            'mod_hippotrack',
             [$context->id]
         );
         provider::export_user_data($approvedcontextlist);
@@ -375,7 +375,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         // Perform a deletion with the approved contextlist containing an incorrect context.
         $approvedcontextlist = new \core_privacy\tests\request\approved_contextlist(
             \core_user::get_user($user->id),
-            'mod_quiz',
+            'mod_hippotrack',
             [$context->id]
         );
         provider::delete_data_for_user($approvedcontextlist);
@@ -397,7 +397,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
     protected function create_test_quiz($course) {
         global $DB;
 
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         $quiz = $quizgenerator->create_instance([
                 'course' => $course->id,
@@ -432,7 +432,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $quizobj = \quiz::create($quiz->id, $user->id);
         $context = $quizobj->get_context();
 
-        $quba = \question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         // Start the attempt.
@@ -488,7 +488,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $context = $quizobj->get_context();
 
         // Fetch users - user1 and user2 should be returned.
-        $userlist = new \core_privacy\local\request\userlist($context, 'mod_quiz');
+        $userlist = new \core_privacy\local\request\userlist($context, 'mod_hippotrack');
         provider::get_users_in_context($userlist);
         $this->assertEqualsCanonicalizing(
                 [$user->id, $anotheruser->id],
@@ -530,7 +530,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
 
         // Delete the data for user1 and user3 in course1 and check it is removed.
         $quiz1context = $quiz1obj->get_context();
-        $approveduserlist = new \core_privacy\local\request\approved_userlist($quiz1context, 'mod_quiz',
+        $approveduserlist = new \core_privacy\local\request\approved_userlist($quiz1context, 'mod_hippotrack',
                 [$user1->id, $user3->id]);
         provider::delete_data_for_users($approveduserlist);
 

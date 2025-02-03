@@ -17,7 +17,7 @@
 /**
  * Library code used by quiz cron.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2012 the Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -35,7 +35,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
  * @copyright 2012 the Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_quiz_overdue_attempt_updater {
+class mod_hippotrack_overdue_attempt_updater {
 
     /**
      * Do the processing required.

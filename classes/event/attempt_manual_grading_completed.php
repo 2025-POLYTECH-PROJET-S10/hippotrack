@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz\event;
+namespace mod_hippotrack\event;
 
 /**
- * The mod_quiz attempt manual grading complete event.
+ * The mod_hippotrack attempt manual grading complete event.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2021 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -37,7 +37,7 @@ class attempt_manual_grading_completed extends \core\event\base {
     }
 
     public static function get_name() {
-        return get_string('eventattemptmanualgradingcomplete', 'mod_quiz');
+        return get_string('eventattemptmanualgradingcomplete', 'mod_hippotrack');
     }
 
     public function get_url() {

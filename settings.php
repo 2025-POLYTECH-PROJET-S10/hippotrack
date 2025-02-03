@@ -17,7 +17,7 @@
 /**
  * Administration settings definitions for the quiz module.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2010 Petr Skoda
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -72,7 +72,7 @@ if ($ADMIN->fulltree) {
         get_string('attemptgradeddelay', 'quiz'), get_string('attemptgradeddelay_desc', 'quiz'), 5 * HOURSECS, HOURSECS));
 
     // What to do with overdue attempts.
-    $setting = new mod_quiz_admin_setting_overduehandling('quiz/overduehandling',
+    $setting = new mod_hippotrack_admin_setting_overduehandling('quiz/overduehandling',
             get_string('overduehandling', 'quiz'), get_string('overduehandling_desc', 'quiz'),
             array('value' => 'autosubmit', 'adv' => false), null);
     $setting->set_locked_flag_options(admin_setting_flag::ENABLED, false);
@@ -104,7 +104,7 @@ if ($ADMIN->fulltree) {
     $quizsettings->add($setting);
 
     // Grading method.
-    $setting = new mod_quiz_admin_setting_grademethod('quiz/grademethod',
+    $setting = new mod_hippotrack_admin_setting_grademethod('quiz/grademethod',
             get_string('grademethod', 'quiz'), get_string('configgrademethod', 'quiz'),
             array('value' => QUIZ_GRADEHIGHEST, 'adv' => false), null);
     $setting->set_locked_flag_options(admin_setting_flag::ENABLED, false);
@@ -174,21 +174,21 @@ if ($ADMIN->fulltree) {
     // Review options.
     $quizsettings->add(new admin_setting_heading('reviewheading',
             get_string('reviewoptionsheading', 'quiz'), ''));
-    foreach (mod_quiz_admin_review_setting::fields() as $field => $name) {
-        $default = mod_quiz_admin_review_setting::all_on();
+    foreach (mod_hippotrack_admin_review_setting::fields() as $field => $name) {
+        $default = mod_hippotrack_admin_review_setting::all_on();
         $forceduring = null;
         if ($field == 'attempt') {
             $forceduring = true;
         } else if ($field == 'overallfeedback') {
-            $default = $default ^ mod_quiz_admin_review_setting::DURING;
+            $default = $default ^ mod_hippotrack_admin_review_setting::DURING;
             $forceduring = false;
         }
-        $quizsettings->add(new mod_quiz_admin_review_setting('quiz/review' . $field,
+        $quizsettings->add(new mod_hippotrack_admin_review_setting('quiz/review' . $field,
                 $name, '', $default, $forceduring));
     }
 
     // Show the user's picture.
-    $setting = new mod_quiz_admin_setting_user_image('quiz/showuserpicture',
+    $setting = new mod_hippotrack_admin_setting_user_image('quiz/showuserpicture',
             get_string('showuserpicture', 'quiz'), get_string('configshowuserpicture', 'quiz'),
             array('value' => 0, 'adv' => false), null);
     $setting->set_locked_flag_options(admin_setting_flag::ENABLED, false);
@@ -259,7 +259,7 @@ if ($ADMIN->fulltree) {
     $quizsettings->add($setting);
 
     // Browser security.
-    $setting = new mod_quiz_admin_setting_browsersecurity('quiz/browsersecurity',
+    $setting = new mod_hippotrack_admin_setting_browsersecurity('quiz/browsersecurity',
             get_string('showinsecurepopup', 'quiz'), get_string('configpopup', 'quiz'),
             array('value' => '-', 'adv' => true), null);
     $setting->set_locked_flag_options(admin_setting_flag::ENABLED, false);

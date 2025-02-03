@@ -17,12 +17,12 @@
 /**
  * Defines the editing form for random questions.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2018 Shamim Rezaie <shamim@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz\form;
+namespace mod_hippotrack\form;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -31,7 +31,7 @@ require_once($CFG->dirroot.'/lib/formslib.php');
 /**
  * Class randomquestion_form
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2018 Shamim Rezaie <shamim@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -66,8 +66,8 @@ class randomquestion_form extends \moodleform {
                 'multiple' => true,
                 'noselectionstring' => get_string('anytags', 'quiz'),
         );
-        $mform->addElement('autocomplete', 'fromtags', get_string('randomquestiontags', 'mod_quiz'), $tagstrings, $options);
-        $mform->addHelpButton('fromtags', 'randomquestiontags', 'mod_quiz');
+        $mform->addElement('autocomplete', 'fromtags', get_string('randomquestiontags', 'mod_hippotrack'), $tagstrings, $options);
+        $mform->addHelpButton('fromtags', 'randomquestiontags', 'mod_hippotrack');
 
         $mform->addElement('hidden', 'slotid');
         $mform->setType('slotid', PARAM_INT);
@@ -89,7 +89,7 @@ class randomquestion_form extends \moodleform {
             $fromtagselement = $mform->getElement('fromtags');
             foreach ($defaultvalues->fromtags as $fromtag) {
                 if (!$fromtagselement->optionExists($fromtag)) {
-                    $optionname = get_string('randomfromunavailabletag', 'mod_quiz', explode(',', $fromtag)[1]);
+                    $optionname = get_string('randomfromunavailabletag', 'mod_hippotrack', explode(',', $fromtag)[1]);
                     $fromtagselement->addOption($optionname, $fromtag);
                 }
             }

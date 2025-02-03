@@ -1,4 +1,4 @@
-@mod @mod_quiz @core_completion
+@mod @mod_hippotrack @core_completion
 Feature: Set a quiz to be marked complete when the student completes a minimum amount of attempts
   In order to ensure a student has completed the quiz before being marked complete
   As a teacher

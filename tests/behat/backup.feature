@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Backup and restore of quizzes
   In order to reuse my quizzes
   As a teacher
@@ -29,7 +29,7 @@ Feature: Backup and restore of quizzes
     When I am on "Course 1" course homepage with editing mode on
     And I duplicate "Quiz 1" activity editing the new copy with:
       | Name | Quiz 2 |
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
     Then I should see "TF1"
     And I should see "TF2"
 
@@ -71,6 +71,6 @@ Feature: Backup and restore of quizzes
     And I upload "mod/quiz/tests/fixtures/moodle_28_quiz.mbz" file to "Files" filemanager
     And I press "Save changes"
     And I restore "moodle_28_quiz.mbz" backup into "Course 1" course using this options:
-    And I am on the "Restored Moodle 2.8 quiz" "mod_quiz > Edit" page
+    And I am on the "Restored Moodle 2.8 quiz" "mod_hippotrack > Edit" page
     Then I should see "TF1"
     And I should see "TF2"

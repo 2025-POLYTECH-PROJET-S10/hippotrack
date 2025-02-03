@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Flag quiz questions
   As a student
   In order to flag a quiz questions
@@ -66,7 +66,7 @@ Feature: Flag quiz questions
     And I should see "Flag question" in the "Second question" "question"
     And I should see "Flag question" in the "Third question" "question"
     And I click on "Flagged" "button" in the "Second question" "question"
-    And I am on the "Quiz 1" "mod_quiz > Grades report" page logged in as teacher1
+    And I am on the "Quiz 1" "mod_hippotrack > Grades report" page logged in as teacher1
     And "Flagged" "icon" should exist in the "Student 1" "table_row"
-    And I am on the "Quiz 1" "mod_quiz > Responses report" page
+    And I am on the "Quiz 1" "mod_hippotrack > Responses report" page
     And "Flagged" "icon" should exist in the "Student 1" "table_row"

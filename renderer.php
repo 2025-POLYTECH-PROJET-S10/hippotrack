@@ -17,7 +17,7 @@
 /**
  * Defines the renderer for the quiz module.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2011 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -32,7 +32,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_quiz_renderer extends plugin_renderer_base {
+class mod_hippotrack_renderer extends plugin_renderer_base {
     /**
      * Builds the review page
      *
@@ -41,12 +41,12 @@ class mod_quiz_renderer extends plugin_renderer_base {
      * @param int $page the current page number
      * @param bool $showall whether to show entire attempt on one page.
      * @param bool $lastpage if true the current page is the last page.
-     * @param mod_quiz_display_options $displayoptions instance of mod_quiz_display_options.
+     * @param mod_hippotrack_display_options $displayoptions instance of mod_hippotrack_display_options.
      * @param array $summarydata contains all table data
      * @return $output containing html data.
      */
     public function review_page(quiz_attempt $attemptobj, $slots, $page, $showall,
-                                $lastpage, mod_quiz_display_options $displayoptions,
+                                $lastpage, mod_hippotrack_display_options $displayoptions,
                                 $summarydata) {
 
         $output = '';
@@ -67,12 +67,12 @@ class mod_quiz_renderer extends plugin_renderer_base {
      * @param quiz_attempt $attemptobj an instance of quiz_attempt.
      * @param int $slot which question to display.
      * @param int $seq which step of the question attempt to show. null = latest.
-     * @param mod_quiz_display_options $displayoptions instance of mod_quiz_display_options.
+     * @param mod_hippotrack_display_options $displayoptions instance of mod_hippotrack_display_options.
      * @param array $summarydata contains all table data
      * @return $output containing html data.
      */
     public function review_question_page(quiz_attempt $attemptobj, $slot, $seq,
-            mod_quiz_display_options $displayoptions, $summarydata) {
+            mod_hippotrack_display_options $displayoptions, $summarydata) {
 
         $output = '';
         $output .= $this->header();
@@ -177,10 +177,10 @@ class mod_quiz_renderer extends plugin_renderer_base {
      * @param array $slots array of intgers relating to questions
      * @param int $page current page number
      * @param bool $showall if true shows attempt on single page
-     * @param mod_quiz_display_options $displayoptions instance of mod_quiz_display_options
+     * @param mod_hippotrack_display_options $displayoptions instance of mod_hippotrack_display_options
      */
     public function questions(quiz_attempt $attemptobj, $reviewing, $slots, $page, $showall,
-                              mod_quiz_display_options $displayoptions) {
+                              mod_hippotrack_display_options $displayoptions) {
         $output = '';
         foreach ($slots as $slot) {
             $output .= $attemptobj->render_question($slot, $reviewing, $this,
@@ -194,7 +194,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
      *
      * @param array $summarydata contain row data for table
      * @param int $page current page number
-     * @param mod_quiz_display_options $displayoptions instance of mod_quiz_display_options
+     * @param mod_hippotrack_display_options $displayoptions instance of mod_hippotrack_display_options
      * @param $content contains each question
      * @param quiz_attempt $attemptobj instance of quiz_attempt
      * @param bool $showall if true display attempt on one page
@@ -204,7 +204,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
             return $content;
         }
 
-        $this->page->requires->js_init_call('M.mod_quiz.init_review_form', null, false,
+        $this->page->requires->js_init_call('M.mod_hippotrack.init_review_form', null, false,
                 quiz_get_js_module());
 
         $output = '';
@@ -234,16 +234,16 @@ class mod_quiz_renderer extends plugin_renderer_base {
         $url = $attemptobj->view_url();
 
         if ($attemptobj->get_access_manager(time())->attempt_must_be_in_popup()) {
-            $this->page->requires->js_init_call('M.mod_quiz.secure_window.init_close_button',
+            $this->page->requires->js_init_call('M.mod_hippotrack.secure_window.init_close_button',
                     array($url), false, quiz_get_js_module());
             return html_writer::empty_tag('input', array('type' => 'button',
                     'value' => get_string('finishreview', 'quiz'),
                     'id' => 'secureclosebutton',
-                    'class' => 'mod_quiz-next-nav btn btn-primary'));
+                    'class' => 'mod_hippotrack-next-nav btn btn-primary'));
 
         } else {
             return html_writer::link($url, get_string('finishreview', 'quiz'),
-                    array('class' => 'mod_quiz-next-nav'));
+                    array('class' => 'mod_hippotrack-next-nav'));
         }
     }
 
@@ -265,13 +265,13 @@ class mod_quiz_renderer extends plugin_renderer_base {
         $nav = '';
         if ($page > 0) {
             $nav .= link_arrow_left(get_string('navigateprevious', 'quiz'),
-                    $attemptobj->review_url(null, $page - 1, $showall), false, 'mod_quiz-prev-nav');
+                    $attemptobj->review_url(null, $page - 1, $showall), false, 'mod_hippotrack-prev-nav');
         }
         if ($lastpage) {
             $nav .= $this->finish_review_link($attemptobj);
         } else {
             $nav .= link_arrow_right(get_string('navigatenext', 'quiz'),
-                    $attemptobj->review_url(null, $page + 1, $showall), false, 'mod_quiz-next-nav');
+                    $attemptobj->review_url(null, $page + 1, $showall), false, 'mod_hippotrack-next-nav');
         }
         return html_writer::tag('div', $nav, array('class' => 'submitbtns'));
     }
@@ -295,7 +295,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
         }
 
 
-        return $this->output->render_from_template('mod_quiz/timer', (object)[]);
+        return $this->output->render_from_template('mod_hippotrack/timer', (object)[]);
     }
 
     /**
@@ -336,7 +336,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
         $output .= html_writer::tag('div', $panel->render_end_bits($this),
                 array('class' => 'othernav'));
 
-        $this->page->requires->js_init_call('M.mod_quiz.nav.init', null, false,
+        $this->page->requires->js_init_call('M.mod_hippotrack.nav.init', null, false,
                 quiz_get_js_module());
 
         return $output;
@@ -402,16 +402,16 @@ class mod_quiz_renderer extends plugin_renderer_base {
             $headingtext = $heading->heading;
             $class = '';
         }
-        return $this->heading($headingtext, 3, 'mod_quiz-section-heading' . $class);
+        return $this->heading($headingtext, 3, 'mod_hippotrack-section-heading' . $class);
     }
 
     /**
      * outputs the link the other attempts.
      *
-     * @param mod_quiz_links_to_other_attempts $links
+     * @param mod_hippotrack_links_to_other_attempts $links
      */
-    protected function render_mod_quiz_links_to_other_attempts(
-            mod_quiz_links_to_other_attempts $links) {
+    protected function render_mod_hippotrack_links_to_other_attempts(
+            mod_hippotrack_links_to_other_attempts $links) {
         $attemptlinks = array();
         foreach ($links->links as $attempt => $url) {
             if (!$url) {
@@ -425,7 +425,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
         return implode(', ', $attemptlinks);
     }
 
-    public function start_attempt_page(quiz $quizobj, mod_quiz_preflight_check_form $mform) {
+    public function start_attempt_page(quiz $quizobj, mod_hippotrack_preflight_check_form $mform) {
         $output = '';
         $output .= $this->header();
         $output .= $this->during_attempt_tertiary_nav($quizobj->view_url());
@@ -568,9 +568,9 @@ class mod_quiz_renderer extends plugin_renderer_base {
         $output .= html_writer::start_tag('div', array('class' => 'submitbtns'));
         if ($page > 0 && $navmethod == 'free') {
             $output .= html_writer::empty_tag('input', array('type' => 'submit', 'name' => 'previous',
-                    'value' => get_string('navigateprevious', 'quiz'), 'class' => 'mod_quiz-prev-nav btn btn-secondary',
-                    'id' => 'mod_quiz-prev-nav'));
-            $this->page->requires->js_call_amd('core_form/submit', 'init', ['mod_quiz-prev-nav']);
+                    'value' => get_string('navigateprevious', 'quiz'), 'class' => 'mod_hippotrack-prev-nav btn btn-secondary',
+                    'id' => 'mod_hippotrack-prev-nav'));
+            $this->page->requires->js_call_amd('core_form/submit', 'init', ['mod_hippotrack-prev-nav']);
         }
         if ($lastpage) {
             $nextlabel = get_string('endtest', 'quiz');
@@ -578,9 +578,9 @@ class mod_quiz_renderer extends plugin_renderer_base {
             $nextlabel = get_string('navigatenext', 'quiz');
         }
         $output .= html_writer::empty_tag('input', array('type' => 'submit', 'name' => 'next',
-                'value' => $nextlabel, 'class' => 'mod_quiz-next-nav btn btn-primary', 'id' => 'mod_quiz-next-nav'));
+                'value' => $nextlabel, 'class' => 'mod_hippotrack-next-nav btn btn-primary', 'id' => 'mod_hippotrack-next-nav'));
         $output .= html_writer::end_tag('div');
-        $this->page->requires->js_call_amd('core_form/submit', 'init', ['mod_quiz-next-nav']);
+        $this->page->requires->js_call_amd('core_form/submit', 'init', ['mod_hippotrack-next-nav']);
 
         return $output;
     }
@@ -595,7 +595,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
     public function redo_question_button($slot, $disabled) {
         $attributes = array('type' => 'submit',  'name' => 'redoslot' . $slot,
             'value' => get_string('redoquestion', 'quiz'),
-            'class' => 'mod_quiz-redo_question_button btn btn-secondary');
+            'class' => 'mod_hippotrack-redo_question_button btn btn-secondary');
         if ($disabled) {
             $attributes['disabled'] = 'disabled';
         }
@@ -608,7 +608,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
      */
     public function initialise_timer($timerstartvalue, $ispreview) {
         $options = array($timerstartvalue, (bool)$ispreview);
-        $this->page->requires->js_init_call('M.mod_quiz.timer.init', $options, false, quiz_get_js_module());
+        $this->page->requires->js_init_call('M.mod_hippotrack.timer.init', $options, false, quiz_get_js_module());
     }
 
     /**
@@ -631,7 +631,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
             $output .= html_writer::tag('p', get_string('pleaseclose', 'quiz'));
             $delay = 0;
         }
-        $this->page->requires->js_init_call('M.mod_quiz.secure_window.close',
+        $this->page->requires->js_init_call('M.mod_hippotrack.secure_window.close',
                 array($url, $delay), false, quiz_get_js_module());
 
         $output .= $this->box_end();
@@ -662,7 +662,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
      * Create the summary page
      *
      * @param quiz_attempt $attemptobj
-     * @param mod_quiz_display_options $displayoptions
+     * @param mod_hippotrack_display_options $displayoptions
      */
     public function summary_page($attemptobj, $displayoptions) {
         $output = '';
@@ -680,7 +680,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
      * Generates the table of summarydata
      *
      * @param quiz_attempt $attemptobj
-     * @param mod_quiz_display_options $displayoptions
+     * @param mod_hippotrack_display_options $displayoptions
      */
     public function summary_table($attemptobj, $displayoptions) {
         // Prepare the summary table header.
@@ -794,7 +794,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
                 // Only count the unanswered question if the navigation method is set to free.
                 $totalunanswered = $attemptobj->get_number_of_unanswered_questions();
             }
-            $this->page->requires->js_call_amd('mod_quiz/submission_confirmation', 'init', [$totalunanswered]);
+            $this->page->requires->js_call_amd('mod_hippotrack/submission_confirmation', 'init', [$totalunanswered]);
         }
         $button->primary = true;
 
@@ -824,7 +824,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
      * @param stdClass $quiz the quiz settings row from the database.
      * @param stdClass $cm the course_module settings row from the database.
      * @param context_module $context the quiz context.
-     * @param mod_quiz_view_object $viewobj
+     * @param mod_hippotrack_view_object $viewobj
      * @return string HTML to display
      */
     public function view_page($course, $quiz, $cm, $context, $viewobj) {
@@ -841,10 +841,10 @@ class mod_quiz_renderer extends plugin_renderer_base {
     /**
      * Render the tertiary navigation for the view page.
      *
-     * @param mod_quiz_view_object $viewobj the information required to display the view page.
+     * @param mod_hippotrack_view_object $viewobj the information required to display the view page.
      * @return string HTML to output.
      */
-    public function view_page_tertiary_nav(mod_quiz_view_object $viewobj): string {
+    public function view_page_tertiary_nav(mod_hippotrack_view_object $viewobj): string {
         $content = '';
 
         if ($viewobj->buttontext) {
@@ -870,10 +870,10 @@ class mod_quiz_renderer extends plugin_renderer_base {
      * Work out, and render, whatever buttons, and surrounding info, should appear
      * at the end of the review page.
      *
-     * @param mod_quiz_view_object $viewobj the information required to display the view page.
+     * @param mod_hippotrack_view_object $viewobj the information required to display the view page.
      * @return string HTML to output.
      */
-    public function view_page_buttons(mod_quiz_view_object $viewobj) {
+    public function view_page_buttons(mod_hippotrack_view_object $viewobj) {
         $output = '';
 
         if (!$viewobj->quizhasquestions) {
@@ -897,19 +897,19 @@ class mod_quiz_renderer extends plugin_renderer_base {
      *
      * @param string $buttontext the label to display on the button.
      * @param moodle_url $url The URL to POST to in order to start the attempt.
-     * @param mod_quiz_preflight_check_form $preflightcheckform deprecated.
+     * @param mod_hippotrack_preflight_check_form $preflightcheckform deprecated.
      * @param bool $popuprequired whether the attempt needs to be opened in a pop-up.
      * @param array $popupoptions the options to use if we are opening a popup.
      * @return string HTML fragment.
      */
     public function start_attempt_button($buttontext, moodle_url $url,
-            mod_quiz_preflight_check_form $preflightcheckform = null,
+            mod_hippotrack_preflight_check_form $preflightcheckform = null,
             $popuprequired = false, $popupoptions = null) {
 
         if (is_string($preflightcheckform)) {
             // Calling code was not updated since the API change.
             debugging('The third argument to start_attempt_button should now be the ' .
-                    'mod_quiz_preflight_check_form from ' .
+                    'mod_hippotrack_preflight_check_form from ' .
                     'quiz_access_manager::get_preflight_check_form, not a warning message string.');
         }
 
@@ -931,9 +931,9 @@ class mod_quiz_renderer extends plugin_renderer_base {
             $checkform = null;
         }
 
-        $this->page->requires->js_call_amd('mod_quiz/preflightcheck', 'init',
+        $this->page->requires->js_call_amd('mod_hippotrack/preflightcheck', 'init',
                 array('.quizstartbuttondiv [type=submit]', get_string('startattempt', 'quiz'),
-                       '#mod_quiz_preflight_form', $popupjsoptions));
+                       '#mod_hippotrack_preflight_form', $popupjsoptions));
 
         return $this->render($button) . $checkform;
     }
@@ -972,7 +972,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
      * @param stdClass $cm the course_module settings row from the database.
      * @param context_module $context the quiz context.
      * @param array $messages Array containing any messages
-     * @param mod_quiz_view_object $viewobj
+     * @param mod_hippotrack_view_object $viewobj
      */
     public function view_page_guest($course, $quiz, $cm, $context, $messages, $viewobj) {
         $output = '';
@@ -993,7 +993,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
      * @param stdClass $cm the course_module settings row from the database.
      * @param context_module $context the quiz context.
      * @param array $messages Array containing any messages
-     * @param mod_quiz_view_object $viewobj
+     * @param mod_hippotrack_view_object $viewobj
      */
     public function view_page_notenrolled($course, $quiz, $cm, $context, $messages, $viewobj) {
         global $CFG;
@@ -1069,7 +1069,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
      *
      * @param array $quiz Array contining quiz data
      * @param int $context The page context ID
-     * @param mod_quiz_view_object $viewobj
+     * @param mod_hippotrack_view_object $viewobj
      */
     public function view_table($quiz, $context, $viewobj) {
         if (!$viewobj->attempts) {
@@ -1222,7 +1222,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
      * @param array $quiz Array containing quiz data
      * @param int $context The page context ID
      * @param int $cm The Course Module Id
-     * @param mod_quiz_view_object $viewobj
+     * @param mod_hippotrack_view_object $viewobj
      */
     public function view_result_info($quiz, $context, $cm, $viewobj) {
         $output = '';
@@ -1414,7 +1414,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
 }
 
 
-class mod_quiz_links_to_other_attempts implements renderable {
+class mod_hippotrack_links_to_other_attempts implements renderable {
     /**
      * @var array string attempt number => url, or null for the current attempt.
      * url may be either a moodle_url, or a renderable.
@@ -1423,7 +1423,7 @@ class mod_quiz_links_to_other_attempts implements renderable {
 }
 
 
-class mod_quiz_view_object {
+class mod_hippotrack_view_object {
     /** @var array $infomessages of messages with information to display about the quiz. */
     public $infomessages;
     /** @var array $attempts contains all the user's attempts at this quiz. */
@@ -1473,7 +1473,7 @@ class mod_quiz_view_object {
     public $buttontext;
     /** @var moodle_url $startattempturl URL to start an attempt. */
     public $startattempturl;
-    /** @var mod_quiz_preflight_check_form|null $preflightcheckform confirmation form that must be
+    /** @var mod_hippotrack_preflight_check_form|null $preflightcheckform confirmation form that must be
      *       submitted before an attempt is started, if required. */
     public $preflightcheckform;
     /** @var moodle_url $startattempturl URL for any Back to the course button. */

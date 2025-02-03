@@ -17,7 +17,7 @@
 /**
  * Page for editing random questions.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2018 Shamim Rezaie <shamim@moodle.com>
  * @author     2021 Safat Shahin <safatshahin@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -32,7 +32,7 @@ $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
 // Get the quiz slot.
 $slot = $DB->get_record('quiz_slots', ['id' => $slotid]);
 if (!$slot) {
-    new moodle_exception('invalidrandomslot', 'mod_quiz');
+    new moodle_exception('invalidrandomslot', 'mod_hippotrack');
 }
 
 if (!$quiz = $DB->get_record('quiz', ['id' => $slot->quizid])) {
@@ -55,7 +55,7 @@ $PAGE->set_pagelayout('admin');
 $PAGE->add_body_class('limitedwidth');
 
 $setreference = $DB->get_record('question_set_references',
-    ['itemid' => $slot->id, 'component' => 'mod_quiz', 'questionarea' => 'slot']);
+    ['itemid' => $slot->id, 'component' => 'mod_hippotrack', 'questionarea' => 'slot']);
 $filterconditions = json_decode($setreference->filtercondition);
 
 // Validate the question category.
@@ -71,7 +71,7 @@ $thiscontext = context_module::instance($cm->id);
 $contexts = new core_question\local\bank\question_edit_contexts($thiscontext);
 
 // Create the editing form.
-$mform = new mod_quiz\form\randomquestion_form(new moodle_url('/mod/quiz/editrandom.php'), ['contexts' => $contexts]);
+$mform = new mod_hippotrack\form\randomquestion_form(new moodle_url('/mod/quiz/editrandom.php'), ['contexts' => $contexts]);
 
 // Set the form data.
 $toform = new stdClass();
@@ -135,8 +135,8 @@ $PAGE->navbar->add('Random question');
 
 // Display a heading, question editing form.
 echo $OUTPUT->header();
-$heading = get_string('randomediting', 'mod_quiz');
-echo $OUTPUT->heading_with_help($heading, 'randomquestion', 'mod_quiz');
+$heading = get_string('randomediting', 'mod_hippotrack');
+echo $OUTPUT->heading_with_help($heading, 'randomquestion', 'mod_hippotrack');
 
 $mform->display();
 

@@ -17,7 +17,7 @@
 /**
  * Base class for the options that control what is visible in an {@link quiz_attempts_report}.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2012 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -34,7 +34,7 @@ require_once($CFG->libdir . '/formslib.php');
  * @copyright 2012 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_quiz_attempts_report_options {
+class mod_hippotrack_attempts_report_options {
 
     /** @var string the report mode. */
     public $mode;

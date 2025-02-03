@@ -20,7 +20,7 @@
  * It is used either by the student whose attempts this is, after the attempt,
  * or by a teacher reviewing another's attempt during or afterwards.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -71,7 +71,7 @@ if ($attemptobj->is_own_attempt()) {
         redirect($attemptobj->attempt_url(null, $page));
 
     } else if (!$options->attempt) {
-        $accessmanager->back_to_view_page($PAGE->get_renderer('mod_quiz'),
+        $accessmanager->back_to_view_page($PAGE->get_renderer('mod_hippotrack'),
                 $attemptobj->cannot_review_message());
     }
 
@@ -254,7 +254,7 @@ if ($showall) {
     $lastpage = $attemptobj->is_last_page($page);
 }
 
-$output = $PAGE->get_renderer('mod_quiz');
+$output = $PAGE->get_renderer('mod_hippotrack');
 
 // Arrange for the navigation to be displayed.
 $navbc = $attemptobj->get_navigation_panel($output, 'quiz_review_nav_panel', $page, $showall);

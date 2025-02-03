@@ -17,7 +17,7 @@
 /**
  * Thisscript processes ajax auto-save requests during the quiz.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2013 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

@@ -1,4 +1,4 @@
-@mod @mod_quiz @core_completion
+@mod @mod_hippotrack @core_completion
 Feature: Ensure saving a quiz does not modify the completion settings.
   In order to reliably use completion
   As a teacher
@@ -46,7 +46,7 @@ Feature: Ensure saving a quiz does not modify the completion settings.
       |   1  | True     |
 
   Scenario: Ensure saving quiz activty does not change completion settings
-    Given I am on the "Test quiz" "mod_quiz > View" page logged in as "teacher1"
+    Given I am on the "Test quiz" "mod_hippotrack > View" page logged in as "teacher1"
     When I navigate to "Settings" in current page administration
     Then the "completionattemptsexhausted" "field" should be disabled
     And the field "completionattemptsexhausted" matches value "1"

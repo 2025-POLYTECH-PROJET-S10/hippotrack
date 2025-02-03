@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Steps definitions related to mod_quiz.
+ * Steps definitions related to mod_hippotrack.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @category  test
  * @copyright 2014 Marina Glancy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -33,12 +33,12 @@ use Behat\Gherkin\Node\TableNode as TableNode;
 use Behat\Mink\Exception\ExpectationException as ExpectationException;
 
 /**
- * Steps definitions related to mod_quiz.
+ * Steps definitions related to mod_hippotrack.
  *
  * @copyright 2014 Marina Glancy
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class behat_mod_quiz extends behat_question_base {
+class behat_mod_hippotrack extends behat_question_base {
 
     /**
      * Convert page names to URLs for steps like 'When I am on the "[page name]" page'.
@@ -398,7 +398,7 @@ class behat_mod_quiz extends behat_question_base {
 
         $this->execute('behat_navigation::i_am_on_page_instance', [
             $quizname,
-            'mod_quiz > Edit',
+            'mod_hippotrack > Edit',
         ]);
 
         if ($this->running_javascript()) {
@@ -710,7 +710,7 @@ class behat_mod_quiz extends behat_question_base {
         // Split in two checkings to give more feedback in case of exception.
         $exception = new ExpectationException('Question "' . $questionnumber . '" is not in section "' .
                 $sectionheading . '" in the quiz navigation.', $this->getSession());
-        $xpath = "//*[@id = 'mod_quiz_navblock']//*[contains(concat(' ', normalize-space(@class), ' '), ' qnbutton ') and " .
+        $xpath = "//*[@id = 'mod_hippotrack_navblock']//*[contains(concat(' ', normalize-space(@class), ' '), ' qnbutton ') and " .
                 "contains(., {$questionnumberliteral}) and contains(preceding-sibling::h3[1], {$headingliteral})]";
         $this->find('xpath', $xpath);
     }
@@ -805,8 +805,8 @@ class behat_mod_quiz extends behat_question_base {
     public function user_has_attempted_with_responses($username, $quizname, TableNode $attemptinfo) {
         global $DB;
 
-        /** @var mod_quiz_generator $quizgenerator */
-        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_quiz');
+        /** @var mod_hippotrack_generator $quizgenerator */
+        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
 
         $quizid = $DB->get_field('quiz', 'id', ['name' => $quizname], MUST_EXIST);
         $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
@@ -839,8 +839,8 @@ class behat_mod_quiz extends behat_question_base {
     public function user_has_started_an_attempt_at_quiz($username, $quizname) {
         global $DB;
 
-        /** @var mod_quiz_generator $quizgenerator */
-        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_quiz');
+        /** @var mod_hippotrack_generator $quizgenerator */
+        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
 
         $quizid = $DB->get_field('quiz', 'id', ['name' => $quizname], MUST_EXIST);
         $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
@@ -864,8 +864,8 @@ class behat_mod_quiz extends behat_question_base {
     public function user_has_started_an_attempt_at_quiz_with_details($username, $quizname, TableNode $attemptinfo) {
         global $DB;
 
-        /** @var mod_quiz_generator $quizgenerator */
-        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_quiz');
+        /** @var mod_hippotrack_generator $quizgenerator */
+        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
 
         $quizid = $DB->get_field('quiz', 'id', ['name' => $quizname], MUST_EXIST);
         $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
@@ -899,8 +899,8 @@ class behat_mod_quiz extends behat_question_base {
     public function user_has_input_answers_in_their_attempt_at_quiz($username, $quizname, TableNode $attemptinfo) {
         global $DB;
 
-        /** @var mod_quiz_generator $quizgenerator */
-        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_quiz');
+        /** @var mod_hippotrack_generator $quizgenerator */
+        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
 
         $quizid = $DB->get_field('quiz', 'id', ['name' => $quizname], MUST_EXIST);
         $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
@@ -936,8 +936,8 @@ class behat_mod_quiz extends behat_question_base {
     public function user_has_checked_answers_in_their_attempt_at_quiz($username, $quizname, TableNode $attemptinfo) {
         global $DB;
 
-        /** @var mod_quiz_generator $quizgenerator */
-        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_quiz');
+        /** @var mod_hippotrack_generator $quizgenerator */
+        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
 
         $quizid = $DB->get_field('quiz', 'id', ['name' => $quizname], MUST_EXIST);
         $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);

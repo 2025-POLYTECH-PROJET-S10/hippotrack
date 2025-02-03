@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
-use mod_quiz_display_options;
+use mod_hippotrack_display_options;
 use quiz;
 
 defined('MOODLE_INTERNAL') || die();
@@ -27,7 +27,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 /**
  * Unit tests for the quiz class
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2008 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -44,19 +44,19 @@ class quizobj_test extends \basic_testcase {
         $quizobj = new quiz($quiz, $cm, new \stdClass(), false);
 
         $this->assertEquals('',
-            $quizobj->cannot_review_message(mod_quiz_display_options::DURING));
+            $quizobj->cannot_review_message(mod_hippotrack_display_options::DURING));
         $this->assertEquals('',
-            $quizobj->cannot_review_message(mod_quiz_display_options::IMMEDIATELY_AFTER));
+            $quizobj->cannot_review_message(mod_hippotrack_display_options::IMMEDIATELY_AFTER));
         $this->assertEquals(get_string('noreview', 'quiz'),
-            $quizobj->cannot_review_message(mod_quiz_display_options::LATER_WHILE_OPEN));
+            $quizobj->cannot_review_message(mod_hippotrack_display_options::LATER_WHILE_OPEN));
         $this->assertEquals(get_string('noreview', 'quiz'),
-            $quizobj->cannot_review_message(mod_quiz_display_options::AFTER_CLOSE));
+            $quizobj->cannot_review_message(mod_hippotrack_display_options::AFTER_CLOSE));
 
         $closetime = time() + 10000;
         $quiz->timeclose = $closetime;
         $quizobj = new quiz($quiz, $cm, new \stdClass(), false);
 
         $this->assertEquals(get_string('noreviewuntil', 'quiz', userdate($closetime)),
-            $quizobj->cannot_review_message(mod_quiz_display_options::LATER_WHILE_OPEN));
+            $quizobj->cannot_review_message(mod_hippotrack_display_options::LATER_WHILE_OPEN));
     }
 }

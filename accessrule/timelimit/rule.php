@@ -74,7 +74,7 @@ class quizaccess_timelimit extends quiz_access_rule_base {
         return $attemptid === null;
     }
 
-    public function add_preflight_check_form_fields(mod_quiz_preflight_check_form $quizform,
+    public function add_preflight_check_form_fields(mod_hippotrack_preflight_check_form $quizform,
             MoodleQuickForm $mform, $attemptid) {
         $mform->addElement('header', 'honestycheckheader',
                 get_string('confirmstartheader', 'quizaccess_timelimit'));

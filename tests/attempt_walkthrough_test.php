@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 use question_bank;
 use question_engine;
@@ -24,7 +24,7 @@ use quiz_attempt;
 /**
  * Quiz attempt walk through.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   test
  * @copyright  2013 The Open University
  * @author     Jamie Pratt <me@jamiep.org>
@@ -50,7 +50,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $this->resetAfterTest(true);
 
         // Make a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         $quiz = $quizgenerator->create_instance(array('course'=>$SITE->id, 'questionsperpage' => 0, 'grade' => 100.0,
                                                       'sumgrades' => 3));
@@ -76,7 +76,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $quizobj = quiz::create($quiz->id, $user1->id);
 
         // Start the attempt.
-        $quba = question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         $timenow = time();
@@ -168,7 +168,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
 
         // Make a quiz.
         $timeclose = time() + HOURSECS;
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         $quiz = $quizgenerator->create_instance(
                 ['course' => $SITE->id, 'timeclose' => $timeclose,
@@ -279,7 +279,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $this->setAdminUser();
 
         // Make a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         $quiz = $quizgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 2, 'grade' => 100.0,
                                                       'sumgrades' => 4));
@@ -316,7 +316,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
             $quizobj = quiz::create($quiz->id, $user1->id);
 
             // Start the attempt.
-            $quba = question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+            $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
             $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
             $timenow = time();
@@ -395,7 +395,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
 
         if ($this->quizwithvariants === null) {
             // Make a quiz.
-            $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+            $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
             $this->quizwithvariants = $quizgenerator->create_instance(array('course'=>$SITE->id,
                                                                             'questionsperpage' => 0,
@@ -416,7 +416,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $quizobj = quiz::create($this->quizwithvariants->id, $user1->id);
 
         // Start the attempt.
-        $quba = question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         $timenow = time();

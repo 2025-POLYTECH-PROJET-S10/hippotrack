@@ -15,18 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_quiz question manually graded event.
+ * The mod_hippotrack question manually graded event.
  *
  * @package    core
  * @copyright  2014 Mark Nelson <markn@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_quiz\event;
+namespace mod_hippotrack\event;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_quiz question manually graded event class.
+ * The mod_hippotrack question manually graded event class.
  *
  * @property-read array $other {
  *      Extra information about event.
@@ -58,7 +58,7 @@ class question_manually_graded extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('eventquestionmanuallygraded', 'mod_quiz');
+        return get_string('eventquestionmanuallygraded', 'mod_hippotrack');
     }
 
     /**

@@ -63,7 +63,7 @@ class quizaccess_offlineattempts extends quiz_access_rule_base {
         }
     }
 
-    public function add_preflight_check_form_fields(mod_quiz_preflight_check_form $quizform,
+    public function add_preflight_check_form_fields(mod_hippotrack_preflight_check_form $quizform,
             MoodleQuickForm $mform, $attemptid) {
         global $DB;
 
@@ -102,7 +102,7 @@ class quizaccess_offlineattempts extends quiz_access_rule_base {
     }
 
     public static function add_settings_form_fields(
-            mod_quiz_mod_form $quizform, MoodleQuickForm $mform) {
+            mod_hippotrack_mod_form $quizform, MoodleQuickForm $mform) {
         global $CFG;
 
         // Allow to enable the access rule only if the Mobile services are enabled.
@@ -119,7 +119,7 @@ class quizaccess_offlineattempts extends quiz_access_rule_base {
     }
 
     public static function validate_settings_form_fields(array $errors,
-            array $data, $files, mod_quiz_mod_form $quizform) {
+            array $data, $files, mod_hippotrack_mod_form $quizform) {
         global $CFG;
 
         if ($CFG->enablemobilewebservice) {

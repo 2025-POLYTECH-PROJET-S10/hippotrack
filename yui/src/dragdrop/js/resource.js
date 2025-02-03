@@ -5,11 +5,11 @@
  * @constructor
  * @extends M.core.dragdrop
  */
-var DRAGRESOURCE = function() {
+var DRAGRESOURCE = function () {
     DRAGRESOURCE.superclass.constructor.apply(this, arguments);
 };
 Y.extend(DRAGRESOURCE, M.core.dragdrop, {
-    initializer: function() {
+    initializer: function () {
         // Set group for parent class
         this.groups = ['resource'];
         this.samenodeclass = CSS.ACTIVITY;
@@ -34,7 +34,7 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
             nodes: nodeselector,
             target: true,
             handles: ['.' + CSS.EDITINGMOVE],
-            dragConfig: {groups: this.groups}
+            dragConfig: { groups: this.groups }
         });
         del.dd.plug(Y.Plugin.DDProxy, {
             // Don't move the node at the end of the drag
@@ -47,8 +47,8 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
         });
         del.dd.plug(Y.Plugin.DDWinScroll);
 
-        M.mod_quiz.quizbase.register_module(this);
-        M.mod_quiz.dragres = this;
+        M.mod_hippotrack.quizbase.register_module(this);
+        M.mod_hippotrack.dragres = this;
     },
 
     /**
@@ -57,8 +57,8 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
      * @method setup_for_section
      * @param {String} baseselector The CSS selector or node to limit scope to
      */
-    setup_for_section: function() {
-        Y.Node.all('.mod-quiz-edit-content ul.slots ul.section').each(function(resources) {
+    setup_for_section: function () {
+        Y.Node.all('.mod-quiz-edit-content ul.slots ul.section').each(function (resources) {
             resources.setAttribute('data-draggroups', this.groups.join(' '));
             // Define empty ul as droptarget, so that item could be moved to empty list
             new Y.DD.Drop({
@@ -78,33 +78,33 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
      * @method setup_for_resource
      * @param {String} baseselector The CSS selector or node to limit scope to
      */
-    setup_for_resource: function(baseselector) {
-        Y.Node.all(baseselector).each(function(resourcesnode) {
+    setup_for_resource: function (baseselector) {
+        Y.Node.all(baseselector).each(function (resourcesnode) {
             // Replace move icons
             var move = resourcesnode.one('a.' + CSS.EDITINGMOVE);
             if (move) {
                 var resourcedraghandle = this.get_drag_handle(M.util.get_string('move', 'moodle'),
-                                                              CSS.EDITINGMOVE, CSS.ICONCLASS, true);
+                    CSS.EDITINGMOVE, CSS.ICONCLASS, true);
                 move.replace(resourcedraghandle);
             }
         }, this);
     },
 
-    drag_start: function(e) {
+    drag_start: function (e) {
         // Get our drag object
         var drag = e.target;
         drag.get('dragNode').setContent(drag.get('node').get('innerHTML'));
         drag.get('dragNode').all('.icon').setStyle('vertical-align', 'baseline');
     },
 
-    drag_dropmiss: function(e) {
+    drag_dropmiss: function (e) {
         // Missed the target, but we assume the user intended to drop it
         // on the last ghost node location, e.drag and e.drop should be
         // prepared by global_drag_dropmiss parent so simulate drop_hit(e).
         this.drop_hit(e);
     },
 
-    drop_hit: function(e) {
+    drop_hit: function (e) {
         var drag = e.drag;
         // Get a reference to our drag node
         var dragnode = drag.get('node');
@@ -128,17 +128,17 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
         params.quizid = this.get('quizid');
         params['class'] = 'resource';
         params.field = 'move';
-        params.id = Number(Y.Moodle.mod_quiz.util.slot.getId(dragnode));
+        params.id = Number(Y.Moodle.mod_hippotrack.util.slot.getId(dragnode));
         params.sectionId = Y.Moodle.core_course.util.section.getId(dragnode.ancestor('li.section', true));
 
         var previousslot = dragnode.previous(SELECTOR.SLOT);
         if (previousslot) {
-            params.previousid = Number(Y.Moodle.mod_quiz.util.slot.getId(previousslot));
+            params.previousid = Number(Y.Moodle.mod_hippotrack.util.slot.getId(previousslot));
         }
 
         var previouspage = dragnode.previous(SELECTOR.PAGE);
         if (previouspage) {
-            params.page = Number(Y.Moodle.mod_quiz.util.page.getId(previouspage));
+            params.page = Number(Y.Moodle.mod_hippotrack.util.page.getId(previouspage));
         }
 
         // Do AJAX request
@@ -148,21 +148,21 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
             method: 'POST',
             data: params,
             on: {
-                start: function() {
+                start: function () {
                     this.lock_drag_handle(drag, CSS.EDITINGMOVE);
                     spinner.show();
                 },
-                success: function(tid, response) {
+                success: function (tid, response) {
                     var responsetext = Y.JSON.parse(response.responseText);
-                    var params = {element: dragnode, visible: responsetext.visible};
-                    M.mod_quiz.quizbase.invoke_function('set_visibility_resource_ui', params);
+                    var params = { element: dragnode, visible: responsetext.visible };
+                    M.mod_hippotrack.quizbase.invoke_function('set_visibility_resource_ui', params);
                     this.unlock_drag_handle(drag, CSS.EDITINGMOVE);
-                    window.setTimeout(function() {
+                    window.setTimeout(function () {
                         spinner.hide();
                     }, 250);
-                    M.mod_quiz.resource_toolbox.reorganise_edit_page();
+                    M.mod_hippotrack.resource_toolbox.reorganise_edit_page();
                 },
-                failure: function(tid, response) {
+                failure: function (tid, response) {
                     this.ajax_failure(response);
                     this.unlock_drag_handle(drag, CSS.SECTIONHANDLE);
                     spinner.hide();
@@ -173,7 +173,7 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
         });
     },
 
-    global_drop_over: function(e) {
+    global_drop_over: function (e) {
         // Overriding parent method so we can stop the slots being dragged before the first page node.
 
         // Check that drop object belong to correct group.
@@ -210,7 +210,7 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
         this.drop_over(e);
     }
 }, {
-    NAME: 'mod_quiz-dragdrop-resource',
+    NAME: 'mod_hippotrack-dragdrop-resource',
     ATTRS: {
         courseid: {
             value: null
@@ -227,7 +227,7 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
     }
 });
 
-M.mod_quiz = M.mod_quiz || {};
-M.mod_quiz.init_resource_dragdrop = function(params) {
+M.mod_hippotrack = M.mod_hippotrack || {};
+M.mod_hippotrack.init_resource_dragdrop = function (params) {
     new DRAGRESOURCE(params);
 };

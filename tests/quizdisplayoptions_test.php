@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
-use mod_quiz_display_options;
+use mod_hippotrack_display_options;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -24,9 +24,9 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 
 /**
- * Unit tests for {@link mod_quiz_display_options}.
+ * Unit tests for {@link mod_hippotrack_display_options}.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   test
  * @copyright  2010 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -44,40 +44,40 @@ class quizdisplayoptions_test extends \basic_testcase {
         $quiz->reviewrightanswer      = 0x00100;
         $quiz->reviewoverallfeedback  = 0x00010;
 
-        $options = mod_quiz_display_options::make_from_quiz($quiz,
-            mod_quiz_display_options::DURING);
+        $options = mod_hippotrack_display_options::make_from_quiz($quiz,
+            mod_hippotrack_display_options::DURING);
 
         $this->assertEquals(true, $options->attempt);
-        $this->assertEquals(mod_quiz_display_options::VISIBLE, $options->correctness);
-        $this->assertEquals(mod_quiz_display_options::MAX_ONLY, $options->marks);
-        $this->assertEquals(mod_quiz_display_options::VISIBLE, $options->feedback);
+        $this->assertEquals(mod_hippotrack_display_options::VISIBLE, $options->correctness);
+        $this->assertEquals(mod_hippotrack_display_options::MAX_ONLY, $options->marks);
+        $this->assertEquals(mod_hippotrack_display_options::VISIBLE, $options->feedback);
         // The next two should be controlled by the same settings as ->feedback.
-        $this->assertEquals(mod_quiz_display_options::VISIBLE, $options->numpartscorrect);
-        $this->assertEquals(mod_quiz_display_options::VISIBLE, $options->manualcomment);
+        $this->assertEquals(mod_hippotrack_display_options::VISIBLE, $options->numpartscorrect);
+        $this->assertEquals(mod_hippotrack_display_options::VISIBLE, $options->manualcomment);
         $this->assertEquals(2, $options->markdp);
 
         $quiz->questiondecimalpoints = 5;
-        $options = mod_quiz_display_options::make_from_quiz($quiz,
-            mod_quiz_display_options::IMMEDIATELY_AFTER);
+        $options = mod_hippotrack_display_options::make_from_quiz($quiz,
+            mod_hippotrack_display_options::IMMEDIATELY_AFTER);
 
-        $this->assertEquals(mod_quiz_display_options::MARK_AND_MAX, $options->marks);
-        $this->assertEquals(mod_quiz_display_options::VISIBLE, $options->generalfeedback);
-        $this->assertEquals(mod_quiz_display_options::HIDDEN, $options->feedback);
+        $this->assertEquals(mod_hippotrack_display_options::MARK_AND_MAX, $options->marks);
+        $this->assertEquals(mod_hippotrack_display_options::VISIBLE, $options->generalfeedback);
+        $this->assertEquals(mod_hippotrack_display_options::HIDDEN, $options->feedback);
         // The next two should be controlled by the same settings as ->feedback.
-        $this->assertEquals(mod_quiz_display_options::HIDDEN, $options->numpartscorrect);
-        $this->assertEquals(mod_quiz_display_options::HIDDEN, $options->manualcomment);
+        $this->assertEquals(mod_hippotrack_display_options::HIDDEN, $options->numpartscorrect);
+        $this->assertEquals(mod_hippotrack_display_options::HIDDEN, $options->manualcomment);
         $this->assertEquals(5, $options->markdp);
 
-        $options = mod_quiz_display_options::make_from_quiz($quiz,
-            mod_quiz_display_options::LATER_WHILE_OPEN);
+        $options = mod_hippotrack_display_options::make_from_quiz($quiz,
+            mod_hippotrack_display_options::LATER_WHILE_OPEN);
 
-        $this->assertEquals(mod_quiz_display_options::VISIBLE, $options->rightanswer);
-        $this->assertEquals(mod_quiz_display_options::HIDDEN, $options->generalfeedback);
+        $this->assertEquals(mod_hippotrack_display_options::VISIBLE, $options->rightanswer);
+        $this->assertEquals(mod_hippotrack_display_options::HIDDEN, $options->generalfeedback);
 
-        $options = mod_quiz_display_options::make_from_quiz($quiz,
-            mod_quiz_display_options::AFTER_CLOSE);
+        $options = mod_hippotrack_display_options::make_from_quiz($quiz,
+            mod_hippotrack_display_options::AFTER_CLOSE);
 
-        $this->assertEquals(mod_quiz_display_options::VISIBLE, $options->overallfeedback);
-        $this->assertEquals(mod_quiz_display_options::HIDDEN, $options->rightanswer);
+        $this->assertEquals(mod_hippotrack_display_options::VISIBLE, $options->overallfeedback);
+        $this->assertEquals(mod_hippotrack_display_options::HIDDEN, $options->rightanswer);
     }
 }

@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $observers = [
     [
-        'eventname' => '\mod_quiz\event\attempt_submitted',
+        'eventname' => '\mod_hippotrack\event\attempt_submitted',
         'callback' => '\quiz_statistics\event\observer\attempt_submitted::process',
     ],
 ];

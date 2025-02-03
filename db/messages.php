@@ -17,7 +17,7 @@
 /**
  * Defines message providers (types of message sent) for the quiz module.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2010 Andrew Davis http://moodle.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

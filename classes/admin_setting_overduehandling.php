@@ -17,7 +17,7 @@
 /**
  * Admin settings class for the quiz overdue attempt handling method.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2008 Tim Hunt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -34,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_quiz_admin_setting_overduehandling extends admin_setting_configselect_with_advanced {
+class mod_hippotrack_admin_setting_overduehandling extends admin_setting_configselect_with_advanced {
     public function load_choices() {
         global $CFG;
 

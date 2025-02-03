@@ -17,7 +17,7 @@
 /**
  * This script lists all the instances of quiz in a particular course
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -38,7 +38,7 @@ $PAGE->set_pagelayout('incourse');
 $params = array(
     'context' => $coursecontext
 );
-$event = \mod_quiz\event\course_module_instance_list_viewed::create($params);
+$event = \mod_hippotrack\event\course_module_instance_list_viewed::create($params);
 $event->trigger();
 
 // Print the header.

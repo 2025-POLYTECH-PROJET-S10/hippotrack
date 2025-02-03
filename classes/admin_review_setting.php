@@ -17,7 +17,7 @@
 /**
  * Admin settings class for the quiz review options.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2008 Tim Hunt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -32,28 +32,28 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2008 Tim Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_quiz_admin_review_setting extends admin_setting {
+class mod_hippotrack_admin_review_setting extends admin_setting {
     /**
      * @var integer should match the constants defined in
-     * {@link mod_quiz_display_options}. Copied for performance reasons.
+     * {@link mod_hippotrack_display_options}. Copied for performance reasons.
      */
     const DURING            = 0x10000;
 
     /**
      * @var integer should match the constants defined in
-     * {@link mod_quiz_display_options}. Copied for performance reasons.
+     * {@link mod_hippotrack_display_options}. Copied for performance reasons.
      */
     const IMMEDIATELY_AFTER = 0x01000;
 
     /**
      * @var integer should match the constants defined in
-     * {@link mod_quiz_display_options}. Copied for performance reasons.
+     * {@link mod_hippotrack_display_options}. Copied for performance reasons.
      */
     const LATER_WHILE_OPEN  = 0x00100;
 
     /**
      * @var integer should match the constants defined in
-     * {@link mod_quiz_display_options}. Copied for performance reasons.
+     * {@link mod_hippotrack_display_options}. Copied for performance reasons.
      */
     const AFTER_CLOSE       = 0x00010;
 
@@ -63,7 +63,7 @@ class mod_quiz_admin_review_setting extends admin_setting {
     protected $duringstate;
 
     /**
-     * This should match {@link mod_quiz_mod_form::$reviewfields} but copied
+     * This should match {@link mod_hippotrack_mod_form::$reviewfields} but copied
      * here because generating the admin tree needs to be fast.
      * @return array
      */

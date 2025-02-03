@@ -79,13 +79,13 @@ class quizaccess_seb extends quiz_access_rule_base {
 
     /**
      * Add any fields that this rule requires to the quiz settings form. This
-     * method is called from {@link mod_quiz_mod_form::definition()}, while the
+     * method is called from {@link mod_hippotrack_mod_form::definition()}, while the
      * security section is being built.
      *
-     * @param mod_quiz_mod_form $quizform the quiz settings form that is being built.
+     * @param mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
      * @param MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
-    public static function add_settings_form_fields(mod_quiz_mod_form $quizform, MoodleQuickForm $mform) {
+    public static function add_settings_form_fields(mod_hippotrack_mod_form $quizform, MoodleQuickForm $mform) {
         settings_provider::add_seb_settings_fields($quizform, $mform);
     }
 
@@ -95,11 +95,11 @@ class quizaccess_seb extends quiz_access_rule_base {
      * @param array $errors the errors found so far.
      * @param array $data the submitted form data.
      * @param array $files information about any uploaded files.
-     * @param mod_quiz_mod_form $quizform the quiz form object.
+     * @param mod_hippotrack_mod_form $quizform the quiz form object.
      * @return array $errors the updated $errors array.
      */
     public static function validate_settings_form_fields(array $errors,
-                                                         array $data, $files, mod_quiz_mod_form $quizform) : array {
+                                                         array $data, $files, mod_hippotrack_mod_form $quizform) : array {
 
         $quizid = $data['instance'];
         $cmid = $data['coursemodule'];

@@ -15,17 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_quiz page break deleted event.
+ * The mod_hippotrack page break deleted event.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2021 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz\event;
+namespace mod_hippotrack\event;
 
 /**
- * The mod_quiz page break deleted event class.
+ * The mod_hippotrack page break deleted event class.
  *
  * @property-read array $other {
  *      Extra information about event.
@@ -34,7 +34,7 @@ namespace mod_quiz\event;
  *      - int slotnumber: the slot number which we will remove the page break before.
  * }
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2021 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -46,7 +46,7 @@ class page_break_deleted extends \core\event\base {
     }
 
     public static function get_name() {
-        return get_string('eventpagebreakdeleted', 'mod_quiz');
+        return get_string('eventpagebreakdeleted', 'mod_hippotrack');
     }
 
     public function get_description() {

@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Edit quiz page - drag-and-drop
   In order to change the layout of a quiz I built
   As a teacher
@@ -31,7 +31,7 @@ Feature: Edit quiz page - drag-and-drop
       | Question B | 1    |
       | Question C | 2    |
     And I log in as "teacher1"
-    And I am on the "Quiz 1" "mod_quiz > Edit" page
+    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
 
   @javascript
   Scenario: Re-order questions by clicking on the move icon.

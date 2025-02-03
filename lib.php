@@ -20,7 +20,7 @@
  * This contains functions that are called also from outside the quiz module
  * Functions that are only called by the quiz module itself are in {@link locallib.php}
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  1999 onwards Martin Dougiamas {@link http://moodle.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,7 +28,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use mod_quiz\question\bank\custom_view;
+use mod_hippotrack\question\bank\custom_view;
 use core_question\statistics\questions\all_calculated_for_qubaid_condition;
 
 require_once($CFG->dirroot . '/calendar/lib.php');
@@ -239,7 +239,7 @@ function quiz_delete_override($quiz, $overrideid, $log = true) {
     }
 
     $DB->delete_records('quiz_overrides', array('id' => $overrideid));
-    cache::make('mod_quiz', 'overrides')->delete($cachekey);
+    cache::make('mod_hippotrack', 'overrides')->delete($cachekey);
 
     if ($log) {
         // Set the common parameters for one of the events we will be triggering.
@@ -253,10 +253,10 @@ function quiz_delete_override($quiz, $overrideid, $log = true) {
         // Determine which override deleted event to fire.
         if (!empty($override->userid)) {
             $params['relateduserid'] = $override->userid;
-            $event = \mod_quiz\event\user_override_deleted::create($params);
+            $event = \mod_hippotrack\event\user_override_deleted::create($params);
         } else {
             $params['other']['groupid'] = $override->groupid;
-            $event = \mod_quiz\event\group_override_deleted::create($params);
+            $event = \mod_hippotrack\event\group_override_deleted::create($params);
         }
 
         // Trigger the override deleted event.
@@ -759,10 +759,10 @@ function quiz_grade_item_update($quiz, $grades = null) {
     // 2. If the quiz is set to not show grades at either of those times,
     //    create the grade_item as hidden.
     // 3. If the quiz is set to show grades, create the grade_item visible.
-    $openreviewoptions = mod_quiz_display_options::make_from_quiz($quiz,
-            mod_quiz_display_options::LATER_WHILE_OPEN);
-    $closedreviewoptions = mod_quiz_display_options::make_from_quiz($quiz,
-            mod_quiz_display_options::AFTER_CLOSE);
+    $openreviewoptions = mod_hippotrack_display_options::make_from_quiz($quiz,
+            mod_hippotrack_display_options::LATER_WHILE_OPEN);
+    $closedreviewoptions = mod_hippotrack_display_options::make_from_quiz($quiz,
+            mod_hippotrack_display_options::AFTER_CLOSE);
     if ($openreviewoptions->marks < question_display_options::MARK_AND_MAX &&
             $closedreviewoptions->marks < question_display_options::MARK_AND_MAX) {
         $params['hidden'] = 1;
@@ -1115,8 +1115,8 @@ function quiz_process_options($quiz) {
     $quiz->reviewgeneralfeedback = quiz_review_option_form_to_db($quiz, 'generalfeedback');
     $quiz->reviewrightanswer = quiz_review_option_form_to_db($quiz, 'rightanswer');
     $quiz->reviewoverallfeedback = quiz_review_option_form_to_db($quiz, 'overallfeedback');
-    $quiz->reviewattempt |= mod_quiz_display_options::DURING;
-    $quiz->reviewoverallfeedback &= ~mod_quiz_display_options::DURING;
+    $quiz->reviewattempt |= mod_hippotrack_display_options::DURING;
+    $quiz->reviewoverallfeedback &= ~mod_hippotrack_display_options::DURING;
 
     // Ensure that disabled checkboxes in completion settings are set to 0.
     // But only if the completion settinsg are unlocked.
@@ -1140,10 +1140,10 @@ function quiz_process_options($quiz) {
  */
 function quiz_review_option_form_to_db($fromform, $field) {
     static $times = array(
-        'during' => mod_quiz_display_options::DURING,
-        'immediately' => mod_quiz_display_options::IMMEDIATELY_AFTER,
-        'open' => mod_quiz_display_options::LATER_WHILE_OPEN,
-        'closed' => mod_quiz_display_options::AFTER_CLOSE,
+        'during' => mod_hippotrack_display_options::DURING,
+        'immediately' => mod_hippotrack_display_options::IMMEDIATELY_AFTER,
+        'open' => mod_hippotrack_display_options::LATER_WHILE_OPEN,
+        'closed' => mod_hippotrack_display_options::AFTER_CLOSE,
     );
 
     $review = 0;
@@ -1184,7 +1184,7 @@ function quiz_after_add_or_update($quiz) {
         $feedback->maxgrade = $quiz->feedbackboundaries[$i - 1];
         $feedback->id = $DB->insert_record('quiz_feedback', $feedback);
         $feedbacktext = file_save_draft_area_files((int)$quiz->feedbacktext[$i]['itemid'],
-                $context->id, 'mod_quiz', 'feedback', $feedback->id,
+                $context->id, 'mod_hippotrack', 'feedback', $feedback->id,
                 array('subdirs' => false, 'maxfiles' => -1, 'maxbytes' => 0),
                 $quiz->feedbacktext[$i]['text']);
         $DB->set_field('quiz_feedback', 'feedbacktext', $feedbacktext,
@@ -1581,7 +1581,7 @@ function quiz_reset_userdata($data) {
     }
 
     if ($purgeoverrides) {
-        cache::make('mod_quiz', 'overrides')->purge();
+        cache::make('mod_hippotrack', 'overrides')->purge();
     }
 
     return $status;
@@ -1655,7 +1655,7 @@ function quiz_attempt_summary_link_to_reports($quiz, $cm, $context, $returnzero 
         $currentgroup = 0) {
     global $PAGE;
 
-    return $PAGE->get_renderer('mod_quiz')->quiz_attempt_summary_link_to_reports(
+    return $PAGE->get_renderer('mod_hippotrack')->quiz_attempt_summary_link_to_reports(
             $quiz, $cm, $context, $returnzero, $currentgroup);
 }
 
@@ -1723,14 +1723,14 @@ function quiz_extend_settings_navigation(settings_navigation $settings, navigati
     if (has_any_capability(['mod/quiz:manageoverrides', 'mod/quiz:viewoverrides'], $settings->get_page()->cm->context)) {
         $url = new moodle_url('/mod/quiz/overrides.php', ['cmid' => $settings->get_page()->cm->id, 'mode' => 'user']);
         $node = navigation_node::create(get_string('overrides', 'quiz'),
-                    $url, navigation_node::TYPE_SETTING, null, 'mod_quiz_useroverrides');
+                    $url, navigation_node::TYPE_SETTING, null, 'mod_hippotrack_useroverrides');
         $settingsoverride = $quiznode->add_node($node, $beforekey);
     }
 
     if (has_capability('mod/quiz:manage', $settings->get_page()->cm->context)) {
         $node = navigation_node::create(get_string('questions', 'quiz'),
             new moodle_url('/mod/quiz/edit.php', array('cmid' => $settings->get_page()->cm->id)),
-            navigation_node::TYPE_SETTING, null, 'mod_quiz_edit', new pix_icon('t/edit', ''));
+            navigation_node::TYPE_SETTING, null, 'mod_hippotrack_edit', new pix_icon('t/edit', ''));
         $quiznode->add_node($node, $beforekey);
     }
 
@@ -1738,7 +1738,7 @@ function quiz_extend_settings_navigation(settings_navigation $settings, navigati
         $url = new moodle_url('/mod/quiz/startattempt.php',
                 array('cmid' => $settings->get_page()->cm->id, 'sesskey' => sesskey()));
         $node = navigation_node::create(get_string('preview', 'quiz'), $url,
-                navigation_node::TYPE_SETTING, null, 'mod_quiz_preview',
+                navigation_node::TYPE_SETTING, null, 'mod_hippotrack_preview',
                 new pix_icon('i/preview', ''));
         $previewnode = $quiznode->add_node($node, $beforekey);
         $previewnode->set_show_in_secondary_navigation(false);
@@ -1768,7 +1768,7 @@ function quiz_extend_settings_navigation(settings_navigation $settings, navigati
 /**
  * Serves the quiz files.
  *
- * @package  mod_quiz
+ * @package  mod_hippotrack
  * @category files
  * @param stdClass $course course object
  * @param stdClass $cm course module object
@@ -1805,7 +1805,7 @@ function quiz_pluginfile($course, $cm, $context, $filearea, $args, $forcedownloa
 
     $fs = get_file_storage();
     $relativepath = implode('/', $args);
-    $fullpath = "/$context->id/mod_quiz/$filearea/$feedbackid/$relativepath";
+    $fullpath = "/$context->id/mod_hippotrack/$filearea/$feedbackid/$relativepath";
     if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
         return false;
     }
@@ -1816,7 +1816,7 @@ function quiz_pluginfile($course, $cm, $context, $filearea, $args, $forcedownloa
  * Called via pluginfile.php -> question_pluginfile to serve files belonging to
  * a question in a question_attempt when that attempt is a quiz attempt.
  *
- * @package  mod_quiz
+ * @package  mod_hippotrack
  * @category files
  * @param stdClass $course course settings object
  * @param stdClass $context context object
@@ -1979,9 +1979,9 @@ function quiz_check_updates_since(cm_info $cm, $from, $filter = array()) {
 /**
  * Get icon mapping for font-awesome.
  */
-function mod_quiz_get_fontawesome_icon_map() {
+function mod_hippotrack_get_fontawesome_icon_map() {
     return [
-        'mod_quiz:navflagged' => 'fa-flag',
+        'mod_hippotrack:navflagged' => 'fa-flag',
     ];
 }
 
@@ -1996,7 +1996,7 @@ function mod_quiz_get_fontawesome_icon_map() {
  * @param int $userid User id to use for all capability checks, etc. Set to 0 for current user (default).
  * @return \core_calendar\local\event\entities\action_interface|null
  */
-function mod_quiz_core_calendar_provide_event_action(calendar_event $event,
+function mod_hippotrack_core_calendar_provide_event_action(calendar_event $event,
                                                      \core_calendar\action_factory $factory,
                                                      int $userid = 0) {
     global $CFG, $USER;
@@ -2124,10 +2124,10 @@ function quiz_get_coursemodule_info($coursemodule) {
  *
  * @param cm_info $cm
  */
-function mod_quiz_cm_info_dynamic(cm_info $cm) {
+function mod_hippotrack_cm_info_dynamic(cm_info $cm) {
     global $USER;
 
-    $cache = cache::make('mod_quiz', 'overrides');
+    $cache = cache::make('mod_hippotrack', 'overrides');
     $override = $cache->get("{$cm->instance}_u_{$USER->id}");
 
     if (!$override) {
@@ -2179,7 +2179,7 @@ function mod_quiz_cm_info_dynamic(cm_info $cm) {
  * @param cm_info|stdClass $cm object with fields ->completion and ->customdata['customcompletionrules']
  * @return array $descriptions the array of descriptions for the custom rules.
  */
-function mod_quiz_get_completion_active_rule_descriptions($cm) {
+function mod_hippotrack_get_completion_active_rule_descriptions($cm) {
     // Values will be present in cm_info, and we assume these are up to date.
     if (empty($cm->customdata['customcompletionrules'])
         || $cm->completion != COMPLETION_TRACKING_AUTOMATIC) {
@@ -2231,7 +2231,7 @@ function mod_quiz_get_completion_active_rule_descriptions($cm) {
  * @param stdClass $quiz The module instance to get the range from
  * @return array
  */
-function mod_quiz_core_calendar_get_valid_event_timestart_range(\calendar_event $event, \stdClass $quiz) {
+function mod_hippotrack_core_calendar_get_valid_event_timestart_range(\calendar_event $event, \stdClass $quiz) {
     global $CFG, $DB;
     require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 
@@ -2273,7 +2273,7 @@ function mod_quiz_core_calendar_get_valid_event_timestart_range(\calendar_event 
  * @param \calendar_event $event A quiz activity calendar event
  * @param \stdClass $quiz A quiz activity instance
  */
-function mod_quiz_core_calendar_event_timestart_updated(\calendar_event $event, \stdClass $quiz) {
+function mod_hippotrack_core_calendar_event_timestart_updated(\calendar_event $event, \stdClass $quiz) {
     global $CFG, $DB;
     require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 
@@ -2363,7 +2363,7 @@ function mod_quiz_core_calendar_event_timestart_updated(\calendar_event $event, 
  * @param array $args The fragment arguments.
  * @return string The rendered mform fragment.
  */
-function mod_quiz_output_fragment_quiz_question_bank($args) {
+function mod_hippotrack_output_fragment_quiz_question_bank($args) {
     global $CFG, $DB, $PAGE;
     require_once($CFG->dirroot . '/mod/quiz/locallib.php');
     require_once($CFG->dirroot . '/question/editlib.php');
@@ -2386,7 +2386,7 @@ function mod_quiz_output_fragment_quiz_question_bank($args) {
     $questionbank->set_quiz_has_attempts(quiz_has_attempts($quiz->id));
 
     // Output.
-    $renderer = $PAGE->get_renderer('mod_quiz', 'edit');
+    $renderer = $PAGE->get_renderer('mod_hippotrack', 'edit');
     return $renderer->question_bank_contents($questionbank, $pagevars);
 }
 
@@ -2403,7 +2403,7 @@ function mod_quiz_output_fragment_quiz_question_bank($args) {
  * @param array $args The fragment arguments.
  * @return string The rendered mform fragment.
  */
-function mod_quiz_output_fragment_add_random_question_form($args) {
+function mod_hippotrack_output_fragment_add_random_question_form($args) {
     global $CFG;
     require_once($CFG->dirroot . '/mod/quiz/addrandomform.php');
 
@@ -2439,7 +2439,7 @@ function mod_quiz_output_fragment_add_random_question_form($args) {
  * @param string $eventtype The event type.
  * @return lang_string The event type lang string.
  */
-function mod_quiz_core_calendar_get_event_action_string(string $eventtype): string {
+function mod_hippotrack_core_calendar_get_event_action_string(string $eventtype): string {
     $modulename = get_string('modulename', 'quiz');
 
     switch ($eventtype) {
@@ -2467,7 +2467,7 @@ function quiz_delete_references($quizid): void {
     foreach ($slots as $slot) {
         $params = [
             'itemid' => $slot->id,
-            'component' => 'mod_quiz',
+            'component' => 'mod_hippotrack',
             'questionarea' => 'slot'
         ];
         // Delete any set references.
@@ -2485,7 +2485,7 @@ function quiz_delete_references($quizid): void {
  * @param context $context return the statistics related to this context (which will be a quiz context).
  * @return all_calculated_for_qubaid_condition|null The statistics for this quiz, if available, else null.
  */
-function mod_quiz_calculate_question_stats(context $context): ?all_calculated_for_qubaid_condition {
+function mod_hippotrack_calculate_question_stats(context $context): ?all_calculated_for_qubaid_condition {
     global $CFG;
     require_once($CFG->dirroot . '/mod/quiz/report/statistics/report.php');
     $cm = get_coursemodule_from_id('quiz', $context->instanceid);

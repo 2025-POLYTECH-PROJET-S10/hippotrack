@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz\external;
+namespace mod_hippotrack\external;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -33,7 +33,7 @@ use stdClass;
 /**
  * External api for changing the question version in the quiz.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2021 Catalyst IT Australia Pty Ltd
  * @author     Safat Shahin <safatshahin@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -71,7 +71,7 @@ class submit_question_version extends external_api {
         $response = ['result' => false];
         // Get the required data.
         $referencedata = $DB->get_record('question_references',
-            ['itemid' => $params['slotid'], 'component' => 'mod_quiz', 'questionarea' => 'slot']);
+            ['itemid' => $params['slotid'], 'component' => 'mod_hippotrack', 'questionarea' => 'slot']);
         $slotdata = $DB->get_record('quiz_slots', ['id' => $slotid]);
 
         // Capability check.

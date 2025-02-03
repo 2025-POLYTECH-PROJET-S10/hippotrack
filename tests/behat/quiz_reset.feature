@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Quiz reset
   In order to reuse past quizzes
   As a teacher
@@ -43,11 +43,11 @@ Feature: Quiz reset
         | Delete all quiz attempts | 1 |
     And I press "Reset course"
     And I press "Continue"
-    And I am on the "Test quiz name" "mod_quiz > Grades report" page
+    And I am on the "Test quiz name" "mod_hippotrack > Grades report" page
     Then I should see "Attempts: 0"
 
   Scenario: Use course reset to remove user overrides.
-    Given the following "mod_quiz > user overrides" exist:
+    Given the following "mod_hippotrack > user overrides" exist:
       | quiz           | user     | attempts |
       | Test quiz name | student1 | 2        |
     When I log in as "teacher1"
@@ -55,11 +55,11 @@ Feature: Quiz reset
     And I set the field "Delete all user overrides" to "1"
     And I press "Reset course"
     And I press "Continue"
-    And I am on the "Test quiz name" "mod_quiz > User overrides" page
+    And I am on the "Test quiz name" "mod_hippotrack > User overrides" page
     Then I should not see "Sam1 Student1"
 
   Scenario: Use course reset to remove group overrides.
-    Given the following "mod_quiz > group overrides" exist:
+    Given the following "mod_hippotrack > group overrides" exist:
       | quiz           | group | attempts |
       | Test quiz name | G1    | 2        |
     When I log in as "teacher1"
@@ -68,5 +68,5 @@ Feature: Quiz reset
         | Delete all group overrides | 1 |
     And I press "Reset course"
     And I press "Continue"
-    And I am on the "Test quiz name" "mod_quiz > Group overrides" page
+    And I am on the "Test quiz name" "mod_hippotrack > Group overrides" page
     Then I should not see "Group 1"

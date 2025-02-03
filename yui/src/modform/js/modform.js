@@ -1,10 +1,10 @@
 /**
  * The modform class has all the JavaScript specific to mod/quiz/mod_form.php.
  *
- * @module moodle-mod_quiz-modform
+ * @module moodle-mod_hippotrack-modform
  */
 
-var MODFORM = function() {
+var MODFORM = function () {
     MODFORM.superclass.constructor.apply(this, arguments);
 };
 
@@ -20,7 +20,7 @@ Y.extend(MODFORM, Y.Base, {
     qppSelect: null,
     qppInitialValue: 0,
 
-    initializer: function() {
+    initializer: function () {
         this.repaginateCheckbox = Y.one('#id_repaginatenow');
         if (!this.repaginateCheckbox) {
             // The checkbox only appears when editing an existing quiz.
@@ -32,8 +32,8 @@ Y.extend(MODFORM, Y.Base, {
         this.qppSelect.on('change', this.qppChanged, this);
     },
 
-    qppChanged: function() {
-        Y.later(50, this, function() {
+    qppChanged: function () {
+        Y.later(50, this, function () {
             if (!this.repaginateCheckbox.get('disabled')) {
                 this.repaginateCheckbox.set('checked', this.qppSelect.get('value') !== this.qppInitialValue);
             }
@@ -42,9 +42,9 @@ Y.extend(MODFORM, Y.Base, {
 
 });
 
-// Ensure that M.mod_quiz exists and that coursebase is initialised correctly
-M.mod_quiz = M.mod_quiz || {};
-M.mod_quiz.modform = M.mod_quiz.modform || new MODFORM();
-M.mod_quiz.modform.init = function() {
+// Ensure that M.mod_hippotrack exists and that coursebase is initialised correctly
+M.mod_hippotrack = M.mod_hippotrack || {};
+M.mod_hippotrack.modform = M.mod_hippotrack.modform || new MODFORM();
+M.mod_hippotrack.modform.init = function () {
     return new MODFORM();
 };

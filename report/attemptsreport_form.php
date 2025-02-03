@@ -17,7 +17,7 @@
 /**
  * Base class for the settings form for {@link quiz_attempts_report}s.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2012 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -34,7 +34,7 @@ require_once($CFG->libdir . '/formslib.php');
  * @copyright 2012 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class mod_quiz_attempts_report_form extends moodleform {
+abstract class mod_hippotrack_attempts_report_form extends moodleform {
 
     protected function definition() {
         $mform = $this->_form;

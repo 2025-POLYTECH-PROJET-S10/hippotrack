@@ -1,4 +1,4 @@
-@mod @mod_quiz @core_completion
+@mod @mod_hippotrack @core_completion
 Feature: Manually complete a quiz
   In order to meet manual quiz completion requirements
   As a student

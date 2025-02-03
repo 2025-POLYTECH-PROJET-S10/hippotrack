@@ -606,7 +606,7 @@ class quiz_grading_report extends quiz_default_report {
                     'slot' => $assumedslotforevents,
                 ],
             ];
-            $events[] = \mod_quiz\event\question_manually_graded::create($params);
+            $events[] = \mod_hippotrack\event\question_manually_graded::create($params);
         }
         $transaction->allow_commit();
 

@@ -17,15 +17,15 @@
 /**
  * Unit tests for (some of) mod/quiz/locallib.php.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   test
  * @copyright  2008 Tim Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 use quiz_attempt;
-use mod_quiz_display_options;
+use mod_hippotrack_display_options;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -60,17 +60,17 @@ class locallib_test extends \advanced_testcase {
 
     public static function quiz_attempt_state_data_provider(): array {
         return [
-            [quiz_attempt::IN_PROGRESS, null, null, mod_quiz_display_options::DURING],
-            [quiz_attempt::FINISHED, -90, null, mod_quiz_display_options::IMMEDIATELY_AFTER],
-            [quiz_attempt::FINISHED, -7200, null, mod_quiz_display_options::LATER_WHILE_OPEN],
-            [quiz_attempt::FINISHED, -7200, 3600, mod_quiz_display_options::LATER_WHILE_OPEN],
-            [quiz_attempt::FINISHED, -30, 30, mod_quiz_display_options::IMMEDIATELY_AFTER],
-            [quiz_attempt::FINISHED, -90, -30, mod_quiz_display_options::AFTER_CLOSE],
-            [quiz_attempt::FINISHED, -7200, -3600, mod_quiz_display_options::AFTER_CLOSE],
-            [quiz_attempt::FINISHED, -90, -3600, mod_quiz_display_options::AFTER_CLOSE],
-            [quiz_attempt::ABANDONED, -10000000, null, mod_quiz_display_options::LATER_WHILE_OPEN],
-            [quiz_attempt::ABANDONED, -7200, 3600, mod_quiz_display_options::LATER_WHILE_OPEN],
-            [quiz_attempt::ABANDONED, -7200, -3600, mod_quiz_display_options::AFTER_CLOSE],
+            [quiz_attempt::IN_PROGRESS, null, null, mod_hippotrack_display_options::DURING],
+            [quiz_attempt::FINISHED, -90, null, mod_hippotrack_display_options::IMMEDIATELY_AFTER],
+            [quiz_attempt::FINISHED, -7200, null, mod_hippotrack_display_options::LATER_WHILE_OPEN],
+            [quiz_attempt::FINISHED, -7200, 3600, mod_hippotrack_display_options::LATER_WHILE_OPEN],
+            [quiz_attempt::FINISHED, -30, 30, mod_hippotrack_display_options::IMMEDIATELY_AFTER],
+            [quiz_attempt::FINISHED, -90, -30, mod_hippotrack_display_options::AFTER_CLOSE],
+            [quiz_attempt::FINISHED, -7200, -3600, mod_hippotrack_display_options::AFTER_CLOSE],
+            [quiz_attempt::FINISHED, -90, -3600, mod_hippotrack_display_options::AFTER_CLOSE],
+            [quiz_attempt::ABANDONED, -10000000, null, mod_hippotrack_display_options::LATER_WHILE_OPEN],
+            [quiz_attempt::ABANDONED, -7200, 3600, mod_hippotrack_display_options::LATER_WHILE_OPEN],
+            [quiz_attempt::ABANDONED, -7200, -3600, mod_hippotrack_display_options::AFTER_CLOSE],
         ];
     }
 
@@ -80,7 +80,7 @@ class locallib_test extends \advanced_testcase {
      * @param unknown $attemptstate as in the quiz_attempts.state DB column.
      * @param unknown $relativetimefinish time relative to now when the attempt finished, or null for 0.
      * @param unknown $relativetimeclose time relative to now when the quiz closes, or null for 0.
-     * @param unknown $expectedstate expected result. One of the mod_quiz_display_options constants/
+     * @param unknown $expectedstate expected result. One of the mod_hippotrack_display_options constants/
      */
     public function test_quiz_attempt_state($attemptstate,
             $relativetimefinish, $relativetimeclose, $expectedstate) {
@@ -162,7 +162,7 @@ class locallib_test extends \advanced_testcase {
         $event = array_shift($events);
 
         // Checking that the event contains the expected values.
-        $this->assertInstanceOf('\mod_quiz\event\course_module_viewed', $event);
+        $this->assertInstanceOf('\mod_hippotrack\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
         $moodleurl = new \moodle_url('/mod/quiz/view.php', array('id' => $cm->id));
         $this->assertEquals($moodleurl, $event->get_url());
@@ -186,7 +186,7 @@ class locallib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $quizgenerator = $generator->get_plugin_generator('mod_quiz');
+        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(['course' => $course->id]);
 
         $event = new \calendar_event((object)[
@@ -210,7 +210,7 @@ class locallib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $quizgenerator = $generator->get_plugin_generator('mod_quiz');
+        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(['course' => $course->id]);
 
         $event = new \calendar_event((object)[
@@ -233,7 +233,7 @@ class locallib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $quizgenerator = $generator->get_plugin_generator('mod_quiz');
+        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(['course' => $course->id]);
         $quiz2 = $quizgenerator->create_instance(['course' => $course->id]);
 
@@ -265,7 +265,7 @@ class locallib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $quizgenerator = $generator->get_plugin_generator('mod_quiz');
+        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(['course' => $course->id]);
 
         $event = new \calendar_event((object) [
@@ -296,7 +296,7 @@ class locallib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $quizgenerator = $generator->get_plugin_generator('mod_quiz');
+        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(['course' => $course->id]);
         $group = $this->getDataGenerator()->create_group(array('courseid' => $quiz->course));
         $groupid = $group->id;
@@ -335,7 +335,7 @@ class locallib_test extends \advanced_testcase {
         $student3 = $this->getDataGenerator()->create_user();
         $teacher = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         // Both quizzes close in two hours.
         $quiz1 = $quizgenerator->create_instance(array('course' => $course->id, 'timeclose' => $basetimestamp + 7200));
@@ -500,7 +500,7 @@ class locallib_test extends \advanced_testcase {
         }
 
         // Create a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
 
         // Create a question category in the system context.
@@ -532,10 +532,10 @@ class locallib_test extends \advanced_testcase {
         global $DB, $PAGE;
         $this->resetAfterTest();
         $generator = $this->getDataGenerator();
-        /** @var mod_quiz_generator $quizgenerator */
-        $quizgenerator = $generator->get_plugin_generator('mod_quiz');
-        /** @var mod_quiz_renderer $renderer */
-        $renderer = $PAGE->get_renderer('mod_quiz');
+        /** @var mod_hippotrack_generator $quizgenerator */
+        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
+        /** @var mod_hippotrack_renderer $renderer */
+        $renderer = $PAGE->get_renderer('mod_hippotrack');
 
         // Course with quiz and a group - plus some others, to verify they don't get counted.
         $course = $generator->create_course();
@@ -641,7 +641,7 @@ class locallib_test extends \advanced_testcase {
         $this->preventResetByRollback();
 
         $course = $this->getDataGenerator()->create_course();
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(['course' => $course->id]);
         $cm = get_coursemodule_from_instance('quiz', $quiz->id);
 

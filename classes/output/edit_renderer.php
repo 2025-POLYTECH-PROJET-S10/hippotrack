@@ -17,17 +17,17 @@
 /**
  * Renderer outputting the quiz editing UI.
  *
- * @package mod_quiz
+ * @package mod_hippotrack
  * @copyright 2013 The Open University.
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz\output;
+namespace mod_hippotrack\output;
 defined('MOODLE_INTERNAL') || die();
 
 use core_question\local\bank\question_version_status;
-use mod_quiz\question\bank\qbank_helper;
-use \mod_quiz\structure;
+use mod_hippotrack\question\bank\qbank_helper;
+use \mod_hippotrack\structure;
 use \html_writer;
 use qbank_previewquestion\question_preview_options;
 use renderable;
@@ -64,7 +64,7 @@ class edit_renderer extends \plugin_renderer_base {
         // Information at the top.
         $output .= $this->quiz_state_warnings($structure);
 
-        $output .= html_writer::start_div('mod_quiz-edit-top-controls');
+        $output .= html_writer::start_div('mod_hippotrack-edit-top-controls');
 
         $output .= html_writer::start_div('d-flex justify-content-between flex-wrap mb-1');
         $output .= html_writer::start_div('d-flex flex-column justify-content-around');
@@ -74,7 +74,7 @@ class edit_renderer extends \plugin_renderer_base {
         $output .= html_writer::end_tag('div');
 
         $output .= html_writer::start_div('d-flex justify-content-between flex-wrap mb-1');
-        $output .= html_writer::start_div('mod_quiz-edit-action-buttons btn-group edit-toolbar', ['role' => 'group']);
+        $output .= html_writer::start_div('mod_hippotrack-edit-action-buttons btn-group edit-toolbar', ['role' => 'group']);
         $output .= $this->repaginate_button($structure, $pageurl);
         $output .= $this->selectmultiple_button($structure);
         $output .= html_writer::end_tag('div');
@@ -112,11 +112,11 @@ class edit_renderer extends \plugin_renderer_base {
         // Include the contents of any other popups required.
         if ($structure->can_be_edited()) {
             $thiscontext = $contexts->lowest();
-            $this->page->requires->js_call_amd('mod_quiz/quizquestionbank', 'init', [
+            $this->page->requires->js_call_amd('mod_hippotrack/quizquestionbank', 'init', [
                 $thiscontext->id
             ]);
 
-            $this->page->requires->js_call_amd('mod_quiz/add_random_question', 'init', [
+            $this->page->requires->js_call_amd('mod_hippotrack/add_random_question', 'init', [
                 $thiscontext->id,
                 $pagevars['cat'],
                 $pageurl->out_as_local_url(true),
@@ -222,7 +222,7 @@ class edit_renderer extends \plugin_renderer_base {
         if (!$structure->can_be_repaginated()) {
             $buttonoptions['disabled'] = 'disabled';
         } else {
-            $this->page->requires->js_call_amd('mod_quiz/repaginate', 'init');
+            $this->page->requires->js_call_amd('mod_hippotrack/repaginate', 'init');
         }
 
         return html_writer::empty_tag('input', $buttonoptions);
@@ -262,7 +262,7 @@ class edit_renderer extends \plugin_renderer_base {
         $buttondeleteoptions = array(
             'type' => 'button',
             'id' => 'selectmultipledeletecommand',
-            'value' => get_string('deleteselected', 'mod_quiz'),
+            'value' => get_string('deleteselected', 'mod_hippotrack'),
             'class' => 'btn btn-secondary',
             'data-action' => 'toggle',
             'data-togglegroup' => $this->togglegroup,
@@ -282,7 +282,7 @@ class edit_renderer extends \plugin_renderer_base {
         );
 
         $output .= html_writer::tag('div',
-                        html_writer::tag('button', get_string('deleteselected', 'mod_quiz'), $buttondeleteoptions) .
+                        html_writer::tag('button', get_string('deleteselected', 'mod_hippotrack'), $buttondeleteoptions) .
                         " " .
                         html_writer::tag('button', get_string('cancel', 'moodle'),
                 $buttoncanceloptions), $groupoptions);
@@ -353,7 +353,7 @@ class edit_renderer extends \plugin_renderer_base {
      * @return string HTML to output.
      */
     public function total_marks($quiz) {
-        $totalmark = html_writer::span(quiz_format_grade($quiz, $quiz->sumgrades), 'mod_quiz_summarks');
+        $totalmark = html_writer::span(quiz_format_grade($quiz, $quiz->sumgrades), 'mod_hippotrack_summarks');
         return html_writer::tag('span',
                 get_string('totalmarksx', 'quiz', $totalmark),
                 array('class' => 'totalpoints'));
@@ -768,11 +768,11 @@ class edit_renderer extends \plugin_renderer_base {
         if ($structure->get_slot_by_number($slot)->qtype !== 'random') {
             $data['versionselection'] = true;
             $data['versionoption'] = $structure->get_version_choices_for_slot($slot);
-            $this->page->requires->js_call_amd('mod_quiz/question_slot', 'init', [$slotid]);
+            $this->page->requires->js_call_amd('mod_hippotrack/question_slot', 'init', [$slotid]);
         }
 
         // Render the question slot template.
-        $output .= $this->render_from_template('mod_quiz/question_slot', $data);
+        $output .= $this->render_from_template('mod_hippotrack/question_slot', $data);
 
         $output .= html_writer::end_tag('div');
 
@@ -1084,7 +1084,7 @@ class edit_renderer extends \plugin_renderer_base {
         // selected from in the question bank.
         $qbankurl = new \moodle_url('/question/edit.php', $qbankurlparams);
         $qbanklink = ' ' . \html_writer::link($qbankurl,
-                        get_string('seequestions', 'quiz'), array('class' => 'mod_quiz_random_qbank_link'));
+                        get_string('seequestions', 'quiz'), array('class' => 'mod_hippotrack_random_qbank_link'));
 
         return html_writer::link($editurl, $icon . $editicon, array('title' => $configuretitle)) .
                 ' ' . $instancename . ' ' . $qbanklink;
@@ -1133,7 +1133,7 @@ class edit_renderer extends \plugin_renderer_base {
      * @return string
      */
     public function render_question_chooser(renderable $chooser) {
-        return $this->render_from_template('mod_quiz/question_chooser', $chooser->export_for_template($this));
+        return $this->render_from_template('mod_hippotrack/question_chooser', $chooser->export_for_template($this));
     }
 
     /**
@@ -1141,7 +1141,7 @@ class edit_renderer extends \plugin_renderer_base {
      * @return string HTML to output.
      */
     public function question_chooser() {
-        $chooser = \mod_quiz\output\question_chooser::get($this->page->course, [], null);
+        $chooser = \mod_hippotrack\output\question_chooser::get($this->page->course, [], null);
         $container = html_writer::div($this->render($chooser), '', array('id' => 'qtypechoicecontainer'));
         return html_writer::div($container, 'createnewquestion');
     }
@@ -1176,8 +1176,8 @@ class edit_renderer extends \plugin_renderer_base {
         $config->pagehtml = $this->new_page_template($structure, $contexts, $pagevars, $pageurl);
         $config->addpageiconhtml = $this->add_page_icon_template($structure);
 
-        $this->page->requires->yui_module('moodle-mod_quiz-toolboxes',
-                'M.mod_quiz.init_resource_toolbox',
+        $this->page->requires->yui_module('moodle-mod_hippotrack-toolboxes',
+                'M.mod_hippotrack.init_resource_toolbox',
                 array(array(
                         'courseid' => $structure->get_courseid(),
                         'quizid' => $structure->get_quizid(),
@@ -1189,8 +1189,8 @@ class edit_renderer extends \plugin_renderer_base {
         unset($config->addpageiconhtml);
 
         $this->page->requires->strings_for_js(array('areyousureremoveselected'), 'quiz');
-        $this->page->requires->yui_module('moodle-mod_quiz-toolboxes',
-                'M.mod_quiz.init_section_toolbox',
+        $this->page->requires->yui_module('moodle-mod_hippotrack-toolboxes',
+                'M.mod_hippotrack.init_section_toolbox',
                 array(array(
                         'courseid' => $structure,
                         'quizid' => $structure->get_quizid(),
@@ -1199,7 +1199,7 @@ class edit_renderer extends \plugin_renderer_base {
                 ))
         );
 
-        $this->page->requires->yui_module('moodle-mod_quiz-dragdrop', 'M.mod_quiz.init_section_dragdrop',
+        $this->page->requires->yui_module('moodle-mod_hippotrack-dragdrop', 'M.mod_hippotrack.init_section_dragdrop',
                 array(array(
                         'courseid' => $structure,
                         'quizid' => $structure->get_quizid(),
@@ -1207,7 +1207,7 @@ class edit_renderer extends \plugin_renderer_base {
                         'config' => $config,
                 )), null, true);
 
-        $this->page->requires->yui_module('moodle-mod_quiz-dragdrop', 'M.mod_quiz.init_resource_dragdrop',
+        $this->page->requires->yui_module('moodle-mod_hippotrack-dragdrop', 'M.mod_hippotrack.init_resource_dragdrop',
                 array(array(
                         'courseid' => $structure,
                         'quizid' => $structure->get_quizid(),
@@ -1318,11 +1318,11 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * Return the contents of the question bank, to be displayed in the question-bank pop-up.
      *
-     * @param \mod_quiz\question\bank\custom_view $questionbank the question bank view object.
+     * @param \mod_hippotrack\question\bank\custom_view $questionbank the question bank view object.
      * @param array $pagevars the variables from {@link \question_edit_setup()}.
      * @return string HTML to output / send back in response to an AJAX request.
      */
-    public function question_bank_contents(\mod_quiz\question\bank\custom_view $questionbank, array $pagevars) {
+    public function question_bank_contents(\mod_hippotrack\question\bank\custom_view $questionbank, array $pagevars) {
 
         $qbank = $questionbank->render($pagevars, 'editq');
         return html_writer::div(html_writer::div($qbank, 'bd'), 'questionbankformforpopup');

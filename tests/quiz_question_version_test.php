@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
-use mod_quiz\external\submit_question_version;
-use mod_quiz\question\bank\qbank_helper;
+use mod_hippotrack\external\submit_question_version;
+use mod_hippotrack\question\bank\qbank_helper;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -26,12 +26,12 @@ require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
 /**
  * Question versions test for quiz.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   test
  * @copyright  2021 Catalyst IT Australia Pty Ltd
  * @author     Safat Shahin <safatshahin@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @coversDefaultClass \mod_quiz\question\bank\qbank_helper
+ * @coversDefaultClass \mod_hippotrack\question\bank\qbank_helper
  */
 class quiz_question_version_test extends \advanced_testcase {
     use \quiz_question_helper_test_trait;
@@ -69,7 +69,7 @@ class quiz_question_version_test extends \advanced_testcase {
         quiz_add_quiz_question($numq->id, $quiz);
         // Create the quiz object.
         $quizobj = \quiz::create($quiz->id);
-        $structure = \mod_quiz\structure::create_for_quiz($quizobj);
+        $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
         $slots = $structure->get_slots();
         $slot = reset($slots);
         // Test that the version added is 'always latest'.
@@ -89,7 +89,7 @@ class quiz_question_version_test extends \advanced_testcase {
         $question = reset($questions);
         $this->assertEquals(4, $question->version);
         $this->assertEquals('This is the latest version', $question->name);
-        $structure = \mod_quiz\structure::create_for_quiz($quizobj);
+        $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
         $slots = $structure->get_slots();
         $slot = reset($slots);
         $this->assertEquals(4, $slot->version);
@@ -111,7 +111,7 @@ class quiz_question_version_test extends \advanced_testcase {
         $question = reset($questions);
         $this->assertEquals(1, $question->version);
         $this->assertEquals('This is the first version', $question->name);
-        $structure = \mod_quiz\structure::create_for_quiz($quizobj);
+        $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
         $slots = $structure->get_slots();
         $slot = reset($slots);
         $this->assertEquals(1, $slot->version);
@@ -123,7 +123,7 @@ class quiz_question_version_test extends \advanced_testcase {
         $question = reset($questions);
         $this->assertEquals(2, $question->version);
         $this->assertEquals('This is the second version', $question->name);
-        $structure = \mod_quiz\structure::create_for_quiz($quizobj);
+        $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
         $slots = $structure->get_slots();
         $slot = reset($slots);
         $this->assertEquals(2, $slot->version);
@@ -152,7 +152,7 @@ class quiz_question_version_test extends \advanced_testcase {
         $this->assertEquals('This is the third version', $attemptobj->get_question_attempt(1)->get_question()->name);
         // Create the quiz object.
         $quizobj = \quiz::create($quiz->id);
-        $structure = \mod_quiz\structure::create_for_quiz($quizobj);
+        $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
         $slots = $structure->get_slots();
         $slot = reset($slots);
         // Now change the version using the external service.

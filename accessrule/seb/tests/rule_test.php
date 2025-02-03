@@ -126,7 +126,7 @@ class rule_test extends \advanced_testcase {
         $this->setAdminUser();
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
-        $form = $this->createMock('mod_quiz_mod_form');
+        $form = $this->createMock('mod_hippotrack_mod_form');
         $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form.
@@ -150,7 +150,7 @@ class rule_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $form = $this->createMock('mod_quiz_mod_form');
+        $form = $this->createMock('mod_hippotrack_mod_form');
         $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form and quiz instance.
@@ -172,7 +172,7 @@ class rule_test extends \advanced_testcase {
 
         $this->setAdminUser();
 
-        $form = $this->createMock('mod_quiz_mod_form');
+        $form = $this->createMock('mod_hippotrack_mod_form');
         $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form and quiz instance.
@@ -190,7 +190,7 @@ class rule_test extends \advanced_testcase {
         $this->setAdminUser();
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
-        $form = $this->createMock('mod_quiz_mod_form');
+        $form = $this->createMock('mod_hippotrack_mod_form');
         $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
 
         $user = $this->getDataGenerator()->create_user();
@@ -220,7 +220,7 @@ class rule_test extends \advanced_testcase {
         $this->setUser($user);
 
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $form = $this->createMock('mod_quiz_mod_form');
+        $form = $this->createMock('mod_hippotrack_mod_form');
         $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form and quiz instance.
@@ -881,11 +881,11 @@ class rule_test extends \advanced_testcase {
     /**
      * Test that quiz form cannot be saved if using template, but not actually pick one.
      */
-    public function test_mod_quiz_form_cannot_be_saved_using_template_and_template_is_not_set() {
+    public function test_mod_hippotrack_form_cannot_be_saved_using_template_and_template_is_not_set() {
         $this->setAdminUser();
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
-        $form = $this->createMock('mod_quiz_mod_form');
+        $form = $this->createMock('mod_hippotrack_mod_form');
         $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form.
@@ -901,11 +901,11 @@ class rule_test extends \advanced_testcase {
     /**
      * Test that quiz form cannot be saved if uploaded invalid file.
      */
-    public function test_mod_quiz_form_cannot_be_saved_using_uploaded_file_and_file_is_not_valid() {
+    public function test_mod_hippotrack_form_cannot_be_saved_using_uploaded_file_and_file_is_not_valid() {
         $this->setAdminUser();
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
-        $form = $this->createMock('mod_quiz_mod_form');
+        $form = $this->createMock('mod_hippotrack_mod_form');
         $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form.
@@ -922,13 +922,13 @@ class rule_test extends \advanced_testcase {
     /**
      * Test that quiz form cannot be saved if the global settings are set to require a password and no password is set.
      */
-    public function test_mod_quiz_form_cannot_be_saved_if_global_settings_force_quiz_password_and_none_is_set() {
+    public function test_mod_hippotrack_form_cannot_be_saved_if_global_settings_force_quiz_password_and_none_is_set() {
         $this->setAdminUser();
         // Set global settings to require quiz password but set password to be empty.
         set_config('quizpasswordrequired', '1', 'quizaccess_seb');
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
-        $form = $this->createMock('mod_quiz_mod_form');
+        $form = $this->createMock('mod_hippotrack_mod_form');
         $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form.
@@ -945,14 +945,14 @@ class rule_test extends \advanced_testcase {
      * Test that access to quiz is allowed if global setting is set to restrict quiz if no quiz password is set, and global quiz
      * password is set.
      */
-    public function test_mod_quiz_form_can_be_saved_if_global_settings_force_quiz_password_and_is_set() {
+    public function test_mod_hippotrack_form_can_be_saved_if_global_settings_force_quiz_password_and_is_set() {
         $this->setAdminUser();
         // Set global settings to require quiz password but set password to be empty.
         set_config('quizpasswordrequired', '1', 'quizaccess_seb');
 
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
-        $form = $this->createMock('mod_quiz_mod_form');
+        $form = $this->createMock('mod_hippotrack_mod_form');
         $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form.
@@ -968,13 +968,13 @@ class rule_test extends \advanced_testcase {
     /**
      * Test that quiz form can be saved if the global settings are set to require a password and no seb usage selected.
      */
-    public function test_mod_quiz_form_can_be_saved_if_global_settings_force_quiz_password_and_none_no_seb() {
+    public function test_mod_hippotrack_form_can_be_saved_if_global_settings_force_quiz_password_and_none_no_seb() {
         $this->setAdminUser();
         // Set global settings to require quiz password but set password to be empty.
         set_config('quizpasswordrequired', '1', 'quizaccess_seb');
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_NO);
 
-        $form = $this->createMock('mod_quiz_mod_form');
+        $form = $this->createMock('mod_hippotrack_mod_form');
         $form->method('get_context')->willReturn(\context_module::instance($this->quiz->cmid));
 
         // Validate settings with a dummy form.

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz\navigation\views;
+namespace mod_hippotrack\navigation\views;
 
 use core\navigation\views\secondary as core_secondary;
 
@@ -23,7 +23,7 @@ use core\navigation\views\secondary as core_secondary;
  *
  * Custom implementation for a plugin.
  *
- * @package     mod_quiz
+ * @package     mod_hippotrack
  * @category    navigation
  * @copyright   2021 Sujith Haridasan <sujith@moodle.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -38,9 +38,9 @@ class secondary extends core_secondary {
         $defaultmaping = parent::get_default_module_mapping();
 
         $defaultmaping[self::TYPE_SETTING] = array_merge($defaultmaping[self::TYPE_SETTING], [
-            'mod_quiz_edit'  => 3,
+            'mod_hippotrack_edit'  => 3,
             'quiz_report' => 4,
-            'mod_quiz_useroverrides' => 6,
+            'mod_hippotrack_useroverrides' => 6,
             'roleassign' => 7,
             'filtermanage' => 8,
             'roleoverride' => 9,

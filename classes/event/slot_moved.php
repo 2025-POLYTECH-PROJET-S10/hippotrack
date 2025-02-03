@@ -15,17 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_quiz slots moved event.
+ * The mod_hippotrack slots moved event.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2021 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz\event;
+namespace mod_hippotrack\event;
 
 /**
- * The mod_quiz slot moved event class.
+ * The mod_hippotrack slot moved event class.
  *
  * @property-read array $other {
  *      Extra information about event.
@@ -36,7 +36,7 @@ namespace mod_quiz\event;
  *      - int page: the page of new slot position in quiz.
  * }
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2021 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -48,7 +48,7 @@ class slot_moved extends \core\event\base {
     }
 
     public static function get_name() {
-        return get_string('eventslotmoved', 'mod_quiz');
+        return get_string('eventslotmoved', 'mod_hippotrack');
     }
 
     public function get_description() {

@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 use core_question\local\bank\question_edit_contexts;
-use mod_quiz\question\bank\custom_view;
+use mod_hippotrack\question\bank\custom_view;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -27,7 +27,7 @@ require_once($CFG->dirroot . '/question/editlib.php');
 /**
  * Unit tests for the quiz's own question bank view class.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   test
  * @copyright  2018 the Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

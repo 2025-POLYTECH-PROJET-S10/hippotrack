@@ -1,18 +1,17 @@
 {
-  "name": "moodle-mod_quiz-util",
+  "name": "moodle-mod_hippotrack-util",
   "builds": {
-    "moodle-mod_quiz-util-base": {
+    "moodle-mod_hippotrack-util-base": {
       "jsfiles": [
         "base.js"
       ]
     },
-    "moodle-mod_quiz-util-slot": {
+    "moodle-mod_hippotrack-util-slot": {
       "jsfiles": [
         "slot.js"
       ]
-    }
-    ,
-    "moodle-mod_quiz-util-page": {
+    },
+    "moodle-mod_hippotrack-util-page": {
       "jsfiles": [
         "page.js"
       ]

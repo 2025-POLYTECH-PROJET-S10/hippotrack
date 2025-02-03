@@ -17,7 +17,7 @@
 /**
  * Quiz external API
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   external
  * @copyright  2016 Juan Leyva <juan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -34,13 +34,13 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 /**
  * Quiz external functions
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   external
  * @copyright  2016 Juan Leyva <juan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.1
  */
-class mod_quiz_external extends external_api {
+class mod_hippotrack_external extends external_api {
 
     /**
      * Describes the parameters for get_quizzes_by_courses.
@@ -99,10 +99,10 @@ class mod_quiz_external extends external_api {
 
                 // Entry to return.
                 $quizdetails = helper_for_get_mods_by_courses::standard_coursemodule_element_values(
-                        $quiz, 'mod_quiz', 'mod/quiz:view', 'mod/quiz:view');
+                        $quiz, 'mod_hippotrack', 'mod/quiz:view', 'mod/quiz:view');
 
                 if (has_capability('mod/quiz:view', $context)) {
-                    $quizdetails['introfiles'] = external_util::get_area_files($context->id, 'mod_quiz', 'intro', false, false);
+                    $quizdetails['introfiles'] = external_util::get_area_files($context->id, 'mod_hippotrack', 'intro', false, false);
                     $viewablefields = array('timeopen', 'timeclose', 'attempts', 'timelimit', 'grademethod', 'decimalpoints',
                                             'questiondecimalpoints', 'sumgrades', 'grade', 'preferredbehaviour');
 
@@ -194,7 +194,7 @@ class mod_quiz_external extends external_api {
                                                                             (-1 means use decimalpoints.)', VALUE_OPTIONAL),
                             'reviewattempt' => new external_value(PARAM_INT, 'Whether users are allowed to review their quiz
                                                                     attempts at various times. This is a bit field, decoded by the
-                                                                    mod_quiz_display_options class. It is formed by ORing together
+                                                                    mod_hippotrack_display_options class. It is formed by ORing together
                                                                     the constants defined there.', VALUE_OPTIONAL),
                             'reviewcorrectness' => new external_value(PARAM_INT, 'Whether users are allowed to review their quiz
                                                                         attempts at various times.
@@ -950,7 +950,7 @@ class mod_quiz_external extends external_api {
         $questions = array();
         $contextid = $attemptobj->get_quizobj()->get_context()->id;
         $displayoptions = $attemptobj->get_display_options($review);
-        $renderer = $PAGE->get_renderer('mod_quiz');
+        $renderer = $PAGE->get_renderer('mod_hippotrack');
         $contextid = $attemptobj->get_quizobj()->get_context()->id;
 
         foreach ($attemptobj->get_slots($page) as $slot) {
@@ -1734,10 +1734,10 @@ class mod_quiz_external extends external_api {
         $feedback = quiz_feedback_record_for_grade($params['grade'], $quiz);
         if (!empty($feedback->feedbacktext)) {
             list($text, $format) = external_format_text($feedback->feedbacktext, $feedback->feedbacktextformat, $context->id,
-                                                        'mod_quiz', 'feedback', $feedback->id);
+                                                        'mod_hippotrack', 'feedback', $feedback->id);
             $result['feedbacktext'] = $text;
             $result['feedbacktextformat'] = $format;
-            $feedbackinlinefiles = external_util::get_area_files($context->id, 'mod_quiz', 'feedback', $feedback->id);
+            $feedbackinlinefiles = external_util::get_area_files($context->id, 'mod_hippotrack', 'feedback', $feedback->id);
             if (!empty($feedbackinlinefiles)) {
                 $result['feedbackinlinefiles'] = $feedbackinlinefiles;
             }

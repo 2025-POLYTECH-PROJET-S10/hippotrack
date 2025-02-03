@@ -17,7 +17,7 @@
 /**
  * Rest endpoint for ajax editing for paging operations on the quiz structure.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2014 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -41,7 +41,7 @@ if (quiz_has_attempts($quizid)) {
 }
 
 $slotnumber++;
-$repage = new \mod_quiz\repaginate($quizid);
+$repage = new \mod_hippotrack\repaginate($quizid);
 $repage->repaginate_slots($slotnumber, $repagtype);
 
 $structure = $quizobj->get_structure();

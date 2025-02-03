@@ -17,22 +17,22 @@
     display: flex;
 }
 
-#page-mod-quiz-attempt .submitbtns .mod_quiz-next-nav,
-#page-mod-quiz-review .submitbtns .mod_quiz-next-nav {
+#page-mod-quiz-attempt .submitbtns .mod_hippotrack-next-nav,
+#page-mod-quiz-review .submitbtns .mod_hippotrack-next-nav {
     margin-left: auto;
 }
 
-.path-mod-quiz .mod_quiz-redo_question_button {
+.path-mod-quiz .mod_hippotrack-redo_question_button {
     margin: 0;
 }
 
-.path-mod-quiz input[type="submit"].mod_quiz-redo_question_button {
+.path-mod-quiz input[type="submit"].mod_hippotrack-redo_question_button {
     padding: 2px 0.8em;
     font-size: 1em;
 }
 
-#page-mod-quiz-attempt .mod_quiz-blocked_question_warning .que .formulation,
-#page-mod-quiz-review .mod_quiz-blocked_question_warning .que .formulation {
+#page-mod-quiz-attempt .mod_hippotrack-blocked_question_warning .que .formulation,
+#page-mod-quiz-review .mod_hippotrack-blocked_question_warning .que .formulation {
     background: #eee;
     border: 1px solid #dcdcdc;
 }
@@ -96,13 +96,13 @@
     vertical-align: bottom;
 }
 
-.path-mod-quiz #mod_quiz_navblock h3.mod_quiz-section-heading {
+.path-mod-quiz #mod_hippotrack_navblock h3.mod_hippotrack-section-heading {
     padding: 0.7em 0 0;
     margin: 0;
     clear: both;
 }
 
-.path-mod-quiz #mod_quiz_navblock h3.mod_quiz-section-heading:first-child {
+.path-mod-quiz #mod_hippotrack_navblock h3.mod_hippotrack-section-heading:first-child {
     padding-top: 0;
 }
 
@@ -194,7 +194,7 @@
     margin: 0.5em 0;
 }
 
-#mod_quiz_navblock.nav-disabled > * {
+#mod_hippotrack_navblock.nav-disabled > * {
     opacity: .65;
     pointer-events: none;
     cursor: not-allowed;
@@ -295,27 +295,27 @@ table.quizattemptsummary .noreviewmessage {
     display: inline;
 }
 
-.quizattempt #mod_quiz_preflight_form {
+.quizattempt #mod_hippotrack_preflight_form {
     display: none;
 }
 
-#mod_quiz_preflight_form .femptylabel .fitemtitle {
+#mod_hippotrack_preflight_form .femptylabel .fitemtitle {
     display: none;
 }
 
-.moodle-dialogue-base .moodle-dialogue.mod_quiz_preflight_popup {
+.moodle-dialogue-base .moodle-dialogue.mod_hippotrack_preflight_popup {
     width: 600px;
 }
-.moodle-dialogue-base .moodle-dialogue.mod_quiz_preflight_popup .moodle-dialogue-wrap {
+.moodle-dialogue-base .moodle-dialogue.mod_hippotrack_preflight_popup .moodle-dialogue-wrap {
     overflow: hidden;
 }
 
-.moodle-dialogue-base .moodle-dialogue.mod_quiz_preflight_popup .moodle-dialogue-bd {
+.moodle-dialogue-base .moodle-dialogue.mod_hippotrack_preflight_popup .moodle-dialogue-bd {
     padding: 1rem;
 }
 
 /* Standard Moodle rule that needs to be more specific here. */
-.moodle-dialogue-bd #mod_quiz_preflight_form fieldset.hidden {
+.moodle-dialogue-bd #mod_hippotrack_preflight_form fieldset.hidden {
     display: inherit;
     visibility: inherit;
 }
@@ -544,10 +544,10 @@ table.quizreviewsummary td.cell {
     margin: 4px 0;
 }
 
-#page-mod-quiz-edit .mod_quiz-edit-top-controls {
+#page-mod-quiz-edit .mod_hippotrack-edit-top-controls {
     position: relative;
 }
-#page-mod-quiz-edit .mod_quiz-edit-action-buttons {
+#page-mod-quiz-edit .mod_hippotrack-edit-action-buttons {
     display: block;
     min-height: 2.85em;
 }
@@ -842,7 +842,7 @@ table.quizreviewsummary td.cell {
     top: 0;
 }
 
-#page-mod-quiz-edit ul.slots li.activity div.activityinstance .mod_quiz_random_qbank_link {
+#page-mod-quiz-edit ul.slots li.activity div.activityinstance .mod_hippotrack_random_qbank_link {
     font-size: 0.8em;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -863,7 +863,7 @@ table.quizreviewsummary td.cell {
     padding: 0.1em 0;
 }
 
-#page-mod-quiz-edit .mod_quiz_edit_forms {
+#page-mod-quiz-edit .mod_hippotrack_edit_forms {
     display: none;
 }
 
@@ -956,16 +956,16 @@ table#categoryquestions {
     white-space: nowrap;
 }
 
-.mod_quiz_qbank_dialogue {
+.mod_hippotrack_qbank_dialogue {
     width: 80%;
     min-height: 200px;
 }
 
-.mod_quiz_qbank_dialogue.moodle-dialogue-fullscreen {
+.mod_hippotrack_qbank_dialogue.moodle-dialogue-fullscreen {
     width: 100%;
 }
 
-.mod_quiz_qbank_dialogue .questionbankloading {
+.mod_hippotrack_qbank_dialogue .questionbankloading {
     position: absolute;
     top: 30px;
     bottom: 0;
@@ -977,7 +977,7 @@ table#categoryquestions {
     padding-top: 50px;
 }
 
-.mod_quiz_qbank_dialogue #advancedsearch label {
+.mod_hippotrack_qbank_dialogue #advancedsearch label {
     font-size: 100%;
 }
 

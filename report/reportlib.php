@@ -17,7 +17,7 @@
 /**
  * Helper functions for the quiz reports.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2008 Jamie Pratt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -96,7 +96,7 @@ function quiz_has_questions($quizid) {
  */
 function quiz_report_get_significant_questions($quiz) {
     $quizobj = \quiz::create($quiz->id);
-    $structure = \mod_quiz\structure::create_for_quiz($quizobj);
+    $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
     $slots = $structure->get_slots();
 
     $qsbyslot = [];
@@ -314,7 +314,7 @@ function quiz_report_feedback_for_grade($grade, $quizid, $context) {
     $formatoptions = new stdClass();
     $formatoptions->noclean = true;
     $feedbacktext = file_rewrite_pluginfile_urls($feedbacktext, 'pluginfile.php',
-            $context->id, 'mod_quiz', 'feedback', $feedbackid);
+            $context->id, 'mod_hippotrack', 'feedback', $feedbackid);
     $feedbacktext = format_text($feedbacktext, $feedbacktextformat, $formatoptions);
 
     return $feedbacktext;
@@ -434,11 +434,11 @@ function quiz_no_questions_message($quiz, $cm, $context) {
  */
 function quiz_report_should_show_grades($quiz, context $context) {
     if ($quiz->timeclose && time() > $quiz->timeclose) {
-        $when = mod_quiz_display_options::AFTER_CLOSE;
+        $when = mod_hippotrack_display_options::AFTER_CLOSE;
     } else {
-        $when = mod_quiz_display_options::LATER_WHILE_OPEN;
+        $when = mod_hippotrack_display_options::LATER_WHILE_OPEN;
     }
-    $reviewoptions = mod_quiz_display_options::make_from_quiz($quiz, $when);
+    $reviewoptions = mod_hippotrack_display_options::make_from_quiz($quiz, $when);
 
     return quiz_has_grades($quiz) &&
             ($reviewoptions->marks >= question_display_options::MARK_AND_MAX ||

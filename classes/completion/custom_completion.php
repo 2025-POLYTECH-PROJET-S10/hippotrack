@@ -16,7 +16,7 @@
 
 declare(strict_types=1);
 
-namespace mod_quiz\completion;
+namespace mod_hippotrack\completion;
 
 use context_module;
 use core_completion\activity_custom_completion;
@@ -28,10 +28,10 @@ use quiz_access_manager;
 /**
  * Activity custom completion subclass for the quiz activity.
  *
- * Class for defining mod_quiz's custom completion rules and fetching the completion statuses
+ * Class for defining mod_hippotrack's custom completion rules and fetching the completion statuses
  * of the custom completion rules for a given quiz instance and a user.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -137,12 +137,12 @@ class custom_completion extends activity_custom_completion {
      */
     public function get_custom_rule_descriptions(): array {
         $minattempts = $this->cm->customdata['customcompletionrules']['completionminattempts'] ?? 0;
-        $description['completionminattempts'] = get_string('completiondetail:minattempts', 'mod_quiz', $minattempts);
+        $description['completionminattempts'] = get_string('completiondetail:minattempts', 'mod_hippotrack', $minattempts);
 
         // Completion pass grade is now part of core. Only show the following if it's combined with min attempts.
         $completionpassorattempts = $this->cm->customdata['customcompletionrules']['completionpassorattemptsexhausted'] ?? [];
         if (!empty($completionpassorattempts['completionattemptsexhausted'])) {
-            $description['completionpassorattemptsexhausted'] = get_string('completiondetail:passorexhaust', 'mod_quiz');
+            $description['completionpassorattemptsexhausted'] = get_string('completiondetail:passorexhaust', 'mod_hippotrack');
         }
 
         return $description;

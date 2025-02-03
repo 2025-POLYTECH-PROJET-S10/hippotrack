@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Display of information before starting a quiz
   As a student
   In order to start a quiz with confidence
@@ -28,7 +28,7 @@ Feature: Display of information before starting a quiz
     And quiz "Quiz 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     Then I should see "Grade to pass: 60.00 out of 100.00"
 
   Scenario: Check the pass grade is displayed with custom decimal separator
@@ -41,7 +41,7 @@ Feature: Display of information before starting a quiz
     And quiz "Quiz 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     Then I should see "Grade to pass: 60#00 out of 100#00"
 
   Scenario: Check the pass grade is not displayed if not set
@@ -51,5 +51,5 @@ Feature: Display of information before starting a quiz
     And quiz "Quiz 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     Then I should not see "Grade to pass: 0.00"

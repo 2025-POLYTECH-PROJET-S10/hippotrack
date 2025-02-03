@@ -19,15 +19,15 @@
  *
  * This is also responsible for opening the pop-up window, if the quiz requires to be in one.
  *
- * @module    mod_quiz/preflightcheck
+ * @module    mod_hippotrack/preflightcheck
  * @copyright 2016 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since     3.1
  */
-define(['jquery', 'core/yui', 'core_form/changechecker'], function($, Y, FormChangeChecker) {
+define(['jquery', 'core/yui', 'core_form/changechecker'], function ($, Y, FormChangeChecker) {
 
     /**
-     * @alias module:mod_quiz/preflightcheck
+     * @alias module:mod_hippotrack/preflightcheck
      */
     var t = {
         confirmDialogue: null,
@@ -40,10 +40,10 @@ define(['jquery', 'core/yui', 'core_form/changechecker'], function($, Y, FormCha
          * @param {String} confirmationForm selector for the confirmation form to show in the dialogue.
          * @param {String} popupoptions If not null, the quiz should be launced in a pop-up.
          */
-        init: function(startButton, confirmationTitle, confirmationForm, popupoptions) {
+        init: function (startButton, confirmationTitle, confirmationForm, popupoptions) {
             var finalStartButton = startButton;
 
-            Y.use('moodle-core-notification', function() {
+            Y.use('moodle-core-notification', function () {
                 if (Y.one(confirmationForm)) {
                     t.confirmDialogue = new M.core.dialogue({
                         headerContent: confirmationTitle,
@@ -53,7 +53,7 @@ define(['jquery', 'core/yui', 'core_form/changechecker'], function($, Y, FormCha
                         center: true,
                         modal: true,
                         width: null,
-                        extraClasses: ['mod_quiz_preflight_popup']
+                        extraClasses: ['mod_hippotrack_preflight_popup']
                     });
 
                     Y.one(startButton).on('click', t.displayDialogue);
@@ -72,7 +72,7 @@ define(['jquery', 'core/yui', 'core_form/changechecker'], function($, Y, FormCha
          * Display the dialogue.
          * @param {Y.EventFacade} e the event being responded to, if any.
          */
-        displayDialogue: function(e) {
+        displayDialogue: function (e) {
             if (e) {
                 e.halt();
             }
@@ -83,7 +83,7 @@ define(['jquery', 'core/yui', 'core_form/changechecker'], function($, Y, FormCha
          * Hide the dialogue.
          * @param {Y.EventFacade} e the event being responded to, if any.
          */
-        hideDialogue: function(e) {
+        hideDialogue: function (e) {
             if (e) {
                 e.halt();
             }
@@ -95,9 +95,9 @@ define(['jquery', 'core/yui', 'core_form/changechecker'], function($, Y, FormCha
          * @param {Event} e the event being responded to
          * @param {Object} popupoptions
          */
-        launchQuizPopup: function(e, popupoptions) {
+        launchQuizPopup: function (e, popupoptions) {
             e.halt();
-            Y.use('io-form', function() {
+            Y.use('io-form', function () {
                 var form = e.target.ancestor('form');
 
                 FormChangeChecker.resetFormDirtyState(form.getDOMNode());

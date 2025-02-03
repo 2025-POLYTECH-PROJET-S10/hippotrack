@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Attempt a quiz where some questions require that the previous question has been answered.
   In order to complete a quiz where questions require previous ones to be complete
   As a student
@@ -34,13 +34,13 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | TF1      | 1    | 0               |
       | TF2      | 1    | 1               |
 
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
 
     Then I should see "First question"
     And I should see "This question cannot be attempted until the previous question has been completed."
     And I should not see "Second question"
-    And I am on the "Quiz 1 > student > Attempt 1" "mod_quiz > Attempt review" page logged in as "teacher"
+    And I am on the "Quiz 1 > student > Attempt 1" "mod_hippotrack > Attempt review" page logged in as "teacher"
     And I should see "First question"
     And I should see "This question cannot be attempted until the previous question has been completed."
     And I should not see "Second question"
@@ -65,7 +65,7 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | question | page | requireprevious |
       | TF1      | 1    | 0               |
       | TF2      | 1    | 1               |
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "teacher"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "teacher"
     And I press "Preview quiz"
     Then I should see "First question"
     And I should see "This question cannot be attempted until the previous question has been completed."
@@ -90,7 +90,7 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | TF1      | 1    | 0               |
       | TF2      | 1    | 1               |
 
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
     And I click on "True" "radio" in the "First question" "question"
     And I press "Check"
@@ -120,7 +120,7 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | TF1      | 1    | 0               |
       | TF2      | 1    | 1               |
 
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
     And I press "Finish attempt ..."
     And I press "Submit all and finish"
@@ -143,7 +143,7 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | TF1      | 1    | 0               |
       | TF2      | 1    | 1               |
 
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
 
     Then I should see "First question"
@@ -167,7 +167,7 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | heading   | firstslot | shuffle |
       | Section 1 | 1         | 1       |
 
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
 
     Then I should see "First question"
@@ -192,7 +192,7 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | Section 1 | 1         | 1       |
       | Section 2 | 2         | 0       |
 
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
     And I press "Next page"
 
@@ -213,7 +213,7 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | TF1      | 1    | 1               |
       | TF2      | 1    | 1               |
 
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
 
     Then I should see "First question"
@@ -234,7 +234,7 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | Story    | 1    | 0               |
       | TF2      | 1    | 1               |
 
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
 
     Then I should see "First question"
@@ -255,7 +255,7 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | Info     | 1    | 0               |
       | TF1      | 1    | 1               |
 
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
 
     Then I should see "Read me"

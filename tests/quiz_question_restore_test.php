@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -26,7 +26,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 /**
  * Quiz backup and restore tests.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   test
  * @copyright  2021 Catalyst IT Australia Pty Ltd
  * @author     Safat Shahin <safatshahin@catalyst-au.net>
@@ -55,7 +55,7 @@ class quiz_question_restore_test extends \advanced_testcase {
     /**
      * Test a quiz backup and restore in a different course without attempts for course question bank.
      *
-     * @covers \mod_quiz\question\bank\qbank_helper::get_question_structure
+     * @covers \mod_hippotrack\question\bank\qbank_helper::get_question_structure
      */
     public function test_quiz_restore_in_a_different_course_using_course_question_bank() {
         $this->resetAfterTest();
@@ -76,7 +76,7 @@ class quiz_question_restore_test extends \advanced_testcase {
         delete_course($this->course, false);
 
         // Check if the questions and associated data are deleted properly.
-        $this->assertEquals(0, count(\mod_quiz\question\bank\qbank_helper::get_question_structure(
+        $this->assertEquals(0, count(\mod_hippotrack\question\bank\qbank_helper::get_question_structure(
                 $quiz->id, $oldquizcontext)));
 
         // Restore the course.
@@ -86,7 +86,7 @@ class quiz_question_restore_test extends \advanced_testcase {
         // Verify.
         $modules = get_fast_modinfo($newcourse->id)->get_instances_of('quiz');
         $module = reset($modules);
-        $questions = \mod_quiz\question\bank\qbank_helper::get_question_structure(
+        $questions = \mod_hippotrack\question\bank\qbank_helper::get_question_structure(
                 $module->instance, $module->context);
         $this->assertCount(3, $questions);
     }
@@ -94,7 +94,7 @@ class quiz_question_restore_test extends \advanced_testcase {
     /**
      * Test a quiz backup and restore in a different course without attempts for quiz question bank.
      *
-     * @covers \mod_quiz\question\bank\qbank_helper::get_question_structure
+     * @covers \mod_hippotrack\question\bank\qbank_helper::get_question_structure
      */
     public function test_quiz_restore_in_a_different_course_using_quiz_question_bank() {
         $this->resetAfterTest();
@@ -114,7 +114,7 @@ class quiz_question_restore_test extends \advanced_testcase {
         delete_course($this->course, false);
 
         // Check if the questions and associated datas are deleted properly.
-        $this->assertEquals(0, count(\mod_quiz\question\bank\qbank_helper::get_question_structure(
+        $this->assertEquals(0, count(\mod_hippotrack\question\bank\qbank_helper::get_question_structure(
                 $quiz->id, $quizcontext)));
 
         // Restore the course.
@@ -124,7 +124,7 @@ class quiz_question_restore_test extends \advanced_testcase {
         // Verify.
         $modules = get_fast_modinfo($newcourse->id)->get_instances_of('quiz');
         $module = reset($modules);
-        $this->assertEquals(3, count(\mod_quiz\question\bank\qbank_helper::get_question_structure(
+        $this->assertEquals(3, count(\mod_hippotrack\question\bank\qbank_helper::get_question_structure(
                 $module->instance, $module->context)));
     }
 
@@ -194,7 +194,7 @@ class quiz_question_restore_test extends \advanced_testcase {
     /**
      * Test quiz restore with attempts.
      *
-     * @covers \mod_quiz\question\bank\qbank_helper::get_question_structure
+     * @covers \mod_hippotrack\question\bank\qbank_helper::get_question_structure
      */
     public function test_quiz_restore_with_attempts() {
         $this->resetAfterTest();
@@ -226,7 +226,7 @@ class quiz_question_restore_test extends \advanced_testcase {
         $modules = get_fast_modinfo($newcourse->id)->get_instances_of('quiz');
         $module = reset($modules);
         $this->assertCount(1, quiz_get_user_attempts($module->instance, $this->student->id));
-        $this->assertCount(3, \mod_quiz\question\bank\qbank_helper::get_question_structure(
+        $this->assertCount(3, \mod_hippotrack\question\bank\qbank_helper::get_question_structure(
                 $module->instance, $module->context));
     }
 
@@ -352,7 +352,7 @@ class quiz_question_restore_test extends \advanced_testcase {
         $modinfo = get_fast_modinfo($newcourseid);
         $quiz = array_values($modinfo->get_instances_of('quiz'))[0];
         $quizobj = \quiz::create($quiz->instance);
-        $structure = \mod_quiz\structure::create_for_quiz($quizobj);
+        $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
 
         // Count the questions in quiz qbank.
         $context = \context_module::instance(get_coursemodule_from_instance("quiz", $quizobj->get_quizid(), $newcourseid)->id);
@@ -365,7 +365,7 @@ class quiz_question_restore_test extends \advanced_testcase {
         // Check if the tags match with the actual restored data.
         foreach ($slots as $slot) {
             $setreference = $DB->get_record('question_set_references',
-                ['itemid' => $slot->id, 'component' => 'mod_quiz', 'questionarea' => 'slot']);
+                ['itemid' => $slot->id, 'component' => 'mod_hippotrack', 'questionarea' => 'slot']);
             $filterconditions = json_decode($setreference->filtercondition);
             $tags = [];
             foreach ($filterconditions->tags as $tagstring) {
@@ -446,7 +446,7 @@ class quiz_question_restore_test extends \advanced_testcase {
         $this->getDataGenerator()->enrol_user($user1->id, $course2->id, 'editingteacher');
 
         // Make a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         $quiz = $quizgenerator->create_instance(['course' => $course1->id, 'questionsperpage' => 0, 'grade' => 100.0,
                 'sumgrades' => 3]);
@@ -470,7 +470,7 @@ class quiz_question_restore_test extends \advanced_testcase {
         quiz_add_random_questions($quiz, 3, $randomcat->id, 2, false);
 
         $quizobj = \quiz::create($quiz->id, $user1->id);
-        $originalstructure = \mod_quiz\structure::create_for_quiz($quizobj);
+        $originalstructure = \mod_hippotrack\structure::create_for_quiz($quizobj);
         $originalslots = $originalstructure->get_slots();
 
         // Set one slot to requireprevious.
@@ -486,9 +486,9 @@ class quiz_question_restore_test extends \advanced_testcase {
         $quizzes = $modinfo->get_instances_of('quiz');
         $restoredquiz = reset($quizzes);
         $restoredquizobj = \quiz::create($restoredquiz->instance, $user1->id);
-        $restoredstructure = \mod_quiz\structure::create_for_quiz($restoredquizobj);
+        $restoredstructure = \mod_hippotrack\structure::create_for_quiz($restoredquizobj);
         $restoredslots = array_values($restoredstructure->get_slots());
-        $originalstructure = \mod_quiz\structure::create_for_quiz($quizobj);
+        $originalstructure = \mod_hippotrack\structure::create_for_quiz($quizobj);
         $originalslots = array_values($originalstructure->get_slots());
         foreach ($restoredslots as $key => $restoredslot) {
             $originalslot = $originalslots[$key];

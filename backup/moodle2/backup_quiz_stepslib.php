@@ -17,7 +17,7 @@
 /**
  * Define all the backup steps that will be used by the backup_quiz_activity_task.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @subpackage backup-moodle2
  * @copyright  2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -51,9 +51,9 @@ class backup_quiz_activity_structure_step extends backup_questions_activity_stru
         $qinstance = new backup_nested_element('question_instance', ['id'],
                 ['quizid', 'slot', 'page', 'requireprevious', 'maxmark']);
 
-        $this->add_question_references($qinstance, 'mod_quiz', 'slot');
+        $this->add_question_references($qinstance, 'mod_hippotrack', 'slot');
 
-        $this->add_question_set_references($qinstance, 'mod_quiz', 'slot');
+        $this->add_question_set_references($qinstance, 'mod_hippotrack', 'slot');
 
         $sections = new backup_nested_element('sections');
 
@@ -151,8 +151,8 @@ class backup_quiz_activity_structure_step extends backup_questions_activity_stru
         $attempt->annotate_ids('user', 'userid');
 
         // Define file annotations.
-        $quiz->annotate_files('mod_quiz', 'intro', null); // This file area hasn't itemid.
-        $feedback->annotate_files('mod_quiz', 'feedback', 'id');
+        $quiz->annotate_files('mod_hippotrack', 'intro', null); // This file area hasn't itemid.
+        $feedback->annotate_files('mod_hippotrack', 'feedback', 'id');
 
         // Return the root element (quiz), wrapped into standard activity structure.
         return $this->prepare_activity_structure($quiz);

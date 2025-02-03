@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 use quiz_attempt;
 
@@ -27,7 +27,7 @@ require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
 /**
  * This class contains the test cases for the functions in reportlib.php.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @category  test
  * @copyright 2008 Jamie Pratt me@jamiep.org
  * @license   http://www.gnu.org/copyleft/gpl.html GNU Public License

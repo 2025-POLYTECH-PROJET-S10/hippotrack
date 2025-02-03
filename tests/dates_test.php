@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Contains unit tests for mod_quiz\dates.
+ * Contains unit tests for mod_hippotrack\dates.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @category  test
  * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,14 +25,14 @@
 
 declare(strict_types=1);
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 use advanced_testcase;
 use cm_info;
 use core\activity_dates;
 
 /**
- * Class for unit testing mod_quiz\dates.
+ * Class for unit testing mod_hippotrack\dates.
  *
  * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -122,8 +122,8 @@ class dates_test extends advanced_testcase {
 
         $this->resetAfterTest();
         $generator = $this->getDataGenerator();
-        /** @var \mod_quiz_generator $quizgenerator */
-        $quizgenerator = $generator->get_plugin_generator('mod_quiz');
+        /** @var \mod_hippotrack_generator $quizgenerator */
+        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
 
         $course = $generator->create_course();
         $user = $generator->create_user();

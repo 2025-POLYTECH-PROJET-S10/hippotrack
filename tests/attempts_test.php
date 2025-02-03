@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
-use mod_quiz_overdue_attempt_updater;
+use mod_hippotrack_overdue_attempt_updater;
 use question_engine;
 use quiz;
 
@@ -28,7 +28,7 @@ require_once($CFG->dirroot.'/group/lib.php');
 /**
  * Unit tests for quiz attempt overdue handling
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   test
  * @copyright  2012 Matt Petro
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -63,8 +63,8 @@ class attempts_test extends \advanced_testcase {
 
         $usertimes = [];
 
-        /** @var mod_quiz_generator $quizgenerator */
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        /** @var mod_hippotrack_generator $quizgenerator */
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         // Basic quiz settings
 
@@ -390,7 +390,7 @@ class attempts_test extends \advanced_testcase {
         // Test get_list_of_overdue_attempts().
         //
 
-        $overduehander = new mod_quiz_overdue_attempt_updater();
+        $overduehander = new mod_hippotrack_overdue_attempt_updater();
 
         $attempts = $overduehander->get_list_of_overdue_attempts(100000); // way in the future
         $count = 0;
@@ -459,7 +459,7 @@ class attempts_test extends \advanced_testcase {
      * @return int question usage id.
      */
     protected function usage_id(\stdClass $quiz): int {
-        $quba = question_engine::make_questions_usage_by_activity('mod_quiz',
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack',
                 \context_module::instance($quiz->cmid));
         $quba->set_preferred_behaviour('deferredfeedback');
         question_engine::save_questions_usage_by_activity($quba);
@@ -488,8 +488,8 @@ class attempts_test extends \advanced_testcase {
         $this->assertTrue(groups_add_member($group1, $user1));
         $this->assertTrue(groups_add_member($group2, $user1));
 
-        /** @var mod_quiz_generator $quizgenerator */
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        /** @var mod_hippotrack_generator $quizgenerator */
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         $quiz = $quizgenerator->create_instance(['course' => $course->id, 'timeclose' => 1200, 'timelimit' => 0]);
 
@@ -549,8 +549,8 @@ class attempts_test extends \advanced_testcase {
         $user1 = $this->getDataGenerator()->create_user();
         $student = $this->getDataGenerator()->create_user();
         $this->getDataGenerator()->enrol_user($student->id, $course->id, 'student');
-        /** @var mod_quiz_generator $quizgenerator */
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        /** @var mod_hippotrack_generator $quizgenerator */
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         /** @var core_question_generator $questiongenerator */
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $quiz = $quizgenerator->create_instance(['course' => $course->id, 'questionsperpage' => 0, 'grade' => 100.0,
@@ -563,7 +563,7 @@ class attempts_test extends \advanced_testcase {
         quiz_add_quiz_question($saq->id, $quiz);
         quiz_add_quiz_question($numq->id, $quiz);
         $quizobj = quiz::create($quiz->id, $user1->id);
-        $quba = question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
         $timenow = time();
         // Create an attempt.

@@ -1,7 +1,7 @@
 {
-    "name": "moodle-mod_quiz-modform",
+    "name": "moodle-mod_hippotrack-modform",
     "builds": {
-        "moodle-mod_quiz-modform": {
+        "moodle-mod_hippotrack-modform": {
             "jsfiles": [
                 "modform.js"
             ]

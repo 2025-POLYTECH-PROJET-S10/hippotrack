@@ -23,7 +23,7 @@
  *
  * This code used to be near the top of attempt.php, if you are looking for CVS history.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2009 Tim Hunt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

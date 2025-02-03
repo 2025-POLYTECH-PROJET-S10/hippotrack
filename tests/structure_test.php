@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
-use mod_quiz\question\bank\qbank_helper;
+use mod_hippotrack\question\bank\qbank_helper;
 use quiz;
 
 defined('MOODLE_INTERNAL') || die();
@@ -27,7 +27,7 @@ require_once($CFG->dirroot . '/mod/quiz/attemptlib.php');
 /**
  * Unit tests for quiz events.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @category  test
  * @copyright 2013 Adrian Greeve
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -46,7 +46,7 @@ class structure_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
 
         // Make a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         $quiz = $quizgenerator->create_instance(array('course' => $course->id, 'questionsperpage' => 0,
             'grade' => 100.0, 'sumgrades' => 2, 'preferredbehaviour' => 'immediatefeedback'));
@@ -707,7 +707,7 @@ class structure_test extends \advanced_testcase {
                  WHERE qs.quizid = ?
                    AND qsr.component = ?
                    AND qsr.questionarea = ?';
-        $randomq = $DB->get_record_sql($sql, [$quizobj->get_quizid(), 'mod_quiz', 'slot']);
+        $randomq = $DB->get_record_sql($sql, [$quizobj->get_quizid(), 'mod_hippotrack', 'slot']);
 
         $structure->remove_slot(2);
 
@@ -716,7 +716,7 @@ class structure_test extends \advanced_testcase {
                 array('TF1', 1, 'truefalse'),
             ), $structure);
         $this->assertFalse($DB->record_exists('question_set_references',
-            array('id' => $randomq->id, 'component' => 'mod_quiz', 'questionarea' => 'slot')));
+            array('id' => $randomq->id, 'component' => 'mod_hippotrack', 'questionarea' => 'slot')));
     }
 
     /**

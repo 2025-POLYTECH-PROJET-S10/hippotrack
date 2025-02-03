@@ -16,16 +16,16 @@
 /**
  * A javascript module to handle submission confirmation for quiz.
  *
- * @module    mod_quiz/submission_confirmation
+ * @module    mod_hippotrack/submission_confirmation
  * @copyright 2022 Huong Nguyen <huongnv13@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since     4.1
  */
 
-import {saveCancelPromise} from 'core/notification';
+import { saveCancelPromise } from 'core/notification';
 import Prefetch from 'core/prefetch';
 import Templates from 'core/templates';
-import {get_string as getString} from 'core/str';
+import { get_string as getString } from 'core/str';
 
 const SELECTOR = {
     attemptSubmitButton: '.path-mod-quiz .btn-finishattempt button',
@@ -33,7 +33,7 @@ const SELECTOR = {
 };
 
 const TEMPLATES = {
-    submissionConfirmation: 'mod_quiz/submission_confirmation',
+    submissionConfirmation: 'mod_hippotrack/submission_confirmation',
 };
 
 /**
@@ -43,7 +43,7 @@ const TEMPLATES = {
 const registerEventListeners = (unAnsweredQuestions) => {
     const submitAction = document.querySelector(SELECTOR.attemptSubmitButton);
     if (submitAction) {
-        submitAction.addEventListener('click', async(e) => {
+        submitAction.addEventListener('click', async (e) => {
             e.preventDefault();
             try {
                 await saveCancelPromise(

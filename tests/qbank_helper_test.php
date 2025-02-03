@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 use core_question\local\bank\question_version_status;
-use mod_quiz\external\submit_question_version;
-use mod_quiz\question\bank\qbank_helper;
+use mod_hippotrack\external\submit_question_version;
+use mod_hippotrack\question\bank\qbank_helper;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -27,12 +27,12 @@ require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
 /**
  * Qbank helper test for quiz.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   test
  * @copyright  2021 Catalyst IT Australia Pty Ltd
  * @author     Safat Shahin <safatshahin@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @coversDefaultClass \mod_quiz\question\bank\qbank_helper
+ * @coversDefaultClass \mod_hippotrack\question\bank\qbank_helper
  */
 class qbank_helper_test extends \advanced_testcase {
     use \quiz_question_helper_test_trait;

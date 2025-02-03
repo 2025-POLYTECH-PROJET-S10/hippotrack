@@ -17,7 +17,7 @@
 /**
  * Defined caches used internally by the plugin.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -30,6 +30,6 @@ $definitions = [
     'overrides' => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
-        'datasource' => '\mod_quiz\cache\overrides',
+        'datasource' => '\mod_hippotrack\cache\overrides',
     ],
 ];

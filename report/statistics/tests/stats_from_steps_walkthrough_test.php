@@ -38,7 +38,7 @@ use quiz_statistics_report;
  * @author     Jamie Pratt <me@jamiep.org>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class stats_from_steps_walkthrough_test extends \mod_quiz\tests\attempt_walkthrough_testcase {
+final class stats_from_steps_walkthrough_test extends \mod_hippotrack\tests\attempt_walkthrough_testcase {
     /**
      * @var quiz_statistics_report object to do stats calculations.
      */

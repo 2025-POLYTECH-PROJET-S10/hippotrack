@@ -17,7 +17,7 @@
 /**
  * Structure step to restore one quiz activity
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @subpackage backup-moodle2
  * @copyright  2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -167,70 +167,70 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
             $oldreview = $data->review;
 
             $data->reviewattempt =
-                    mod_quiz_display_options::DURING |
+                    mod_hippotrack_display_options::DURING |
                     ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_RESPONSES ?
-                            mod_quiz_display_options::IMMEDIATELY_AFTER : 0) |
+                            mod_hippotrack_display_options::IMMEDIATELY_AFTER : 0) |
                     ($oldreview & QUIZ_OLD_OPEN & QUIZ_OLD_RESPONSES ?
-                            mod_quiz_display_options::LATER_WHILE_OPEN : 0) |
+                            mod_hippotrack_display_options::LATER_WHILE_OPEN : 0) |
                     ($oldreview & QUIZ_OLD_CLOSED & QUIZ_OLD_RESPONSES ?
-                            mod_quiz_display_options::AFTER_CLOSE : 0);
+                            mod_hippotrack_display_options::AFTER_CLOSE : 0);
 
             $data->reviewcorrectness =
-                    mod_quiz_display_options::DURING |
+                    mod_hippotrack_display_options::DURING |
                     ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_SCORES ?
-                            mod_quiz_display_options::IMMEDIATELY_AFTER : 0) |
+                            mod_hippotrack_display_options::IMMEDIATELY_AFTER : 0) |
                     ($oldreview & QUIZ_OLD_OPEN & QUIZ_OLD_SCORES ?
-                            mod_quiz_display_options::LATER_WHILE_OPEN : 0) |
+                            mod_hippotrack_display_options::LATER_WHILE_OPEN : 0) |
                     ($oldreview & QUIZ_OLD_CLOSED & QUIZ_OLD_SCORES ?
-                            mod_quiz_display_options::AFTER_CLOSE : 0);
+                            mod_hippotrack_display_options::AFTER_CLOSE : 0);
 
             $data->reviewmarks =
-                    mod_quiz_display_options::DURING |
+                    mod_hippotrack_display_options::DURING |
                     ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_SCORES ?
-                            mod_quiz_display_options::IMMEDIATELY_AFTER : 0) |
+                            mod_hippotrack_display_options::IMMEDIATELY_AFTER : 0) |
                     ($oldreview & QUIZ_OLD_OPEN & QUIZ_OLD_SCORES ?
-                            mod_quiz_display_options::LATER_WHILE_OPEN : 0) |
+                            mod_hippotrack_display_options::LATER_WHILE_OPEN : 0) |
                     ($oldreview & QUIZ_OLD_CLOSED & QUIZ_OLD_SCORES ?
-                            mod_quiz_display_options::AFTER_CLOSE : 0);
+                            mod_hippotrack_display_options::AFTER_CLOSE : 0);
 
             $data->reviewspecificfeedback =
                     ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_FEEDBACK ?
-                            mod_quiz_display_options::DURING : 0) |
+                            mod_hippotrack_display_options::DURING : 0) |
                     ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_FEEDBACK ?
-                            mod_quiz_display_options::IMMEDIATELY_AFTER : 0) |
+                            mod_hippotrack_display_options::IMMEDIATELY_AFTER : 0) |
                     ($oldreview & QUIZ_OLD_OPEN & QUIZ_OLD_FEEDBACK ?
-                            mod_quiz_display_options::LATER_WHILE_OPEN : 0) |
+                            mod_hippotrack_display_options::LATER_WHILE_OPEN : 0) |
                     ($oldreview & QUIZ_OLD_CLOSED & QUIZ_OLD_FEEDBACK ?
-                            mod_quiz_display_options::AFTER_CLOSE : 0);
+                            mod_hippotrack_display_options::AFTER_CLOSE : 0);
 
             $data->reviewgeneralfeedback =
                     ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_GENERALFEEDBACK ?
-                            mod_quiz_display_options::DURING : 0) |
+                            mod_hippotrack_display_options::DURING : 0) |
                     ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_GENERALFEEDBACK ?
-                            mod_quiz_display_options::IMMEDIATELY_AFTER : 0) |
+                            mod_hippotrack_display_options::IMMEDIATELY_AFTER : 0) |
                     ($oldreview & QUIZ_OLD_OPEN & QUIZ_OLD_GENERALFEEDBACK ?
-                            mod_quiz_display_options::LATER_WHILE_OPEN : 0) |
+                            mod_hippotrack_display_options::LATER_WHILE_OPEN : 0) |
                     ($oldreview & QUIZ_OLD_CLOSED & QUIZ_OLD_GENERALFEEDBACK ?
-                            mod_quiz_display_options::AFTER_CLOSE : 0);
+                            mod_hippotrack_display_options::AFTER_CLOSE : 0);
 
             $data->reviewrightanswer =
                     ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_ANSWERS ?
-                            mod_quiz_display_options::DURING : 0) |
+                            mod_hippotrack_display_options::DURING : 0) |
                     ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_ANSWERS ?
-                            mod_quiz_display_options::IMMEDIATELY_AFTER : 0) |
+                            mod_hippotrack_display_options::IMMEDIATELY_AFTER : 0) |
                     ($oldreview & QUIZ_OLD_OPEN & QUIZ_OLD_ANSWERS ?
-                            mod_quiz_display_options::LATER_WHILE_OPEN : 0) |
+                            mod_hippotrack_display_options::LATER_WHILE_OPEN : 0) |
                     ($oldreview & QUIZ_OLD_CLOSED & QUIZ_OLD_ANSWERS ?
-                            mod_quiz_display_options::AFTER_CLOSE : 0);
+                            mod_hippotrack_display_options::AFTER_CLOSE : 0);
 
             $data->reviewoverallfeedback =
                     0 |
                     ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_OVERALLFEEDBACK ?
-                            mod_quiz_display_options::IMMEDIATELY_AFTER : 0) |
+                            mod_hippotrack_display_options::IMMEDIATELY_AFTER : 0) |
                     ($oldreview & QUIZ_OLD_OPEN & QUIZ_OLD_OVERALLFEEDBACK ?
-                            mod_quiz_display_options::LATER_WHILE_OPEN : 0) |
+                            mod_hippotrack_display_options::LATER_WHILE_OPEN : 0) |
                     ($oldreview & QUIZ_OLD_CLOSED & QUIZ_OLD_OVERALLFEEDBACK ?
-                            mod_quiz_display_options::AFTER_CLOSE : 0);
+                            mod_hippotrack_display_options::AFTER_CLOSE : 0);
         }
 
         // The old popup column from from <= 2.1 need to be mapped to
@@ -338,7 +338,7 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
             $questionsetreference = new \stdClass();
             $questionsetreference->usingcontextid = context_module::instance(get_coursemodule_from_instance(
                 "quiz", $module->id, $module->course)->id)->id;
-            $questionsetreference->component = 'mod_quiz';
+            $questionsetreference->component = 'mod_hippotrack';
             $questionsetreference->questionarea = 'slot';
             $questionsetreference->itemid = $data->id;
             $questionsetreference->questionscontextid = $question->questioncontextid;
@@ -353,7 +353,7 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
             $questionreference = new \stdClass();
             $questionreference->usingcontextid = context_module::instance(get_coursemodule_from_instance(
                 "quiz", $module->id, $module->course)->id)->id;
-            $questionreference->component = 'mod_quiz';
+            $questionreference->component = 'mod_hippotrack';
             $questionreference->questionarea = 'slot';
             $questionreference->itemid = $data->id;
             $questionreference->questionbankentryid = $question->questionbankentryid;
@@ -441,7 +441,7 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
 
         $tagstring = "{$data->tagid},{$data->tagname}";
         $setreferencedata = $DB->get_record('question_set_references',
-            ['itemid' => $slotid, 'component' => 'mod_quiz', 'questionarea' => 'slot']);
+            ['itemid' => $slotid, 'component' => 'mod_hippotrack', 'questionarea' => 'slot']);
         $filtercondition = json_decode($setreferencedata->filtercondition);
         $filtercondition->tags[] = $tagstring;
         $setreferencedata->filtercondition = json_encode($filtercondition);
@@ -597,9 +597,9 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
 
         parent::after_execute();
         // Add quiz related files, no need to match by itemname (just internally handled context).
-        $this->add_related_files('mod_quiz', 'intro', null);
+        $this->add_related_files('mod_hippotrack', 'intro', null);
         // Add feedback related files, matching by itemname = 'quiz_feedback'.
-        $this->add_related_files('mod_quiz', 'feedback', 'quiz_feedback');
+        $this->add_related_files('mod_hippotrack', 'feedback', 'quiz_feedback');
 
         if (!$this->sectioncreated) {
             $DB->insert_record('quiz_sections', array(

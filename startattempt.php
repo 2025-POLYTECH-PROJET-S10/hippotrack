@@ -21,7 +21,7 @@
  *
  * This code used to be at the top of attempt.php, if you are looking for CVS history.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2009 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -71,7 +71,7 @@ list($currentattemptid, $attemptnumber, $lastattempt, $messages, $page) =
 
 // Check access.
 if (!$quizobj->is_preview_user() && $messages) {
-    $output = $PAGE->get_renderer('mod_quiz');
+    $output = $PAGE->get_renderer('mod_hippotrack');
     throw new \moodle_exception('attempterror', 'quiz', $quizobj->view_url(),
             $output->access_messages($messages));
 }
@@ -82,7 +82,7 @@ if ($accessmanager->is_preflight_check_required($currentattemptid)) {
             $quizobj->start_attempt_url($page), $currentattemptid);
 
     if ($mform->is_cancelled()) {
-        $accessmanager->back_to_view_page($PAGE->get_renderer('mod_quiz'));
+        $accessmanager->back_to_view_page($PAGE->get_renderer('mod_hippotrack'));
 
     } else if (!$mform->get_data()) {
 
@@ -90,7 +90,7 @@ if ($accessmanager->is_preflight_check_required($currentattemptid)) {
         $PAGE->set_url($quizobj->start_attempt_url($page));
         $PAGE->set_title($quizobj->get_quiz_name());
         $accessmanager->setup_attempt_page($PAGE);
-        $output = $PAGE->get_renderer('mod_quiz');
+        $output = $PAGE->get_renderer('mod_hippotrack');
         if (empty($quizobj->get_quiz()->showblocks)) {
             $PAGE->blocks->show_only_fake_blocks();
         }

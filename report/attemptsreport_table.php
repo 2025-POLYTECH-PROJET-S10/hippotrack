@@ -17,7 +17,7 @@
 /**
  * Base class for the table used by a {@link quiz_attempts_report}.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2010 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -58,7 +58,7 @@ abstract class quiz_attempts_report_table extends table_sql {
     /** @var string HTML fragment to select the first/best/last attempt, if appropriate. */
     protected $qmsubselect;
 
-    /** @var object mod_quiz_attempts_report_options the options affecting this report. */
+    /** @var object mod_hippotrack_attempts_report_options the options affecting this report. */
     protected $options;
 
     /** @var \core\dml\sql_join Contains joins, wheres, params to find students
@@ -84,14 +84,14 @@ abstract class quiz_attempts_report_table extends table_sql {
      * @param object $quiz
      * @param context $context
      * @param string $qmsubselect
-     * @param mod_quiz_attempts_report_options $options
+     * @param mod_hippotrack_attempts_report_options $options
      * @param \core\dml\sql_join $groupstudentsjoins Contains joins, wheres, params
      * @param \core\dml\sql_join $studentsjoins Contains joins, wheres, params
      * @param array $questions
      * @param moodle_url $reporturl
      */
     public function __construct($uniqueid, $quiz, $context, $qmsubselect,
-            mod_quiz_attempts_report_options $options, \core\dml\sql_join $groupstudentsjoins, \core\dml\sql_join $studentsjoins,
+            mod_hippotrack_attempts_report_options $options, \core\dml\sql_join $groupstudentsjoins, \core\dml\sql_join $studentsjoins,
             $questions, $reporturl) {
         parent::__construct($uniqueid);
         $this->quiz = $quiz;

@@ -17,7 +17,7 @@
 /**
  * Classes to enforce the various access rules that can apply to a quiz.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2009 Tim Hunt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -99,11 +99,11 @@ class quiz_access_manager {
      * Note that the standard plugins do not use this mechanism, becuase all their
      * settings are stored in the quiz table.
      *
-     * @param mod_quiz_mod_form $quizform the quiz settings form that is being built.
+     * @param mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
      * @param MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
     public static function add_settings_form_fields(
-            mod_quiz_mod_form $quizform, MoodleQuickForm $mform) {
+            mod_hippotrack_mod_form $quizform, MoodleQuickForm $mform) {
 
         foreach (self::get_rule_classes() as $rule) {
             $rule::add_settings_form_fields($quizform, $mform);
@@ -128,11 +128,11 @@ class quiz_access_manager {
      * @param array $errors the errors found so far.
      * @param array $data the submitted form data.
      * @param array $files information about any uploaded files.
-     * @param mod_quiz_mod_form $quizform the quiz form object.
+     * @param mod_hippotrack_mod_form $quizform the quiz form object.
      * @return array $errors the updated $errors array.
      */
     public static function validate_settings_form_fields(array $errors,
-            array $data, $files, mod_quiz_mod_form $quizform) {
+            array $data, $files, mod_hippotrack_mod_form $quizform) {
 
         foreach (self::get_rule_classes() as $rule) {
             $errors = $rule::validate_settings_form_fields($errors, $data, $files, $quizform);
@@ -365,17 +365,17 @@ class quiz_access_manager {
      * @param moodle_url $url the form action URL.
      * @param int|null $attemptid the id of the current attempt, if there is one,
      *      otherwise null.
-     * @return mod_quiz_preflight_check_form the form.
+     * @return mod_hippotrack_preflight_check_form the form.
      */
     public function get_preflight_check_form(moodle_url $url, $attemptid) {
         // This form normally wants POST submissins. However, it also needs to
         // accept GET submissions. Since formslib is strict, we have to detect
         // which case we are in, and set the form property appropriately.
         $method = 'post';
-        if (!empty($_GET['_qf__mod_quiz_preflight_check_form'])) {
+        if (!empty($_GET['_qf__mod_hippotrack_preflight_check_form'])) {
             $method = 'get';
         }
-        return new mod_quiz_preflight_check_form($url->out_omit_querystring(),
+        return new mod_hippotrack_preflight_check_form($url->out_omit_querystring(),
                 array('rules' => $this->rules, 'quizobj' => $this->quizobj,
                       'attemptid' => $attemptid, 'hidden' => $url->params()), $method);
     }
@@ -500,7 +500,7 @@ class quiz_access_manager {
      *
      * This method does not return;
      *
-     * @param mod_quiz_renderer $output the quiz renderer.
+     * @param mod_hippotrack_renderer $output the quiz renderer.
      * @param string $message optional message to output while redirecting.
      */
     public function back_to_view_page($output, $message = '') {
@@ -528,7 +528,7 @@ class quiz_access_manager {
         }
 
         $when = quiz_attempt_state($this->quizobj->get_quiz(), $attempt);
-        $reviewoptions = mod_quiz_display_options::make_from_quiz(
+        $reviewoptions = mod_hippotrack_display_options::make_from_quiz(
                 $this->quizobj->get_quiz(), $when);
 
         if (!$reviewoptions->attempt) {

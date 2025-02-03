@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Quiz with no calendar capabilites
   In order to allow work effectively
   As a teacher
@@ -42,7 +42,7 @@ Feature: Quiz with no calendar capabilites
     And I log out
 
   Scenario: Editing a quiz
-    When I am on the "Test quiz name" "mod_quiz > View" page logged in as "teacher1"
+    When I am on the "Test quiz name" "mod_hippotrack > View" page logged in as "teacher1"
     And I navigate to "Settings" in current page administration
     And I set the following fields to these values:
       | id_timeopen_year | 2018 |

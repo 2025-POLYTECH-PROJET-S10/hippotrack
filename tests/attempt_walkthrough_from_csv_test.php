@@ -14,18 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 /**
  * Quiz attempt walk through using data from csv file.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   test
  * @copyright  2013 The Open University
  * @author     Jamie Pratt <me@jamiep.org>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class attempt_walkthrough_from_csv_test extends \mod_quiz\tests\attempt_walkthrough_testcase {
+class attempt_walkthrough_from_csv_test extends \mod_hippotrack\tests\attempt_walkthrough_testcase {
     #[\Override]
     public static function setUpBeforeClass(): void {
         global $CFG;

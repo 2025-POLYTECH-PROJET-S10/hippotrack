@@ -79,7 +79,7 @@ class quizaccess_securewindow extends quiz_access_rule_base {
         }
 
         $page->add_body_class('quiz-secure-window');
-        $page->requires->js_init_call('M.mod_quiz.secure_window.init',
+        $page->requires->js_init_call('M.mod_hippotrack.secure_window.init',
                 null, false, quiz_get_js_module());
     }
 

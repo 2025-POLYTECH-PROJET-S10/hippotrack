@@ -1,4 +1,4 @@
-@mod @mod_quiz @quiz @quiz_grading
+@mod @mod_hippotrack @quiz @quiz_grading
 Feature: Basic use of the Manual grading report
   In order to easily find students attempts that need manual grading
   As a teacher
@@ -59,7 +59,7 @@ Feature: Basic use of the Manual grading report
       | Short answer 001 | 1    |
 
   Scenario: Manual grading report without attempts
-    When I am on the "Quiz 1" "mod_quiz > Manual grading report" page logged in as "teacher1"
+    When I am on the "Quiz 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
     Then I should see "Separate groups (Tutor groups)"
     And I should see "All participants"
     And I should see "Quiz 1"
@@ -73,7 +73,7 @@ Feature: Basic use of the Manual grading report
       | slot | response |
       | 1    | Paris    |
     And I reload the page
-    When I am on the "Quiz 1" "mod_quiz > Manual grading report" page logged in as "teacher1"
+    When I am on the "Quiz 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
     Then I should see "Separate groups (Tutor groups)"
     And I should see "All participants"
     And I should see "Quiz 1"
@@ -105,7 +105,7 @@ Feature: Basic use of the Manual grading report
     Given user "student1" has attempted "Quiz 1" with responses:
       | slot | response |
       | 1    | Paris    |
-    When I am on the "Quiz 1" "mod_quiz > Manual grading report" page logged in as "teacher1"
+    When I am on the "Quiz 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
     And I follow "Also show questions that have been graded automatically"
     And I click on "update grades" "link" in the "Short answer 001" "table_row"
     And I set the following fields to these values:
@@ -113,7 +113,7 @@ Feature: Basic use of the Manual grading report
       | Order attempts by  | Date |
     And I press "Change options"
     And I log out
-    And I am on the "Quiz 1" "mod_quiz > Manual grading report" page logged in as "teacher1"
+    And I am on the "Quiz 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
     And I follow "Also show questions that have been graded automatically"
     And I click on "update grades" "link" in the "Short answer 001" "table_row"
     Then the following fields match these values:
@@ -125,7 +125,7 @@ Feature: Basic use of the Manual grading report
     Given user "student1" has attempted "Quiz 1" with responses:
       | slot | response |
       | 1    | Paris    |
-    And I am on the "Quiz 1" "mod_quiz > Manual grading report" page logged in as "teacher1"
+    And I am on the "Quiz 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
     And I follow "Also show questions that have been graded automatically"
     And I click on "update grades" "link" in the "Short answer 001" "table_row"
     When I set the following fields to these values:
@@ -148,7 +148,7 @@ Feature: Basic use of the Manual grading report
     Given user "student1" has attempted "Quiz 1" with responses:
       | slot | response |
       | 1    | Paris    |
-    When I am on the "Quiz 1" "mod_quiz > Manual grading report" page logged in as "teacher1"
+    When I am on the "Quiz 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
     And I follow "Also show questions that have been graded automatically"
     And I click on "update grades" "link" in the "Short answer 001" "table_row"
     Then I should see "Attempt number 1 for S1 Student1 (student1, S1000, student1@example.com, little yellow frog)"
@@ -161,7 +161,7 @@ Feature: Basic use of the Manual grading report
     And user "student2" has attempted "Quiz 1" with responses:
       | slot | response |
       | 1    | Duck     |
-    When I am on the "Quiz 1" "mod_quiz > Manual grading report" page logged in as "marker"
+    When I am on the "Quiz 1" "mod_hippotrack > Manual grading report" page logged in as "marker"
     Then I should see "Quiz 1"
     And I should see "Separate groups: All participants"
     Then I should see "Sorry, but you need to be part of a group to see this page."
@@ -174,7 +174,7 @@ Feature: Basic use of the Manual grading report
     And quiz "Quiz 2" contains the following questions:
       | question | page |
       | Essay Q1 | 1    |
-    When I am on the "Quiz 2" "mod_quiz > View" page logged in as "student1"
+    When I am on the "Quiz 2" "mod_hippotrack > View" page logged in as "student1"
     And I press "Attempt quiz"
     And I set the field "Answer text Question 1" to "This is my attempt 1"
     And I follow "Finish attempt ..."
@@ -192,7 +192,7 @@ Feature: Basic use of the Manual grading report
     And I follow "Finish attempt ..."
     And I press "Submit all and finish"
     And I click on "Submit all and finish" "button" in the "Submit all your answers and finish?" "dialogue"
-    And I am on the "Quiz 2" "mod_quiz > Manual grading report" page logged in as "teacher1"
+    And I am on the "Quiz 2" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
     And I follow "Also show questions that have been graded automatically"
     And I should see "Essay Q1"
     And "Essay Q1" row "To grade" column of "questionstograde" table should contain "3"

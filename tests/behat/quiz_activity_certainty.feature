@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Set a quiz with certainty-based marking
   As a teacher
   In order to set a a quiz with certainty-based marking
@@ -77,7 +77,7 @@ Feature: Set a quiz with certainty-based marking
     And I should see "C=1 (Unsure: <67%)"
     And I should see "C=2 (Mid: >67%)"
     And I should see "C=3 (Quite sure: >80%)"
-    And I am on the "Quiz 1" "mod_quiz > Grades report" page
+    And I am on the "Quiz 1" "mod_hippotrack > Grades report" page
     And I click on "Review attempt" "link" in the "Student One" "table_row"
     # As teacher, confirm that the attempt result is same with student1 view
     And the following should exist in the "quizreviewsummary" table:

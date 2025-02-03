@@ -1,4 +1,4 @@
-@mod @mod_quiz @quiz @quiz_overview @javascript
+@mod @mod_hippotrack @quiz @quiz_overview @javascript
 Feature: Quiz regrade when not possible
   In order avoid errors
   As a teacher
@@ -41,7 +41,7 @@ Feature: Quiz regrade when not possible
     And I press "id_submitbutton"
 
     # Try a regrade, and verify what happened is reported.
-    When I am on the "Quiz for testing regrading" "mod_quiz > grades report" page
+    When I am on the "Quiz for testing regrading" "mod_hippotrack > grades report" page
     And I press "Regrade all"
 
     Then I should see "Quiz for testing regrading"

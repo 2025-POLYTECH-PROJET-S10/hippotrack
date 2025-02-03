@@ -17,12 +17,12 @@
 /**
  * Defines the quiz repaginate class.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @copyright 2014 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 defined('MOODLE_INTERNAL') || die();
 
 /**

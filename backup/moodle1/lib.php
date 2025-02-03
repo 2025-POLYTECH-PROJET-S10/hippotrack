@@ -18,7 +18,7 @@
  * Provides support for the conversion of moodle1 backup to the moodle2 format
  * Based off of a template @ http://docs.moodle.org/dev/Backup_1.9_conversion_for_developers
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2011 Aparup Banerjee <aparup@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Quiz conversion handler
  */
-class moodle1_mod_quiz_handler extends moodle1_mod_handler {
+class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
 
     /** @var moodle1_file_manager */
     protected $fileman = null;
@@ -116,7 +116,7 @@ class moodle1_mod_quiz_handler extends moodle1_mod_handler {
         $contextid      = $this->converter->get_contextid(CONTEXT_MODULE, $this->moduleid);
 
         // Get a fresh new file manager for this instance.
-        $this->fileman = $this->converter->get_file_manager($contextid, 'mod_quiz');
+        $this->fileman = $this->converter->get_file_manager($contextid, 'mod_hippotrack');
 
         // Convert course files embedded into the intro.
         $this->fileman->filearea = 'intro';

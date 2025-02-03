@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: Quiz group override
   In order to grant a group special access to a quiz
   As a teacher
@@ -51,7 +51,7 @@ Feature: Quiz group override
     Given the following "permission overrides" exist:
       | capability                  | permission | role           | contextlevel | reference |
       | moodle/site:accessallgroups | Prevent    | editingteacher | Course       | C1        |
-    When I am on the "Test quiz" "mod_quiz > Group overrides" page logged in as "teacher1"
+    When I am on the "Test quiz" "mod_hippotrack > Group overrides" page logged in as "teacher1"
     And I press "Add group override"
     Then the "Override group" select box should contain "Group 1"
     And the "Override group" select box should not contain "Group 2"
@@ -60,12 +60,12 @@ Feature: Quiz group override
     Given the following "permission overrides" exist:
       | capability                  | permission | role           | contextlevel | reference |
       | moodle/site:accessallgroups | Prevent    | editingteacher | Course       | C1        |
-    When I am on the "Test quiz" "mod_quiz > Group overrides" page logged in as "teacher3"
+    When I am on the "Test quiz" "mod_hippotrack > Group overrides" page logged in as "teacher3"
     Then I should see "No groups you can access."
     And the "Add group override" "button" should be disabled
 
   Scenario: A teacher can create an override
-    When I am on the "Test quiz" "mod_quiz > Group overrides" page logged in as "teacher1"
+    When I am on the "Test quiz" "mod_hippotrack > Group overrides" page logged in as "teacher1"
     And I press "Add group override"
     And I set the following fields to these values:
       | Override group   | Group 1 |
@@ -81,11 +81,11 @@ Feature: Quiz group override
     And I should see "Action" in the "Overrides" "table_row"
 
   Scenario: A teacher with accessallgroups permission should see all group overrides
-    Given the following "mod_quiz > group overrides" exist:
+    Given the following "mod_hippotrack > group overrides" exist:
       | quiz      | group | attempts |
       | Test quiz | G1    | 2        |
       | Test quiz | G2    | 2        |
-    When I am on the "Test quiz" "mod_quiz > View" page logged in as "teacher1"
+    When I am on the "Test quiz" "mod_hippotrack > View" page logged in as "teacher1"
     Then I should see "Settings overrides exist (Groups: 2)"
     And I follow "Groups: 2"
     And "Group 1" "table_row" should exist
@@ -95,22 +95,22 @@ Feature: Quiz group override
     Given the following "permission overrides" exist:
       | capability                  | permission | role           | contextlevel | reference |
       | moodle/site:accessallgroups | Prevent    | editingteacher | Course       | C1        |
-    And the following "mod_quiz > group overrides" exist:
+    And the following "mod_hippotrack > group overrides" exist:
       | quiz      | group | attempts |
       | Test quiz | G1    | 2        |
       | Test quiz | G2    | 2        |
-    When I am on the "Test quiz" "mod_quiz > View" page logged in as "teacher1"
+    When I am on the "Test quiz" "mod_hippotrack > View" page logged in as "teacher1"
     Then I should see "Settings overrides exist (Groups: 1) for your groups"
     And I follow "Groups: 1"
     Then "Group 1" "table_row" should exist
     And "Group 2" "table_row" should not exist
 
   Scenario: A non-editing teacher can see the overrides, but not change them
-    Given the following "mod_quiz > group overrides" exist:
+    Given the following "mod_hippotrack > group overrides" exist:
       | quiz      | group | attempts |
       | Test quiz | G1    | 2        |
       | Test quiz | G2    | 2        |
-    When I am on the "Test quiz" "mod_quiz > Group overrides" page logged in as "helper"
+    When I am on the "Test quiz" "mod_hippotrack > Group overrides" page logged in as "helper"
     Then "Group 1" "table_row" should exist
     And "Group 2" "table_row" should exist
     And "Add group override" "button" should not exist

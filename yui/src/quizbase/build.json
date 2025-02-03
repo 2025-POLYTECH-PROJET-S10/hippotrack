@@ -1,7 +1,7 @@
 {
-    "name": "moodle-mod_quiz-quizbase",
+    "name": "moodle-mod_hippotrack-quizbase",
     "builds": {
-        "moodle-mod_quiz-quizbase": {
+        "moodle-mod_hippotrack-quizbase": {
             "jsfiles": [
                 "quizbase.js"
             ]

@@ -17,7 +17,7 @@
 /**
  * This file contains mappings for classes that have been renamed.
  *
- * @package mod_quiz
+ * @package mod_hippotrack
  * @copyright 2022 The Open University
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,5 +26,5 @@ defined('MOODLE_INTERNAL') || die();
 
 $renamedclasses = [
     // Since Moodle 4.1.
-    'mod_quiz\local\views\secondary' => 'mod_quiz\navigation\views\secondary',
+    'mod_hippotrack\local\views\secondary' => 'mod_hippotrack\navigation\views\secondary',
 ];

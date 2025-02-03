@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -23,7 +23,7 @@ require_once($CFG->libdir . "/phpunit/classes/restore_date_testcase.php");
 /**
  * Restore override tests.
  *
- * @package   mod_quiz
+ * @package   mod_hippotrack
  * @author    2019 Nathan Nguyen <nathannguyen@catalyst-au.net>
  * @copyright Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -38,7 +38,7 @@ class restore_override_test extends \restore_date_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $quizgen = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgen = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgen->create_instance(['course' => $course->id]);
 
         $group1 = $this->getDataGenerator()->create_group(array('courseid' => $course->id));

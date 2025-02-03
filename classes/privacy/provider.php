@@ -15,15 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem implementation for mod_quiz.
+ * Privacy Subsystem implementation for mod_hippotrack.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   privacy
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz\privacy;
+namespace mod_hippotrack\privacy;
 
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
@@ -41,7 +41,7 @@ require_once($CFG->dirroot . '/mod/quiz/lib.php');
 require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 
 /**
- * Privacy Subsystem implementation for mod_quiz.
+ * Privacy Subsystem implementation for mod_hippotrack.
  *
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -166,7 +166,7 @@ class provider implements
 
         // Get the SQL used to link indirect question usages for the user.
         // This includes where a user is the manual marker on a question attempt.
-        $qubaid = \core_question\privacy\provider::get_related_question_usages_for_user('rel', 'mod_quiz', 'qa.uniqueid', $userid);
+        $qubaid = \core_question\privacy\provider::get_related_question_usages_for_user('rel', 'mod_hippotrack', 'qa.uniqueid', $userid);
 
         // Select the context of any quiz attempt where a user has an attempt, plus the related usages.
         $sql = "SELECT c.id
@@ -479,7 +479,7 @@ class provider implements
 
         $userid = $contextlist->get_user()->id;
         list($contextsql, $contextparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
-        $qubaid = \core_question\privacy\provider::get_related_question_usages_for_user('rel', 'mod_quiz', 'qa.uniqueid', $userid);
+        $qubaid = \core_question\privacy\provider::get_related_question_usages_for_user('rel', 'mod_hippotrack', 'qa.uniqueid', $userid);
 
         $sql = "SELECT
                     c.id AS contextid,

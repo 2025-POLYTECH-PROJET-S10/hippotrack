@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_quiz\tests;
+namespace mod_hippotrack\tests;
 
 use backup;
 use backup_controller;
 use component_generator_base;
-use mod_quiz_generator;
+use mod_hippotrack_generator;
 use quiz;
 use quiz_attempt;
 use restore_controller;
@@ -32,7 +32,7 @@ use question_engine;
  * This trait helps to execute different tests for quiz, for example if it needs to create a quiz, add question
  * to the question, add random quetion to the quiz, do a backup or restore.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @category   test
  * @copyright  2021 Catalyst IT Australia Pty Ltd
  * @author     Safat Shahin <safatshahin@catalyst-au.net>
@@ -56,8 +56,8 @@ trait question_helper_test_trait {
      */
     protected function create_test_quiz(stdClass $course): stdClass {
 
-        /** @var mod_quiz_generator $quizgenerator */
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        /** @var mod_hippotrack_generator $quizgenerator */
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
         return $quizgenerator->create_instance([
             'course' => $course->id,
@@ -118,7 +118,7 @@ trait question_helper_test_trait {
         $starttime = time();
         $quizobj = quiz::create($quiz->id, $user->id);
 
-        $quba = question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         // Start the attempt.

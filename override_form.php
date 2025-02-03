@@ -17,7 +17,7 @@
 /**
  * Settings form for overrides in the quiz module.
  *
- * @package    mod_quiz
+ * @package    mod_hippotrack
  * @copyright  2010 Matt Petro
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -210,11 +210,11 @@ class quiz_override_form extends moodleform {
 
         // Open and close dates.
         $mform->addElement('date_time_selector', 'timeopen',
-                get_string('quizopen', 'quiz'), mod_quiz_mod_form::$datefieldoptions);
+                get_string('quizopen', 'quiz'), mod_hippotrack_mod_form::$datefieldoptions);
         $mform->setDefault('timeopen', $this->quiz->timeopen);
 
         $mform->addElement('date_time_selector', 'timeclose',
-                get_string('quizclose', 'quiz'), mod_quiz_mod_form::$datefieldoptions);
+                get_string('quizclose', 'quiz'), mod_hippotrack_mod_form::$datefieldoptions);
         $mform->setDefault('timeclose', $this->quiz->timeclose);
 
         // Time limit.

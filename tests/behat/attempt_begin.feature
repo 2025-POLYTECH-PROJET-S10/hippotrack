@@ -1,4 +1,4 @@
-@mod @mod_quiz
+@mod @mod_hippotrack
 Feature: The various checks that may happen when an attept is started
   As a student
   In order to start a quiz with confidence
@@ -29,7 +29,7 @@ Feature: The various checks that may happen when an attept is started
     And quiz "Quiz 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
     Then I should see "Text of the first question"
 
@@ -41,7 +41,7 @@ Feature: The various checks that may happen when an attept is started
     And quiz "Quiz 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
     Then I should see "To attempt this quiz you need to know the quiz password" in the "Start attempt" "dialogue"
     And I should see "Your attempt will have a time limit of 1 hour. When you " in the "Start attempt" "dialogue"
@@ -57,7 +57,7 @@ Feature: The various checks that may happen when an attept is started
     And quiz "Quiz 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
     And I click on "Cancel" "button" in the "Start attempt" "dialogue"
     Then I should see "Quiz 1 description"
@@ -71,7 +71,7 @@ Feature: The various checks that may happen when an attept is started
     And quiz "Quiz 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
     And I set the field "Quiz password" to "Toad"
     And I click on "Start attempt" "button" in the "Start attempt" "dialogue"
@@ -91,7 +91,7 @@ Feature: The various checks that may happen when an attept is started
     And quiz "Quiz 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    When I am on the "Quiz 1" "mod_quiz > View" page logged in as "student"
+    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
     And I press "Attempt quiz"
     And I set the field "Quiz password" to "Toad"
     And I click on "Start attempt" "button" in the "Start attempt" "dialogue"

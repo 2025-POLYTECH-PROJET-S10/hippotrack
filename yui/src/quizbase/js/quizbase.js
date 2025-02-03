@@ -1,11 +1,11 @@
 /**
  * The quizbase class to provide shared functionality to Modules within Moodle.
  *
- * @module moodle-mod_quiz-quizbase
+ * @module moodle-mod_hippotrack-quizbase
  */
-var QUIZBASENAME = 'mod_quiz-quizbase';
+var QUIZBASENAME = 'mod_hippotrack-quizbase';
 
-var QUIZBASE = function() {
+var QUIZBASE = function () {
     QUIZBASE.superclass.constructor.apply(this, arguments);
 };
 
@@ -27,7 +27,7 @@ Y.extend(QUIZBASE, Y.Base, {
      * @param {Object} The instantiated module to call functions on
      * @chainable
      */
-    register_module: function(object) {
+    register_module: function (object) {
         this.registermodules.push(object);
 
         return this;
@@ -41,7 +41,7 @@ Y.extend(QUIZBASE, Y.Base, {
      * @param {mixed} args The argument supplied to the function
      * @chainable
      */
-    invoke_function: function(functionname, args) {
+    invoke_function: function (functionname, args) {
         var module;
         for (module in this.registermodules) {
             if (functionname in this.registermodules[module]) {
@@ -57,11 +57,11 @@ Y.extend(QUIZBASE, Y.Base, {
 });
 
 // Ensure that M.course exists and that coursebase is initialised correctly
-M.mod_quiz = M.mod_quiz || {};
-M.mod_quiz.quizbase = M.mod_quiz.quizbase || new QUIZBASE();
+M.mod_hippotrack = M.mod_hippotrack || {};
+M.mod_hippotrack.quizbase = M.mod_hippotrack.quizbase || new QUIZBASE();
 
 // Abstract functions that needs to be defined per format (course/format/somename/format.js)
-M.mod_quiz.edit = M.mod_quiz.edit || {};
+M.mod_hippotrack.edit = M.mod_hippotrack.edit || {};
 
 /**
  * Swap section (should be defined in format.js if requred)
@@ -71,7 +71,7 @@ M.mod_quiz.edit = M.mod_quiz.edit || {};
  * @param {string} node2 node to swap with
  * @return {NodeList} section list
  */
-M.mod_quiz.edit.swap_sections = function(Y, node1, node2) {
+M.mod_hippotrack.edit.swap_sections = function (Y, node1, node2) {
     var CSS = {
         COURSECONTENT: 'mod-quiz-edit-content',
         SECTIONADDMENUS: 'section_add_menus'
@@ -94,13 +94,13 @@ M.mod_quiz.edit.swap_sections = function(Y, node1, node2) {
  * @param {string} sectionto last affected section
  * @return void
  */
-M.mod_quiz.edit.process_sections = function(Y, sectionlist, response, sectionfrom, sectionto) {
+M.mod_hippotrack.edit.process_sections = function (Y, sectionlist, response, sectionfrom, sectionto) {
     var CSS = {
         SECTIONNAME: 'sectionname'
     },
-    SELECTORS = {
-        SECTIONLEFTSIDE: '.left .section-handle .icon'
-    };
+        SELECTORS = {
+            SECTIONLEFTSIDE: '.left .section-handle .icon'
+        };
 
     if (response.action === 'move') {
         // If moving up swap around 'sectionfrom' and 'sectionto' so the that loop operates.

@@ -17,7 +17,7 @@
 namespace quiz_overview;
 
 use core_question\local\bank\question_version_status;
-use mod_quiz\external\submit_question_version;
+use mod_hippotrack\external\submit_question_version;
 use question_engine;
 use quiz;
 use quiz_attempt;
@@ -70,7 +70,7 @@ class report_test extends \advanced_testcase {
         // Create a course and a quiz.
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
-        $quizgenerator = $generator->get_plugin_generator('mod_quiz');
+        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(array('course' => $course->id,
                 'grademethod' => QUIZ_GRADEHIGHEST, 'grade' => 100.0, 'sumgrades' => 10.0,
                 'attempts' => 10));
@@ -124,7 +124,7 @@ class report_test extends \advanced_testcase {
             $timestart = $timestamp + $attemptnumber * 3600;
 
             $quizobj = quiz::create($quiz->id, $student->id);
-            $quba = question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+            $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
             $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
             // Create the new attempt and initialize the question sessions.
@@ -268,7 +268,7 @@ class report_test extends \advanced_testcase {
      */
     public function test_get_bands_count_and_width(int $grade, array $expected): void {
         $this->resetAfterTest();
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_quiz');
+        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(['course' => SITEID, 'grade' => $grade]);
         $this->assertEquals($expected, quiz_overview_report::get_bands_count_and_width($quiz));
     }
@@ -285,7 +285,7 @@ class report_test extends \advanced_testcase {
         // Create a course and a quiz.
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
-        $quizgenerator = $generator->get_plugin_generator('mod_quiz');
+        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance([
                 'course' => $course->id,
                 'grademethod' => QUIZ_GRADEHIGHEST,
@@ -314,7 +314,7 @@ class report_test extends \advanced_testcase {
 
         // Create the new attempt and initialize the question sessions.
         $quizobj = quiz::create($quiz->id, $student->id);
-        $quba = question_engine::make_questions_usage_by_activity('mod_quiz', $quizobj->get_context());
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
         $attempt = quiz_create_attempt($quizobj, 1, null, $timestart, false, $student->id);
         $attempt = quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $timestamp);

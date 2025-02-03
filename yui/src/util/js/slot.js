@@ -1,19 +1,19 @@
 /**
  * A collection of utility classes for use with slots.
  *
- * @module moodle-mod_quiz-util
- * @submodule moodle-mod_quiz-util-slot
+ * @module moodle-mod_hippotrack-util
+ * @submodule moodle-mod_hippotrack-util-slot
  */
 
-Y.namespace('Moodle.mod_quiz.util.slot');
+Y.namespace('Moodle.mod_hippotrack.util.slot');
 
 /**
  * A collection of utility classes for use with slots.
  *
- * @class Moodle.mod_quiz.util.slot
+ * @class Moodle.mod_hippotrack.util.slot
  * @static
  */
-Y.Moodle.mod_quiz.util.slot = {
+Y.Moodle.mod_hippotrack.util.slot = {
     CSS: {
         SLOT: 'slot',
         QUESTIONTYPEDESCRIPTION: 'qtype_description',
@@ -44,7 +44,7 @@ Y.Moodle.mod_quiz.util.slot = {
      * @param slotcomponent {Node} The component Node.
      * @return {Node|null} The Slot Node.
      */
-    getSlotFromComponent: function(slotcomponent) {
+    getSlotFromComponent: function (slotcomponent) {
         return Y.one(slotcomponent).ancestor(this.SELECTORS.SLOT, true);
     },
 
@@ -55,10 +55,10 @@ Y.Moodle.mod_quiz.util.slot = {
      * @param slot {Node} The slot to find an ID for.
      * @return {Number|false} The ID of the slot in question or false if no ID was found.
      */
-    getId: function(slot) {
+    getId: function (slot) {
         // We perform a simple substitution operation to get the ID.
         var id = slot.get('id').replace(
-                this.CONSTANTS.SLOTIDPREFIX, '');
+            this.CONSTANTS.SLOTIDPREFIX, '');
 
         // Attempt to validate the ID.
         id = parseInt(id, 10);
@@ -75,7 +75,7 @@ Y.Moodle.mod_quiz.util.slot = {
      * @param slot {Node} The slot to find a name for.
      * @return {string|false} The name of the slot in question or false if no ID was found.
      */
-    getName: function(slot) {
+    getName: function (slot) {
         var instance = slot.one(this.SELECTORS.INSTANCENAME);
         if (instance) {
             return instance.get('firstChild').get('data');
@@ -90,13 +90,13 @@ Y.Moodle.mod_quiz.util.slot = {
      * @param slot {Node} The slot to find the number for.
      * @return {Number|false} The number of the slot in question or false if no number was found.
      */
-    getNumber: function(slot) {
+    getNumber: function (slot) {
         if (!slot) {
             return false;
         }
         // We perform a simple substitution operation to get the number.
         var number = slot.one(this.SELECTORS.NUMBER).get('text').replace(
-                        this.CONSTANTS.QUESTION, '');
+            this.CONSTANTS.QUESTION, '');
         // Attempt to validate the ID.
         number = parseInt(number, 10);
         if (typeof number === 'number' && isFinite(number)) {
@@ -112,7 +112,7 @@ Y.Moodle.mod_quiz.util.slot = {
      * @param slot {Node} The slot to update the number for.
      * @return void
      */
-    setNumber: function(slot, number) {
+    setNumber: function (slot, number) {
         var numbernode = slot.one(this.SELECTORS.NUMBER);
         numbernode.setHTML('<span class="accesshide">' + this.CONSTANTS.QUESTION + '</span> ' + number);
     },
@@ -123,7 +123,7 @@ Y.Moodle.mod_quiz.util.slot = {
      * @method getSlots
      * @return {node[]} An array containing slot nodes.
      */
-    getSlots: function() {
+    getSlots: function () {
         return Y.all(this.SELECTORS.PAGECONTENT + ' ' + this.SELECTORS.SECTIONUL + ' ' + this.SELECTORS.SLOT);
     },
 
@@ -133,9 +133,9 @@ Y.Moodle.mod_quiz.util.slot = {
      * @method getSlots
      * @return {node[]} An array containing slot nodes.
      */
-    getNumberedSlots: function() {
+    getNumberedSlots: function () {
         var selector = this.SELECTORS.PAGECONTENT + ' ' + this.SELECTORS.SECTIONUL;
-            selector += ' ' + this.SELECTORS.SLOT + ':not(' + this.SELECTORS.QUESTIONTYPEDESCRIPTION + ')';
+        selector += ' ' + this.SELECTORS.SLOT + ':not(' + this.SELECTORS.QUESTIONTYPEDESCRIPTION + ')';
         return Y.all(selector);
     },
 
@@ -146,7 +146,7 @@ Y.Moodle.mod_quiz.util.slot = {
      * @param slot Slot node
      * @return {node|false} The previous slot node or false.
      */
-    getPrevious: function(slot) {
+    getPrevious: function (slot) {
         return slot.previous(this.SELECTORS.SLOT);
     },
 
@@ -159,7 +159,7 @@ Y.Moodle.mod_quiz.util.slot = {
      * @param slot Slot node
      * @return {node|false} The previous slot node or false.
      */
-    getPreviousNumbered: function(slot) {
+    getPreviousNumbered: function (slot) {
         var previous = slot.previous(this.SELECTORS.SLOT + ':not(' + this.SELECTORS.QUESTIONTYPEDESCRIPTION + ')');
         if (previous) {
             return previous;
@@ -182,15 +182,15 @@ Y.Moodle.mod_quiz.util.slot = {
      * @method reorderSlots
      * @return void
      */
-    reorderSlots: function() {
+    reorderSlots: function () {
         // Get list of slot nodes.
         var slots = this.getSlots();
         // Loop through slots incrementing the number each time.
-        slots.each(function(slot) {
+        slots.each(function (slot) {
 
-            if (!Y.Moodle.mod_quiz.util.page.getPageFromSlot(slot)) {
+            if (!Y.Moodle.mod_hippotrack.util.page.getPageFromSlot(slot)) {
                 // Move the next page to the front.
-                var nextpage = slot.next(Y.Moodle.mod_quiz.util.page.SELECTORS.PAGE);
+                var nextpage = slot.next(Y.Moodle.mod_hippotrack.util.page.SELECTORS.PAGE);
                 slot.swap(nextpage);
             }
 
@@ -215,8 +215,8 @@ Y.Moodle.mod_quiz.util.slot = {
      * @method updateOneSlotSections
      * @return void
      */
-    updateOneSlotSections: function() {
-        Y.all('.mod-quiz-edit-content ul.slots li.section').each(function(section) {
+    updateOneSlotSections: function () {
+        Y.all('.mod-quiz-edit-content ul.slots li.section').each(function (section) {
             if (section.all(this.SELECTORS.SLOT).size() > 1) {
                 section.removeClass('only-has-one-slot');
             } else {
@@ -232,15 +232,15 @@ Y.Moodle.mod_quiz.util.slot = {
      * @param slot Slot node
      * @return void
      */
-    remove: function(slot) {
-        var page = Y.Moodle.mod_quiz.util.page.getPageFromSlot(slot);
+    remove: function (slot) {
+        var page = Y.Moodle.mod_hippotrack.util.page.getPageFromSlot(slot);
         slot.remove();
         // Is the page empty.
-        if (!Y.Moodle.mod_quiz.util.page.isEmpty(page)) {
+        if (!Y.Moodle.mod_hippotrack.util.page.isEmpty(page)) {
             return;
         }
         // If so remove it. Including add menu and page break.
-        Y.Moodle.mod_quiz.util.page.remove(page);
+        Y.Moodle.mod_hippotrack.util.page.remove(page);
     },
 
     /**
@@ -249,9 +249,9 @@ Y.Moodle.mod_quiz.util.slot = {
      * @method getPageBreaks
      * @return {node[]} An array containing page break nodes.
      */
-    getPageBreaks: function() {
+    getPageBreaks: function () {
         var selector = this.SELECTORS.PAGECONTENT + ' ' + this.SELECTORS.SECTIONUL;
-            selector += ' ' + this.SELECTORS.SLOT + this.SELECTORS.PAGEBREAK;
+        selector += ' ' + this.SELECTORS.SLOT + this.SELECTORS.PAGEBREAK;
         return Y.all(selector);
     },
 
@@ -262,7 +262,7 @@ Y.Moodle.mod_quiz.util.slot = {
      * @param slot Slot node
      * @return {Node|null} The Page Break Node.
      */
-    getPageBreak: function(slot) {
+    getPageBreak: function (slot) {
         return Y.one(slot).one(this.SELECTORS.PAGEBREAK);
     },
 
@@ -273,8 +273,8 @@ Y.Moodle.mod_quiz.util.slot = {
      * @param beforenode Int | Node | HTMLElement | String to add
      * @return pagebreak PageBreak node
      */
-    addPageBreak: function(slot) {
-        var nodetext = M.mod_quiz.resource_toolbox.get('config').addpageiconhtml;
+    addPageBreak: function (slot) {
+        var nodetext = M.mod_hippotrack.resource_toolbox.get('config').addpageiconhtml;
         nodetext = nodetext.replace('%%SLOT%%', this.getNumber(slot));
         var pagebreak = Y.Node.create(nodetext);
         slot.one('div').insert(pagebreak, 'after');
@@ -288,7 +288,7 @@ Y.Moodle.mod_quiz.util.slot = {
      * @param slot Slot node
      * @return boolean
      */
-    removePageBreak: function(slot) {
+    removePageBreak: function (slot) {
         var pagebreak = this.getPageBreak(slot);
         if (!pagebreak) {
             return false;
@@ -303,12 +303,12 @@ Y.Moodle.mod_quiz.util.slot = {
      * @method reorderPageBreaks
      * @return void
      */
-    reorderPageBreaks: function() {
+    reorderPageBreaks: function () {
         // Get list of slot nodes.
         var slots = this.getSlots();
         var slotnumber = 0;
         // Loop through slots incrementing the number each time.
-        slots.each(function(slot, key) {
+        slots.each(function (slot, key) {
             slotnumber++;
             var pagebreak = this.getPageBreak(slot);
             var nextitem = slot.next('li.activity');
@@ -333,7 +333,7 @@ Y.Moodle.mod_quiz.util.slot = {
             // Get the correct title.
             var action = '';
             var iconname = '';
-            if (Y.Moodle.mod_quiz.util.page.isPage(nextitem)) {
+            if (Y.Moodle.mod_hippotrack.util.page.isPage(nextitem)) {
                 action = 'removepagebreak';
                 iconname = 'e/remove_page_break';
             } else {
@@ -375,13 +375,13 @@ Y.Moodle.mod_quiz.util.slot = {
      * @method updateAllDependencyIcons
      * @return void
      */
-    updateAllDependencyIcons: function() {
+    updateAllDependencyIcons: function () {
         // Get list of slot nodes.
         var slots = this.getSlots(),
             slotnumber = 0,
             previousslot = null;
         // Loop through slots incrementing the number each time.
-        slots.each(function(slot) {
+        slots.each(function (slot) {
             slotnumber++;
 
             if (slotnumber == 1 || previousslot.getData('canfinish') === '0') {
@@ -402,11 +402,11 @@ Y.Moodle.mod_quiz.util.slot = {
      * @method requiresprevious Whether this node now requires the previous one.
      * @return void
      */
-    updateDependencyIcon: function(slot, requiresprevious) {
+    updateDependencyIcon: function (slot, requiresprevious) {
         var link = slot.one(this.SELECTORS.DEPENDENCY_LINK);
         var icon = slot.one(this.SELECTORS.DEPENDENCY_ICON);
         var previousSlot = this.getPrevious(slot);
-        var a = {thisq: this.getNumber(slot)};
+        var a = { thisq: this.getNumber(slot) };
         if (previousSlot) {
             a.previousq = this.getNumber(previousSlot);
         }
@@ -418,9 +418,9 @@ Y.Moodle.mod_quiz.util.slot = {
         if (requiresprevious) {
             link.set('title', M.util.get_string('questiondependencyremove', 'quiz', a));
             link.setData('action', 'removedependency');
-            window.require(['core/templates'], function(Templates) {
+            window.require(['core/templates'], function (Templates) {
                 Templates.renderPix('t/locked', 'core', M.util.get_string('questiondependsonprevious', 'quiz')).then(
-                    function(html) {
+                    function (html) {
                         icon.replace(html);
                     }
                 );
@@ -428,9 +428,9 @@ Y.Moodle.mod_quiz.util.slot = {
         } else {
             link.set('title', M.util.get_string('questiondependencyadd', 'quiz', a));
             link.setData('action', 'adddependency');
-            window.require(['core/templates'], function(Templates) {
+            window.require(['core/templates'], function (Templates) {
                 Templates.renderPix('t/unlocked', 'core', M.util.get_string('questiondependencyfree', 'quiz')).then(
-                    function(html) {
+                    function (html) {
                         icon.replace(html);
                     }
                 );

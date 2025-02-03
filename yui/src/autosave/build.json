@@ -1,7 +1,7 @@
 {
-    "name": "moodle-mod_quiz-autosave",
+    "name": "moodle-mod_hippotrack-autosave",
     "builds": {
-        "moodle-mod_quiz-autosave": {
+        "moodle-mod_hippotrack-autosave": {
             "jsfiles": [
                 "autosave.js"
             ]

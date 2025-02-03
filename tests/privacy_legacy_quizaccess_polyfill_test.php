@@ -21,7 +21,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_quiz;
+namespace mod_hippotrack;
 
 use quiz;
 
@@ -98,7 +98,7 @@ class privacy_legacy_quizaccess_polyfill_test extends \advanced_testcase {
     public function test_delete_quizaccess_for_users() {
         $context = $this->createMock(\context_module::class);
         $user = (object) [];
-        $approveduserlist = new \core_privacy\local\request\approved_userlist($context, 'mod_quiz', [$user]);
+        $approveduserlist = new \core_privacy\local\request\approved_userlist($context, 'mod_hippotrack', [$user]);
 
         $mock = $this->createMock(test_privacy_legacy_quizaccess_polyfill_mock_wrapper::class);
         $mock->expects($this->once())
@@ -118,10 +118,10 @@ class privacy_legacy_quizaccess_polyfill_test extends \advanced_testcase {
  */
 class test_privacy_legacy_quizaccess_polyfill_provider implements
         \core_privacy\local\metadata\provider,
-        \mod_quiz\privacy\quizaccess_provider,
-        \mod_quiz\privacy\quizaccess_user_provider {
+        \mod_hippotrack\privacy\quizaccess_provider,
+        \mod_hippotrack\privacy\quizaccess_user_provider {
 
-    use \mod_quiz\privacy\legacy_quizaccess_polyfill;
+    use \mod_hippotrack\privacy\legacy_quizaccess_polyfill;
     use \core_privacy\local\legacy_polyfill;
 
     /**
