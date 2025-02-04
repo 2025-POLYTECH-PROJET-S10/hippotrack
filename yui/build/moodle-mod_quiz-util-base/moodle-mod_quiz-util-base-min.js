@@ -1,1 +1,0 @@
-YUI.add("moodle-mod_hippotrack-util-base", function (o, d) { o.namespace("Moodle.mod_hippotrack.util") }, "@VERSION@");

@@ -1,9 +1,0 @@
-{
-    "moodle-mod_hippotrack-modform": {
-        "requires": [
-            "base",
-            "node",
-            "event"
-        ]
-    }
-}

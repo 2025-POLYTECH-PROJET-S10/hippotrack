@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2025020400;
+$plugin->version   = 2025020401;
 $plugin->requires  = 2022111800;
 $plugin->component = 'mod_hippotrack';
 $plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = '0.1 (Build: 2025100400)';
+$plugin->release   = '0.1 (Build: 2025100401)';
