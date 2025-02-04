@@ -16,7 +16,7 @@
 /**
  * Validate Safe Exam Browser access keys.
  *
- * @module     quizaccess_seb/validate_quiz_access
+ * @module     quizaccess_seb/validate_hippotrack_access
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2021 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -66,7 +66,7 @@ const safeExamBrowserKeysUpdated = (cmid, autoreconfigure = false) => {
  */
 const isQuizAccessValid = (cmid) => {
     const request = {
-        methodname: 'quizaccess_seb_validate_quiz_keys',
+        methodname: 'quizaccess_seb_validate_hippotrack_keys',
         args: {
             cmid: cmid,
             url: window.location.href,
@@ -96,7 +96,7 @@ const isKeyEmpty = (key) => {
  */
 const reconfigureSafeExamBrowser = (cmid) => {
     const domain = Config.wwwroot.replace(/^http/i, 'seb');
-    const redirecturl = domain + '/mod/quiz/accessrule/seb/config.php?cmid=' + cmid;
+    const redirecturl = domain + '/mod/hippotrack/accessrule/seb/config.php?cmid=' + cmid;
     document.location.replace(redirecturl);
 };
 
@@ -106,7 +106,7 @@ const reconfigureSafeExamBrowser = (cmid) => {
  * @param {init} cmid Value of course module id of the quiz.
  * @param {boolean} autoreconfigure Value of Moodle setting: quizaccess_seb/autoreconfigureseb.
  */
-export const init = async(cmid, autoreconfigure = false) => {
+export const init = async (cmid, autoreconfigure = false) => {
     // If the SafeExamBrowser object is instantiated, try and use it to fetch the access keys.
     if (window.SafeExamBrowser !== null) {
         await View.addLoadingAlert();

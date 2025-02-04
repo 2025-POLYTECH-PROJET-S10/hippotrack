@@ -23,9 +23,9 @@ use core_user;
 use moodle_recordset;
 use question_display_options;
 use mod_hippotrack_display_options;
-use quiz_attempt;
+use hippotrack_attempt;
 
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
  * Cron Quiz Notify Attempts Graded Task.
@@ -35,7 +35,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  */
-class quiz_notify_attempt_manual_grading_completed extends \core\task\scheduled_task {
+class hippotrack_notify_attempt_manual_grading_completed extends \core\task\scheduled_task {
     /**
      * @var int|null For using in unit testing only. Override the time we consider as now.
      */
@@ -101,9 +101,9 @@ class quiz_notify_attempt_manual_grading_completed extends \core\task\scheduled_
                 $coursecontext = context_course::instance($quiz->course);
             }
 
-            $quiz = quiz_update_effective_access($quiz, $attempt->userid);
-            $attemptobj = new quiz_attempt($attempt, $quiz, $cm, $course, false);
-            $options = mod_hippotrack_display_options::make_from_quiz($quiz, quiz_attempt_state($quiz, $attempt));
+            $quiz = hippotrack_update_effective_access($quiz, $attempt->userid);
+            $attemptobj = new hippotrack_attempt($attempt, $quiz, $cm, $course, false);
+            $options = mod_hippotrack_display_options::make_from_quiz($quiz, hippotrack_attempt_state($quiz, $attempt));
 
             if ($options->manualcomment == question_display_options::HIDDEN) {
                 // User cannot currently see the feedback, so don't message them.
@@ -111,19 +111,19 @@ class quiz_notify_attempt_manual_grading_completed extends \core\task\scheduled_
                 continue;
             }
 
-            if (!has_capability('mod/quiz:emailnotifyattemptgraded', $coursecontext, $attempt->userid, false)) {
+            if (!has_capability('mod/hippotrack:emailnotifyattemptgraded', $coursecontext, $attempt->userid, false)) {
                 // User not eligible to get a notification. Mark them done while doing nothing.
-                $DB->set_field('quiz_attempts', 'gradednotificationsenttime', $attempt->timefinish, ['id' => $attempt->id]);
+                $DB->set_field('hippotrack_attempts', 'gradednotificationsenttime', $attempt->timefinish, ['id' => $attempt->id]);
                 continue;
             }
 
             // OK, send notification.
             mtrace('Sending email to user ' . $attempt->userid . '...');
-            $ok = quiz_send_notify_manual_graded_message($attemptobj, core_user::get_user($attempt->userid));
+            $ok = hippotrack_send_notify_manual_graded_message($attemptobj, core_user::get_user($attempt->userid));
             if ($ok) {
                 mtrace('Send email successfully!');
                 $attempt->gradednotificationsenttime = $this->get_time();
-                $DB->set_field('quiz_attempts', 'gradednotificationsenttime', $attempt->gradednotificationsenttime,
+                $DB->set_field('hippotrack_attempts', 'gradednotificationsenttime', $attempt->gradednotificationsenttime,
                         ['id' => $attempt->id]);
                 $attemptobj->fire_attempt_manual_grading_completed_event();
             }
@@ -133,9 +133,9 @@ class quiz_notify_attempt_manual_grading_completed extends \core\task\scheduled_
     }
 
     /**
-     * Get a number of records as an array of quiz_attempts using a SQL statement.
+     * Get a number of records as an array of hippotrack_attempts using a SQL statement.
      *
-     * @return moodle_recordset Of quiz_attempts that need to be processed.
+     * @return moodle_recordset Of hippotrack_attempts that need to be processed.
      */
     public function get_list_of_attempts(): moodle_recordset {
         global $DB;
@@ -143,7 +143,7 @@ class quiz_notify_attempt_manual_grading_completed extends \core\task\scheduled_
         $delaytime = $this->get_time() - get_config('quiz', 'notifyattemptgradeddelay');
 
         $sql = "SELECT qa.*
-                  FROM {quiz_attempts} qa
+                  FROM {hippotrack_attempts} qa
                   JOIN {quiz} quiz ON quiz.id = qa.quiz
                  WHERE qa.state = 'finished'
                        AND qa.gradednotificationsenttime IS NULL

@@ -1,4 +1,4 @@
-@mod @mod_hippotrack @quiz @quiz_overview @javascript
+@mod @mod_hippotrack @quiz @hippotrack_overview @javascript
 Feature: Regrading quiz attempts using the Grades report
     In order to be able to correct mistakes I made setting up my quiz
     As a teacher

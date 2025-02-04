@@ -1,4 +1,4 @@
-@mod @mod_hippotrack @quiz @quiz_grading
+@mod @mod_hippotrack @quiz @hippotrack_grading
 Feature: Basic use of the Manual grading report
   In order to easily find students attempts that need manual grading
   As a teacher

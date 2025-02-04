@@ -1,4 +1,4 @@
-@mod @mod_hippotrack @quiz @quiz_statistics
+@mod @mod_hippotrack @quiz @hippotrack_statistics
 Feature: Basic use of the Statistics report
   In order to see how my students are progressing
   As a teacher

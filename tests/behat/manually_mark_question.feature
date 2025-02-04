@@ -30,7 +30,7 @@ Feature: Teachers can override the grade for any question
       | TF1      | 1    |
     And the following "user private files" exist:
       | user     | filepath                                |
-      | teacher1 | mod/quiz/tests/fixtures/moodle_logo.jpg |
+      | teacher1 | mod/hippotrack/tests/fixtures/moodle_logo.jpg |
     And I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student1"
     And I press "Attempt quiz"
     And I follow "Finish attempt ..."

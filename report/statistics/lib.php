@@ -17,7 +17,7 @@
 /**
  * Standard plugin entry points of the quiz statistics report.
  *
- * @package   quiz_statistics
+ * @package   hippotrack_statistics
  * @copyright 2011 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Serve questiontext files in the question text when they are displayed in this report.
  *
- * @package  quiz_statistics
+ * @package  hippotrack_statistics
  * @category files
  * @param context $previewcontext the quiz context
  * @param int $questionid the question id.
@@ -38,10 +38,10 @@ defined('MOODLE_INTERNAL') || die();
  * @param bool $forcedownload.
  * @param array $options additional options affecting the file serving.
  */
-function quiz_statistics_question_preview_pluginfile($previewcontext, $questionid,
+function hippotrack_statistics_question_preview_pluginfile($previewcontext, $questionid,
         $filecontext, $filecomponent, $filearea, $args, $forcedownload, $options = array()) {
     global $CFG;
-    require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+    require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
     list($context, $course, $cm) = get_context_info_array($previewcontext->id);
     require_login($course, false, $cm);

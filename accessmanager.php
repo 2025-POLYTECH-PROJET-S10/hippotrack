@@ -34,12 +34,12 @@ defined('MOODLE_INTERNAL') || die();
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since     Moodle 2.2
  */
-class quiz_access_manager {
+class hippotrack_access_manager {
     /** @var quiz the quiz settings object. */
     protected $quizobj;
     /** @var int the time to be considered as 'now'. */
     protected $timenow;
-    /** @var array of quiz_access_rule_base. */
+    /** @var array of hippotrack_access_rule_base. */
     protected $rules = array();
 
     /**
@@ -48,7 +48,7 @@ class quiz_access_manager {
      *      The quiz we will be controlling access to.
      * @param int $timenow The time to use as 'now'.
      * @param bool $canignoretimelimits Whether this user is exempt from time
-     *      limits (has_capability('mod/quiz:ignoretimelimits', ...)).
+     *      limits (has_capability('mod/hippotrack:ignoretimelimits', ...)).
      */
     public function __construct($quizobj, $timenow, $canignoretimelimits) {
         $this->quizobj = $quizobj;
@@ -61,8 +61,8 @@ class quiz_access_manager {
      * @param quiz $quizobj information about the quiz in question.
      * @param int $timenow the time that should be considered as 'now'.
      * @param bool $canignoretimelimits whether the current user is exempt from
-     *      time limits by the mod/quiz:ignoretimelimits capability.
-     * @return array of {@link quiz_access_rule_base}s.
+     *      time limits by the mod/hippotrack:ignoretimelimits capability.
+     * @return array of {@link hippotrack_access_rule_base}s.
      */
     protected function make_rules($quizobj, $timenow, $canignoretimelimits) {
 
@@ -116,7 +116,7 @@ class quiz_access_manager {
      * @return array key => lang string.
      */
     public static function get_browser_security_choices() {
-        $options = array('-' => get_string('none', 'quiz'));
+        $options = array('-' => get_string('none', 'hippotrack'));
         foreach (self::get_rule_classes() as $rule) {
             $options += $rule::get_browser_security_choices();
         }
@@ -250,7 +250,7 @@ class quiz_access_manager {
      * @param int $quizid the quiz id.
      * @return object mdl_quiz row with extra fields.
      */
-    public static function load_quiz_and_settings($quizid) {
+    public static function load_hippotrack_and_settings($quizid) {
         global $DB;
 
         $rules = self::get_rule_classes();
@@ -436,7 +436,7 @@ class quiz_access_manager {
     /**
      * Compute when the attempt must be submitted.
      *
-     * @param object $attempt the data from the relevant quiz_attempts row.
+     * @param object $attempt the data from the relevant hippotrack_attempts row.
      * @return int|false the attempt close time.
      *      False if there is no limit.
      */
@@ -454,7 +454,7 @@ class quiz_access_manager {
     /**
      * Compute what should be displayed to the user for time remaining in this attempt.
      *
-     * @param object $attempt the data from the relevant quiz_attempts row.
+     * @param object $attempt the data from the relevant hippotrack_attempts row.
      * @param int $timenow the time to consider as 'now'.
      * @return int|false the number of seconds remaining for this attempt.
      *      False if no limit should be displayed.
@@ -523,11 +523,11 @@ class quiz_access_manager {
     public function make_review_link($attempt, $reviewoptions, $output) {
 
         // If the attempt is still open, don't link.
-        if (in_array($attempt->state, array(quiz_attempt::IN_PROGRESS, quiz_attempt::OVERDUE))) {
+        if (in_array($attempt->state, array(hippotrack_attempt::IN_PROGRESS, hippotrack_attempt::OVERDUE))) {
             return $output->no_review_message('');
         }
 
-        $when = quiz_attempt_state($this->quizobj->get_quiz(), $attempt);
+        $when = hippotrack_attempt_state($this->quizobj->get_quiz(), $attempt);
         $reviewoptions = mod_hippotrack_display_options::make_from_quiz(
                 $this->quizobj->get_quiz(), $when);
 

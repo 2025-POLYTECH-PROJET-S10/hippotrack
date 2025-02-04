@@ -27,7 +27,7 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 // Get submitted parameters.
 $id = required_param('cmid', PARAM_INT); // Course module id
@@ -54,7 +54,7 @@ $PAGE->set_heading($quizobj->get_course()->fullname);
 
 // If no questions have been set up yet redirect to edit.php or display an error.
 if (!$quizobj->has_questions()) {
-    if ($quizobj->has_capability('mod/quiz:manage')) {
+    if ($quizobj->has_capability('mod/hippotrack:manage')) {
         redirect($quizobj->edit_url());
     } else {
         throw new \moodle_exception('cannotstartnoquestions', 'quiz', $quizobj->view_url());
@@ -67,7 +67,7 @@ $accessmanager = $quizobj->get_access_manager($timenow);
 
 // Validate permissions for creating a new attempt and start a new preview attempt if required.
 list($currentattemptid, $attemptnumber, $lastattempt, $messages, $page) =
-    quiz_validate_new_attempt($quizobj, $accessmanager, $forcenew, $page, true);
+    hippotrack_validate_new_attempt($quizobj, $accessmanager, $forcenew, $page, true);
 
 // Check access.
 if (!$quizobj->is_preview_user() && $messages) {
@@ -88,7 +88,7 @@ if ($accessmanager->is_preflight_check_required($currentattemptid)) {
 
         // Form not submitted successfully, re-display it and stop.
         $PAGE->set_url($quizobj->start_attempt_url($page));
-        $PAGE->set_title($quizobj->get_quiz_name());
+        $PAGE->set_title($quizobj->get_hippotrack_name());
         $accessmanager->setup_attempt_page($PAGE);
         $output = $PAGE->get_renderer('mod_hippotrack');
         if (empty($quizobj->get_quiz()->showblocks)) {
@@ -103,14 +103,14 @@ if ($accessmanager->is_preflight_check_required($currentattemptid)) {
     $accessmanager->notify_preflight_check_passed($currentattemptid);
 }
 if ($currentattemptid) {
-    if ($lastattempt->state == quiz_attempt::OVERDUE) {
+    if ($lastattempt->state == hippotrack_attempt::OVERDUE) {
         redirect($quizobj->summary_url($lastattempt->id));
     } else {
         redirect($quizobj->attempt_url($currentattemptid, $page));
     }
 }
 
-$attempt = quiz_prepare_and_start_new_attempt($quizobj, $attemptnumber, $lastattempt);
+$attempt = hippotrack_prepare_and_start_new_attempt($quizobj, $attemptnumber, $lastattempt);
 
 // Redirect to the attempt page.
 redirect($quizobj->attempt_url($attempt->id, $page));

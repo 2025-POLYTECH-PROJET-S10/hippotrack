@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines backup_quiz_activity_task class
+ * Defines backup_hippotrack_activity_task class
  *
  * @package     mod_hippotrack
  * @category    backup
@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/backup_quiz_stepslib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/backup/moodle2/backup_hippotrack_stepslib.php');
 
 /**
  * Provides the steps to perform one complete backup of the Quiz instance
@@ -33,7 +33,7 @@ require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/backup_quiz_stepslib.php'
  * @copyright  2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class backup_quiz_activity_task extends backup_activity_task {
+class backup_hippotrack_activity_task extends backup_activity_task {
 
     /**
      * No specific settings for this activity
@@ -47,7 +47,7 @@ class backup_quiz_activity_task extends backup_activity_task {
     protected function define_my_steps() {
         // Generate the quiz.xml file containing all the quiz information
         // and annotating used questions.
-        $this->add_step(new backup_quiz_activity_structure_step('quiz_structure', 'quiz.xml'));
+        $this->add_step(new backup_hippotrack_activity_structure_step('hippotrack_structure', 'quiz.xml'));
 
         // Note: Following  steps must be present
         // in all the activities using question banks (only quiz for now)

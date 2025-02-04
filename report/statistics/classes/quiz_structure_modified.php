@@ -14,19 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quiz_statistics;
+namespace hippotrack_statistics;
 
 use core\dml\sql_join;
 
 /**
  * Clear the statistics cache when the quiz structure is modified.
  *
- * @package   quiz_statistics
+ * @package   hippotrack_statistics
  * @copyright 2023 onwards Catalyst IT EU {@link https://catalyst-eu.net}
  * @author    Mark Johnson <mark.johnson@catalyst-eu.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_structure_modified {
+class hippotrack_structure_modified {
     /**
      * Clear the statistics cache.
      *
@@ -35,19 +35,19 @@ class quiz_structure_modified {
      */
     public static function callback(int $quizid): void {
         global $DB, $CFG;
-        require_once($CFG->dirroot . '/mod/quiz/report/statistics/statisticslib.php');
-        require_once($CFG->dirroot . '/mod/quiz/report/statistics/report.php');
+        require_once($CFG->dirroot . '/mod/hippotrack/report/statistics/statisticslib.php');
+        require_once($CFG->dirroot . '/mod/hippotrack/report/statistics/report.php');
         $quiz = $DB->get_record('quiz', ['id' => $quizid]);
         if (!$quiz) {
             throw new \coding_exception('Could not find quiz with ID ' . $quizid . '.');
         }
-        $qubaids = quiz_statistics_qubaids_condition(
+        $qubaids = hippotrack_statistics_qubaids_condition(
             $quiz->id,
             new sql_join(),
             $quiz->grademethod
         );
 
-        $report = new \quiz_statistics_report();
+        $report = new \hippotrack_statistics_report();
         $report->clear_cached_data($qubaids);
     }
 }

@@ -34,8 +34,8 @@ use \core_privacy\manager;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/lib.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/lib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
  * Privacy Subsystem implementation for mod_hippotrack.
@@ -51,7 +51,7 @@ class helper {
      * @param   \stdClass       $user       The user record.
      * @return  \array                      The calculated subcontext.
      */
-    public static function get_quiz_attempt_subcontext(\stdClass $attempt, \stdClass $user) {
+    public static function get_hippotrack_attempt_subcontext(\stdClass $attempt, \stdClass $user) {
         $subcontext = [
             get_string('attempts', 'mod_hippotrack'),
         ];

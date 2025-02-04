@@ -40,7 +40,7 @@ class backup_mod_hippotrack_access_subplugin extends backup_subplugin {
      * sub-plugin's settings for a particular quiz, and how that data is stored
      * in the database.
      */
-    protected function define_quiz_subplugin_structure() {
+    protected function define_hippotrack_subplugin_structure() {
         // Do nothing by default.
     }
 

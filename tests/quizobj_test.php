@@ -22,7 +22,7 @@ use quiz;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
  * Unit tests for the quiz class
@@ -47,9 +47,9 @@ class quizobj_test extends \basic_testcase {
             $quizobj->cannot_review_message(mod_hippotrack_display_options::DURING));
         $this->assertEquals('',
             $quizobj->cannot_review_message(mod_hippotrack_display_options::IMMEDIATELY_AFTER));
-        $this->assertEquals(get_string('noreview', 'quiz'),
+        $this->assertEquals(get_string('noreview', 'hippotrack'),
             $quizobj->cannot_review_message(mod_hippotrack_display_options::LATER_WHILE_OPEN));
-        $this->assertEquals(get_string('noreview', 'quiz'),
+        $this->assertEquals(get_string('noreview', 'hippotrack'),
             $quizobj->cannot_review_message(mod_hippotrack_display_options::AFTER_CLOSE));
 
         $closetime = time() + 10000;

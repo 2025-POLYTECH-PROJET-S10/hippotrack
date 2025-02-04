@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quiz_statistics;
+namespace hippotrack_statistics;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -25,7 +25,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * http://docs.moodle.org/dev/Quiz_statistics_calculations#Test_statistics
  *
- * @package    quiz_statistics
+ * @package    hippotrack_statistics
  * @copyright  2013 The Open University
  * @author     James Pratt me@jamiep.org
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -124,7 +124,7 @@ class calculated {
      * @param $quiz
      * @return array to display in table or spreadsheet.
      */
-    public function get_formatted_quiz_info_data($course, $cm, $quiz) {
+    public function get_formatted_hippotrack_info_data($course, $cm, $quiz) {
 
         // You can edit this array to control which statistics are displayed.
         $todisplay = array('firstattemptscount' => 'number',
@@ -143,19 +143,19 @@ class calculated {
 
         // General information about the quiz.
         $quizinfo = array();
-        $quizinfo[get_string('quizname', 'quiz_statistics')] = format_string($quiz->name);
-        $quizinfo[get_string('coursename', 'quiz_statistics')] = format_string($course->fullname);
+        $quizinfo[get_string('quizname', 'hippotrack_statistics')] = format_string($quiz->name);
+        $quizinfo[get_string('coursename', 'hippotrack_statistics')] = format_string($course->fullname);
         if ($cm->idnumber) {
             $quizinfo[get_string('idnumbermod')] = $cm->idnumber;
         }
         if ($quiz->timeopen) {
-            $quizinfo[get_string('quizopen', 'quiz')] = userdate($quiz->timeopen);
+            $quizinfo[get_string('quizopen', 'hippotrack')] = userdate($quiz->timeopen);
         }
         if ($quiz->timeclose) {
-            $quizinfo[get_string('quizclose', 'quiz')] = userdate($quiz->timeclose);
+            $quizinfo[get_string('quizclose', 'hippotrack')] = userdate($quiz->timeclose);
         }
         if ($quiz->timeopen && $quiz->timeclose) {
-            $quizinfo[get_string('duration', 'quiz_statistics')] =
+            $quizinfo[get_string('duration', 'hippotrack_statistics')] =
                 format_time($quiz->timeclose - $quiz->timeopen);
         }
 
@@ -168,10 +168,10 @@ class calculated {
 
             switch ($format) {
                 case 'summarks_as_percentage':
-                    $formattedvalue = quiz_report_scale_summarks_as_percentage($value, $quiz);
+                    $formattedvalue = hippotrack_report_scale_summarks_as_percentage($value, $quiz);
                     break;
                 case 'number_format_percent':
-                    $formattedvalue = quiz_format_grade($quiz, $value) . '%';
+                    $formattedvalue = hippotrack_format_grade($quiz, $value) . '%';
                     break;
                 case 'number_format':
                     // 2 extra decimal places, since not a percentage,
@@ -185,7 +185,7 @@ class calculated {
                     $formattedvalue = $value;
             }
 
-            $quizinfo[get_string($property, 'quiz_statistics',
+            $quizinfo[get_string($property, 'hippotrack_statistics',
                                  calculator::using_attempts_lang_string($this->whichattempts))] = $formattedvalue;
         }
 
@@ -227,15 +227,15 @@ class calculated {
 
         // Delete older statistics before we save the new ones.
         $transaction = $DB->start_delegated_transaction();
-        $DB->delete_records('quiz_statistics', ['hashcode' => $qubaids->get_hash_code()]);
+        $DB->delete_records('hippotrack_statistics', ['hashcode' => $qubaids->get_hash_code()]);
 
         // Store the data.
-        $DB->insert_record('quiz_statistics', $toinsert);
+        $DB->insert_record('hippotrack_statistics', $toinsert);
         $transaction->allow_commit();
     }
 
     /**
-     * Given a record from 'quiz_statistics' table load the data into the properties of this class.
+     * Given a record from 'hippotrack_statistics' table load the data into the properties of this class.
      *
      * @param $record \stdClass from db.
      */

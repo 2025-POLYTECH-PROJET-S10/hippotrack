@@ -17,7 +17,7 @@
 /**
  * This file defines the quiz responses table for showing first or all tries at a question.
  *
- * @package   quiz_responses
+ * @package   hippotrack_responses
  * @copyright 2014 The Open University
  * @author    Jamie Pratt <me@jamiep.org>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,12 +28,12 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * This is a table subclass for displaying the quiz responses report, showing first or all tries.
  *
- * @package   quiz_responses
+ * @package   hippotrack_responses
  * @copyright 2014 The Open University
  * @author    Jamie Pratt <me@jamiep.org>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_first_or_all_responses_table extends quiz_last_responses_table {
+class hippotrack_first_or_all_responses_table extends hippotrack_last_responses_table {
 
     /**
      * The full question usage object for each try shown in report.
@@ -86,7 +86,7 @@ class quiz_first_or_all_responses_table extends quiz_last_responses_table {
                 $newtablerow = clone($attempt);
                 $newtablerow->lasttryforallparts = ($try == $maxtriesinanyslot);
                 if ($try !== $maxtriesinanyslot) {
-                    $newtablerow->state = quiz_attempt::IN_PROGRESS;
+                    $newtablerow->state = hippotrack_attempt::IN_PROGRESS;
                 }
                 $newtablerow->try = $try;
                 $newrawdata[] = $newtablerow;

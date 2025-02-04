@@ -45,7 +45,7 @@ class attempt_reviewed extends \core\event\base {
      * Init method.
      */
     protected function init() {
-        $this->data['objecttable'] = 'quiz_attempts';
+        $this->data['objecttable'] = 'hippotrack_attempts';
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
     }
@@ -75,7 +75,7 @@ class attempt_reviewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/quiz/review.php', array('attempt' => $this->objectid));
+        return new \moodle_url('/mod/hippotrack/review.php', array('attempt' => $this->objectid));
     }
 
     /**
@@ -107,7 +107,7 @@ class attempt_reviewed extends \core\event\base {
     }
 
     public static function get_objectid_mapping() {
-        return array('db' => 'quiz_attempts', 'restore' => 'quiz_attempt');
+        return array('db' => 'hippotrack_attempts', 'restore' => 'hippotrack_attempt');
     }
 
     public static function get_other_mapping() {

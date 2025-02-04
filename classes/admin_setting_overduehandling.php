@@ -42,8 +42,8 @@ class mod_hippotrack_admin_setting_overduehandling extends admin_setting_configs
             return true;
         }
 
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-        $this->choices = quiz_get_overdue_handling_options();
+        require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
+        $this->choices = hippotrack_get_overdue_handling_options();
 
         return true;
     }

@@ -26,7 +26,7 @@ namespace mod_hippotrack\task;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
  * Update Overdue Attempts Task
@@ -50,7 +50,7 @@ class update_overdue_attempts extends \core\task\scheduled_task {
     public function execute() {
         global $CFG;
 
-        require_once($CFG->dirroot . '/mod/quiz/cronlib.php');
+        require_once($CFG->dirroot . '/mod/hippotrack/cronlib.php');
         $timenow = time();
         $overduehander = new \mod_hippotrack_overdue_attempt_updater();
 

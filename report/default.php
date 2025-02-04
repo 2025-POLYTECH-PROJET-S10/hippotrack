@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * Doesn't do anything on it's own -- it needs to be extended.
  * This class displays quiz reports.  Because it is called from
- * within /mod/quiz/report.php you can assume that the page header
+ * within /mod/hippotrack/report.php you can assume that the page header
  * and footer are taken care of.
  *
  * This file can refer to itself as report.php to pass variables
@@ -41,7 +41,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 1999 onwards Martin Dougiamas and others {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class quiz_default_report {
+abstract class hippotrack_default_report {
     const NO_GROUPS_ALLOWED = -2;
 
     /**

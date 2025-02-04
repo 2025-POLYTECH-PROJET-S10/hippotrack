@@ -25,9 +25,9 @@
 define('NO_OUTPUT_BUFFERING', true);
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/default.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/reportlib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/default.php');
 
 $id = optional_param('id', 0, PARAM_INT);
 $q = optional_param('q', 0, PARAM_INT);
@@ -56,7 +56,7 @@ if ($id) {
     }
 }
 
-$url = new moodle_url('/mod/quiz/report.php', array('id' => $cm->id));
+$url = new moodle_url('/mod/hippotrack/report.php', array('id' => $cm->id));
 if ($mode !== '') {
     $url->param('mode', $mode);
 }
@@ -66,7 +66,7 @@ require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
 $PAGE->set_pagelayout('report');
 $PAGE->activityheader->disable();
-$reportlist = quiz_report_list($context);
+$reportlist = hippotrack_report_list($context);
 if (empty($reportlist)) {
     throw new \moodle_exception('erroraccessingreport', 'quiz');
 }
@@ -84,11 +84,11 @@ if (!is_readable("report/$mode/report.php")) {
 }
 
 // Open the selected quiz report and display it.
-$file = $CFG->dirroot . '/mod/quiz/report/' . $mode . '/report.php';
+$file = $CFG->dirroot . '/mod/hippotrack/report/' . $mode . '/report.php';
 if (is_readable($file)) {
     include_once($file);
 }
-$reportclassname = 'quiz_' . $mode . '_report';
+$reportclassname = 'hippotrack_' . $mode . '_report';
 if (!class_exists($reportclassname)) {
     throw new \moodle_exception('preprocesserror', 'quiz');
 }

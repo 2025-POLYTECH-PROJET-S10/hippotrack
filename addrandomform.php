@@ -34,7 +34,7 @@ require_once($CFG->libdir.'/formslib.php');
  * @copyright  1999 onwards Martin Dougiamas and others {@link http://moodle.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_add_random_form extends moodleform {
+class hippotrack_add_random_form extends moodleform {
 
     protected function definition() {
         global $OUTPUT, $PAGE, $CFG;
@@ -47,13 +47,13 @@ class quiz_add_random_form extends moodleform {
 
         // Random from existing category section.
         $mform->addElement('header', 'existingcategoryheader',
-                get_string('randomfromexistingcategory', 'quiz'));
+                get_string('randomfromexistingcategory', 'hippotrack'));
 
         $mform->addElement('questioncategory', 'category', get_string('category'),
                 array('contexts' => $usablecontexts, 'top' => true));
         $mform->setDefault('category', $this->_customdata['cat']);
 
-        $mform->addElement('checkbox', 'includesubcategories', '', get_string('recurse', 'quiz'));
+        $mform->addElement('checkbox', 'includesubcategories', '', get_string('recurse', 'hippotrack'));
 
         $tops = question_get_top_categories_for_contexts(array_column($contexts->all(), 'id'));
         $mform->hideIf('includesubcategories', 'category', 'in', $tops);
@@ -66,7 +66,7 @@ class quiz_add_random_form extends moodleform {
             }
             $options = array(
                 'multiple' => true,
-                'noselectionstring' => get_string('anytags', 'quiz'),
+                'noselectionstring' => get_string('anytags', 'hippotrack'),
             );
             $mform->addElement('autocomplete', 'fromtags', get_string('randomquestiontags', 'mod_hippotrack'), $tagstrings, $options);
             $mform->addHelpButton('fromtags', 'randomquestiontags', 'mod_hippotrack');
@@ -77,19 +77,19 @@ class quiz_add_random_form extends moodleform {
         // only matched 9 questions (not already in the quiz), then the drop-down would
         // only offer choices 1..9. This nice UI hint got lost when the UI became Ajax-y.
         // We should add it back.
-        $mform->addElement('select', 'numbertoadd', get_string('randomnumber', 'quiz'),
+        $mform->addElement('select', 'numbertoadd', get_string('randomnumber', 'hippotrack'),
                 $this->get_number_of_questions_to_add_choices());
 
         $previewhtml = $OUTPUT->render_from_template('mod_hippotrack/random_question_form_preview', []);
         $mform->addElement('html', $previewhtml);
 
-        $mform->addElement('submit', 'existingcategory', get_string('addrandomquestion', 'quiz'));
+        $mform->addElement('submit', 'existingcategory', get_string('addrandomquestion', 'hippotrack'));
 
         // If the manage categories plugins is enabled, add the elements to create a new category in the form.
         if (\core\plugininfo\qbank::is_plugin_enabled(\qbank_managecategories\helper::PLUGINNAME)) {
             // Random from a new category section.
             $mform->addElement('header', 'newcategoryheader',
-                    get_string('randomquestionusinganewcategory', 'quiz'));
+                    get_string('randomquestionusinganewcategory', 'hippotrack'));
 
             $mform->addElement('text', 'name', get_string('name'), 'maxlength="254" size="50"');
             $mform->setType('name', PARAM_TEXT);
@@ -99,7 +99,7 @@ class quiz_add_random_form extends moodleform {
             $mform->addHelpButton('parent', 'parentcategory', 'question');
 
             $mform->addElement('submit', 'newcategory',
-                    get_string('createcategoryandaddrandomquestion', 'quiz'));
+                    get_string('createcategoryandaddrandomquestion', 'hippotrack'));
         }
 
         // Cancel button.

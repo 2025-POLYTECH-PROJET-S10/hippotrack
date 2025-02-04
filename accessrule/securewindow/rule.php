@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
+require_once($CFG->dirroot . '/mod/hippotrack/accessrule/accessrulebase.php');
 
 
 /**
@@ -36,7 +36,7 @@ require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
  * @copyright  2009 Tim Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quizaccess_securewindow extends quiz_access_rule_base {
+class quizaccess_securewindow extends hippotrack_access_rule_base {
     /** @var array options that should be used for opening the secure popup. */
     protected static $popupoptions = array(
         'left' => 0,
@@ -80,7 +80,7 @@ class quizaccess_securewindow extends quiz_access_rule_base {
 
         $page->add_body_class('quiz-secure-window');
         $page->requires->js_init_call('M.mod_hippotrack.secure_window.init',
-                null, false, quiz_get_js_module());
+                null, false, hippotrack_get_js_module());
     }
 
     /**

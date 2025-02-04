@@ -76,7 +76,7 @@ if (has_capability('quizaccess/seb:managetemplates', context_system::instance())
         new admin_externalpage(
             'quizaccess_seb/template',
             get_string('manage_templates', 'quizaccess_seb'),
-            new moodle_url('/mod/quiz/accessrule/seb/template.php'),
+            new moodle_url('/mod/hippotrack/accessrule/seb/template.php'),
             'quizaccess/seb:managetemplates'
         )
     );

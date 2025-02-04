@@ -37,7 +37,7 @@ class question_name_text_column extends question_name_column {
         if ($labelfor) {
             echo \html_writer::start_tag('label', ['for' => $labelfor]);
         }
-        echo quiz_question_tostring($question, false, true, true, $question->tags);
+        echo hippotrack_question_tostring($question, false, true, true, $question->tags);
         if ($labelfor) {
             echo \html_writer::end_tag('label');
         }

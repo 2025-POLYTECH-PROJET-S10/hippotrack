@@ -249,7 +249,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
 
         if (typeof problemsection !== 'undefined') {
             var alert = new M.core.alert({
-                title: M.util.get_string('cannotremoveslots', 'quiz'),
+                title: M.util.get_string('cannotremoveslots', 'hippotrack'),
                 message: M.util.get_string('cannotremoveallsectionslots', 'quiz', problemsection)
             });
 
@@ -286,7 +286,7 @@ Y.extend(RESOURCETOOLBOX, TOOLBOX, {
 
         // Create the confirmation dialogue.
         var confirm = new M.core.confirm({
-            question: M.util.get_string('areyousureremoveselected', 'quiz'),
+            question: M.util.get_string('areyousureremoveselected', 'hippotrack'),
             modal: true
         });
 

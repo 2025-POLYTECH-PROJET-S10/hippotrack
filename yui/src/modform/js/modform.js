@@ -1,5 +1,5 @@
 /**
- * The modform class has all the JavaScript specific to mod/quiz/mod_form.php.
+ * The modform class has all the JavaScript specific to mod/hippotrack/mod_form.php.
  *
  * @module moodle-mod_hippotrack-modform
  */

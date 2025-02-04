@@ -26,7 +26,7 @@ namespace mod_hippotrack\local\structure;
  */
 class slot_random {
 
-    /** @var \stdClass Slot's properties. A record retrieved from the quiz_slots table. */
+    /** @var \stdClass Slot's properties. A record retrieved from the hippotrack_slots table. */
     protected $record;
 
     /**
@@ -52,7 +52,7 @@ class slot_random {
     /**
      * slot_random constructor.
      *
-     * @param \stdClass $slotrecord Represents a record in the quiz_slots table.
+     * @param \stdClass $slotrecord Represents a record in the hippotrack_slots table.
      */
     public function __construct($slotrecord = null) {
         $this->record = new \stdClass();
@@ -151,7 +151,7 @@ class slot_random {
     public function insert($page) {
         global $DB;
 
-        $slots = $DB->get_records('quiz_slots', array('quizid' => $this->record->quizid),
+        $slots = $DB->get_records('hippotrack_slots', array('quizid' => $this->record->quizid),
                 'slot', 'id, slot, page');
         $quiz = $this->get_quiz();
 
@@ -173,7 +173,7 @@ class slot_random {
             $lastslotbefore = 0;
             foreach (array_reverse($slots) as $otherslot) {
                 if ($otherslot->page > $page) {
-                    $DB->set_field('quiz_slots', 'slot', $otherslot->slot + 1, array('id' => $otherslot->id));
+                    $DB->set_field('hippotrack_slots', 'slot', $otherslot->slot + 1, array('id' => $otherslot->id));
                 } else {
                     $lastslotbefore = $otherslot->slot;
                     break;
@@ -182,7 +182,7 @@ class slot_random {
             $this->record->slot = $lastslotbefore + 1;
             $this->record->page = min($page, $maxpage + 1);
 
-            quiz_update_section_firstslots($this->record->quizid, 1, max($lastslotbefore, 1));
+            hippotrack_update_section_firstslots($this->record->quizid, 1, max($lastslotbefore, 1));
         } else {
             $lastslot = end($slots);
             if ($lastslot) {
@@ -197,7 +197,7 @@ class slot_random {
             }
         }
 
-        $this->record->id = $DB->insert_record('quiz_slots', $this->record);
+        $this->record->id = $DB->insert_record('hippotrack_slots', $this->record);
 
         $this->referencerecord->component = 'mod_hippotrack';
         $this->referencerecord->questionarea = 'slot';

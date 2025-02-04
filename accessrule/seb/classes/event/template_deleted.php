@@ -81,7 +81,7 @@ class template_deleted extends base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/quiz/accessrule/seb/template.php');
+        return new \moodle_url('/mod/hippotrack/accessrule/seb/template.php');
     }
 
     /**

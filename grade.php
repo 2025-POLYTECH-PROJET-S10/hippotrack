@@ -26,8 +26,8 @@
 
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/reportlib.php');
 
 
 $id = required_param('id', PARAM_INT);
@@ -38,14 +38,14 @@ $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST)
 $quiz = $DB->get_record('quiz', array('id' => $cm->instance), '*', MUST_EXIST);
 require_login($course, false, $cm);
 
-$reportlist = quiz_report_list(context_module::instance($cm->id));
+$reportlist = hippotrack_report_list(context_module::instance($cm->id));
 if (empty($reportlist) || $userid == $USER->id) {
     // If the user cannot see reports, or can see reports but is looking
     // at their own grades, redirect them to the view.php page.
     // (The looking at their own grades case is unlikely, since users who
     // appear in the gradebook are unlikely to be able to see quiz reports,
     // but it is possible.)
-    redirect(new moodle_url('/mod/quiz/view.php', array('id' => $cm->id)));
+    redirect(new moodle_url('/mod/hippotrack/view.php', array('id' => $cm->id)));
 }
 
 // Now we know the user is interested in reports. If they are interested in a
@@ -53,7 +53,7 @@ if (empty($reportlist) || $userid == $USER->id) {
 if ($userid) {
 
     // Work out which attempt is most significant from a grading point of view.
-    $attempts = quiz_get_user_attempts($quiz->id, $userid, 'finished');
+    $attempts = hippotrack_get_user_attempts($quiz->id, $userid, 'finished');
     $attempt = null;
     switch ($quiz->grademethod) {
         case QUIZ_ATTEMPTFIRST:
@@ -79,7 +79,7 @@ if ($userid) {
 
     // If the user can review the relevant attempt, redirect to it.
     if ($attempt) {
-        $attemptobj = new quiz_attempt($attempt, $quiz, $cm, $course, false);
+        $attemptobj = new hippotrack_attempt($attempt, $quiz, $cm, $course, false);
         if ($attemptobj->is_review_allowed()) {
             $attemptobj->load_questions();
             redirect($attemptobj->review_url());
@@ -90,5 +90,5 @@ if ($userid) {
 }
 
 // Send the user to the first report they can see.
-redirect(new moodle_url('/mod/quiz/report.php', array(
+redirect(new moodle_url('/mod/hippotrack/report.php', array(
         'id' => $cm->id, 'mode' => reset($reportlist))));

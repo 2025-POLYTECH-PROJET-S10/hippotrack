@@ -42,7 +42,7 @@ namespace mod_hippotrack\event;
  */
 class section_break_created extends \core\event\base {
     protected function init() {
-        $this->data['objecttable'] = 'quiz_sections';
+        $this->data['objecttable'] = 'hippotrack_sections';
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
     }
@@ -59,7 +59,7 @@ class section_break_created extends \core\event\base {
     }
 
     public function get_url() {
-        return new \moodle_url('/mod/quiz/edit.php', [
+        return new \moodle_url('/mod/hippotrack/edit.php', [
             'cmid' => $this->contextinstanceid
         ]);
     }
@@ -93,13 +93,13 @@ class section_break_created extends \core\event\base {
     }
 
     public static function get_objectid_mapping() {
-        return ['db' => 'quiz_sections', 'restore' => 'quiz_section'];
+        return ['db' => 'hippotrack_sections', 'restore' => 'hippotrack_section'];
     }
 
     public static function get_other_mapping() {
         $othermapped = [];
         $othermapped['quizid'] = ['db' => 'quiz', 'restore' => 'quiz'];
-        $othermapped['firstslotid'] = ['db' => 'quiz_slots', 'restore' => 'quiz_question_instance'];
+        $othermapped['firstslotid'] = ['db' => 'hippotrack_slots', 'restore' => 'hippotrack_question_instance'];
 
         return $othermapped;
     }

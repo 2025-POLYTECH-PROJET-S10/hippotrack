@@ -42,8 +42,8 @@
 
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/addrandomform.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/addrandomform.php');
 require_once($CFG->dirroot . '/question/editlib.php');
 
 // These params are only passed from page request to request while we stay on
@@ -51,12 +51,12 @@ require_once($CFG->dirroot . '/question/editlib.php');
 $scrollpos = optional_param('scrollpos', '', PARAM_INT);
 
 list($thispageurl, $contexts, $cmid, $cm, $quiz, $pagevars) =
-        question_edit_setup('editq', '/mod/quiz/edit.php', true);
+        question_edit_setup('editq', '/mod/hippotrack/edit.php', true);
 
 $defaultcategoryobj = question_make_default_categories($contexts->all());
 $defaultcategory = $defaultcategoryobj->id . ',' . $defaultcategoryobj->contextid;
 
-$quizhasattempts = quiz_has_attempts($quiz->id);
+$quizhasattempts = hippotrack_has_attempts($quiz->id);
 
 $PAGE->set_url($thispageurl);
 $PAGE->set_secondary_active_tab("mod_hippotrack_edit");
@@ -66,8 +66,8 @@ $course = $DB->get_record('course', array('id' => $quiz->course), '*', MUST_EXIS
 $quizobj = new quiz($quiz, $cm, $course);
 $structure = $quizobj->get_structure();
 
-// You need mod/quiz:manage in addition to question capabilities to access this page.
-require_capability('mod/quiz:manage', $contexts->lowest());
+// You need mod/hippotrack:manage in addition to question capabilities to access this page.
+require_capability('mod/hippotrack:manage', $contexts->lowest());
 
 // Process commands ============================================================.
 
@@ -89,19 +89,19 @@ if (optional_param('repaginate', false, PARAM_BOOL) && confirm_sesskey()) {
     // Re-paginate the quiz.
     $structure->check_can_be_edited();
     $questionsperpage = optional_param('questionsperpage', $quiz->questionsperpage, PARAM_INT);
-    quiz_repaginate_questions($quiz->id, $questionsperpage );
-    quiz_delete_previews($quiz);
+    hippotrack_repaginate_questions($quiz->id, $questionsperpage );
+    hippotrack_delete_previews($quiz);
     redirect($afteractionurl);
 }
 
 if (($addquestion = optional_param('addquestion', 0, PARAM_INT)) && confirm_sesskey()) {
     // Add a single question to the current quiz.
     $structure->check_can_be_edited();
-    quiz_require_question_use($addquestion);
+    hippotrack_require_question_use($addquestion);
     $addonpage = optional_param('addonpage', 0, PARAM_INT);
-    quiz_add_quiz_question($addquestion, $quiz, $addonpage);
-    quiz_delete_previews($quiz);
-    quiz_update_sumgrades($quiz);
+    hippotrack_add_hippotrack_question($addquestion, $quiz, $addonpage);
+    hippotrack_delete_previews($quiz);
+    hippotrack_update_sumgrades($quiz);
     $thispageurl->param('lastchanged', $addquestion);
     redirect($afteractionurl);
 }
@@ -114,12 +114,12 @@ if (optional_param('add', false, PARAM_BOOL) && confirm_sesskey()) {
     foreach ($rawdata as $key => $value) { // Parse input for question ids.
         if (preg_match('!^q([0-9]+)$!', $key, $matches)) {
             $key = $matches[1];
-            quiz_require_question_use($key);
-            quiz_add_quiz_question($key, $quiz, $addonpage);
+            hippotrack_require_question_use($key);
+            hippotrack_add_hippotrack_question($key, $quiz, $addonpage);
         }
     }
-    quiz_delete_previews($quiz);
-    quiz_update_sumgrades($quiz);
+    hippotrack_delete_previews($quiz);
+    hippotrack_update_sumgrades($quiz);
     redirect($afteractionurl);
 }
 
@@ -127,7 +127,7 @@ if ($addsectionatpage = optional_param('addsectionatpage', false, PARAM_INT)) {
     // Add a section to the quiz.
     $structure->check_can_be_edited();
     $structure->add_section_heading($addsectionatpage);
-    quiz_delete_previews($quiz);
+    hippotrack_delete_previews($quiz);
     redirect($afteractionurl);
 }
 
@@ -138,10 +138,10 @@ if ((optional_param('addrandom', false, PARAM_BOOL)) && confirm_sesskey()) {
     $addonpage = optional_param('addonpage', 0, PARAM_INT);
     $categoryid = required_param('categoryid', PARAM_INT);
     $randomcount = required_param('randomcount', PARAM_INT);
-    quiz_add_random_questions($quiz, $addonpage, $categoryid, $randomcount, $recurse);
+    hippotrack_add_random_questions($quiz, $addonpage, $categoryid, $randomcount, $recurse);
 
-    quiz_delete_previews($quiz);
-    quiz_update_sumgrades($quiz);
+    hippotrack_delete_previews($quiz);
+    hippotrack_update_sumgrades($quiz);
     redirect($afteractionurl);
 }
 
@@ -150,9 +150,9 @@ if (optional_param('savechanges', false, PARAM_BOOL) && confirm_sesskey()) {
     // If rescaling is required save the new maximum.
     $maxgrade = unformat_float(optional_param('maxgrade', '', PARAM_RAW_TRIMMED), true);
     if (is_float($maxgrade) && $maxgrade >= 0) {
-        quiz_set_grade($maxgrade, $quiz);
-        quiz_update_all_final_grades($quiz);
-        quiz_update_grades($quiz, 0, true);
+        hippotrack_set_grade($maxgrade, $quiz);
+        hippotrack_update_all_final_grades($quiz);
+        hippotrack_update_grades($quiz, 0, true);
     }
 
     redirect($afteractionurl);
@@ -170,7 +170,7 @@ $event->trigger();
 
 // Get the question bank view.
 $questionbank = new mod_hippotrack\question\bank\custom_view($contexts, $thispageurl, $course, $cm, $quiz);
-$questionbank->set_quiz_has_attempts($quizhasattempts);
+$questionbank->set_hippotrack_has_attempts($quizhasattempts);
 
 // End of process commands =====================================================.
 
@@ -194,14 +194,14 @@ $quizeditconfig->url = $thispageurl->out(true, array('qbanktool' => '0'));
 $quizeditconfig->dialoglisteners = array();
 $numberoflisteners = $DB->get_field_sql("
     SELECT COALESCE(MAX(page), 1)
-      FROM {quiz_slots}
+      FROM {hippotrack_slots}
      WHERE quizid = ?", array($quiz->id));
 
 for ($pageiter = 1; $pageiter <= $numberoflisteners; $pageiter++) {
     $quizeditconfig->dialoglisteners[] = 'addrandomdialoglaunch_' . $pageiter;
 }
 
-$PAGE->requires->data_for_js('quiz_edit_config', $quizeditconfig);
+$PAGE->requires->data_for_js('hippotrack_edit_config', $quizeditconfig);
 $PAGE->requires->js('/question/qengine.js');
 
 // Questions wrapper start.

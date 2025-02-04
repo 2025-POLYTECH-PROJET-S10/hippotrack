@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the renderer for the quiz_grading module.
+ * Defines the renderer for the hippotrack_grading module.
  *
- * @package   quiz_grading
+ * @package   hippotrack_grading
  * @copyright 2018 Huong Nguyen <huongnv13@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 /**
- * The renderer for the quiz_grading module.
+ * The renderer for the hippotrack_grading module.
  *
  * @copyright  2018 Huong Nguyen <huongnv13@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_grading_renderer extends plugin_renderer_base {
+class hippotrack_grading_renderer extends plugin_renderer_base {
 
     /**
      * Render no question notification.
@@ -38,8 +38,8 @@ class quiz_grading_renderer extends plugin_renderer_base {
      * @param object $context The quiz context.
      * @return string The HTML for the no questions message.
      */
-    public function render_quiz_no_question_notification($quiz, $cm, $context) {
-        return quiz_no_questions_message($quiz, $cm, $context);
+    public function render_hippotrack_no_question_notification($quiz, $cm, $context) {
+        return hippotrack_no_questions_message($quiz, $cm, $context);
     }
 
     /**
@@ -47,8 +47,8 @@ class quiz_grading_renderer extends plugin_renderer_base {
      *
      * @throws coding_exception
      */
-    public function render_quiz_no_grade_question_notification() {
-        return $this->notification(get_string('nothingfound', 'quiz_grading'));
+    public function render_hippotrack_no_grade_question_notification() {
+        return $this->notification(get_string('nothingfound', 'hippotrack_grading'));
     }
 
     /**
@@ -62,7 +62,7 @@ class quiz_grading_renderer extends plugin_renderer_base {
     public function render_display_index_heading($linktext, $listquestionurl) {
         $output = '';
 
-        $output .= $this->heading(get_string('questionsthatneedgrading', 'quiz_grading'), 3);
+        $output .= $this->heading(get_string('questionsthatneedgrading', 'hippotrack_grading'), 3);
         $output .= html_writer::tag('p', html_writer::link($listquestionurl, $linktext), ['class' => 'toggleincludeauto']);
 
         return $output;
@@ -79,7 +79,7 @@ class quiz_grading_renderer extends plugin_renderer_base {
      */
     public function render_questions_table($includeauto, $data, $header) {
         if (empty($data)) {
-            return $this->render_quiz_no_grade_question_notification();
+            return $this->render_hippotrack_no_grade_question_notification();
         }
         $output = '';
 
@@ -109,7 +109,7 @@ class quiz_grading_renderer extends plugin_renderer_base {
         if ($counts->$type > 0) {
             $output .= ' ' . html_writer::link(
                             $gradequestionurl,
-                            get_string($gradestring, 'quiz_grading'),
+                            get_string($gradestring, 'hippotrack_grading'),
                             ['class' => 'gradetheselink']);
         }
         return $output;
@@ -120,7 +120,7 @@ class quiz_grading_renderer extends plugin_renderer_base {
      *
      * @param object $questioninfo Information of a question.
      * @param moodle_url $listquestionsurl Url of the page that list all questions.
-     * @param quiz_grading_settings_form $filterform Question filter form.
+     * @param hippotrack_grading_settings_form $filterform Question filter form.
      * @param object $paginginfo Pagination information.
      * @param object $pagingbar Pagination bar information.
      * @param moodle_url $formaction Form submit url.
@@ -136,15 +136,15 @@ class quiz_grading_renderer extends plugin_renderer_base {
 
         $output .= question_engine::initialise_js();
 
-        $output .= $this->heading(get_string('gradingquestionx', 'quiz_grading', $questioninfo), 3);
+        $output .= $this->heading(get_string('gradingquestionx', 'hippotrack_grading', $questioninfo), 3);
 
         $output .= html_writer::tag('p', html_writer::link($listquestionsurl,
-                get_string('backtothelistofquestions', 'quiz_grading')),
+                get_string('backtothelistofquestions', 'hippotrack_grading')),
                 ['class' => 'mdl-align']);
 
         $output .= $filterform->render();
 
-        $output .= $this->heading(get_string('gradingattemptsxtoyofz', 'quiz_grading', $paginginfo), 3);
+        $output .= $this->heading(get_string('gradingattemptsxtoyofz', 'hippotrack_grading', $paginginfo), 3);
 
         $output .= $this->render_paging_bar($pagingbar);
 
@@ -162,7 +162,7 @@ class quiz_grading_renderer extends plugin_renderer_base {
         $output .= html_writer::tag('div', html_writer::empty_tag('input', [
                 'type' => 'submit',
                 'class' => 'btn btn-primary',
-                'value' => get_string('saveandnext', 'quiz_grading')
+                'value' => get_string('saveandnext', 'hippotrack_grading')
         ]), ['class' => 'mdl-align']);
         $output .= html_writer::end_tag('div') . html_writer::end_tag('form');
 

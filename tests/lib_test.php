@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Unit tests for (some of) mod/quiz/locallib.php.
+ * Unit tests for (some of) mod/hippotrack/locallib.php.
  *
  * @package    mod_hippotrack
  * @category   test
@@ -25,77 +25,77 @@
 namespace mod_hippotrack;
 
 use quiz;
-use quiz_attempt;
+use hippotrack_attempt;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/lib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/lib.php');
 
 /**
  * @copyright  2008 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU Public License
  */
 class lib_test extends \advanced_testcase {
-    public function test_quiz_has_grades() {
+    public function test_hippotrack_has_grades() {
         $quiz = new \stdClass();
         $quiz->grade = '100.0000';
         $quiz->sumgrades = '100.0000';
-        $this->assertTrue(quiz_has_grades($quiz));
+        $this->assertTrue(hippotrack_has_grades($quiz));
         $quiz->sumgrades = '0.0000';
-        $this->assertFalse(quiz_has_grades($quiz));
+        $this->assertFalse(hippotrack_has_grades($quiz));
         $quiz->grade = '0.0000';
-        $this->assertFalse(quiz_has_grades($quiz));
+        $this->assertFalse(hippotrack_has_grades($quiz));
         $quiz->sumgrades = '100.0000';
-        $this->assertFalse(quiz_has_grades($quiz));
+        $this->assertFalse(hippotrack_has_grades($quiz));
     }
 
-    public function test_quiz_format_grade() {
+    public function test_hippotrack_format_grade() {
         $quiz = new \stdClass();
         $quiz->decimalpoints = 2;
-        $this->assertEquals(quiz_format_grade($quiz, 0.12345678), format_float(0.12, 2));
-        $this->assertEquals(quiz_format_grade($quiz, 0), format_float(0, 2));
-        $this->assertEquals(quiz_format_grade($quiz, 1.000000000000), format_float(1, 2));
+        $this->assertEquals(hippotrack_format_grade($quiz, 0.12345678), format_float(0.12, 2));
+        $this->assertEquals(hippotrack_format_grade($quiz, 0), format_float(0, 2));
+        $this->assertEquals(hippotrack_format_grade($quiz, 1.000000000000), format_float(1, 2));
         $quiz->decimalpoints = 0;
-        $this->assertEquals(quiz_format_grade($quiz, 0.12345678), '0');
+        $this->assertEquals(hippotrack_format_grade($quiz, 0.12345678), '0');
     }
 
-    public function test_quiz_get_grade_format() {
+    public function test_hippotrack_get_grade_format() {
         $quiz = new \stdClass();
         $quiz->decimalpoints = 2;
-        $this->assertEquals(quiz_get_grade_format($quiz), 2);
+        $this->assertEquals(hippotrack_get_grade_format($quiz), 2);
         $this->assertEquals($quiz->questiondecimalpoints, -1);
         $quiz->questiondecimalpoints = 2;
-        $this->assertEquals(quiz_get_grade_format($quiz), 2);
+        $this->assertEquals(hippotrack_get_grade_format($quiz), 2);
         $quiz->decimalpoints = 3;
         $quiz->questiondecimalpoints = -1;
-        $this->assertEquals(quiz_get_grade_format($quiz), 3);
+        $this->assertEquals(hippotrack_get_grade_format($quiz), 3);
         $quiz->questiondecimalpoints = 4;
-        $this->assertEquals(quiz_get_grade_format($quiz), 4);
+        $this->assertEquals(hippotrack_get_grade_format($quiz), 4);
     }
 
-    public function test_quiz_format_question_grade() {
+    public function test_hippotrack_format_question_grade() {
         $quiz = new \stdClass();
         $quiz->decimalpoints = 2;
         $quiz->questiondecimalpoints = 2;
-        $this->assertEquals(quiz_format_question_grade($quiz, 0.12345678), format_float(0.12, 2));
-        $this->assertEquals(quiz_format_question_grade($quiz, 0), format_float(0, 2));
-        $this->assertEquals(quiz_format_question_grade($quiz, 1.000000000000), format_float(1, 2));
+        $this->assertEquals(hippotrack_format_question_grade($quiz, 0.12345678), format_float(0.12, 2));
+        $this->assertEquals(hippotrack_format_question_grade($quiz, 0), format_float(0, 2));
+        $this->assertEquals(hippotrack_format_question_grade($quiz, 1.000000000000), format_float(1, 2));
         $quiz->decimalpoints = 3;
         $quiz->questiondecimalpoints = -1;
-        $this->assertEquals(quiz_format_question_grade($quiz, 0.12345678), format_float(0.123, 3));
-        $this->assertEquals(quiz_format_question_grade($quiz, 0), format_float(0, 3));
-        $this->assertEquals(quiz_format_question_grade($quiz, 1.000000000000), format_float(1, 3));
+        $this->assertEquals(hippotrack_format_question_grade($quiz, 0.12345678), format_float(0.123, 3));
+        $this->assertEquals(hippotrack_format_question_grade($quiz, 0), format_float(0, 3));
+        $this->assertEquals(hippotrack_format_question_grade($quiz, 1.000000000000), format_float(1, 3));
         $quiz->questiondecimalpoints = 4;
-        $this->assertEquals(quiz_format_question_grade($quiz, 0.12345678), format_float(0.1235, 4));
-        $this->assertEquals(quiz_format_question_grade($quiz, 0), format_float(0, 4));
-        $this->assertEquals(quiz_format_question_grade($quiz, 1.000000000000), format_float(1, 4));
+        $this->assertEquals(hippotrack_format_question_grade($quiz, 0.12345678), format_float(0.1235, 4));
+        $this->assertEquals(hippotrack_format_question_grade($quiz, 0), format_float(0, 4));
+        $this->assertEquals(hippotrack_format_question_grade($quiz, 1.000000000000), format_float(1, 4));
     }
 
     /**
      * Test deleting a quiz instance.
      */
-    public function test_quiz_delete_instance() {
+    public function test_hippotrack_delete_instance() {
         global $SITE, $DB;
         $this->resetAfterTest(true);
         $this->setAdminUser();
@@ -108,13 +108,13 @@ class lib_test extends \advanced_testcase {
         $cat = $questiongenerator->create_question_category();
         $standardq = $questiongenerator->create_question('shortanswer', null, array('category' => $cat->id));
 
-        quiz_add_quiz_question($standardq->id, $quiz);
-        quiz_add_random_questions($quiz, 0, $cat->id, 1, false);
+        hippotrack_add_hippotrack_question($standardq->id, $quiz);
+        hippotrack_add_random_questions($quiz, 0, $cat->id, 1, false);
 
         // Get the random question.
         $randomq = $DB->get_record('question', array('qtype' => 'random'));
 
-        quiz_delete_instance($quiz->id);
+        hippotrack_delete_instance($quiz->id);
 
         // Check that the random question was deleted.
         if ($randomq) {
@@ -126,7 +126,7 @@ class lib_test extends \advanced_testcase {
         $this->assertEquals(1, $count);
 
         // Check that all the slots were removed.
-        $count = $DB->count_records('quiz_slots', array('quizid' => $quiz->id));
+        $count = $DB->count_records('hippotrack_slots', array('quizid' => $quiz->id));
         $this->assertEquals(0, $count);
 
         // Check that the quiz was removed.
@@ -135,13 +135,13 @@ class lib_test extends \advanced_testcase {
     }
 
     /**
-     * Setup function for all test_quiz_get_completion_state_* tests.
+     * Setup function for all test_hippotrack_get_completion_state_* tests.
      *
      * @param array $completionoptions ['nbstudents'] => int, ['qtype'] => string, ['quizoptions'] => array
      * @throws dml_exception
      * @return array [$course, $students, $quiz, $cm]
      */
-    private function setup_quiz_for_testing_completion(array $completionoptions) {
+    private function setup_hippotrack_for_testing_completion(array $completionoptions) {
         global $CFG, $DB;
 
         $this->resetAfterTest(true);
@@ -175,7 +175,7 @@ class lib_test extends \advanced_testcase {
 
         $cat = $questiongenerator->create_question_category();
         $question = $questiongenerator->create_question($completionoptions['qtype'], null, ['category' => $cat->id]);
-        quiz_add_quiz_question($question->id, $quiz);
+        hippotrack_add_hippotrack_question($question->id, $quiz);
 
         // Set grade to pass.
         $item = \grade_item::fetch(['courseid' => $course->id, 'itemtype' => 'mod', 'itemmodule' => 'quiz',
@@ -192,7 +192,7 @@ class lib_test extends \advanced_testcase {
     }
 
     /**
-     * Helper function for all test_quiz_get_completion_state_* tests.
+     * Helper function for all test_hippotrack_get_completion_state_* tests.
      * Starts an attempt, processes responses and finishes the attempt.
      *
      * @param $attemptoptions ['quiz'] => object, ['student'] => object, ['tosubmit'] => array, ['attemptnumber'] => int
@@ -205,17 +205,17 @@ class lib_test extends \advanced_testcase {
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         $timenow = time();
-        $attempt = quiz_create_attempt($quizobj, $attemptoptions['attemptnumber'], false, $timenow, false,
+        $attempt = hippotrack_create_attempt($quizobj, $attemptoptions['attemptnumber'], false, $timenow, false,
             $attemptoptions['student']->id);
-        quiz_start_new_attempt($quizobj, $quba, $attempt, $attemptoptions['attemptnumber'], $timenow);
-        quiz_attempt_save_started($quizobj, $quba, $attempt);
+        hippotrack_start_new_attempt($quizobj, $quba, $attempt, $attemptoptions['attemptnumber'], $timenow);
+        hippotrack_attempt_save_started($quizobj, $quba, $attempt);
 
         // Process responses from the student.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_submitted_actions($timenow, false, $attemptoptions['tosubmit']);
 
         // Finish the attempt.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $this->assertTrue($attemptobj->has_response_to_at_least_one_graded_question());
         $attemptobj->process_finish($timenow, false);
     }
@@ -224,9 +224,9 @@ class lib_test extends \advanced_testcase {
      * Test checking the completion state of a quiz.
      * The quiz requires a passing grade to be completed.
      */
-    public function test_quiz_get_completion_state_completionpass() {
+    public function test_hippotrack_get_completion_state_completionpass() {
 
-        list($course, $students, $quiz, $cm) = $this->setup_quiz_for_testing_completion([
+        list($course, $students, $quiz, $cm) = $this->setup_hippotrack_for_testing_completion([
             'nbstudents' => 2,
             'qtype' => 'numerical',
             'quizoptions' => [
@@ -246,7 +246,7 @@ class lib_test extends \advanced_testcase {
         ]);
 
         // Check the results.
-        $this->assertTrue(quiz_get_completion_state($course, $cm, $passstudent->id, 'return'));
+        $this->assertTrue(hippotrack_get_completion_state($course, $cm, $passstudent->id, 'return'));
 
         // Do a failing attempt.
         $this->do_attempt_quiz([
@@ -257,12 +257,12 @@ class lib_test extends \advanced_testcase {
         ]);
 
         // Check the results.
-        $this->assertFalse(quiz_get_completion_state($course, $cm, $failstudent->id, 'return'));
+        $this->assertFalse(hippotrack_get_completion_state($course, $cm, $failstudent->id, 'return'));
 
         $this->assertDebuggingCalledCount(3, [
-            'quiz_completion_check_passing_grade_or_all_attempts has been deprecated.',
-            'quiz_completion_check_min_attempts has been deprecated.',
-            'quiz_completion_check_passing_grade_or_all_attempts has been deprecated.',
+            'hippotrack_completion_check_passing_grade_or_all_attempts has been deprecated.',
+            'hippotrack_completion_check_min_attempts has been deprecated.',
+            'hippotrack_completion_check_passing_grade_or_all_attempts has been deprecated.',
         ]);
     }
 
@@ -270,9 +270,9 @@ class lib_test extends \advanced_testcase {
      * Test checking the completion state of a quiz.
      * To be completed, this quiz requires either a passing grade or for all attempts to be used up.
      */
-    public function test_quiz_get_completion_state_completionexhausted() {
+    public function test_hippotrack_get_completion_state_completionexhausted() {
 
-        list($course, $students, $quiz, $cm) = $this->setup_quiz_for_testing_completion([
+        list($course, $students, $quiz, $cm) = $this->setup_hippotrack_for_testing_completion([
             'nbstudents' => 2,
             'qtype' => 'numerical',
             'quizoptions' => [
@@ -294,7 +294,7 @@ class lib_test extends \advanced_testcase {
         ]);
 
         // Check the results. Quiz is completed by $passstudent because of passing grade.
-        $this->assertTrue(quiz_get_completion_state($course, $cm, $passstudent->id, 'return'));
+        $this->assertTrue(hippotrack_get_completion_state($course, $cm, $passstudent->id, 'return'));
 
         // Do a failing attempt.
         $this->do_attempt_quiz([
@@ -305,7 +305,7 @@ class lib_test extends \advanced_testcase {
         ]);
 
         // Check the results. Quiz is not completed by $exhauststudent yet because of failing grade and of remaining attempts.
-        $this->assertFalse(quiz_get_completion_state($course, $cm, $exhauststudent->id, 'return'));
+        $this->assertFalse(hippotrack_get_completion_state($course, $cm, $exhauststudent->id, 'return'));
 
         // Do a second failing attempt.
         $this->do_attempt_quiz([
@@ -316,14 +316,14 @@ class lib_test extends \advanced_testcase {
         ]);
 
         // Check the results. Quiz is completed by $exhauststudent because there are no remaining attempts.
-        $this->assertTrue(quiz_get_completion_state($course, $cm, $exhauststudent->id, 'return'));
+        $this->assertTrue(hippotrack_get_completion_state($course, $cm, $exhauststudent->id, 'return'));
 
         $this->assertDebuggingCalledCount(5, [
-            'quiz_completion_check_passing_grade_or_all_attempts has been deprecated.',
-            'quiz_completion_check_min_attempts has been deprecated.',
-            'quiz_completion_check_passing_grade_or_all_attempts has been deprecated.',
-            'quiz_completion_check_passing_grade_or_all_attempts has been deprecated.',
-            'quiz_completion_check_min_attempts has been deprecated.',
+            'hippotrack_completion_check_passing_grade_or_all_attempts has been deprecated.',
+            'hippotrack_completion_check_min_attempts has been deprecated.',
+            'hippotrack_completion_check_passing_grade_or_all_attempts has been deprecated.',
+            'hippotrack_completion_check_passing_grade_or_all_attempts has been deprecated.',
+            'hippotrack_completion_check_min_attempts has been deprecated.',
         ]);
     }
 
@@ -331,9 +331,9 @@ class lib_test extends \advanced_testcase {
      * Test checking the completion state of a quiz.
      * To be completed, this quiz requires a minimum number of attempts.
      */
-    public function test_quiz_get_completion_state_completionminattempts() {
+    public function test_hippotrack_get_completion_state_completionminattempts() {
 
-        list($course, $students, $quiz, $cm) = $this->setup_quiz_for_testing_completion([
+        list($course, $students, $quiz, $cm) = $this->setup_hippotrack_for_testing_completion([
             'nbstudents' => 1,
             'qtype' => 'essay',
             'quizoptions' => [
@@ -353,7 +353,7 @@ class lib_test extends \advanced_testcase {
         ]);
 
         // Check the results. Quiz is not completed yet because only one attempt was done.
-        $this->assertFalse(quiz_get_completion_state($course, $cm, $student->id, 'return'));
+        $this->assertFalse(hippotrack_get_completion_state($course, $cm, $student->id, 'return'));
 
         // Do a second attempt.
         $this->do_attempt_quiz([
@@ -364,13 +364,13 @@ class lib_test extends \advanced_testcase {
         ]);
 
         // Check the results. Quiz is completed by $student because two attempts were done.
-        $this->assertTrue(quiz_get_completion_state($course, $cm, $student->id, 'return'));
+        $this->assertTrue(hippotrack_get_completion_state($course, $cm, $student->id, 'return'));
 
         $this->assertDebuggingCalledCount(4, [
-            'quiz_completion_check_passing_grade_or_all_attempts has been deprecated.',
-            'quiz_completion_check_min_attempts has been deprecated.',
-            'quiz_completion_check_passing_grade_or_all_attempts has been deprecated.',
-            'quiz_completion_check_min_attempts has been deprecated.',
+            'hippotrack_completion_check_passing_grade_or_all_attempts has been deprecated.',
+            'hippotrack_completion_check_min_attempts has been deprecated.',
+            'hippotrack_completion_check_passing_grade_or_all_attempts has been deprecated.',
+            'hippotrack_completion_check_min_attempts has been deprecated.',
         ]);
     }
 
@@ -380,9 +380,9 @@ class lib_test extends \advanced_testcase {
      * This is somewhat of an edge case as it is hard to imagine a scenario in which these precise settings are useful.
      * Nevertheless, this test makes sure these settings interact as intended.
      */
-    public function  test_quiz_get_completion_state_completionminattempts_pass() {
+    public function  test_hippotrack_get_completion_state_completionminattempts_pass() {
 
-        list($course, $students, $quiz, $cm) = $this->setup_quiz_for_testing_completion([
+        list($course, $students, $quiz, $cm) = $this->setup_hippotrack_for_testing_completion([
             'nbstudents' => 1,
             'qtype' => 'numerical',
             'quizoptions' => [
@@ -406,7 +406,7 @@ class lib_test extends \advanced_testcase {
 
         // Check the results. Even though one requirement is met (passing grade) quiz is not completed yet because only
         // one attempt was done.
-        $this->assertFalse(quiz_get_completion_state($course, $cm, $student->id, 'return'));
+        $this->assertFalse(hippotrack_get_completion_state($course, $cm, $student->id, 'return'));
 
         // Start a second attempt.
         $this->do_attempt_quiz([
@@ -417,17 +417,17 @@ class lib_test extends \advanced_testcase {
         ]);
 
         // Check the results. Quiz is completed by $student because two attempts were done AND a passing grade was obtained.
-        $this->assertTrue(quiz_get_completion_state($course, $cm, $student->id, 'return'));
+        $this->assertTrue(hippotrack_get_completion_state($course, $cm, $student->id, 'return'));
 
         $this->assertDebuggingCalledCount(4, [
-            'quiz_completion_check_passing_grade_or_all_attempts has been deprecated.',
-            'quiz_completion_check_min_attempts has been deprecated.',
-            'quiz_completion_check_passing_grade_or_all_attempts has been deprecated.',
-            'quiz_completion_check_min_attempts has been deprecated.',
+            'hippotrack_completion_check_passing_grade_or_all_attempts has been deprecated.',
+            'hippotrack_completion_check_min_attempts has been deprecated.',
+            'hippotrack_completion_check_passing_grade_or_all_attempts has been deprecated.',
+            'hippotrack_completion_check_min_attempts has been deprecated.',
         ]);
     }
 
-    public function test_quiz_get_user_attempts() {
+    public function test_hippotrack_get_user_attempts() {
         global $DB;
         $this->resetAfterTest();
 
@@ -452,8 +452,8 @@ class lib_test extends \advanced_testcase {
         $questgen = $dg->get_plugin_generator('core_question');
         $quizcat = $questgen->create_question_category();
         $question = $questgen->create_question('numerical', null, ['category' => $quizcat->id]);
-        quiz_add_quiz_question($question->id, $quiz1);
-        quiz_add_quiz_question($question->id, $quiz2);
+        hippotrack_add_hippotrack_question($question->id, $quiz1);
+        hippotrack_add_hippotrack_question($question->id, $quiz2);
 
         $quizobj1a = quiz::create($quiz1->id, $u1->id);
         $quizobj1b = quiz::create($quiz1->id, $u2->id);
@@ -476,182 +476,182 @@ class lib_test extends \advanced_testcase {
         $timenow = time();
 
         // User 1 passes quiz 1.
-        $attempt = quiz_create_attempt($quizobj1a, 1, false, $timenow, false, $u1->id);
-        quiz_start_new_attempt($quizobj1a, $quba1a, $attempt, 1, $timenow);
-        quiz_attempt_save_started($quizobj1a, $quba1a, $attempt);
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attempt = hippotrack_create_attempt($quizobj1a, 1, false, $timenow, false, $u1->id);
+        hippotrack_start_new_attempt($quizobj1a, $quba1a, $attempt, 1, $timenow);
+        hippotrack_attempt_save_started($quizobj1a, $quba1a, $attempt);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_submitted_actions($timenow, false, [1 => ['answer' => '3.14']]);
         $attemptobj->process_finish($timenow, false);
 
         // User 2 goes overdue in quiz 1.
-        $attempt = quiz_create_attempt($quizobj1b, 1, false, $timenow, false, $u2->id);
-        quiz_start_new_attempt($quizobj1b, $quba1b, $attempt, 1, $timenow);
-        quiz_attempt_save_started($quizobj1b, $quba1b, $attempt);
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attempt = hippotrack_create_attempt($quizobj1b, 1, false, $timenow, false, $u2->id);
+        hippotrack_start_new_attempt($quizobj1b, $quba1b, $attempt, 1, $timenow);
+        hippotrack_attempt_save_started($quizobj1b, $quba1b, $attempt);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_going_overdue($timenow, true);
 
         // User 3 does not finish quiz 1.
-        $attempt = quiz_create_attempt($quizobj1c, 1, false, $timenow, false, $u3->id);
-        quiz_start_new_attempt($quizobj1c, $quba1c, $attempt, 1, $timenow);
-        quiz_attempt_save_started($quizobj1c, $quba1c, $attempt);
+        $attempt = hippotrack_create_attempt($quizobj1c, 1, false, $timenow, false, $u3->id);
+        hippotrack_start_new_attempt($quizobj1c, $quba1c, $attempt, 1, $timenow);
+        hippotrack_attempt_save_started($quizobj1c, $quba1c, $attempt);
 
         // User 4 abandons the quiz 1.
-        $attempt = quiz_create_attempt($quizobj1d, 1, false, $timenow, false, $u4->id);
-        quiz_start_new_attempt($quizobj1d, $quba1d, $attempt, 1, $timenow);
-        quiz_attempt_save_started($quizobj1d, $quba1d, $attempt);
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attempt = hippotrack_create_attempt($quizobj1d, 1, false, $timenow, false, $u4->id);
+        hippotrack_start_new_attempt($quizobj1d, $quba1d, $attempt, 1, $timenow);
+        hippotrack_attempt_save_started($quizobj1d, $quba1d, $attempt);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_abandon($timenow, true);
 
         // User 1 attempts the quiz three times (abandon, finish, in progress).
         $quba2a = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj2a->get_context());
         $quba2a->set_preferred_behaviour($quizobj2a->get_quiz()->preferredbehaviour);
 
-        $attempt = quiz_create_attempt($quizobj2a, 1, false, $timenow, false, $u1->id);
-        quiz_start_new_attempt($quizobj2a, $quba2a, $attempt, 1, $timenow);
-        quiz_attempt_save_started($quizobj2a, $quba2a, $attempt);
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attempt = hippotrack_create_attempt($quizobj2a, 1, false, $timenow, false, $u1->id);
+        hippotrack_start_new_attempt($quizobj2a, $quba2a, $attempt, 1, $timenow);
+        hippotrack_attempt_save_started($quizobj2a, $quba2a, $attempt);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_abandon($timenow, true);
 
         $quba2a = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj2a->get_context());
         $quba2a->set_preferred_behaviour($quizobj2a->get_quiz()->preferredbehaviour);
 
-        $attempt = quiz_create_attempt($quizobj2a, 2, false, $timenow, false, $u1->id);
-        quiz_start_new_attempt($quizobj2a, $quba2a, $attempt, 2, $timenow);
-        quiz_attempt_save_started($quizobj2a, $quba2a, $attempt);
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attempt = hippotrack_create_attempt($quizobj2a, 2, false, $timenow, false, $u1->id);
+        hippotrack_start_new_attempt($quizobj2a, $quba2a, $attempt, 2, $timenow);
+        hippotrack_attempt_save_started($quizobj2a, $quba2a, $attempt);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_finish($timenow, false);
 
         $quba2a = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj2a->get_context());
         $quba2a->set_preferred_behaviour($quizobj2a->get_quiz()->preferredbehaviour);
 
-        $attempt = quiz_create_attempt($quizobj2a, 3, false, $timenow, false, $u1->id);
-        quiz_start_new_attempt($quizobj2a, $quba2a, $attempt, 3, $timenow);
-        quiz_attempt_save_started($quizobj2a, $quba2a, $attempt);
+        $attempt = hippotrack_create_attempt($quizobj2a, 3, false, $timenow, false, $u1->id);
+        hippotrack_start_new_attempt($quizobj2a, $quba2a, $attempt, 3, $timenow);
+        hippotrack_attempt_save_started($quizobj2a, $quba2a, $attempt);
 
         // Check for user 1.
-        $attempts = quiz_get_user_attempts($quiz1->id, $u1->id, 'all');
+        $attempts = hippotrack_get_user_attempts($quiz1->id, $u1->id, 'all');
         $this->assertCount(1, $attempts);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::FINISHED, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::FINISHED, $attempt->state);
         $this->assertEquals($u1->id, $attempt->userid);
         $this->assertEquals($quiz1->id, $attempt->quiz);
 
-        $attempts = quiz_get_user_attempts($quiz1->id, $u1->id, 'finished');
+        $attempts = hippotrack_get_user_attempts($quiz1->id, $u1->id, 'finished');
         $this->assertCount(1, $attempts);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::FINISHED, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::FINISHED, $attempt->state);
         $this->assertEquals($u1->id, $attempt->userid);
         $this->assertEquals($quiz1->id, $attempt->quiz);
 
-        $attempts = quiz_get_user_attempts($quiz1->id, $u1->id, 'unfinished');
+        $attempts = hippotrack_get_user_attempts($quiz1->id, $u1->id, 'unfinished');
         $this->assertCount(0, $attempts);
 
         // Check for user 2.
-        $attempts = quiz_get_user_attempts($quiz1->id, $u2->id, 'all');
+        $attempts = hippotrack_get_user_attempts($quiz1->id, $u2->id, 'all');
         $this->assertCount(1, $attempts);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::OVERDUE, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::OVERDUE, $attempt->state);
         $this->assertEquals($u2->id, $attempt->userid);
         $this->assertEquals($quiz1->id, $attempt->quiz);
 
-        $attempts = quiz_get_user_attempts($quiz1->id, $u2->id, 'finished');
+        $attempts = hippotrack_get_user_attempts($quiz1->id, $u2->id, 'finished');
         $this->assertCount(0, $attempts);
 
-        $attempts = quiz_get_user_attempts($quiz1->id, $u2->id, 'unfinished');
+        $attempts = hippotrack_get_user_attempts($quiz1->id, $u2->id, 'unfinished');
         $this->assertCount(1, $attempts);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::OVERDUE, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::OVERDUE, $attempt->state);
         $this->assertEquals($u2->id, $attempt->userid);
         $this->assertEquals($quiz1->id, $attempt->quiz);
 
         // Check for user 3.
-        $attempts = quiz_get_user_attempts($quiz1->id, $u3->id, 'all');
+        $attempts = hippotrack_get_user_attempts($quiz1->id, $u3->id, 'all');
         $this->assertCount(1, $attempts);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::IN_PROGRESS, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::IN_PROGRESS, $attempt->state);
         $this->assertEquals($u3->id, $attempt->userid);
         $this->assertEquals($quiz1->id, $attempt->quiz);
 
-        $attempts = quiz_get_user_attempts($quiz1->id, $u3->id, 'finished');
+        $attempts = hippotrack_get_user_attempts($quiz1->id, $u3->id, 'finished');
         $this->assertCount(0, $attempts);
 
-        $attempts = quiz_get_user_attempts($quiz1->id, $u3->id, 'unfinished');
+        $attempts = hippotrack_get_user_attempts($quiz1->id, $u3->id, 'unfinished');
         $this->assertCount(1, $attempts);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::IN_PROGRESS, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::IN_PROGRESS, $attempt->state);
         $this->assertEquals($u3->id, $attempt->userid);
         $this->assertEquals($quiz1->id, $attempt->quiz);
 
         // Check for user 4.
-        $attempts = quiz_get_user_attempts($quiz1->id, $u4->id, 'all');
+        $attempts = hippotrack_get_user_attempts($quiz1->id, $u4->id, 'all');
         $this->assertCount(1, $attempts);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::ABANDONED, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::ABANDONED, $attempt->state);
         $this->assertEquals($u4->id, $attempt->userid);
         $this->assertEquals($quiz1->id, $attempt->quiz);
 
-        $attempts = quiz_get_user_attempts($quiz1->id, $u4->id, 'finished');
+        $attempts = hippotrack_get_user_attempts($quiz1->id, $u4->id, 'finished');
         $this->assertCount(1, $attempts);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::ABANDONED, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::ABANDONED, $attempt->state);
         $this->assertEquals($u4->id, $attempt->userid);
         $this->assertEquals($quiz1->id, $attempt->quiz);
 
-        $attempts = quiz_get_user_attempts($quiz1->id, $u4->id, 'unfinished');
+        $attempts = hippotrack_get_user_attempts($quiz1->id, $u4->id, 'unfinished');
         $this->assertCount(0, $attempts);
 
         // Multiple attempts for user 1 in quiz 2.
-        $attempts = quiz_get_user_attempts($quiz2->id, $u1->id, 'all');
+        $attempts = hippotrack_get_user_attempts($quiz2->id, $u1->id, 'all');
         $this->assertCount(3, $attempts);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::ABANDONED, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::ABANDONED, $attempt->state);
         $this->assertEquals($u1->id, $attempt->userid);
         $this->assertEquals($quiz2->id, $attempt->quiz);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::FINISHED, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::FINISHED, $attempt->state);
         $this->assertEquals($u1->id, $attempt->userid);
         $this->assertEquals($quiz2->id, $attempt->quiz);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::IN_PROGRESS, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::IN_PROGRESS, $attempt->state);
         $this->assertEquals($u1->id, $attempt->userid);
         $this->assertEquals($quiz2->id, $attempt->quiz);
 
-        $attempts = quiz_get_user_attempts($quiz2->id, $u1->id, 'finished');
+        $attempts = hippotrack_get_user_attempts($quiz2->id, $u1->id, 'finished');
         $this->assertCount(2, $attempts);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::ABANDONED, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::ABANDONED, $attempt->state);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::FINISHED, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::FINISHED, $attempt->state);
 
-        $attempts = quiz_get_user_attempts($quiz2->id, $u1->id, 'unfinished');
+        $attempts = hippotrack_get_user_attempts($quiz2->id, $u1->id, 'unfinished');
         $this->assertCount(1, $attempts);
         $attempt = array_shift($attempts);
 
         // Multiple quiz attempts fetched at once.
-        $attempts = quiz_get_user_attempts([$quiz1->id, $quiz2->id], $u1->id, 'all');
+        $attempts = hippotrack_get_user_attempts([$quiz1->id, $quiz2->id], $u1->id, 'all');
         $this->assertCount(4, $attempts);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::FINISHED, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::FINISHED, $attempt->state);
         $this->assertEquals($u1->id, $attempt->userid);
         $this->assertEquals($quiz1->id, $attempt->quiz);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::ABANDONED, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::ABANDONED, $attempt->state);
         $this->assertEquals($u1->id, $attempt->userid);
         $this->assertEquals($quiz2->id, $attempt->quiz);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::FINISHED, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::FINISHED, $attempt->state);
         $this->assertEquals($u1->id, $attempt->userid);
         $this->assertEquals($quiz2->id, $attempt->quiz);
         $attempt = array_shift($attempts);
-        $this->assertEquals(quiz_attempt::IN_PROGRESS, $attempt->state);
+        $this->assertEquals(hippotrack_attempt::IN_PROGRESS, $attempt->state);
         $this->assertEquals($u1->id, $attempt->userid);
         $this->assertEquals($quiz2->id, $attempt->quiz);
     }
 
     /**
-     * Test for quiz_get_group_override_priorities().
+     * Test for hippotrack_get_group_override_priorities().
      */
-    public function test_quiz_get_group_override_priorities() {
+    public function test_hippotrack_get_group_override_priorities() {
         global $DB;
         $this->resetAfterTest();
 
@@ -661,7 +661,7 @@ class lib_test extends \advanced_testcase {
 
         $quiz = $quizgen->create_instance(['course' => $course->id, 'sumgrades' => 2]);
 
-        $this->assertNull(quiz_get_group_override_priorities($quiz->id));
+        $this->assertNull(hippotrack_get_group_override_priorities($quiz->id));
 
         $group1 = $this->getDataGenerator()->create_group(array('courseid' => $course->id));
         $group2 = $this->getDataGenerator()->create_group(array('courseid' => $course->id));
@@ -673,7 +673,7 @@ class lib_test extends \advanced_testcase {
             'timeopen' => $now,
             'timeclose' => $now + 20
         ];
-        $DB->insert_record('quiz_overrides', $override1);
+        $DB->insert_record('hippotrack_overrides', $override1);
 
         $override2 = (object)[
             'quiz' => $quiz->id,
@@ -681,9 +681,9 @@ class lib_test extends \advanced_testcase {
             'timeopen' => $now - 10,
             'timeclose' => $now + 10
         ];
-        $DB->insert_record('quiz_overrides', $override2);
+        $DB->insert_record('hippotrack_overrides', $override2);
 
-        $priorities = quiz_get_group_override_priorities($quiz->id);
+        $priorities = hippotrack_get_group_override_priorities($quiz->id);
         $this->assertNotEmpty($priorities);
 
         $openpriorities = $priorities['open'];
@@ -697,7 +697,7 @@ class lib_test extends \advanced_testcase {
         $this->assertEquals(2, $closepriorities[$override2->timeclose]);
     }
 
-    public function test_quiz_core_calendar_provide_event_action_open() {
+    public function test_hippotrack_core_calendar_provide_event_action_open() {
         $this->resetAfterTest();
 
         $this->setAdminUser();
@@ -722,13 +722,13 @@ class lib_test extends \advanced_testcase {
 
         // Confirm the event was decorated.
         $this->assertInstanceOf('\core_calendar\local\event\value_objects\action', $actionevent);
-        $this->assertEquals(get_string('attemptquiznow', 'quiz'), $actionevent->get_name());
+        $this->assertEquals(get_string('attemptquiznow', 'hippotrack'), $actionevent->get_name());
         $this->assertInstanceOf('moodle_url', $actionevent->get_url());
         $this->assertEquals(1, $actionevent->get_item_count());
         $this->assertTrue($actionevent->is_actionable());
     }
 
-    public function test_quiz_core_calendar_provide_event_action_open_for_user() {
+    public function test_hippotrack_core_calendar_provide_event_action_open_for_user() {
         $this->resetAfterTest();
 
         $this->setAdminUser();
@@ -752,13 +752,13 @@ class lib_test extends \advanced_testcase {
 
         // Confirm the event was decorated.
         $this->assertInstanceOf('\core_calendar\local\event\value_objects\action', $actionevent);
-        $this->assertEquals(get_string('attemptquiznow', 'quiz'), $actionevent->get_name());
+        $this->assertEquals(get_string('attemptquiznow', 'hippotrack'), $actionevent->get_name());
         $this->assertInstanceOf('moodle_url', $actionevent->get_url());
         $this->assertEquals(1, $actionevent->get_item_count());
         $this->assertTrue($actionevent->is_actionable());
     }
 
-    public function test_quiz_core_calendar_provide_event_action_closed() {
+    public function test_hippotrack_core_calendar_provide_event_action_closed() {
         $this->resetAfterTest();
 
         $this->setAdminUser();
@@ -780,7 +780,7 @@ class lib_test extends \advanced_testcase {
         $this->assertNull(mod_hippotrack_core_calendar_provide_event_action($event, $factory));
     }
 
-    public function test_quiz_core_calendar_provide_event_action_closed_for_user() {
+    public function test_hippotrack_core_calendar_provide_event_action_closed_for_user() {
         $this->resetAfterTest();
 
         $this->setAdminUser();
@@ -805,7 +805,7 @@ class lib_test extends \advanced_testcase {
         $this->assertNull(mod_hippotrack_core_calendar_provide_event_action($event, $factory, $student->id));
     }
 
-    public function test_quiz_core_calendar_provide_event_action_open_in_future() {
+    public function test_hippotrack_core_calendar_provide_event_action_open_in_future() {
         $this->resetAfterTest();
 
         $this->setAdminUser();
@@ -830,13 +830,13 @@ class lib_test extends \advanced_testcase {
 
         // Confirm the event was decorated.
         $this->assertInstanceOf('\core_calendar\local\event\value_objects\action', $actionevent);
-        $this->assertEquals(get_string('attemptquiznow', 'quiz'), $actionevent->get_name());
+        $this->assertEquals(get_string('attemptquiznow', 'hippotrack'), $actionevent->get_name());
         $this->assertInstanceOf('moodle_url', $actionevent->get_url());
         $this->assertEquals(1, $actionevent->get_item_count());
         $this->assertFalse($actionevent->is_actionable());
     }
 
-    public function test_quiz_core_calendar_provide_event_action_open_in_future_for_user() {
+    public function test_hippotrack_core_calendar_provide_event_action_open_in_future_for_user() {
         $this->resetAfterTest();
 
         $this->setAdminUser();
@@ -860,13 +860,13 @@ class lib_test extends \advanced_testcase {
 
         // Confirm the event was decorated.
         $this->assertInstanceOf('\core_calendar\local\event\value_objects\action', $actionevent);
-        $this->assertEquals(get_string('attemptquiznow', 'quiz'), $actionevent->get_name());
+        $this->assertEquals(get_string('attemptquiznow', 'hippotrack'), $actionevent->get_name());
         $this->assertInstanceOf('moodle_url', $actionevent->get_url());
         $this->assertEquals(1, $actionevent->get_item_count());
         $this->assertFalse($actionevent->is_actionable());
     }
 
-    public function test_quiz_core_calendar_provide_event_action_no_capability() {
+    public function test_hippotrack_core_calendar_provide_event_action_no_capability() {
         global $DB;
 
         $this->resetAfterTest();
@@ -887,8 +887,8 @@ class lib_test extends \advanced_testcase {
 
         // Remove the permission to attempt or review the quiz for the student role.
         $coursecontext = \context_course::instance($course->id);
-        assign_capability('mod/quiz:reviewmyattempts', CAP_PROHIBIT, $studentrole->id, $coursecontext);
-        assign_capability('mod/quiz:attempt', CAP_PROHIBIT, $studentrole->id, $coursecontext);
+        assign_capability('mod/hippotrack:reviewmyattempts', CAP_PROHIBIT, $studentrole->id, $coursecontext);
+        assign_capability('mod/hippotrack:attempt', CAP_PROHIBIT, $studentrole->id, $coursecontext);
 
         // Create a calendar event.
         $event = $this->create_action_event($course->id, $quiz->id, QUIZ_EVENT_TYPE_OPEN);
@@ -903,7 +903,7 @@ class lib_test extends \advanced_testcase {
         $this->assertNull(mod_hippotrack_core_calendar_provide_event_action($event, $factory));
     }
 
-    public function test_quiz_core_calendar_provide_event_action_no_capability_for_user() {
+    public function test_hippotrack_core_calendar_provide_event_action_no_capability_for_user() {
         global $DB;
 
         $this->resetAfterTest();
@@ -924,8 +924,8 @@ class lib_test extends \advanced_testcase {
 
         // Remove the permission to attempt or review the quiz for the student role.
         $coursecontext = \context_course::instance($course->id);
-        assign_capability('mod/quiz:reviewmyattempts', CAP_PROHIBIT, $studentrole->id, $coursecontext);
-        assign_capability('mod/quiz:attempt', CAP_PROHIBIT, $studentrole->id, $coursecontext);
+        assign_capability('mod/hippotrack:reviewmyattempts', CAP_PROHIBIT, $studentrole->id, $coursecontext);
+        assign_capability('mod/hippotrack:attempt', CAP_PROHIBIT, $studentrole->id, $coursecontext);
 
         // Create a calendar event.
         $event = $this->create_action_event($course->id, $quiz->id, QUIZ_EVENT_TYPE_OPEN);
@@ -937,7 +937,7 @@ class lib_test extends \advanced_testcase {
         $this->assertNull(mod_hippotrack_core_calendar_provide_event_action($event, $factory, $student->id));
     }
 
-    public function test_quiz_core_calendar_provide_event_action_already_finished() {
+    public function test_hippotrack_core_calendar_provide_event_action_already_finished() {
         global $DB;
 
         $this->resetAfterTest();
@@ -962,21 +962,21 @@ class lib_test extends \advanced_testcase {
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
         $question = $questiongenerator->create_question('numerical', null, array('category' => $cat->id));
-        quiz_add_quiz_question($question->id, $quiz);
+        hippotrack_add_hippotrack_question($question->id, $quiz);
 
         // Get the quiz object.
         $quizobj = quiz::create($quiz->id, $student->id);
 
         // Create an attempt for the student in the quiz.
         $timenow = time();
-        $attempt = quiz_create_attempt($quizobj, 1, false, $timenow, false, $student->id);
+        $attempt = hippotrack_create_attempt($quizobj, 1, false, $timenow, false, $student->id);
         $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
-        quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $timenow);
-        quiz_attempt_save_started($quizobj, $quba, $attempt);
+        hippotrack_start_new_attempt($quizobj, $quba, $attempt, 1, $timenow);
+        hippotrack_attempt_save_started($quizobj, $quba, $attempt);
 
         // Finish the attempt.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_finish($timenow, false);
 
         // Create a calendar event.
@@ -992,7 +992,7 @@ class lib_test extends \advanced_testcase {
         $this->assertNull(mod_hippotrack_core_calendar_provide_event_action($event, $factory));
     }
 
-    public function test_quiz_core_calendar_provide_event_action_already_finished_for_user() {
+    public function test_hippotrack_core_calendar_provide_event_action_already_finished_for_user() {
         global $DB;
 
         $this->resetAfterTest();
@@ -1017,21 +1017,21 @@ class lib_test extends \advanced_testcase {
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
         $question = $questiongenerator->create_question('numerical', null, array('category' => $cat->id));
-        quiz_add_quiz_question($question->id, $quiz);
+        hippotrack_add_hippotrack_question($question->id, $quiz);
 
         // Get the quiz object.
         $quizobj = quiz::create($quiz->id, $student->id);
 
         // Create an attempt for the student in the quiz.
         $timenow = time();
-        $attempt = quiz_create_attempt($quizobj, 1, false, $timenow, false, $student->id);
+        $attempt = hippotrack_create_attempt($quizobj, 1, false, $timenow, false, $student->id);
         $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
-        quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $timenow);
-        quiz_attempt_save_started($quizobj, $quba, $attempt);
+        hippotrack_start_new_attempt($quizobj, $quba, $attempt, 1, $timenow);
+        hippotrack_attempt_save_started($quizobj, $quba, $attempt);
 
         // Finish the attempt.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_finish($timenow, false);
 
         // Create a calendar event.
@@ -1044,7 +1044,7 @@ class lib_test extends \advanced_testcase {
         $this->assertNull(mod_hippotrack_core_calendar_provide_event_action($event, $factory, $student->id));
     }
 
-    public function test_quiz_core_calendar_provide_event_action_already_completed() {
+    public function test_hippotrack_core_calendar_provide_event_action_already_completed() {
         $this->resetAfterTest();
         set_config('enablecompletion', 1);
         $this->setAdminUser();
@@ -1075,7 +1075,7 @@ class lib_test extends \advanced_testcase {
         $this->assertNull($actionevent);
     }
 
-    public function test_quiz_core_calendar_provide_event_action_already_completed_for_user() {
+    public function test_hippotrack_core_calendar_provide_event_action_already_completed_for_user() {
         $this->resetAfterTest();
         set_config('enablecompletion', 1);
         $this->setAdminUser();
@@ -1166,7 +1166,7 @@ class lib_test extends \advanced_testcase {
         $moddefaults->completion = 2;
 
         $activeruledescriptions = [
-            get_string('completionpassorattemptsexhausteddesc', 'quiz'),
+            get_string('completionpassorattemptsexhausteddesc', 'hippotrack'),
         ];
         $this->assertEquals(mod_hippotrack_get_completion_active_rule_descriptions($cm1), $activeruledescriptions);
         $this->assertEquals(mod_hippotrack_get_completion_active_rule_descriptions($cm2), []);

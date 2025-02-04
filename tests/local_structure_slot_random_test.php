@@ -46,7 +46,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $category = $questiongenerator->create_question_category();
 
         // Create a random question without adding it to a quiz.
-        // We don't want to use quiz_add_random_questions because that itself, instantiates an object from the slot_random class.
+        // We don't want to use hippotrack_add_random_questions because that itself, instantiates an object from the slot_random class.
         $form = new \stdClass();
         $form->category = $category->id . ',' . $category->contextid;
         $form->includesubcategories = true;
@@ -86,7 +86,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $this->assertEquals(1, $record->maxmark);
     }
 
-    public function test_get_quiz_quiz() {
+    public function test_get_hippotrack_quiz() {
         global $SITE, $DB;
 
         $this->resetAfterTest();
@@ -100,7 +100,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $questiongenerator->create_question_category();
 
-        quiz_add_random_questions($quiz, 0, $category->id, 1, false);
+        hippotrack_add_random_questions($quiz, 0, $category->id, 1, false);
 
         // Set the filter conditions.
         $filtercondition = new \stdClass();
@@ -137,7 +137,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $questiongenerator->create_question_category();
 
-        quiz_add_random_questions($quiz, 0, $category->id, 1, false);
+        hippotrack_add_random_questions($quiz, 0, $category->id, 1, false);
 
         // Set the filter conditions.
         $filtercondition = new \stdClass();
@@ -178,7 +178,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $questiongenerator->create_question_category();
 
-        quiz_add_random_questions($quiz, 0, $category->id, 1, false);
+        hippotrack_add_random_questions($quiz, 0, $category->id, 1, false);
 
         // Slot data.
         $randomslotdata = new \stdClass();

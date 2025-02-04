@@ -196,7 +196,7 @@ class template_controller {
      * @return string
      */
     public static function get_base_url() : string {
-        return '/mod/quiz/accessrule/seb/template.php';
+        return '/mod/hippotrack/accessrule/seb/template.php';
     }
 
     /**

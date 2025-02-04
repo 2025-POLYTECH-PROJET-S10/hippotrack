@@ -23,16 +23,16 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 // Look for old-style URLs, such as may be in the logs, and redirect them to startattemtp.php.
 if ($id = optional_param('id', 0, PARAM_INT)) {
-    redirect($CFG->wwwroot . '/mod/quiz/startattempt.php?cmid=' . $id . '&sesskey=' . sesskey());
+    redirect($CFG->wwwroot . '/mod/hippotrack/startattempt.php?cmid=' . $id . '&sesskey=' . sesskey());
 } else if ($qid = optional_param('q', 0, PARAM_INT)) {
     if (!$cm = get_coursemodule_from_instance('quiz', $qid)) {
         throw new \moodle_exception('invalidquizid', 'quiz');
     }
-    redirect(new moodle_url('/mod/quiz/startattempt.php',
+    redirect(new moodle_url('/mod/hippotrack/startattempt.php',
             array('cmid' => $cm->id, 'sesskey' => sesskey())));
 }
 
@@ -41,7 +41,7 @@ $attemptid = required_param('attempt', PARAM_INT);
 $page = optional_param('page', 0, PARAM_INT);
 $cmid = optional_param('cmid', null, PARAM_INT);
 
-$attemptobj = quiz_create_attempt_handling_errors($attemptid, $cmid);
+$attemptobj = hippotrack_create_attempt_handling_errors($attemptid, $cmid);
 $page = $attemptobj->force_page_number_into_range($page);
 $PAGE->set_url($attemptobj->attempt_url(null, $page));
 // During quiz attempts, the browser back/forwards buttons should force a reload.
@@ -54,16 +54,16 @@ require_login($attemptobj->get_course(), false, $attemptobj->get_cm());
 
 // Check that this attempt belongs to this user.
 if ($attemptobj->get_userid() != $USER->id) {
-    if ($attemptobj->has_capability('mod/quiz:viewreports')) {
+    if ($attemptobj->has_capability('mod/hippotrack:viewreports')) {
         redirect($attemptobj->review_url(null, $page));
     } else {
-        throw new moodle_quiz_exception($attemptobj->get_quizobj(), 'notyourattempt');
+        throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'notyourattempt');
     }
 }
 
 // Check capabilities and block settings.
 if (!$attemptobj->is_preview_user()) {
-    $attemptobj->require_capability('mod/quiz:attempt');
+    $attemptobj->require_capability('mod/hippotrack:attempt');
     if (empty($attemptobj->get_quiz()->showblocks)) {
         $PAGE->blocks->show_only_fake_blocks();
     }
@@ -75,7 +75,7 @@ if (!$attemptobj->is_preview_user()) {
 // If the attempt is already closed, send them to the review page.
 if ($attemptobj->is_finished()) {
     redirect($attemptobj->review_url(null, $page));
-} else if ($attemptobj->get_state() == quiz_attempt::OVERDUE) {
+} else if ($attemptobj->get_state() == hippotrack_attempt::OVERDUE) {
     redirect($attemptobj->summary_url());
 }
 
@@ -107,7 +107,7 @@ $slots = $attemptobj->get_slots($page);
 
 // Check.
 if (empty($slots)) {
-    throw new moodle_quiz_exception($attemptobj->get_quizobj(), 'noquestionsfound');
+    throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'noquestionsfound');
 }
 
 // Update attempt page, redirecting the user if $page is not valid.
@@ -117,11 +117,11 @@ if (!$attemptobj->set_currentpage($page)) {
 
 // Initialise the JavaScript.
 $headtags = $attemptobj->get_html_head_contributions($page);
-$PAGE->requires->js_init_call('M.mod_hippotrack.init_attempt_form', null, false, quiz_get_js_module());
+$PAGE->requires->js_init_call('M.mod_hippotrack.init_attempt_form', null, false, hippotrack_get_js_module());
 \core\session\manager::keepalive(); // Try to prevent sessions expiring during quiz attempts.
 
 // Arrange for the navigation to be displayed in the first region on the page.
-$navbc = $attemptobj->get_navigation_panel($output, 'quiz_attempt_nav_panel', $page);
+$navbc = $attemptobj->get_navigation_panel($output, 'hippotrack_attempt_nav_panel', $page);
 $regions = $PAGE->blocks->get_regions();
 $PAGE->blocks->add_fake_block($navbc, reset($regions));
 

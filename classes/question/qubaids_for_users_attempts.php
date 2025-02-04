@@ -27,7 +27,7 @@ namespace mod_hippotrack\question;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/quiz/attemptlib.php');
+require_once($CFG->dirroot.'/mod/hippotrack/attemptlib.php');
 
 /**
  * A {@link qubaid_condition} representing all the attempts by one user at a given quiz.
@@ -39,7 +39,7 @@ class qubaids_for_users_attempts extends \qubaid_join {
     /**
      * Constructor.
      *
-     * This takes the same arguments as {@link quiz_get_user_attempts()}.
+     * This takes the same arguments as {@link hippotrack_get_user_attempts()}.
      *
      * @param int $quizid the quiz id.
      * @param int $userid the userid.
@@ -60,17 +60,17 @@ class qubaids_for_users_attempts extends \qubaid_join {
 
             case 'finished':
                 $where .= ' AND state IN (:state1, :state2)';
-                $params['state1'] = \quiz_attempt::FINISHED;
-                $params['state2'] = \quiz_attempt::ABANDONED;
+                $params['state1'] = \hippotrack_attempt::FINISHED;
+                $params['state2'] = \hippotrack_attempt::ABANDONED;
                 break;
 
             case 'unfinished':
                 $where .= ' AND state IN (:state1, :state2)';
-                $params['state1'] = \quiz_attempt::IN_PROGRESS;
-                $params['state2'] = \quiz_attempt::OVERDUE;
+                $params['state1'] = \hippotrack_attempt::IN_PROGRESS;
+                $params['state2'] = \hippotrack_attempt::OVERDUE;
                 break;
         }
 
-        parent::__construct('{quiz_attempts} quiza', 'quiza.uniqueid', $where, $params);
+        parent::__construct('{hippotrack_attempts} quiza', 'quiza.uniqueid', $where, $params);
     }
 }

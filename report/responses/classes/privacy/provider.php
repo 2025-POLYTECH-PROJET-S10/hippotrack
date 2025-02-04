@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem implementation for quiz_responses.
+ * Privacy Subsystem implementation for hippotrack_responses.
  *
- * @package    quiz_responses
+ * @package    hippotrack_responses
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quiz_responses\privacy;
+namespace hippotrack_responses\privacy;
 
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\writer;
@@ -34,7 +34,7 @@ global $CFG;
 require_once($CFG->dirroot . '/question/engine/questionattempt.php');
 
 /**
- * Privacy Subsystem for quiz_responses with user preferences.
+ * Privacy Subsystem for hippotrack_responses with user preferences.
  *
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -50,10 +50,10 @@ class provider implements
      * @return  collection     A listing of user data stored through this system.
      */
     public static function get_metadata(collection $collection) : collection {
-        $collection->add_user_preference('quiz_report_responses_qtext', 'privacy:preference:qtext');
-        $collection->add_user_preference('quiz_report_responses_resp', 'privacy:preference:resp');
-        $collection->add_user_preference('quiz_report_responses_right', 'privacy:preference:right');
-        $collection->add_user_preference('quiz_report_responses_which_tries', 'privacy:preference:which_tries');
+        $collection->add_user_preference('hippotrack_report_responses_qtext', 'privacy:preference:qtext');
+        $collection->add_user_preference('hippotrack_report_responses_resp', 'privacy:preference:resp');
+        $collection->add_user_preference('hippotrack_report_responses_right', 'privacy:preference:right');
+        $collection->add_user_preference('hippotrack_report_responses_which_tries', 'privacy:preference:which_tries');
 
         return $collection;
     }
@@ -71,29 +71,29 @@ class provider implements
             ];
 
         foreach ($preferences as $key) {
-            $preference = get_user_preferences("quiz_report_responses_{$key}", null, $userid);
+            $preference = get_user_preferences("hippotrack_report_responses_{$key}", null, $userid);
             if (null !== $preference) {
-                $desc = get_string("privacy:preference:{$key}", 'quiz_responses');
-                writer::export_user_preference('quiz_responses', $key, transform::yesno($preference), $desc);
+                $desc = get_string("privacy:preference:{$key}", 'hippotrack_responses');
+                writer::export_user_preference('hippotrack_responses', $key, transform::yesno($preference), $desc);
             }
         }
 
-        $preference = get_user_preferences("quiz_report_responses_which_tries", null, $userid);
+        $preference = get_user_preferences("hippotrack_report_responses_which_tries", null, $userid);
         if (null !== $preference) {
             switch($preference) {
                 case \question_attempt::FIRST_TRY:
-                    $value = get_string("privacy:preference:which_tries:first", 'quiz_responses');
+                    $value = get_string("privacy:preference:which_tries:first", 'hippotrack_responses');
                     break;
                 case \question_attempt::LAST_TRY:
-                    $value = get_string("privacy:preference:which_tries:last", 'quiz_responses');
+                    $value = get_string("privacy:preference:which_tries:last", 'hippotrack_responses');
                     break;
                 case \question_attempt::ALL_TRIES:
-                    $value = get_string("privacy:preference:which_tries:all", 'quiz_responses');
+                    $value = get_string("privacy:preference:which_tries:all", 'hippotrack_responses');
                     break;
             }
-            $desc = get_string("privacy:preference:which_tries", 'quiz_responses');
+            $desc = get_string("privacy:preference:which_tries", 'hippotrack_responses');
 
-            writer::export_user_preference('quiz_responses', 'which_tries', $value, $desc);
+            writer::export_user_preference('hippotrack_responses', 'which_tries', $value, $desc);
         }
     }
 }

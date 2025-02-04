@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Add event observers for quiz_statistics
+ * Add event observers for hippotrack_statistics
  *
- * @package   quiz_statistics
+ * @package   hippotrack_statistics
  * @copyright 2023 onwards Catalyst IT EU {@link https://catalyst-eu.net}
  * @author    Mark Johnson <mark.johnson@catalyst-eu.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,6 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 $observers = [
     [
         'eventname' => '\mod_hippotrack\event\attempt_submitted',
-        'callback' => '\quiz_statistics\event\observer\attempt_submitted::process',
+        'callback' => '\hippotrack_statistics\event\observer\attempt_submitted::process',
     ],
 ];

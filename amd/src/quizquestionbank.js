@@ -23,7 +23,7 @@
 define(
     [
         'mod_hippotrack/add_question_modal_launcher',
-        'mod_hippotrack/modal_quiz_question_bank'
+        'mod_hippotrack/modal_hippotrack_question_bank'
     ],
     function (
         AddQuestionModalLauncher,

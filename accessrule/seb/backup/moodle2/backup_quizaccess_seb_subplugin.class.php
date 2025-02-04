@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/backup_mod_hippotrack_access_subplugin.class.php');
+require_once($CFG->dirroot . '/mod/hippotrack/backup/moodle2/backup_mod_hippotrack_access_subplugin.class.php');
 
 /**
  * Backup instructions for the seb (Safe Exam Browser) quiz access subplugin.
@@ -41,8 +41,8 @@ class backup_quizaccess_seb_subplugin extends backup_mod_hippotrack_access_subpl
      *
      * @return backup_subplugin_element
      */
-    protected function define_quiz_subplugin_structure() {
-        parent::define_quiz_subplugin_structure();
+    protected function define_hippotrack_subplugin_structure() {
+        parent::define_hippotrack_subplugin_structure();
         $quizid = backup::VAR_ACTIVITYID;
 
         $subplugin = $this->get_subplugin_element();
@@ -58,7 +58,7 @@ class backup_quizaccess_seb_subplugin extends backup_mod_hippotrack_access_subpl
         $subplugintemplatesettings = new backup_nested_element('quizaccess_seb_template', null, $templatekeys);
 
         // Get quiz settings keys to save.
-        $settings = new \quizaccess_seb\quiz_settings();
+        $settings = new \quizaccess_seb\hippotrack_settings();
         $blanksettingsarray = (array) $settings->to_record();
         unset($blanksettingsarray['id']); // We don't need to save reference to settings record in current instance.
         // We don't need to save the data about who last modified the settings as they will be overwritten on restore. Also
@@ -77,7 +77,7 @@ class backup_quizaccess_seb_subplugin extends backup_mod_hippotrack_access_subpl
         $subpluginquizsettings->add_child($subplugintemplatesettings);
 
         // Set source to populate the settings data by referencing the ID of quiz being backed up.
-        $subpluginquizsettings->set_source_table(quizaccess_seb\quiz_settings::TABLE, ['quizid' => $quizid]);
+        $subpluginquizsettings->set_source_table(quizaccess_seb\hippotrack_settings::TABLE, ['quizid' => $quizid]);
 
         $subpluginquizsettings->annotate_files('quizaccess_seb', 'filemanager_sebconfigfile', null);
 

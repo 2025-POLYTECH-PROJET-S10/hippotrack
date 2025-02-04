@@ -19,9 +19,9 @@ namespace mod_hippotrack;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
+require_once(__DIR__ . '/hippotrack_question_helper_test_trait.php');
 require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
  * Quiz backup and restore tests.
@@ -32,8 +32,8 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
  * @author     Safat Shahin <safatshahin@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_question_restore_test extends \advanced_testcase {
-    use \quiz_question_helper_test_trait;
+class hippotrack_question_restore_test extends \advanced_testcase {
+    use \hippotrack_question_helper_test_trait;
 
     /**
      * @var \stdClass test student user.
@@ -57,7 +57,7 @@ class quiz_question_restore_test extends \advanced_testcase {
      *
      * @covers \mod_hippotrack\question\bank\qbank_helper::get_question_structure
      */
-    public function test_quiz_restore_in_a_different_course_using_course_question_bank() {
+    public function test_hippotrack_restore_in_a_different_course_using_course_question_bank() {
         $this->resetAfterTest();
 
         // Create the test quiz.
@@ -96,7 +96,7 @@ class quiz_question_restore_test extends \advanced_testcase {
      *
      * @covers \mod_hippotrack\question\bank\qbank_helper::get_question_structure
      */
-    public function test_quiz_restore_in_a_different_course_using_quiz_question_bank() {
+    public function test_hippotrack_restore_in_a_different_course_using_hippotrack_question_bank() {
         $this->resetAfterTest();
 
         // Create the test quiz.
@@ -152,7 +152,7 @@ class quiz_question_restore_test extends \advanced_testcase {
      *
      * @covers ::duplicate_module
      */
-    public function test_quiz_duplicate_does_not_duplicate_course_question_bank_questions() {
+    public function test_hippotrack_duplicate_does_not_duplicate_course_question_bank_questions() {
         $this->resetAfterTest();
         $quiz = $this->create_test_quiz($this->course);
         // Test for questions from a different context.
@@ -174,7 +174,7 @@ class quiz_question_restore_test extends \advanced_testcase {
      *
      * @covers ::duplicate_module
      */
-    public function test_quiz_duplicate_for_quiz_question_bank_questions() {
+    public function test_hippotrack_duplicate_for_hippotrack_question_bank_questions() {
         $this->resetAfterTest();
         $quiz = $this->create_test_quiz($this->course);
         // Test for questions from a different context.
@@ -196,7 +196,7 @@ class quiz_question_restore_test extends \advanced_testcase {
      *
      * @covers \mod_hippotrack\question\bank\qbank_helper::get_question_structure
      */
-    public function test_quiz_restore_with_attempts() {
+    public function test_hippotrack_restore_with_attempts() {
         $this->resetAfterTest();
 
         // Create a quiz.
@@ -210,7 +210,7 @@ class quiz_question_restore_test extends \advanced_testcase {
         /** @var \question_usage_by_activity $quba */
         [, $quba] = $this->attempt_quiz($quiz, $this->student);
         $this->assertEquals(3, $quba->question_count());
-        $this->assertCount(1, quiz_get_user_attempts($quiz->id, $this->student->id));
+        $this->assertCount(1, hippotrack_get_user_attempts($quiz->id, $this->student->id));
 
         // Make the backup.
         $backupid = $this->backup_quiz($quiz, $this->user);
@@ -225,7 +225,7 @@ class quiz_question_restore_test extends \advanced_testcase {
         // Verify.
         $modules = get_fast_modinfo($newcourse->id)->get_instances_of('quiz');
         $module = reset($modules);
-        $this->assertCount(1, quiz_get_user_attempts($module->instance, $this->student->id));
+        $this->assertCount(1, hippotrack_get_user_attempts($module->instance, $this->student->id));
         $this->assertCount(3, \mod_hippotrack\question\bank\qbank_helper::get_question_structure(
                 $module->instance, $module->context));
     }
@@ -233,9 +233,9 @@ class quiz_question_restore_test extends \advanced_testcase {
     /**
      * Test pre 4.0 quiz restore for regular questions.
      *
-     * @covers \restore_quiz_activity_structure_step::process_quiz_question_legacy_instance
+     * @covers \restore_hippotrack_activity_structure_step::process_hippotrack_question_legacy_instance
      */
-    public function test_pre_4_quiz_restore_for_regular_questions() {
+    public function test_pre_4_hippotrack_restore_for_regular_questions() {
         global $USER, $DB;
         $this->resetAfterTest();
         $backupid = 'abc';
@@ -275,9 +275,9 @@ class quiz_question_restore_test extends \advanced_testcase {
     /**
      * Test pre 4.0 quiz restore for random questions.
      *
-     * @covers \restore_quiz_activity_structure_step::process_quiz_question_legacy_instance
+     * @covers \restore_hippotrack_activity_structure_step::process_hippotrack_question_legacy_instance
      */
-    public function test_pre_4_quiz_restore_for_random_questions() {
+    public function test_pre_4_hippotrack_restore_for_random_questions() {
         global $USER, $DB;
         $this->resetAfterTest();
 
@@ -323,9 +323,9 @@ class quiz_question_restore_test extends \advanced_testcase {
     /**
      * Test pre 4.0 quiz restore for random question tags.
      *
-     * @covers \restore_quiz_activity_structure_step::process_quiz_question_legacy_instance
+     * @covers \restore_hippotrack_activity_structure_step::process_hippotrack_question_legacy_instance
      */
-    public function test_pre_4_quiz_restore_for_random_question_tags() {
+    public function test_pre_4_hippotrack_restore_for_random_question_tags() {
         global $USER, $DB;
         $this->resetAfterTest();
         $randomtags = [
@@ -380,9 +380,9 @@ class quiz_question_restore_test extends \advanced_testcase {
     /**
      * Test pre 4.0 quiz restore for random question used on multiple quizzes.
      *
-     * @covers \restore_quiz_activity_structure_step::process_quiz_question_legacy_instance
+     * @covers \restore_hippotrack_activity_structure_step::process_hippotrack_question_legacy_instance
      */
-    public function test_pre_4_quiz_restore_shared_random_question() {
+    public function test_pre_4_hippotrack_restore_shared_random_question() {
         global $USER, $DB;
         $this->resetAfterTest();
 
@@ -433,7 +433,7 @@ class quiz_question_restore_test extends \advanced_testcase {
     /**
      * Ensure that question slots are correctly backed up and restored with all properties.
      *
-     * @covers \backup_quiz_activity_structure_step::define_structure()
+     * @covers \backup_hippotrack_activity_structure_step::define_structure()
      * @return void
      */
     public function test_backup_restore_question_slots(): void {
@@ -464,10 +464,10 @@ class quiz_question_restore_test extends \advanced_testcase {
         $questiongenerator->create_question('match', null, ['category' => $randomcat->id]);
 
         // Add them to the quiz.
-        quiz_add_quiz_question($saq->id, $quiz, 1, 3);
-        quiz_add_quiz_question($numq->id, $quiz, 2, 2);
-        quiz_add_quiz_question($matchq->id, $quiz, 3, 1);
-        quiz_add_random_questions($quiz, 3, $randomcat->id, 2, false);
+        hippotrack_add_hippotrack_question($saq->id, $quiz, 1, 3);
+        hippotrack_add_hippotrack_question($numq->id, $quiz, 2, 2);
+        hippotrack_add_hippotrack_question($matchq->id, $quiz, 3, 1);
+        hippotrack_add_random_questions($quiz, 3, $randomcat->id, 2, false);
 
         $quizobj = \quiz::create($quiz->id, $user1->id);
         $originalstructure = \mod_hippotrack\structure::create_for_quiz($quizobj);

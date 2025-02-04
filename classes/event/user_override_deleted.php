@@ -45,7 +45,7 @@ class user_override_deleted extends \core\event\base {
      * Init method.
      */
     protected function init() {
-        $this->data['objecttable'] = 'quiz_overrides';
+        $this->data['objecttable'] = 'hippotrack_overrides';
         $this->data['crud'] = 'd';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
     }
@@ -75,7 +75,7 @@ class user_override_deleted extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/quiz/overrides.php', array('cmid' => $this->contextinstanceid));
+        return new \moodle_url('/mod/hippotrack/overrides.php', array('cmid' => $this->contextinstanceid));
     }
 
     /**
@@ -107,7 +107,7 @@ class user_override_deleted extends \core\event\base {
     }
 
     public static function get_objectid_mapping() {
-        return array('db' => 'quiz_overrides', 'restore' => 'quiz_override');
+        return array('db' => 'hippotrack_overrides', 'restore' => 'hippotrack_override');
     }
 
     public static function get_other_mapping() {

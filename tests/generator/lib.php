@@ -28,7 +28,7 @@ class mod_hippotrack_generator extends testing_module_generator {
     public function create_instance($record = null, array $options = null) {
         global $CFG;
 
-        require_once($CFG->dirroot.'/mod/quiz/locallib.php');
+        require_once($CFG->dirroot.'/mod/hippotrack/locallib.php');
         $record = (object)(array)$record;
 
         $defaultquizsettings = array(
@@ -120,7 +120,7 @@ class mod_hippotrack_generator extends testing_module_generator {
         $attemptnumber = 1;
         $attempt = null;
 
-        if ($attempts = quiz_get_user_attempts($quizid, $userid, 'all', true)) {
+        if ($attempts = hippotrack_get_user_attempts($quizid, $userid, 'all', true)) {
             // There is/are already an attempt/some attempts.
             // Take the last attempt.
             $attempt = end($attempts);
@@ -128,7 +128,7 @@ class mod_hippotrack_generator extends testing_module_generator {
             $attemptnumber = $attempt->attempt + 1;
         }
 
-        return quiz_prepare_and_start_new_attempt($quizobj, $attemptnumber, $attempt, false,
+        return hippotrack_prepare_and_start_new_attempt($quizobj, $attemptnumber, $attempt, false,
                 $forcedrandomquestions, $forcedvariants);
     }
 
@@ -148,7 +148,7 @@ class mod_hippotrack_generator extends testing_module_generator {
     public function submit_responses($attemptid, array $responses, $checkbutton, $finishattempt) {
         $questiongenerator = $this->datagenerator->get_plugin_generator('core_question');
 
-        $attemptobj = quiz_attempt::create($attemptid);
+        $attemptobj = hippotrack_attempt::create($attemptid);
 
         $postdata = $questiongenerator->get_simulated_post_data_for_questions_in_usage(
                 $attemptobj->get_question_usage(), $responses, $checkbutton);
@@ -200,9 +200,9 @@ class mod_hippotrack_generator extends testing_module_generator {
         }
 
         // Create the override.
-        $DB->insert_record('quiz_overrides', (object) $data);
+        $DB->insert_record('hippotrack_overrides', (object) $data);
 
         // Update any associated calendar events, if necessary.
-        quiz_update_events($DB->get_record('quiz', ['id' => $data['quiz']], '*', MUST_EXIST));
+        hippotrack_update_events($DB->get_record('quiz', ['id' => $data['quiz']], '*', MUST_EXIST));
     }
 }

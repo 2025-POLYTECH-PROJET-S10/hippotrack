@@ -30,9 +30,9 @@ $attemptid = required_param('attempt', PARAM_INT);
 $slot = required_param('slot', PARAM_INT); // The question number in the attempt.
 $cmid = optional_param('cmid', null, PARAM_INT);
 
-$PAGE->set_url('/mod/quiz/comment.php', array('attempt' => $attemptid, 'slot' => $slot));
+$PAGE->set_url('/mod/hippotrack/comment.php', array('attempt' => $attemptid, 'slot' => $slot));
 
-$attemptobj = quiz_create_attempt_handling_errors($attemptid, $cmid);
+$attemptobj = hippotrack_create_attempt_handling_errors($attemptid, $cmid);
 $attemptobj->preload_all_attempt_step_users();
 $student = $DB->get_record('user', array('id' => $attemptobj->get_userid()));
 
@@ -43,13 +43,13 @@ if (!$attemptobj->is_finished()) {
 
 // Check login and permissions.
 require_login($attemptobj->get_course(), false, $attemptobj->get_cm());
-$attemptobj->require_capability('mod/quiz:grade');
+$attemptobj->require_capability('mod/hippotrack:grade');
 
 // Print the page header.
 $PAGE->set_pagelayout('popup');
 $PAGE->set_title(get_string('manualgradequestion', 'quiz', array(
         'question' => format_string($attemptobj->get_question_name($slot)),
-        'quiz' => format_string($attemptobj->get_quiz_name()), 'user' => fullname($student))));
+        'quiz' => format_string($attemptobj->get_hippotrack_name()), 'user' => fullname($student))));
 $PAGE->set_heading($attemptobj->get_course()->fullname);
 $output = $PAGE->get_renderer('mod_hippotrack');
 echo $output->header();
@@ -69,13 +69,13 @@ $summarydata['user'] = array(
 
 // Quiz name.
 $summarydata['quizname'] = array(
-    'title'   => get_string('modulename', 'quiz'),
-    'content' => format_string($attemptobj->get_quiz_name()),
+    'title'   => get_string('modulename', 'hippotrack'),
+    'content' => format_string($attemptobj->get_hippotrack_name()),
 );
 
 // Question name.
 $summarydata['questionname'] = array(
-    'title'   => get_string('question', 'quiz'),
+    'title'   => get_string('question', 'hippotrack'),
     'content' => $attemptobj->get_question_name($slot),
 );
 
@@ -111,7 +111,7 @@ echo $output->review_summary_table($summarydata, 0);
 
 // Print the comment form.
 echo '<form method="post" class="mform" id="manualgradingform" action="' .
-        $CFG->wwwroot . '/mod/quiz/comment.php">';
+        $CFG->wwwroot . '/mod/hippotrack/comment.php">';
 echo $attemptobj->render_question_for_commenting($slot);
 ?>
 <div>
@@ -132,7 +132,7 @@ echo $attemptobj->render_question_for_commenting($slot);
 </fieldset>
 <?php
 echo '</form>';
-$PAGE->requires->js_init_call('M.mod_hippotrack.init_comment_popup', null, false, quiz_get_js_module());
+$PAGE->requires->js_init_call('M.mod_hippotrack.init_comment_popup', null, false, hippotrack_get_js_module());
 
 // End of the page.
 echo $output->footer();

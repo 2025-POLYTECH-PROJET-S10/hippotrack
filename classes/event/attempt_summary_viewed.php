@@ -48,7 +48,7 @@ class attempt_summary_viewed extends \core\event\base {
      * @return void
      */
     protected function init() {
-        $this->data['objecttable'] = 'quiz_attempts';
+        $this->data['objecttable'] = 'hippotrack_attempts';
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
     }
@@ -78,7 +78,7 @@ class attempt_summary_viewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/quiz/summary.php', array('attempt' => $this->objectid));
+        return new \moodle_url('/mod/hippotrack/summary.php', array('attempt' => $this->objectid));
     }
 
     /**
@@ -110,7 +110,7 @@ class attempt_summary_viewed extends \core\event\base {
     }
 
     public static function get_objectid_mapping() {
-        return array('db' => 'quiz_attempts', 'restore' => 'quiz_attempt');
+        return array('db' => 'hippotrack_attempts', 'restore' => 'hippotrack_attempt');
     }
 
     public static function get_other_mapping() {

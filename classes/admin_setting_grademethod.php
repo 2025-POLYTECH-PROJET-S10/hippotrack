@@ -42,8 +42,8 @@ class mod_hippotrack_admin_setting_grademethod extends admin_setting_configselec
             return true;
         }
 
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-        $this->choices = quiz_get_grading_options();
+        require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
+        $this->choices = hippotrack_get_grading_options();
 
         return true;
     }

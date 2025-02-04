@@ -55,7 +55,7 @@ class mod_hippotrack_preflight_check_form extends moodleform {
             }
         }
 
-        $this->add_action_buttons(true, get_string('startattempt', 'quiz'));
+        $this->add_action_buttons(true, get_string('startattempt', 'hippotrack'));
         $this->set_display_vertical();
         $mform->setDisableShortforms();
     }

@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy subsystem implementation for quiz_grading.
+ * Privacy subsystem implementation for hippotrack_grading.
  *
- * @package   quiz_grading
+ * @package   hippotrack_grading
  * @copyright 2020 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quiz_grading\privacy;
+namespace hippotrack_grading\privacy;
 
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\writer;
@@ -30,7 +30,7 @@ use core_privacy\local\request\writer;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Privacy subsystem for quiz_grading.
+ * Privacy subsystem for hippotrack_grading.
  */
 class provider implements
         \core_privacy\local\metadata\provider,
@@ -43,8 +43,8 @@ class provider implements
      * @return  collection     A listing of user data stored through this system.
      */
     public static function get_metadata(collection $collection) : collection {
-        $collection->add_user_preference('quiz_grading_pagesize', 'privacy:preference:pagesize');
-        $collection->add_user_preference('quiz_grading_order', 'privacy:preference:order');
+        $collection->add_user_preference('hippotrack_grading_pagesize', 'privacy:preference:pagesize');
+        $collection->add_user_preference('hippotrack_grading_order', 'privacy:preference:order');
 
         return $collection;
     }
@@ -57,33 +57,33 @@ class provider implements
     public static function export_user_preferences(int $userid) {
 
         // Page size.
-        $pagesize = get_user_preferences("quiz_grading_pagesize", null, $userid);
+        $pagesize = get_user_preferences("hippotrack_grading_pagesize", null, $userid);
         if ($pagesize !== null) {
-            writer::export_user_preference('quiz_grading', 'pagesize', $pagesize,
-                    get_string('privacy:preference:pagesize', 'quiz_grading'));
+            writer::export_user_preference('hippotrack_grading', 'pagesize', $pagesize,
+                    get_string('privacy:preference:pagesize', 'hippotrack_grading'));
         }
 
         // Attempt order.
-        $order = get_user_preferences("quiz_grading_order", null, $userid);
+        $order = get_user_preferences("hippotrack_grading_order", null, $userid);
         if ($order !== null) {
             switch ($order) {
                 case 'random':
-                    $order = get_string('random', 'quiz_grading');
+                    $order = get_string('random', 'hippotrack_grading');
                     break;
                 case 'date':
                     $order = get_string('date');
                     break;
                 case 'studentfirstname':
-                    $order = get_string('studentfirstname', 'quiz_grading');
+                    $order = get_string('studentfirstname', 'hippotrack_grading');
                     break;
                 case 'studentlastname':
-                    $order = get_string('studentlastname', 'quiz_grading');
+                    $order = get_string('studentlastname', 'hippotrack_grading');
                     break;
                 default:
                     $order = \core_user\fields::get_display_name($order);
             }
-            writer::export_user_preference('quiz_grading', 'order', $order,
-                    get_string('privacy:preference:order', 'quiz_grading'));
+            writer::export_user_preference('hippotrack_grading', 'order', $order,
+                    get_string('privacy:preference:order', 'hippotrack_grading'));
         }
     }
 }

@@ -29,7 +29,7 @@ namespace mod_hippotrack\cache;
 use cache_definition;
 
 /**
- * Class quiz_overrides
+ * Class hippotrack_overrides
  *
  * @package   mod_hippotrack
  * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
@@ -71,7 +71,7 @@ class overrides implements \cache_data_source {
             case 'u':
                 $userid = (int) $ugid;
                 $override = $DB->get_record(
-                    'quiz_overrides',
+                    'hippotrack_overrides',
                     ['quiz' => $quizid, 'userid' => $userid],
                     'timeopen, timeclose, timelimit, attempts, password'
                 );
@@ -79,7 +79,7 @@ class overrides implements \cache_data_source {
             case 'g':
                 $groupid = (int) $ugid;
                 $override = $DB->get_record(
-                    'quiz_overrides',
+                    'hippotrack_overrides',
                     ['quiz' => $quizid, 'groupid' => $groupid],
                     'timeopen, timeclose, timelimit, attempts, password'
                 );

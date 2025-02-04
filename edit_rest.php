@@ -27,7 +27,7 @@ if (!defined('AJAX_SCRIPT')) {
 }
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 // Initialise ALL the incoming parameters here, up front.
 $quizid     = required_param('quizid', PARAM_INT);
@@ -48,7 +48,7 @@ $newheading = optional_param('newheading', '', PARAM_TEXT);
 $shuffle    = optional_param('newshuffle', 0, PARAM_INT);
 $page       = optional_param('page', '', PARAM_INT);
 $ids        = optional_param('ids', '', PARAM_SEQUENCE);
-$PAGE->set_url('/mod/quiz/edit-rest.php',
+$PAGE->set_url('/mod/hippotrack/edit-rest.php',
         array('quizid' => $quizid, 'class' => $class));
 
 require_sesskey();
@@ -81,20 +81,20 @@ switch($requestmethod) {
     case 'GET': // For debugging.
         switch ($class) {
             case 'section':
-                $table = 'quiz_sections';
+                $table = 'hippotrack_sections';
                 $section = $structure->get_section_by_id($id);
                 switch ($field) {
                     case 'getsectiontitle':
-                        require_capability('mod/quiz:manage', $modcontext);
+                        require_capability('mod/hippotrack:manage', $modcontext);
                         $result = array('instancesection' => $section->heading);
                         break;
                     case 'updatesectiontitle':
-                        require_capability('mod/quiz:manage', $modcontext);
+                        require_capability('mod/hippotrack:manage', $modcontext);
                         $structure->set_section_heading($id, $newheading);
                         $result = array('instancesection' => format_string($newheading));
                         break;
                     case 'updateshufflequestions':
-                        require_capability('mod/quiz:manage', $modcontext);
+                        require_capability('mod/hippotrack:manage', $modcontext);
                         $structure->set_section_shuffle($id, $shuffle);
                         $result = array('instanceshuffle' => $section->shufflequestions);
                         break;
@@ -104,7 +104,7 @@ switch($requestmethod) {
             case 'resource':
                 switch ($field) {
                     case 'move':
-                        require_capability('mod/quiz:manage', $modcontext);
+                        require_capability('mod/hippotrack:manage', $modcontext);
                         if (!$previousid) {
                             $section = $structure->get_section_by_id($sectionid);
                             if ($section->firstslot > 1) {
@@ -113,33 +113,33 @@ switch($requestmethod) {
                             }
                         }
                         $structure->move_slot($id, $previousid, $page);
-                        quiz_delete_previews($quiz);
+                        hippotrack_delete_previews($quiz);
                         $result = array('visible' => true);
                         break;
 
                     case 'getmaxmark':
-                        require_capability('mod/quiz:manage', $modcontext);
-                        $slot = $DB->get_record('quiz_slots', array('id' => $id), '*', MUST_EXIST);
-                        $result = array('instancemaxmark' => quiz_format_question_grade($quiz, $slot->maxmark));
+                        require_capability('mod/hippotrack:manage', $modcontext);
+                        $slot = $DB->get_record('hippotrack_slots', array('id' => $id), '*', MUST_EXIST);
+                        $result = array('instancemaxmark' => hippotrack_format_question_grade($quiz, $slot->maxmark));
                         break;
 
                     case 'updatemaxmark':
-                        require_capability('mod/quiz:manage', $modcontext);
+                        require_capability('mod/hippotrack:manage', $modcontext);
                         $slot = $structure->get_slot_by_id($id);
                         if ($structure->update_slot_maxmark($slot, $maxmark)) {
                             // Grade has really changed.
-                            quiz_delete_previews($quiz);
-                            quiz_update_sumgrades($quiz);
-                            quiz_update_all_attempt_sumgrades($quiz);
-                            quiz_update_all_final_grades($quiz);
-                            quiz_update_grades($quiz, 0, true);
+                            hippotrack_delete_previews($quiz);
+                            hippotrack_update_sumgrades($quiz);
+                            hippotrack_update_all_attempt_sumgrades($quiz);
+                            hippotrack_update_all_final_grades($quiz);
+                            hippotrack_update_grades($quiz, 0, true);
                         }
-                        $result = array('instancemaxmark' => quiz_format_question_grade($quiz, $maxmark),
-                                'newsummarks' => quiz_format_grade($quiz, $quiz->sumgrades));
+                        $result = array('instancemaxmark' => hippotrack_format_question_grade($quiz, $maxmark),
+                                'newsummarks' => hippotrack_format_grade($quiz, $quiz->sumgrades));
                         break;
 
                     case 'updatepagebreak':
-                        require_capability('mod/quiz:manage', $modcontext);
+                        require_capability('mod/hippotrack:manage', $modcontext);
                         $slots = $structure->update_page_break($id, $value);
                         $json = array();
                         foreach ($slots as $slot) {
@@ -150,25 +150,25 @@ switch($requestmethod) {
                         break;
 
                     case 'deletemultiple':
-                        require_capability('mod/quiz:manage', $modcontext);
+                        require_capability('mod/hippotrack:manage', $modcontext);
 
                         $ids = explode(',', $ids);
                         foreach ($ids as $id) {
-                            $slot = $DB->get_record('quiz_slots', array('quizid' => $quiz->id, 'id' => $id),
+                            $slot = $DB->get_record('hippotrack_slots', array('quizid' => $quiz->id, 'id' => $id),
                                     '*', MUST_EXIST);
                             if ($structure->has_use_capability($slot->slot)) {
                                 $structure->remove_slot($slot->slot);
                             }
                         }
-                        quiz_delete_previews($quiz);
-                        quiz_update_sumgrades($quiz);
+                        hippotrack_delete_previews($quiz);
+                        hippotrack_update_sumgrades($quiz);
 
-                        $result = array('newsummarks' => quiz_format_grade($quiz, $quiz->sumgrades),
+                        $result = array('newsummarks' => hippotrack_format_grade($quiz, $quiz->sumgrades),
                                 'deleted' => true, 'newnumquestions' => $structure->get_question_count());
                         break;
 
                     case 'updatedependency':
-                        require_capability('mod/quiz:manage', $modcontext);
+                        require_capability('mod/hippotrack:manage', $modcontext);
                         $slot = $structure->get_slot_by_id($id);
                         $value = (bool) $value;
                         $structure->update_question_dependency($slot->id, $value);
@@ -182,14 +182,14 @@ switch($requestmethod) {
     case 'DELETE':
         switch ($class) {
             case 'section':
-                require_capability('mod/quiz:manage', $modcontext);
+                require_capability('mod/hippotrack:manage', $modcontext);
                 $structure->remove_section_heading($id);
                 $result = array('deleted' => true);
                 break;
 
             case 'resource':
-                require_capability('mod/quiz:manage', $modcontext);
-                if (!$slot = $DB->get_record('quiz_slots', array('quizid' => $quiz->id, 'id' => $id))) {
+                require_capability('mod/hippotrack:manage', $modcontext);
+                if (!$slot = $DB->get_record('hippotrack_slots', array('quizid' => $quiz->id, 'id' => $id))) {
                     throw new moodle_exception('AJAX commands.php: Bad slot ID '.$id);
                 }
 
@@ -200,9 +200,9 @@ switch($requestmethod) {
                         'moodle/question:useall', 'nopermissions', '');
                 }
                 $structure->remove_slot($slot->slot);
-                quiz_delete_previews($quiz);
-                quiz_update_sumgrades($quiz);
-                $result = array('newsummarks' => quiz_format_grade($quiz, $quiz->sumgrades),
+                hippotrack_delete_previews($quiz);
+                hippotrack_update_sumgrades($quiz);
+                $result = array('newsummarks' => hippotrack_format_grade($quiz, $quiz->sumgrades),
                             'deleted' => true, 'newnumquestions' => $structure->get_question_count());
                 break;
         }

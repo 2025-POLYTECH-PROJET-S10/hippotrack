@@ -26,7 +26,7 @@ namespace mod_hippotrack\event;
 class attempt_manual_grading_completed extends \core\event\base {
 
     protected function init() {
-        $this->data['objecttable'] = 'quiz_attempts';
+        $this->data['objecttable'] = 'hippotrack_attempts';
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
     }
@@ -41,7 +41,7 @@ class attempt_manual_grading_completed extends \core\event\base {
     }
 
     public function get_url() {
-        return new \moodle_url('/mod/quiz/review.php', ['attempt' => $this->objectid]);
+        return new \moodle_url('/mod/hippotrack/review.php', ['attempt' => $this->objectid]);
     }
 
     protected function validate_data() {
@@ -57,7 +57,7 @@ class attempt_manual_grading_completed extends \core\event\base {
     }
 
     public static function get_objectid_mapping() {
-        return ['db' => 'quiz_attempts', 'restore' => 'quiz_attempt'];
+        return ['db' => 'hippotrack_attempts', 'restore' => 'hippotrack_attempt'];
     }
 
     public static function get_other_mapping() {

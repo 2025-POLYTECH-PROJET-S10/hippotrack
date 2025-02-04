@@ -21,7 +21,7 @@ use backup_controller;
 use component_generator_base;
 use mod_hippotrack_generator;
 use quiz;
-use quiz_attempt;
+use hippotrack_attempt;
 use restore_controller;
 use stdClass;
 use question_engine;
@@ -81,12 +81,12 @@ trait question_helper_test_trait {
         $saq = $questiongenerator->create_question('shortanswer', null, array('category' => $cat->id));
         // Create another version.
         $questiongenerator->update_question($saq);
-        quiz_add_quiz_question($saq->id, $quiz);
+        hippotrack_add_hippotrack_question($saq->id, $quiz);
         $numq = $questiongenerator->create_question('numerical', null, array('category' => $cat->id));
         // Create two version.
         $questiongenerator->update_question($numq);
         $questiongenerator->update_question($numq);
-        quiz_add_quiz_question($numq->id, $quiz);
+        hippotrack_add_hippotrack_question($numq->id, $quiz);
     }
 
     /**
@@ -101,7 +101,7 @@ trait question_helper_test_trait {
         $cat = $questiongenerator->create_question_category($override);
         $questiongenerator->create_question('truefalse', null, array('category' => $cat->id));
         $questiongenerator->create_question('essay', null, array('category' => $cat->id));
-        quiz_add_random_questions($quiz, 0, $cat->id, 1, false);
+        hippotrack_add_random_questions($quiz, 0, $cat->id, 1, false);
     }
 
     /**
@@ -122,12 +122,12 @@ trait question_helper_test_trait {
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         // Start the attempt.
-        $attempt = quiz_create_attempt($quizobj, $attemptnumber, null, $starttime, false, $user->id);
-        quiz_start_new_attempt($quizobj, $quba, $attempt, $attemptnumber, $starttime);
-        quiz_attempt_save_started($quizobj, $quba, $attempt);
+        $attempt = hippotrack_create_attempt($quizobj, $attemptnumber, null, $starttime, false, $user->id);
+        hippotrack_start_new_attempt($quizobj, $quba, $attempt, $attemptnumber, $starttime);
+        hippotrack_attempt_save_started($quizobj, $quba, $attempt);
 
         // Finish the attempt.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_finish($starttime, false);
 
         $this->setUser();

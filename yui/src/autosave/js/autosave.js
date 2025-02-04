@@ -101,10 +101,10 @@ M.mod_hippotrack.autosave = {
      *
      * @property AUTOSAVE_HANDLER
      * @type String
-     * @default M.cfg.wwwroot + '/mod/quiz/autosave.ajax.php'
+     * @default M.cfg.wwwroot + '/mod/hippotrack/autosave.ajax.php'
      * @private
      */
-    AUTOSAVE_HANDLER: M.cfg.wwwroot + '/mod/quiz/autosave.ajax.php',
+    AUTOSAVE_HANDLER: M.cfg.wwwroot + '/mod/hippotrack/autosave.ajax.php',
 
     /**
      * The delay (in milliseconds) between a change being made, and it being auto-saved.

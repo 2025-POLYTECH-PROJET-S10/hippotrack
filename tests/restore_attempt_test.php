@@ -42,7 +42,7 @@ class restore_attempt_test extends \advanced_testcase {
     /**
      * Test restore dates.
      *
-     * @covers \restore_quiz_activity_structure_step
+     * @covers \restore_hippotrack_activity_structure_step
      */
     public function test_restore_question_attempts_missing_users(): void {
         global $DB, $USER;
@@ -88,7 +88,7 @@ class restore_attempt_test extends \advanced_testcase {
             $loginfomessages);
 
         // User 01 has supplied the wrong answer, assert dates match the backup file too.
-        $user01attempt = $DB->get_record('quiz_attempts', [
+        $user01attempt = $DB->get_record('hippotrack_attempts', [
             'quiz' => $restoredquiz->id,
             'userid' => core_user::get_user_by_username('user01')->id,
         ]);
@@ -98,7 +98,7 @@ class restore_attempt_test extends \advanced_testcase {
         $this->assertEquals(0.0, (float) $user01attempt->sumgrades);
 
         // User 04 has supplied the correct answer, assert dates match the backup file too.
-        $user04attempt = $DB->get_record('quiz_attempts', [
+        $user04attempt = $DB->get_record('hippotrack_attempts', [
             'quiz' => $restoredquiz->id,
             'userid' => core_user::get_user_by_username('user04')->id,
         ]);

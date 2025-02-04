@@ -23,9 +23,9 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot.'/mod/quiz/lib.php');
-require_once($CFG->dirroot.'/mod/quiz/locallib.php');
-require_once($CFG->dirroot.'/mod/quiz/override_form.php');
+require_once($CFG->dirroot.'/mod/hippotrack/lib.php');
+require_once($CFG->dirroot.'/mod/hippotrack/locallib.php');
+require_once($CFG->dirroot.'/mod/hippotrack/override_form.php');
 
 
 $cmid = required_param('cmid', PARAM_INT);
@@ -39,9 +39,9 @@ require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
 
 // Check the user has the required capabilities to list overrides.
-$canedit = has_capability('mod/quiz:manageoverrides', $context);
+$canedit = has_capability('mod/hippotrack:manageoverrides', $context);
 if (!$canedit) {
-    require_capability('mod/quiz:viewoverrides', $context);
+    require_capability('mod/hippotrack:viewoverrides', $context);
 }
 
 $quizgroupmode = groups_get_activity_groupmode($cm);
@@ -60,7 +60,7 @@ if ($mode != "user" and $mode != "group") {
 }
 $groupmode = ($mode == "group");
 
-$url = new moodle_url('/mod/quiz/overrides.php', ['cmid' => $cm->id, 'mode' => $mode]);
+$url = new moodle_url('/mod/hippotrack/overrides.php', ['cmid' => $cm->id, 'mode' => $mode]);
 
 $title = get_string('overridesforquiz', 'quiz',
         format_string($quiz->name, true, ['context' => $context]));
@@ -76,7 +76,7 @@ $PAGE->set_secondary_active_tab("mod_hippotrack_useroverrides");
 
 // Delete orphaned group overrides.
 $sql = 'SELECT o.id
-          FROM {quiz_overrides} o
+          FROM {hippotrack_overrides} o
      LEFT JOIN {groups} g ON o.groupid = g.id
          WHERE o.groupid IS NOT NULL
                AND g.id IS NULL
@@ -84,7 +84,7 @@ $sql = 'SELECT o.id
 $params = [$quiz->id];
 $orphaned = $DB->get_records_sql($sql, $params);
 if (!empty($orphaned)) {
-    $DB->delete_records_list('quiz_overrides', 'id', array_keys($orphaned));
+    $DB->delete_records_list('hippotrack_overrides', 'id', array_keys($orphaned));
 }
 
 $overrides = [];
@@ -101,7 +101,7 @@ if ($groupmode) {
         $params += $inparams;
 
         $sql = "SELECT o.*, g.name
-                  FROM {quiz_overrides} o
+                  FROM {hippotrack_overrides} o
                   JOIN {groups} g ON o.groupid = g.id
                  WHERE o.quiz = :quizid AND g.id $insql
               ORDER BY g.name";
@@ -142,7 +142,7 @@ if ($groupmode) {
 
     $overrides = $DB->get_records_sql("
             SELECT o.*, {$userfieldssql->selects}
-              FROM {quiz_overrides} o
+              FROM {hippotrack_overrides} o
               JOIN {user} u ON o.userid = u.id
                   {$userfieldssql->joins}
               $groupsjoin
@@ -158,7 +158,7 @@ $table->head = $headers;
 $table->colclasses = $colclasses;
 $table->headspan = array_fill(0, count($headers), 1);
 
-$table->head[] = get_string('overrides', 'quiz');
+$table->head[] = get_string('overrides', 'hippotrack');
 $table->colclasses[] = 'colsetting';
 $table->colclasses[] = 'colvalue';
 $table->headspan[] = 2;
@@ -171,8 +171,8 @@ if ($canedit) {
 $userurl = new moodle_url('/user/view.php', []);
 $groupurl = new moodle_url('/group/overview.php', ['id' => $cm->course]);
 
-$overridedeleteurl = new moodle_url('/mod/quiz/overridedelete.php');
-$overrideediturl = new moodle_url('/mod/quiz/overrideedit.php');
+$overridedeleteurl = new moodle_url('/mod/hippotrack/overridedelete.php');
+$overrideediturl = new moodle_url('/mod/hippotrack/overrideedit.php');
 
 $hasinactive = false; // Whether there are any inactive overrides.
 
@@ -181,7 +181,7 @@ foreach ($overrides as $override) {
     // Check if this override is active.
     $active = true;
     if (!$groupmode) {
-        if (!has_capability('mod/quiz:attempt', $context, $override->userid)) {
+        if (!has_capability('mod/hippotrack:attempt', $context, $override->userid)) {
             // User not allowed to take the quiz.
             $active = false;
         } else if (!\core_availability\info_module::is_user_visible($cm, $override->userid)) {
@@ -199,33 +199,33 @@ foreach ($overrides as $override) {
 
     // Format timeopen.
     if (isset($override->timeopen)) {
-        $fields[] = get_string('quizopens', 'quiz');
+        $fields[] = get_string('quizopens', 'hippotrack');
         $values[] = $override->timeopen > 0 ?
-                userdate($override->timeopen) : get_string('noopen', 'quiz');
+                userdate($override->timeopen) : get_string('noopen', 'hippotrack');
     }
     // Format timeclose.
     if (isset($override->timeclose)) {
-        $fields[] = get_string('quizcloses', 'quiz');
+        $fields[] = get_string('quizcloses', 'hippotrack');
         $values[] = $override->timeclose > 0 ?
-                userdate($override->timeclose) : get_string('noclose', 'quiz');
+                userdate($override->timeclose) : get_string('noclose', 'hippotrack');
     }
     // Format timelimit.
     if (isset($override->timelimit)) {
-        $fields[] = get_string('timelimit', 'quiz');
+        $fields[] = get_string('timelimit', 'hippotrack');
         $values[] = $override->timelimit > 0 ?
-                format_time($override->timelimit) : get_string('none', 'quiz');
+                format_time($override->timelimit) : get_string('none', 'hippotrack');
     }
     // Format number of attempts.
     if (isset($override->attempts)) {
-        $fields[] = get_string('attempts', 'quiz');
+        $fields[] = get_string('attempts', 'hippotrack');
         $values[] = $override->attempts > 0 ?
                 $override->attempts : get_string('unlimited');
     }
     // Format password.
     if (isset($override->password)) {
-        $fields[] = get_string('requirepassword', 'quiz');
+        $fields[] = get_string('requirepassword', 'hippotrack');
         $values[] = $override->password !== '' ?
-                get_string('enabled', 'quiz') : get_string('none', 'quiz');
+                get_string('enabled', 'hippotrack') : get_string('none', 'hippotrack');
     }
 
     // Prepare the information about who this override applies to.
@@ -310,20 +310,20 @@ if ($canedit) {
     if ($groupmode) {
         if (empty($groups)) {
             // There are no groups.
-            $warningmessage = get_string('groupsnone', 'quiz');
+            $warningmessage = get_string('groupsnone', 'hippotrack');
             $addenabled = false;
         }
     } else {
         // See if there are any students in the quiz.
         if ($showallgroups) {
-            $users = get_users_by_capability($context, 'mod/quiz:attempt', 'u.id');
-            $nousermessage = get_string('usersnone', 'quiz');
+            $users = get_users_by_capability($context, 'mod/hippotrack:attempt', 'u.id');
+            $nousermessage = get_string('usersnone', 'hippotrack');
         } else if ($groups) {
-            $users = get_users_by_capability($context, 'mod/quiz:attempt', 'u.id', '', '', '', array_keys($groups));
-            $nousermessage = get_string('usersnone', 'quiz');
+            $users = get_users_by_capability($context, 'mod/hippotrack:attempt', 'u.id', '', '', '', array_keys($groups));
+            $nousermessage = get_string('usersnone', 'hippotrack');
         } else {
             $users = [];
-            $nousermessage = get_string('groupsnone', 'quiz');
+            $nousermessage = get_string('groupsnone', 'hippotrack');
         }
         $info = new \core_availability\info_module($cm);
         $users = $info->filter_user_list($users);
@@ -343,9 +343,9 @@ $tertiarynav = new \mod_hippotrack\output\overrides_actions($cmid, $mode, $caned
 echo $renderer->render($tertiarynav);
 
 if ($mode === 'user') {
-    echo $OUTPUT->heading(get_string('useroverrides', 'quiz'));
+    echo $OUTPUT->heading(get_string('useroverrides', 'hippotrack'));
 } else {
-    echo $OUTPUT->heading(get_string('groupoverrides', 'quiz'));
+    echo $OUTPUT->heading(get_string('groupoverrides', 'hippotrack'));
 }
 
 // Output the table and button.
@@ -354,13 +354,13 @@ if (count($table->data)) {
     echo html_writer::table($table);
 } else {
     if ($groupmode) {
-        echo $OUTPUT->notification(get_string('overridesnoneforgroups', 'quiz'), 'info', false);
+        echo $OUTPUT->notification(get_string('overridesnoneforgroups', 'hippotrack'), 'info', false);
     } else {
-        echo $OUTPUT->notification(get_string('overridesnoneforusers', 'quiz'), 'info', false);
+        echo $OUTPUT->notification(get_string('overridesnoneforusers', 'hippotrack'), 'info', false);
     }
 }
 if ($hasinactive) {
-    echo $OUTPUT->notification(get_string('inactiveoverridehelp', 'quiz'), 'info', false);
+    echo $OUTPUT->notification(get_string('inactiveoverridehelp', 'hippotrack'), 'info', false);
 }
 
 if ($warningmessage) {

@@ -57,7 +57,7 @@ class behat_mod_hippotrack_generator extends behat_generator_base {
      * @param string $quizname the quiz name, for example 'Test quiz'.
      * @return int corresponding id.
      */
-    protected function get_quiz_id(string $quizname): int {
+    protected function get_hippotrack_id(string $quizname): int {
         global $DB;
 
         if (!$id = $DB->get_field('quiz', 'id', ['name' => $quizname])) {

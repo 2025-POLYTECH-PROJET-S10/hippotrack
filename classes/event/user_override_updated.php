@@ -46,7 +46,7 @@ class user_override_updated extends \core\event\base {
      * Init method.
      */
     protected function init() {
-        $this->data['objecttable'] = 'quiz_overrides';
+        $this->data['objecttable'] = 'hippotrack_overrides';
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
     }
@@ -76,7 +76,7 @@ class user_override_updated extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/quiz/overrideedit.php', array('id' => $this->objectid));
+        return new \moodle_url('/mod/hippotrack/overrideedit.php', array('id' => $this->objectid));
     }
 
     /**
@@ -108,7 +108,7 @@ class user_override_updated extends \core\event\base {
     }
 
     public static function get_objectid_mapping() {
-        return array('db' => 'quiz_overrides', 'restore' => 'quiz_override');
+        return array('db' => 'hippotrack_overrides', 'restore' => 'hippotrack_override');
     }
 
     public static function get_other_mapping() {

@@ -22,7 +22,7 @@ use quiz;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/attemptlib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/attemptlib.php');
 
 /**
  * Unit tests for quiz events.
@@ -38,7 +38,7 @@ class structure_test extends \advanced_testcase {
      * Create a course with an empty quiz.
      * @return array with three elements quiz, cm and course.
      */
-    protected function prepare_quiz_data() {
+    protected function prepare_hippotrack_data() {
 
         $this->resetAfterTest(true);
 
@@ -77,7 +77,7 @@ class structure_test extends \advanced_testcase {
      * @return quiz the created quiz.
      */
     protected function create_test_quiz($layout) {
-        list($quiz, $cm, $course) = $this->prepare_quiz_data();
+        list($quiz, $cm, $course) = $this->prepare_hippotrack_data();
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
 
@@ -100,7 +100,7 @@ class structure_test extends \advanced_testcase {
                 $q = $questiongenerator->create_question($qtype, null,
                         array('name' => $name, 'category' => $cat->id));
 
-                quiz_add_quiz_question($q->id, $quiz, $page);
+                hippotrack_add_hippotrack_question($q->id, $quiz, $page);
                 $lastpage = $page;
             }
         }
@@ -130,7 +130,7 @@ class structure_test extends \advanced_testcase {
      * @param array $expectedlayout as for $layout in {@link create_test_quiz()}.
      * @param structure $structure the structure to test.
      */
-    protected function assert_quiz_layout($expectedlayout, structure $structure) {
+    protected function assert_hippotrack_layout($expectedlayout, structure $structure) {
         $sections = $structure->get_sections();
 
         $slot = 1;
@@ -174,7 +174,7 @@ class structure_test extends \advanced_testcase {
 
     /**
      * Parse the section name, optionally followed by a * to mean shuffle, as
-     * used by create_test_quiz as assert_quiz_layout.
+     * used by create_test_quiz as assert_hippotrack_layout.
      * @param string $heading the heading.
      * @return array with two elements, the heading and the shuffle setting.
      */
@@ -186,7 +186,7 @@ class structure_test extends \advanced_testcase {
         }
     }
 
-    public function test_get_quiz_slots() {
+    public function test_get_hippotrack_slots() {
         $quizobj = $this->create_test_quiz(array(
                 array('TF1', 1, 'truefalse'),
                 array('TF2', 1, 'truefalse'),
@@ -198,7 +198,7 @@ class structure_test extends \advanced_testcase {
         $this->assertCount(2, $structure->get_slots());
     }
 
-    public function test_quiz_has_one_section_by_default() {
+    public function test_hippotrack_has_one_section_by_default() {
         $quizobj = $this->create_test_quiz(array(
                 array('TF1', 1, 'truefalse'),
             ));
@@ -250,7 +250,7 @@ class structure_test extends \advanced_testcase {
         $structure->remove_section_heading($section->id);
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 'Heading 1',
                 array('TF1', 1, 'truefalse'),
                 array('TF2', 2, 'truefalse'),
@@ -284,7 +284,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, $idmoveafter, '1');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 array('TF1', 1, 'truefalse'),
                 array('TF2', 1, 'truefalse'),
                 array('TF3', 2, 'truefalse'),
@@ -304,7 +304,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, $idmoveafter, '2');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 array('TF1', 1, 'truefalse'),
                 array('TF2', 2, 'truefalse'),
                 array('TF3', 2, 'truefalse'),
@@ -323,7 +323,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, $idmoveafter, '1');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 array('TF1', 1, 'truefalse'),
                 array('TF2', 1, 'truefalse'),
             ), $structure);
@@ -343,7 +343,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, $idmoveafter, '2');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 array('TF1', 1, 'truefalse'),
                 'Heading',
                 array('TF2', 2, 'truefalse'),
@@ -365,7 +365,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, $idmoveafter, '1');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 array('TF1', 1, 'truefalse'),
                 array('TF2', 1, 'truefalse'),
                 'Heading',
@@ -385,7 +385,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, $idmoveafter, '1');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 array('TF1', 1, 'truefalse'),
                 array('TF3', 1, 'truefalse'),
                 array('TF2', 1, 'truefalse'),
@@ -405,7 +405,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, $idmoveafter, '1');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 array('TF1', 1, 'truefalse'),
                 array('TF3', 1, 'truefalse'),
                 array('TF2', 2, 'truefalse'),
@@ -425,7 +425,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, $idmoveafter, '3');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 array('TF1', 1, 'truefalse'),
                 array('TF3', 2, 'truefalse'),
                 array('TF2', 2, 'truefalse'),
@@ -475,7 +475,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, $idmoveafter, '1');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 'Heading 1',
                 array('TF2', 1, 'truefalse'),
                 array('TF1', 1, 'truefalse'),
@@ -499,7 +499,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, $idmoveafter, '2');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 'Heading 1',
                 array('TF1', 1, 'truefalse'),
                 'Heading 2',
@@ -522,7 +522,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, 0, '1');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 'Heading 1',
                 array('TF3', 1, 'truefalse'),
                 array('TF1', 1, 'truefalse'),
@@ -546,7 +546,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, $idmoveafter, '2');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 'Heading 1',
                 array('TF1', 1, 'truefalse'),
                 'Heading 2',
@@ -567,7 +567,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, 0, '2');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 'Heading 1',
                 array('TF1', 1, 'truefalse'),
                 array('TF2', 1, 'truefalse'),
@@ -586,7 +586,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, 0, '1');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 'Heading 1',
                 array('TF1', 1, 'truefalse'),
                 array('TF2', 2, 'truefalse'),
@@ -605,7 +605,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, 0, '');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 'Heading 1',
                 array('TF1', 1, 'truefalse'),
                 array('TF2', 2, 'truefalse'),
@@ -629,7 +629,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, $idmoveafter, '2');
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 'Heading 1',
                 array('TF1', 1, 'truefalse'),
                 'Heading 2',
@@ -657,7 +657,7 @@ class structure_test extends \advanced_testcase {
         $structure->move_slot($idtomove, $idmoveafter, 1);
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 'Heading 1',
                 array('TF1', 1, 'truefalse'),
                 array('TF4', 1, 'truefalse'),
@@ -668,7 +668,7 @@ class structure_test extends \advanced_testcase {
         ), $structure);
     }
 
-    public function test_quiz_remove_slot() {
+    public function test_hippotrack_remove_slot() {
         $quizobj = $this->create_test_quiz(array(
                 array('TF1', 1, 'truefalse'),
                 array('TF2', 1, 'truefalse'),
@@ -680,14 +680,14 @@ class structure_test extends \advanced_testcase {
         $structure->remove_slot(2);
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 array('TF1', 1, 'truefalse'),
                 'Heading 2',
                 array('TF3', 2, 'truefalse'),
             ), $structure);
     }
 
-    public function test_quiz_removing_a_random_question_deletes_the_question() {
+    public function test_hippotrack_removing_a_random_question_deletes_the_question() {
         global $DB;
 
         $this->resetAfterTest(true);
@@ -699,11 +699,11 @@ class structure_test extends \advanced_testcase {
 
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
-        quiz_add_random_questions($quizobj->get_quiz(), 1, $cat->id, 1, false);
+        hippotrack_add_random_questions($quizobj->get_quiz(), 1, $cat->id, 1, false);
         $structure = structure::create_for_quiz($quizobj);
         $sql = 'SELECT qsr.*
                  FROM {question_set_references} qsr
-                 JOIN {quiz_slots} qs ON qs.id = qsr.itemid
+                 JOIN {hippotrack_slots} qs ON qs.id = qsr.itemid
                  WHERE qs.quizid = ?
                    AND qsr.component = ?
                    AND qsr.questionarea = ?';
@@ -712,7 +712,7 @@ class structure_test extends \advanced_testcase {
         $structure->remove_slot(2);
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 array('TF1', 1, 'truefalse'),
             ), $structure);
         $this->assertFalse($DB->record_exists('question_set_references',
@@ -763,10 +763,10 @@ class structure_test extends \advanced_testcase {
         $q = $questiongenerator->create_question('truefalse', null,
                 array('name' => 'TF2', 'category' => $cat->id));
 
-        quiz_add_quiz_question($q->id, $quizobj->get_quiz(), 0);
+        hippotrack_add_hippotrack_question($q->id, $quizobj->get_quiz(), 0);
         $structure = structure::create_for_quiz($quizobj);
 
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 'Heading 1',
                 array('TF2', 1, 'truefalse'),
         ), $structure);
@@ -784,10 +784,10 @@ class structure_test extends \advanced_testcase {
         $q = $questiongenerator->create_question('truefalse', null,
                 array('name' => 'TF3', 'category' => $cat->id));
 
-        quiz_add_quiz_question($q->id, $quizobj->get_quiz(), 1);
+        hippotrack_add_hippotrack_question($q->id, $quizobj->get_quiz(), 1);
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 array('TF1', 1, 'truefalse'),
                 array('TF3', 1, 'truefalse'),
                 'Heading 2',
@@ -810,10 +810,10 @@ class structure_test extends \advanced_testcase {
         $q = $questiongenerator->create_question('truefalse', null,
                 array('name' => 'TF4', 'category' => $cat->id));
 
-        quiz_add_quiz_question($q->id, $quizobj->get_quiz(), 1);
+        hippotrack_add_hippotrack_question($q->id, $quizobj->get_quiz(), 1);
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 'Heading 1',
                 array('TF1', 1, 'truefalse'),
                 array('TF4', 1, 'truefalse'),
@@ -836,10 +836,10 @@ class structure_test extends \advanced_testcase {
         $q = $questiongenerator->create_question('truefalse', null,
                 array('name' => 'TF3', 'category' => $cat->id));
 
-        quiz_add_quiz_question($q->id, $quizobj->get_quiz(), 0);
+        hippotrack_add_hippotrack_question($q->id, $quizobj->get_quiz(), 0);
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 array('TF1', 1, 'truefalse'),
                 'Heading 2',
                 array('TF2', 2, 'truefalse'),
@@ -858,7 +858,7 @@ class structure_test extends \advanced_testcase {
         $slots = $structure->update_page_break($slotid, repaginate::LINK);
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 array('TF1', 1, 'truefalse'),
                 array('TF2', 1, 'truefalse'),
             ), $structure);
@@ -875,7 +875,7 @@ class structure_test extends \advanced_testcase {
         $slots = $structure->update_page_break($slotid, repaginate::UNLINK);
 
         $structure = structure::create_for_quiz($quizobj);
-        $this->assert_quiz_layout(array(
+        $this->assert_hippotrack_layout(array(
                 array('TF1', 1, 'truefalse'),
                 array('TF2', 2, 'truefalse'),
         ), $structure);
@@ -943,7 +943,7 @@ class structure_test extends \advanced_testcase {
                 ['category' => $cat->id, 'name' => 'This is the first version']);
         $questiongenerator->update_question($q, null, ['name' => 'This is the second version']);
         $questiongenerator->update_question($q, null, ['name' => 'This is the third version']);
-        quiz_add_quiz_question($q->id, $quizobj->get_quiz());
+        hippotrack_add_hippotrack_question($q->id, $quizobj->get_quiz());
 
         // Create the quiz object.
         $structure = structure::create_for_quiz($quizobj);
@@ -973,7 +973,7 @@ class structure_test extends \advanced_testcase {
         $cat = $questiongenerator->create_question_category(['contextid' => $quizobj->get_context()->id]);
         $q = $questiongenerator->create_question('essay', null,
             ['category' => $cat->id, 'name' => 'This is essay question']);
-        quiz_add_quiz_question($q->id, $quizobj->get_quiz());
+        hippotrack_add_hippotrack_question($q->id, $quizobj->get_quiz());
 
         // Create the quiz object.
         $structure = structure::create_for_quiz($quizobj);

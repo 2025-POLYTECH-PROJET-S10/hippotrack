@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem implementation for quiz_overview..
+ * Privacy Subsystem implementation for hippotrack_overview..
  *
- * @package    quiz_overview
+ * @package    hippotrack_overview
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quiz_overview\privacy;
+namespace hippotrack_overview\privacy;
 
 use \core_privacy\local\request\writer;
 use \core_privacy\local\request\transform;
@@ -32,7 +32,7 @@ use \core_privacy\manager;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Privacy Subsystem implementation for quiz_overview..
+ * Privacy Subsystem implementation for hippotrack_overview..
  *
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -48,7 +48,7 @@ class provider implements
      * @return  collection     A listing of user data stored through this system.
      */
     public static function get_metadata(collection $collection) : collection {
-        $collection->add_user_preference('quiz_overview_slotmarks', 'privacy:metadata:preference:quiz_overview_slotmarks');
+        $collection->add_user_preference('hippotrack_overview_slotmarks', 'privacy:metadata:preference:hippotrack_overview_slotmarks');
 
         return $collection;
     }
@@ -59,16 +59,16 @@ class provider implements
      * @param   int         $userid The userid of the user whose data is to be exported.
      */
     public static function export_user_preferences(int $userid) {
-        $preference = get_user_preferences('quiz_overview_slotmarks', null, $userid);
+        $preference = get_user_preferences('hippotrack_overview_slotmarks', null, $userid);
         if (null !== $preference) {
             if (empty($preference)) {
-                $description = get_string('privacy:preference:slotmarks:no', 'quiz_overview');
+                $description = get_string('privacy:preference:slotmarks:no', 'hippotrack_overview');
             } else {
-                $description = get_string('privacy:preference:slotmarks:yes', 'quiz_overview');
+                $description = get_string('privacy:preference:slotmarks:yes', 'hippotrack_overview');
             }
 
             writer::export_user_preference(
-                'quiz_overview',
+                'hippotrack_overview',
                 'slotmarks',
                 transform::yesno($preference),
                 $description

@@ -42,7 +42,7 @@ namespace mod_hippotrack\event;
  */
 class slot_moved extends \core\event\base {
     protected function init() {
-        $this->data['objecttable'] = 'quiz_slots';
+        $this->data['objecttable'] = 'hippotrack_slots';
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
     }
@@ -63,7 +63,7 @@ class slot_moved extends \core\event\base {
     }
 
     public function get_url() {
-        return new \moodle_url('/mod/quiz/edit.php', [
+        return new \moodle_url('/mod/hippotrack/edit.php', [
             'cmid' => $this->contextinstanceid
         ]);
     }
@@ -97,7 +97,7 @@ class slot_moved extends \core\event\base {
     }
 
     public static function get_objectid_mapping() {
-        return ['db' => 'quiz_slots', 'restore' => 'quiz_question_instance'];
+        return ['db' => 'hippotrack_slots', 'restore' => 'hippotrack_question_instance'];
     }
 
     public static function get_other_mapping() {

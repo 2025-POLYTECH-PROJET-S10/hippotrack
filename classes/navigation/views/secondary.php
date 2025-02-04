@@ -39,7 +39,7 @@ class secondary extends core_secondary {
 
         $defaultmaping[self::TYPE_SETTING] = array_merge($defaultmaping[self::TYPE_SETTING], [
             'mod_hippotrack_edit'  => 3,
-            'quiz_report' => 4,
+            'hippotrack_report' => 4,
             'mod_hippotrack_useroverrides' => 6,
             'roleassign' => 7,
             'filtermanage' => 8,

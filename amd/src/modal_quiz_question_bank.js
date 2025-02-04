@@ -16,7 +16,7 @@
 /**
  * Contain the logic for the question bank modal.
  *
- * @module     mod_hippotrack/modal_quiz_question_bank
+ * @module     mod_hippotrack/modal_hippotrack_question_bank
  * @copyright  2018 Ryan Wyllie <ryan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -136,7 +136,7 @@ define([
             // Load the question bank fragment to be displayed in the modal.
             var promise = Fragment.loadFragment(
                 'mod_hippotrack',
-                'quiz_question_bank',
+                'hippotrack_question_bank',
                 this.getContextId(),
                 {
                     querystring: queryString

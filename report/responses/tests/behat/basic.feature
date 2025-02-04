@@ -1,4 +1,4 @@
-@mod @mod_hippotrack @quiz @quiz_reponses
+@mod @mod_hippotrack @quiz @hippotrack_reponses
 Feature: Basic use of the Responses report
   In order to see how my students are progressing
   As a teacher

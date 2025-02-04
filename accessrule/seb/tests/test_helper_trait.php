@@ -29,8 +29,8 @@ use quizaccess_seb\settings_provider;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . "/mod/quiz/accessrule/seb/rule.php"); // Include plugin rule class.
-require_once($CFG->dirroot . "/mod/quiz/mod_form.php"); // Include plugin rule class.
+require_once($CFG->dirroot . "/mod/hippotrack/accessrule/seb/rule.php"); // Include plugin rule class.
+require_once($CFG->dirroot . "/mod/hippotrack/mod_form.php"); // Include plugin rule class.
 
 /**
  * A test helper trait. It has some common helper methods.
@@ -171,9 +171,9 @@ trait quizaccess_seb_test_helper_trait {
         $cat = $questiongenerator->create_question_category();
 
         $saq = $questiongenerator->create_question('shortanswer', null, array('category' => $cat->id));
-        quiz_add_quiz_question($saq->id, $quiz);
+        hippotrack_add_hippotrack_question($saq->id, $quiz);
         $numq = $questiongenerator->create_question('numerical', null, array('category' => $cat->id));
-        quiz_add_quiz_question($numq->id, $quiz);
+        hippotrack_add_hippotrack_question($numq->id, $quiz);
 
         return $quiz;
     }
@@ -195,12 +195,12 @@ trait quizaccess_seb_test_helper_trait {
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         // Start the attempt.
-        $attempt = quiz_create_attempt($quizobj, 1, false, $starttime, false, $user->id);
-        quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $starttime);
-        quiz_attempt_save_started($quizobj, $quba, $attempt);
+        $attempt = hippotrack_create_attempt($quizobj, 1, false, $starttime, false, $user->id);
+        hippotrack_start_new_attempt($quizobj, $quba, $attempt, 1, $starttime);
+        hippotrack_attempt_save_started($quizobj, $quba, $attempt);
 
         // Answer the questions.
-        $attemptobj = \quiz_attempt::create($attempt->id);
+        $attemptobj = \hippotrack_attempt::create($attempt->id);
 
         $tosubmit = [
             1 => ['answer' => 'frog'],
@@ -210,7 +210,7 @@ trait quizaccess_seb_test_helper_trait {
         $attemptobj->process_submitted_actions($starttime, false, $tosubmit);
 
         // Finish the attempt.
-        $attemptobj = \quiz_attempt::create($attempt->id);
+        $attemptobj = \hippotrack_attempt::create($attempt->id);
         $attemptobj->process_finish($starttime, false);
 
         $this->setUser();
@@ -247,7 +247,7 @@ trait quizaccess_seb_test_helper_trait {
     /**
      * A helper method to make the rule form the currently created quiz and  course.
      *
-     * @return \quiz_access_rule_base|null
+     * @return \hippotrack_access_rule_base|null
      */
     protected function make_rule() {
         return \quizaccess_seb::make(
@@ -260,7 +260,7 @@ trait quizaccess_seb_test_helper_trait {
     /**
      * A helper method to set up quiz view page.
      */
-    protected function set_up_quiz_view_page() {
+    protected function set_up_hippotrack_view_page() {
         global $PAGE;
 
         $page = new \moodle_page();
@@ -268,7 +268,7 @@ trait quizaccess_seb_test_helper_trait {
         $page->set_course($this->course);
         $page->set_pagelayout('standard');
         $page->set_pagetype("mod-quiz-view");
-        $page->set_url('/mod/quiz/view.php?id=' . $this->quiz->cmid);
+        $page->set_url('/mod/hippotrack/view.php?id=' . $this->quiz->cmid);
 
         $PAGE = $page;
     }

@@ -17,7 +17,7 @@
 /**
  * This file defines the quiz overview report class.
  *
- * @package   quiz_overview
+ * @package   hippotrack_overview
  * @copyright 1999 onwards Martin Dougiamas and others {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,10 +26,10 @@ use mod_hippotrack\question\bank\qbank_helper;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/report/attemptsreport.php');
-require_once($CFG->dirroot . '/mod/quiz/report/overview/overview_options.php');
-require_once($CFG->dirroot . '/mod/quiz/report/overview/overview_form.php');
-require_once($CFG->dirroot . '/mod/quiz/report/overview/overview_table.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/attemptsreport.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/overview/overview_options.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/overview/overview_form.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/overview/overview_table.php');
 
 
 /**
@@ -38,7 +38,7 @@ require_once($CFG->dirroot . '/mod/quiz/report/overview/overview_table.php');
  * @copyright 1999 onwards Martin Dougiamas and others {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_overview_report extends quiz_attempts_report {
+class hippotrack_overview_report extends hippotrack_attempts_report {
 
     /**
      * @var bool whether there are actually students to show, given the options.
@@ -61,9 +61,9 @@ class quiz_overview_report extends quiz_attempts_report {
         global $DB, $OUTPUT, $PAGE;
 
         list($currentgroup, $studentsjoins, $groupstudentsjoins, $allowedjoins) = $this->init(
-                'overview', 'quiz_overview_settings_form', $quiz, $cm, $course);
+                'overview', 'hippotrack_overview_settings_form', $quiz, $cm, $course);
 
-        $options = new quiz_overview_options('overview', $quiz, $cm, $course);
+        $options = new hippotrack_overview_options('overview', $quiz, $cm, $course);
 
         if ($fromform = $this->form->get_data()) {
             $options->process_settings_from_form($fromform);
@@ -75,13 +75,13 @@ class quiz_overview_report extends quiz_attempts_report {
         $this->form->set_data($options->get_initial_form_data());
 
         // Load the required questions.
-        $questions = quiz_report_get_significant_questions($quiz);
+        $questions = hippotrack_report_get_significant_questions($quiz);
         // Prepare for downloading, if applicable.
         $courseshortname = format_string($course->shortname, true,
                 array('context' => context_course::instance($course->id)));
-        $table = new quiz_overview_table($quiz, $this->context, $this->qmsubselect,
+        $table = new hippotrack_overview_table($quiz, $this->context, $this->qmsubselect,
                 $options, $groupstudentsjoins, $studentsjoins, $questions, $options->get_url());
-        $filename = quiz_report_download_filename(get_string('overviewfilename', 'quiz_overview'),
+        $filename = hippotrack_report_download_filename(get_string('overviewfilename', 'hippotrack_overview'),
                 $courseshortname, $quiz->name);
         $table->is_downloading($options->download, $filename,
                 $courseshortname . ' ' . format_string($quiz->name, true));
@@ -115,7 +115,7 @@ class quiz_overview_report extends quiz_attempts_report {
         $this->course = $course; // Hack to make this available in process_actions.
         $this->process_actions($quiz, $cm, $currentgroup, $groupstudentsjoins, $allowedjoins, $options->get_url());
 
-        $hasquestions = quiz_has_questions($quiz->id);
+        $hasquestions = hippotrack_has_questions($quiz->id);
 
         // Start output.
         if (!$table->is_downloading()) {
@@ -134,7 +134,7 @@ class quiz_overview_report extends quiz_attempts_report {
 
             if (!$table->is_downloading()) {
                 // Output the regrade buttons.
-                if (has_capability('mod/quiz:regrade', $this->context)) {
+                if (has_capability('mod/hippotrack:regrade', $this->context)) {
                     $regradesneeded = $this->count_question_attempts_needing_regrade(
                             $quiz, $groupstudentsjoins);
                     if ($currentgroup) {
@@ -145,18 +145,18 @@ class quiz_overview_report extends quiz_attempts_report {
                         $a->coursestudents = get_string('participants');
                         $a->countregradeneeded = $regradesneeded;
                         $regradealldrydolabel =
-                                get_string('regradealldrydogroup', 'quiz_overview', $a);
+                                get_string('regradealldrydogroup', 'hippotrack_overview', $a);
                         $regradealldrylabel =
-                                get_string('regradealldrygroup', 'quiz_overview', $a);
+                                get_string('regradealldrygroup', 'hippotrack_overview', $a);
                         $regradealllabel =
-                                get_string('regradeallgroup', 'quiz_overview', $a);
+                                get_string('regradeallgroup', 'hippotrack_overview', $a);
                     } else {
                         $regradealldrydolabel =
-                                get_string('regradealldrydo', 'quiz_overview', $regradesneeded);
+                                get_string('regradealldrydo', 'hippotrack_overview', $regradesneeded);
                         $regradealldrylabel =
-                                get_string('regradealldry', 'quiz_overview');
+                                get_string('regradealldry', 'hippotrack_overview');
                         $regradealllabel =
-                                get_string('regradeall', 'quiz_overview');
+                                get_string('regradeall', 'hippotrack_overview');
                     }
                     $displayurl = new moodle_url($options->get_url(), array('sesskey' => sesskey()));
                     echo '<div class="mdl-align">';
@@ -175,7 +175,7 @@ class quiz_overview_report extends quiz_attempts_report {
                     echo '</div>';
                 }
                 // Print information on the grading method.
-                if ($strattempthighlight = quiz_report_highlighting_grading_method(
+                if ($strattempthighlight = hippotrack_report_highlighting_grading_method(
                         $quiz, $this->qmsubselect, $options->onlygraded)) {
                     echo '<div class="quizattemptcounts">' . $strattempthighlight . '</div>';
                 }
@@ -197,10 +197,10 @@ class quiz_overview_report extends quiz_attempts_report {
 
             $this->add_grade_columns($quiz, $options->usercanseegrades, $columns, $headers, false);
 
-            if (!$table->is_downloading() && has_capability('mod/quiz:regrade', $this->context) &&
+            if (!$table->is_downloading() && has_capability('mod/hippotrack:regrade', $this->context) &&
                     $this->has_regraded_questions($table->sql->from, $table->sql->where, $table->sql->params)) {
                 $columns[] = 'regraded';
-                $headers[] = get_string('regrade', 'quiz_overview');
+                $headers[] = get_string('regrade', 'hippotrack_overview');
             }
 
             if ($options->slotmarks) {
@@ -212,7 +212,7 @@ class quiz_overview_report extends quiz_attempts_report {
                     } else {
                         $header .= ' ';
                     }
-                    $header .= '/' . quiz_rescale_grade($question->maxmark, $quiz, 'question');
+                    $header .= '/' . hippotrack_rescale_grade($question->maxmark, $quiz, 'question');
                     $headers[] = $header;
                 }
             }
@@ -230,26 +230,26 @@ class quiz_overview_report extends quiz_attempts_report {
 
             if ($currentgroup && $this->hasgroupstudents) {
                 $sql = "SELECT qg.id
-                          FROM {quiz_grades} qg
+                          FROM {hippotrack_grades} qg
                           JOIN {user} u on u.id = qg.userid
                         {$groupstudentsjoins->joins}
                           WHERE qg.quiz = $quiz->id AND {$groupstudentsjoins->wheres}";
                 if ($DB->record_exists_sql($sql, $groupstudentsjoins->params)) {
-                    $data = quiz_report_grade_bands($bandwidth, $bands, $quiz->id, $groupstudentsjoins);
+                    $data = hippotrack_report_grade_bands($bandwidth, $bands, $quiz->id, $groupstudentsjoins);
                     $chart = self::get_chart($labels, $data);
                     $groupname = format_string(groups_get_group_name($currentgroup), true, [
                         'context' => $this->context,
                     ]);
-                    $graphname = get_string('overviewreportgraphgroup', 'quiz_overview', $groupname);
+                    $graphname = get_string('overviewreportgraphgroup', 'hippotrack_overview', $groupname);
                     // Numerical range data should display in LTR even for RTL languages.
                     echo $output->chart($chart, $graphname, ['dir' => 'ltr']);
                 }
             }
 
-            if ($DB->record_exists('quiz_grades', array('quiz'=> $quiz->id))) {
-                $data = quiz_report_grade_bands($bandwidth, $bands, $quiz->id, new \core\dml\sql_join());
+            if ($DB->record_exists('hippotrack_grades', array('quiz'=> $quiz->id))) {
+                $data = hippotrack_report_grade_bands($bandwidth, $bands, $quiz->id, new \core\dml\sql_join());
                 $chart = self::get_chart($labels, $data);
-                $graphname = get_string('overviewreportgraph', 'quiz_overview');
+                $graphname = get_string('overviewreportgraph', 'hippotrack_overview');
                 // Numerical range data should display in LTR even for RTL languages.
                 echo $output->chart($chart, $graphname, ['dir' => 'ltr']);
             }
@@ -304,7 +304,7 @@ class quiz_overview_report extends quiz_attempts_report {
      * @param object $cm the cm object for the quiz.
      */
     protected function start_regrade($quiz, $cm) {
-        require_capability('mod/quiz:regrade', $this->context);
+        require_capability('mod/hippotrack:regrade', $this->context);
         $this->print_header_and_tabs($cm, $this->course, $quiz, $this->mode);
     }
 
@@ -315,7 +315,7 @@ class quiz_overview_report extends quiz_attempts_report {
      */
     protected function finish_regrade($nexturl) {
         global $OUTPUT;
-        \core\notification::success(get_string('regradecomplete', 'quiz_overview'));
+        \core\notification::success(get_string('regradecomplete', 'hippotrack_overview'));
         echo $OUTPUT->continue_button($nexturl);
         echo $OUTPUT->footer();
         die();
@@ -332,7 +332,7 @@ class quiz_overview_report extends quiz_attempts_report {
     /**
      * Regrade a particular quiz attempt. Either for real ($dryrun = false), or
      * as a pretend regrade to see which fractions would change. The outcome is
-     * stored in the quiz_overview_regrades table.
+     * stored in the hippotrack_overview_regrades table.
      *
      * Note, $attempt is not upgraded in the database. The caller needs to do that.
      * However, $attempt->sumgrades is updated, if this is not a dry run.
@@ -357,7 +357,7 @@ class quiz_overview_report extends quiz_attempts_report {
         }
 
         $messages = [];
-        $finished = $attempt->state == quiz_attempt::FINISHED;
+        $finished = $attempt->state == hippotrack_attempt::FINISHED;
         foreach ($slots as $slot) {
             $qqr = new stdClass();
             $qqr->oldfraction = $quba->get_question_fraction($slot);
@@ -378,7 +378,7 @@ class quiz_overview_report extends quiz_attempts_report {
                 $qqr->slot = $slot;
                 $qqr->regraded = empty($dryrun);
                 $qqr->timemodified = time();
-                $DB->insert_record('quiz_overview_regrades', $qqr, false);
+                $DB->insert_record('hippotrack_overview_regrades', $qqr, false);
             }
         }
 
@@ -472,7 +472,7 @@ class quiz_overview_report extends quiz_attempts_report {
 
         $userfieldsapi = \core_user\fields::for_name();
         $sql = "SELECT quiza.*, " . $userfieldsapi->get_sql('u', false, '', '', false)->selects . "
-                  FROM {quiz_attempts} quiza
+                  FROM {hippotrack_attempts} quiza
                   JOIN {user} u ON u.id = quiza.userid";
         $where = "quiz = :qid AND preview = 0";
         $params = array('qid' => $quiz->id);
@@ -500,7 +500,7 @@ class quiz_overview_report extends quiz_attempts_report {
 
     /**
      * Regrade those questions in those attempts that are marked as needing regrading
-     * in the quiz_overview_regrades table.
+     * in the hippotrack_overview_regrades table.
      * @param object $quiz the quiz settings.
      * @param \core\dml\sql_join $groupstudentsjoins empty for all attempts, otherwise regrade attempts
      * for these users.
@@ -509,7 +509,7 @@ class quiz_overview_report extends quiz_attempts_report {
         global $DB;
         $this->unlock_session();
 
-        $join = '{quiz_overview_regrades} qqr ON qqr.questionusageid = quiza.uniqueid';
+        $join = '{hippotrack_overview_regrades} qqr ON qqr.questionusageid = quiza.uniqueid';
         $where = "quiza.quiz = :qid AND quiza.preview = 0 AND qqr.regraded = 0";
         $params = array('qid' => $quiz->id);
 
@@ -523,7 +523,7 @@ class quiz_overview_report extends quiz_attempts_report {
 
         $toregrade = $DB->get_recordset_sql("
                 SELECT quiza.uniqueid, qqr.slot
-                  FROM {quiz_attempts} quiza
+                  FROM {hippotrack_attempts} quiza
                   JOIN $join
                  WHERE $where", $params);
 
@@ -541,7 +541,7 @@ class quiz_overview_report extends quiz_attempts_report {
         $userfieldsapi = \core_user\fields::for_name();
         $attempts = $DB->get_records_sql("
                 SELECT quiza.*, " . $userfieldsapi->get_sql('u', false, '', '', false)->selects . "
-                  FROM {quiz_attempts} quiza
+                  FROM {hippotrack_attempts} quiza
                   JOIN {user} u ON u.id = quiza.userid
                  WHERE quiza.uniqueid $uniqueidcondition
                 ", $params);
@@ -558,13 +558,13 @@ class quiz_overview_report extends quiz_attempts_report {
      * {@link regrade_attempts_needing_it()}.
      *
      * Given an array of attempts, it regrades them all, or does a dry run.
-     * Each object in the attempts array must be a row from the quiz_attempts
+     * Each object in the attempts array must be a row from the hippotrack_attempts
      * table, with the \core_user\fields::for_name() fields from the user table joined in.
      * In addition, if $attempt->regradeonlyslots is set, then only those slots
      * are regraded, otherwise all slots are regraded.
      *
      * @param object $quiz the quiz settings.
-     * @param array $attempts of data from the quiz_attempts table, with extra data as above.
+     * @param array $attempts of data from the hippotrack_attempts table, with extra data as above.
      * @param bool $dryrun if true, do a pretend regrade, otherwise do it for real.
      * @param \core\dml\sql_join $groupstudentsjoins empty for all attempts, otherwise regrade attempts
      */
@@ -573,7 +573,7 @@ class quiz_overview_report extends quiz_attempts_report {
         global $OUTPUT;
         $this->clear_regrade_table($quiz, $groupstudentsjoins);
 
-        $progressbar = new progress_bar('quiz_overview_regrade', 500, true);
+        $progressbar = new progress_bar('hippotrack_overview_regrade', 500, true);
         $a = array(
             'count' => count($attempts),
             'done'  => 0,
@@ -587,21 +587,21 @@ class quiz_overview_report extends quiz_attempts_report {
                 $attempt->regradeonlyslots = null;
             }
             $progressbar->update($a['done'], $a['count'],
-                    get_string('regradingattemptxofywithdetails', 'quiz_overview', $a));
+                    get_string('regradingattemptxofywithdetails', 'hippotrack_overview', $a));
             $messages = $this->regrade_attempt($attempt, $dryrun, $attempt->regradeonlyslots);
             if ($messages) {
                 $items = [];
                 foreach ($messages as $slot => $message) {
-                    $items[] = get_string('regradingattemptissue', 'quiz_overview',
+                    $items[] = get_string('regradingattemptissue', 'hippotrack_overview',
                             ['slot' => $slot, 'reason' => $message]);
                 }
                 echo $OUTPUT->notification(
-                        html_writer::tag('p', get_string('regradingattemptxofyproblem', 'quiz_overview', $a)) .
+                        html_writer::tag('p', get_string('regradingattemptxofyproblem', 'hippotrack_overview', $a)) .
                         html_writer::alist($items), \core\output\notification::NOTIFY_WARNING);
             }
         }
         $progressbar->update($a['done'], $a['count'],
-                get_string('regradedsuccessfullyxofy', 'quiz_overview', $a));
+                get_string('regradedsuccessfullyxofy', 'hippotrack_overview', $a));
 
         if (!$dryrun) {
             $this->update_overall_grades($quiz);
@@ -631,8 +631,8 @@ class quiz_overview_report extends quiz_attempts_report {
 
         $params['cquiz'] = $quiz->id;
         $sql = "SELECT COUNT(DISTINCT quiza.id)
-                  FROM {quiz_attempts} quiza
-                  JOIN {quiz_overview_regrades} qqr ON quiza.uniqueid = qqr.questionusageid
+                  FROM {hippotrack_attempts} quiza
+                  JOIN {hippotrack_overview_regrades} qqr ON quiza.uniqueid = qqr.questionusageid
                 $userjoin
                  WHERE
                       $usertest
@@ -654,7 +654,7 @@ class quiz_overview_report extends quiz_attempts_report {
         return $DB->record_exists_sql("
                 SELECT 1
                   FROM {$from}
-                  JOIN {quiz_overview_regrades} qor ON qor.questionusageid = quiza.uniqueid
+                  JOIN {hippotrack_overview_regrades} qor ON qor.questionusageid = quiza.uniqueid
                  WHERE {$where}", $params);
     }
 
@@ -670,7 +670,7 @@ class quiz_overview_report extends quiz_attempts_report {
         // Fetch all attempts that need regrading.
         $select = "questionusageid IN (
                     SELECT uniqueid
-                      FROM {quiz_attempts} quiza";
+                      FROM {hippotrack_attempts} quiza";
         $where = "WHERE quiza.quiz = :qid";
         $params = array('qid' => $quiz->id);
         if ($this->hasgroupstudents && !empty($groupstudentsjoins->joins)) {
@@ -681,7 +681,7 @@ class quiz_overview_report extends quiz_attempts_report {
         }
         $select .= "\n$where)";
 
-        $DB->delete_records_select('quiz_overview_regrades', $select, $params);
+        $DB->delete_records_select('hippotrack_overview_regrades', $select, $params);
     }
 
     /**
@@ -692,9 +692,9 @@ class quiz_overview_report extends quiz_attempts_report {
      * @param array $attemptids attemptids only update scores for these attempt ids.
      */
     protected function update_overall_grades($quiz) {
-        quiz_update_all_attempt_sumgrades($quiz);
-        quiz_update_all_final_grades($quiz);
-        quiz_update_grades($quiz);
+        hippotrack_update_all_attempt_sumgrades($quiz);
+        hippotrack_update_all_final_grades($quiz);
+        hippotrack_update_grades($quiz);
     }
 
     /**
@@ -737,7 +737,7 @@ class quiz_overview_report extends quiz_attempts_report {
     public static function get_bands_labels($bands, $bandwidth, $quiz) {
         $bandlabels = [];
         for ($i = 1; $i <= $bands; $i++) {
-            $bandlabels[] = quiz_format_grade($quiz, ($i - 1) * $bandwidth) . ' - ' . quiz_format_grade($quiz, $i * $bandwidth);
+            $bandlabels[] = hippotrack_format_grade($quiz, ($i - 1) * $bandwidth) . ' - ' . hippotrack_format_grade($quiz, $i * $bandwidth);
         }
         return $bandlabels;
     }

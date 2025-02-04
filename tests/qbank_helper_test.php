@@ -22,7 +22,7 @@ use mod_hippotrack\question\bank\qbank_helper;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
+require_once(__DIR__ . '/hippotrack_question_helper_test_trait.php');
 
 /**
  * Qbank helper test for quiz.
@@ -35,7 +35,7 @@ require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
  * @coversDefaultClass \mod_hippotrack\question\bank\qbank_helper
  */
 class qbank_helper_test extends \advanced_testcase {
-    use \quiz_question_helper_test_trait;
+    use \hippotrack_question_helper_test_trait;
 
     /**
      * @var \stdClass test student user.
@@ -76,7 +76,7 @@ class qbank_helper_test extends \advanced_testcase {
         // Create two version.
         $questiongenerator->update_question($numq, null, ['name' => 'This is the second version']);
         $questiongenerator->update_question($numq, null, ['name' => 'This is the third version']);
-        quiz_add_quiz_question($numq->id, $quiz);
+        hippotrack_add_hippotrack_question($numq->id, $quiz);
 
         // Create the quiz object.
         $quizobj = \quiz::create($quiz->id);
@@ -129,7 +129,7 @@ class qbank_helper_test extends \advanced_testcase {
         $finalq = $questiongenerator->update_question($q, null, ['name' => 'This is the third version']);
 
         // Add the question to the quiz.
-        quiz_add_quiz_question($q->id, $quiz);
+        hippotrack_add_hippotrack_question($q->id, $quiz);
 
         // Load the quiz object and check.
         $quizobj = \quiz::create($quiz->id);
@@ -178,9 +178,9 @@ class qbank_helper_test extends \advanced_testcase {
                 ['name' => 'This is q3 the second version', 'status' => question_version_status::QUESTION_STATUS_DRAFT]);
 
         // Add the questions to the quiz.
-        quiz_add_quiz_question($q1->id, $quiz);
-        quiz_add_quiz_question($q2->id, $quiz);
-        quiz_add_quiz_question($q3->id, $quiz);
+        hippotrack_add_hippotrack_question($q1->id, $quiz);
+        hippotrack_add_hippotrack_question($q2->id, $quiz);
+        hippotrack_add_hippotrack_question($q3->id, $quiz);
 
         // Load the quiz object and check.
         $quizobj = \quiz::create($quiz->id);

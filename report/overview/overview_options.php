@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class to store the options for a {@link quiz_overview_report}.
+ * Class to store the options for a {@link hippotrack_overview_report}.
  *
- * @package   quiz_overview
+ * @package   hippotrack_overview
  * @copyright 2012 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,16 +25,16 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/report/attemptsreport_options.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/attemptsreport_options.php');
 
 
 /**
- * Class to store the options for a {@link quiz_overview_report}.
+ * Class to store the options for a {@link hippotrack_overview_report}.
  *
  * @copyright 2012 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_overview_options extends mod_hippotrack_attempts_report_options {
+class hippotrack_overview_options extends mod_hippotrack_attempts_report_options {
 
     /** @var bool whether to show only attempt that need regrading. */
     public $onlyregraded = false;
@@ -74,21 +74,21 @@ class quiz_overview_options extends mod_hippotrack_attempts_report_options {
     public function setup_from_user_preferences() {
         parent::setup_from_user_preferences();
 
-        $this->slotmarks = get_user_preferences('quiz_overview_slotmarks', $this->slotmarks);
+        $this->slotmarks = get_user_preferences('hippotrack_overview_slotmarks', $this->slotmarks);
     }
 
     public function update_user_preferences() {
         parent::update_user_preferences();
 
-        if (quiz_has_grades($this->quiz)) {
-            set_user_preference('quiz_overview_slotmarks', $this->slotmarks);
+        if (hippotrack_has_grades($this->quiz)) {
+            set_user_preference('hippotrack_overview_slotmarks', $this->slotmarks);
         }
     }
 
     public function resolve_dependencies() {
         parent::resolve_dependencies();
 
-        if ($this->attempts == quiz_attempts_report::ENROLLED_WITHOUT) {
+        if ($this->attempts == hippotrack_attempts_report::ENROLLED_WITHOUT) {
             $this->onlyregraded = false;
         }
 
@@ -99,7 +99,7 @@ class quiz_overview_options extends mod_hippotrack_attempts_report_options {
         // We only want to show the checkbox to delete attempts
         // if the user has permissions and if the report mode is showing attempts.
         $this->checkboxcolumn = has_any_capability(
-                array('mod/quiz:regrade', 'mod/quiz:deleteattempts'), context_module::instance($this->cm->id))
-                && ($this->attempts != quiz_attempts_report::ENROLLED_WITHOUT);
+                array('mod/hippotrack:regrade', 'mod/hippotrack:deleteattempts'), context_module::instance($this->cm->id))
+                && ($this->attempts != hippotrack_attempts_report::ENROLLED_WITHOUT);
     }
 }

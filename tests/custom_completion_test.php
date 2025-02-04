@@ -25,7 +25,7 @@ use grade_item;
 use mod_hippotrack\completion\custom_completion;
 use question_engine;
 use quiz;
-use quiz_attempt;
+use hippotrack_attempt;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -48,7 +48,7 @@ class custom_completion_test extends advanced_testcase {
      * @param array $completionoptions ['nbstudents'] => int, ['qtype'] => string, ['quizoptions'] => array
      * @return array [$students, $quiz, $cm, $litecm]
      */
-    private function setup_quiz_for_testing_completion(array $completionoptions): array {
+    private function setup_hippotrack_for_testing_completion(array $completionoptions): array {
         global $CFG, $DB;
 
         $this->resetAfterTest(true);
@@ -90,7 +90,7 @@ class custom_completion_test extends advanced_testcase {
                 $overrideparams['defaultmark'] = $completionoptions['questiondefaultmarks'][$i];
             }
             $question = $questiongenerator->create_question($completionoptions['qtype'], null, $overrideparams);
-            quiz_add_quiz_question($question->id, $quiz);
+            hippotrack_add_hippotrack_question($question->id, $quiz);
         }
 
         // Set grade to pass.
@@ -120,17 +120,17 @@ class custom_completion_test extends advanced_testcase {
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         $timenow = time();
-        $attempt = quiz_create_attempt($quizobj, $attemptoptions['attemptnumber'], false, $timenow, false,
+        $attempt = hippotrack_create_attempt($quizobj, $attemptoptions['attemptnumber'], false, $timenow, false,
             $attemptoptions['student']->id);
-        quiz_start_new_attempt($quizobj, $quba, $attempt, $attemptoptions['attemptnumber'], $timenow);
-        quiz_attempt_save_started($quizobj, $quba, $attempt);
+        hippotrack_start_new_attempt($quizobj, $quba, $attempt, $attemptoptions['attemptnumber'], $timenow);
+        hippotrack_attempt_save_started($quizobj, $quba, $attempt);
 
         // Process responses from the student.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_submitted_actions($timenow, false, $attemptoptions['tosubmit']);
 
         // Finish the attempt.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $this->assertTrue($attemptobj->has_response_to_at_least_one_graded_question());
         $attemptobj->process_finish($timenow, false);
     }
@@ -140,7 +140,7 @@ class custom_completion_test extends advanced_testcase {
      * The quiz requires a passing grade to be completed.
      */
     public function test_completionpass() {
-        list($students, $quiz, $cm) = $this->setup_quiz_for_testing_completion([
+        list($students, $quiz, $cm) = $this->setup_hippotrack_for_testing_completion([
             'nbstudents' => 2,
             'qtype' => 'numerical',
             'quizoptions' => [
@@ -195,7 +195,7 @@ class custom_completion_test extends advanced_testcase {
      * @covers ::get_custom_rule_descriptions
      */
     public function test_completionexhausted() {
-        list($students, $quiz, $cm) = $this->setup_quiz_for_testing_completion([
+        list($students, $quiz, $cm) = $this->setup_hippotrack_for_testing_completion([
             'nbstudents' => 2,
             'qtype' => 'numerical',
             'quizoptions' => [
@@ -273,7 +273,7 @@ class custom_completion_test extends advanced_testcase {
      * @covers ::get_custom_rule_descriptions
      */
     public function test_completionminattempts() {
-        list($students, $quiz, $cm) = $this->setup_quiz_for_testing_completion([
+        list($students, $quiz, $cm) = $this->setup_hippotrack_for_testing_completion([
             'nbstudents' => 1,
             'qtype' => 'essay',
             'quizoptions' => [
@@ -341,7 +341,7 @@ class custom_completion_test extends advanced_testcase {
     public function test_update_moduleinfo() {
         $this->setAdminUser();
         // We need lite cm object not a full cm because update_moduleinfo is not allow some properties to be updated.
-        list($students, $quiz, $cm, $litecm) = $this->setup_quiz_for_testing_completion([
+        list($students, $quiz, $cm, $litecm) = $this->setup_hippotrack_for_testing_completion([
             'nbstudents' => 1,
             'qtype' => 'numerical',
             'nbquestions' => 2,

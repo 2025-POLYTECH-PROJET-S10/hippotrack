@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Unit tests for (some of) mod/quiz/locallib.php.
+ * Unit tests for (some of) mod/hippotrack/locallib.php.
  *
  * @package    mod_hippotrack
  * @category   test
@@ -24,65 +24,65 @@
  */
 namespace mod_hippotrack;
 
-use quiz_attempt;
+use hippotrack_attempt;
 use mod_hippotrack_display_options;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 
 /**
- * Unit tests for (some of) mod/quiz/locallib.php.
+ * Unit tests for (some of) mod/hippotrack/locallib.php.
  *
  * @copyright  2008 Tim Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class locallib_test extends \advanced_testcase {
 
-    public function test_quiz_rescale_grade() {
+    public function test_hippotrack_rescale_grade() {
         $quiz = new \stdClass();
         $quiz->decimalpoints = 2;
         $quiz->questiondecimalpoints = 3;
         $quiz->grade = 10;
         $quiz->sumgrades = 10;
-        $this->assertEquals(quiz_rescale_grade(0.12345678, $quiz, false), 0.12345678);
-        $this->assertEquals(quiz_rescale_grade(0.12345678, $quiz, true), format_float(0.12, 2));
-        $this->assertEquals(quiz_rescale_grade(0.12345678, $quiz, 'question'),
+        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $quiz, false), 0.12345678);
+        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $quiz, true), format_float(0.12, 2));
+        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $quiz, 'question'),
             format_float(0.123, 3));
         $quiz->sumgrades = 5;
-        $this->assertEquals(quiz_rescale_grade(0.12345678, $quiz, false), 0.24691356);
-        $this->assertEquals(quiz_rescale_grade(0.12345678, $quiz, true), format_float(0.25, 2));
-        $this->assertEquals(quiz_rescale_grade(0.12345678, $quiz, 'question'),
+        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $quiz, false), 0.24691356);
+        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $quiz, true), format_float(0.25, 2));
+        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $quiz, 'question'),
             format_float(0.247, 3));
     }
 
-    public static function quiz_attempt_state_data_provider(): array {
+    public static function hippotrack_attempt_state_data_provider(): array {
         return [
-            [quiz_attempt::IN_PROGRESS, null, null, mod_hippotrack_display_options::DURING],
-            [quiz_attempt::FINISHED, -90, null, mod_hippotrack_display_options::IMMEDIATELY_AFTER],
-            [quiz_attempt::FINISHED, -7200, null, mod_hippotrack_display_options::LATER_WHILE_OPEN],
-            [quiz_attempt::FINISHED, -7200, 3600, mod_hippotrack_display_options::LATER_WHILE_OPEN],
-            [quiz_attempt::FINISHED, -30, 30, mod_hippotrack_display_options::IMMEDIATELY_AFTER],
-            [quiz_attempt::FINISHED, -90, -30, mod_hippotrack_display_options::AFTER_CLOSE],
-            [quiz_attempt::FINISHED, -7200, -3600, mod_hippotrack_display_options::AFTER_CLOSE],
-            [quiz_attempt::FINISHED, -90, -3600, mod_hippotrack_display_options::AFTER_CLOSE],
-            [quiz_attempt::ABANDONED, -10000000, null, mod_hippotrack_display_options::LATER_WHILE_OPEN],
-            [quiz_attempt::ABANDONED, -7200, 3600, mod_hippotrack_display_options::LATER_WHILE_OPEN],
-            [quiz_attempt::ABANDONED, -7200, -3600, mod_hippotrack_display_options::AFTER_CLOSE],
+            [hippotrack_attempt::IN_PROGRESS, null, null, mod_hippotrack_display_options::DURING],
+            [hippotrack_attempt::FINISHED, -90, null, mod_hippotrack_display_options::IMMEDIATELY_AFTER],
+            [hippotrack_attempt::FINISHED, -7200, null, mod_hippotrack_display_options::LATER_WHILE_OPEN],
+            [hippotrack_attempt::FINISHED, -7200, 3600, mod_hippotrack_display_options::LATER_WHILE_OPEN],
+            [hippotrack_attempt::FINISHED, -30, 30, mod_hippotrack_display_options::IMMEDIATELY_AFTER],
+            [hippotrack_attempt::FINISHED, -90, -30, mod_hippotrack_display_options::AFTER_CLOSE],
+            [hippotrack_attempt::FINISHED, -7200, -3600, mod_hippotrack_display_options::AFTER_CLOSE],
+            [hippotrack_attempt::FINISHED, -90, -3600, mod_hippotrack_display_options::AFTER_CLOSE],
+            [hippotrack_attempt::ABANDONED, -10000000, null, mod_hippotrack_display_options::LATER_WHILE_OPEN],
+            [hippotrack_attempt::ABANDONED, -7200, 3600, mod_hippotrack_display_options::LATER_WHILE_OPEN],
+            [hippotrack_attempt::ABANDONED, -7200, -3600, mod_hippotrack_display_options::AFTER_CLOSE],
         ];
     }
 
     /**
-     * @dataProvider quiz_attempt_state_data_provider
+     * @dataProvider hippotrack_attempt_state_data_provider
      *
-     * @param unknown $attemptstate as in the quiz_attempts.state DB column.
+     * @param unknown $attemptstate as in the hippotrack_attempts.state DB column.
      * @param unknown $relativetimefinish time relative to now when the attempt finished, or null for 0.
      * @param unknown $relativetimeclose time relative to now when the quiz closes, or null for 0.
      * @param unknown $expectedstate expected result. One of the mod_hippotrack_display_options constants/
      */
-    public function test_quiz_attempt_state($attemptstate,
+    public function test_hippotrack_attempt_state($attemptstate,
             $relativetimefinish, $relativetimeclose, $expectedstate) {
 
         $attempt = new \stdClass();
@@ -100,44 +100,44 @@ class locallib_test extends \advanced_testcase {
             $quiz->timeclose = time() + $relativetimeclose;
         }
 
-        $this->assertEquals($expectedstate, quiz_attempt_state($quiz, $attempt));
+        $this->assertEquals($expectedstate, hippotrack_attempt_state($quiz, $attempt));
     }
 
     /**
-     * @covers ::quiz_question_tostring
+     * @covers ::hippotrack_question_tostring
      */
-    public function test_quiz_question_tostring() {
+    public function test_hippotrack_question_tostring() {
         $question = new \stdClass();
         $question->qtype = 'multichoice';
         $question->name = 'The question name';
         $question->questiontext = '<p>What sort of <b>inequality</b> is x &lt; y<img alt="?" src="..."></p>';
         $question->questiontextformat = FORMAT_HTML;
 
-        $summary = quiz_question_tostring($question);
+        $summary = hippotrack_question_tostring($question);
         $this->assertEquals('<span class="questionname">The question name</span> ' .
                 '<span class="questiontext">What sort of INEQUALITY is x &lt; y[?]' . "\n" . '</span>', $summary);
     }
 
     /**
-     * @covers ::quiz_question_tostring
+     * @covers ::hippotrack_question_tostring
      */
-    public function test_quiz_question_tostring_does_not_filter() {
+    public function test_hippotrack_question_tostring_does_not_filter() {
         $question = new \stdClass();
         $question->qtype = 'multichoice';
         $question->name = 'The question name';
         $question->questiontext = '<p>No emoticons here :-)</p>';
         $question->questiontextformat = FORMAT_HTML;
 
-        $summary = quiz_question_tostring($question);
+        $summary = hippotrack_question_tostring($question);
         $this->assertEquals('<span class="questionname">The question name</span> ' .
                 '<span class="questiontext">No emoticons here :-)' . "\n</span>", $summary);
     }
 
     /**
-     * Test quiz_view
+     * Test hippotrack_view
      * @return void
      */
-    public function test_quiz_view() {
+    public function test_hippotrack_view() {
         global $CFG;
 
         $CFG->enablecompletion = 1;
@@ -154,7 +154,7 @@ class locallib_test extends \advanced_testcase {
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
 
-        quiz_view($quiz, $course, $cm, $context);
+        hippotrack_view($quiz, $course, $cm, $context);
 
         $events = $sink->get_events();
         // 2 additional events thanks to completion.
@@ -164,7 +164,7 @@ class locallib_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_hippotrack\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/quiz/view.php', array('id' => $cm->id));
+        $moodleurl = new \moodle_url('/mod/hippotrack/view.php', array('id' => $cm->id));
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -177,7 +177,7 @@ class locallib_test extends \advanced_testcase {
     /**
      * Return false when there are not overrides for this quiz instance.
      */
-    public function test_quiz_is_overriden_calendar_event_no_override() {
+    public function test_hippotrack_is_overriden_calendar_event_no_override() {
         global $CFG, $DB;
 
         $this->resetAfterTest();
@@ -195,13 +195,13 @@ class locallib_test extends \advanced_testcase {
             'userid' => $user->id
         ]);
 
-        $this->assertFalse(quiz_is_overriden_calendar_event($event));
+        $this->assertFalse(hippotrack_is_overriden_calendar_event($event));
     }
 
     /**
      * Return false if the given event isn't an quiz module event.
      */
-    public function test_quiz_is_overriden_calendar_event_no_module_event() {
+    public function test_hippotrack_is_overriden_calendar_event_no_module_event() {
         global $CFG, $DB;
 
         $this->resetAfterTest();
@@ -217,14 +217,14 @@ class locallib_test extends \advanced_testcase {
             'userid' => $user->id
         ]);
 
-        $this->assertFalse(quiz_is_overriden_calendar_event($event));
+        $this->assertFalse(hippotrack_is_overriden_calendar_event($event));
     }
 
     /**
      * Return false if there is overrides for this use but they belong to another quiz
      * instance.
      */
-    public function test_quiz_is_overriden_calendar_event_different_quiz_instance() {
+    public function test_hippotrack_is_overriden_calendar_event_different_hippotrack_instance() {
         global $CFG, $DB;
 
         $this->resetAfterTest();
@@ -248,15 +248,15 @@ class locallib_test extends \advanced_testcase {
             'userid' => $user->id
         ];
 
-        $DB->insert_record('quiz_overrides', $record);
+        $DB->insert_record('hippotrack_overrides', $record);
 
-        $this->assertFalse(quiz_is_overriden_calendar_event($event));
+        $this->assertFalse(hippotrack_is_overriden_calendar_event($event));
     }
 
     /**
      * Return true if there is a user override for this event and quiz instance.
      */
-    public function test_quiz_is_overriden_calendar_event_user_override() {
+    public function test_hippotrack_is_overriden_calendar_event_user_override() {
         global $CFG, $DB;
 
         $this->resetAfterTest();
@@ -279,15 +279,15 @@ class locallib_test extends \advanced_testcase {
             'userid' => $user->id
         ];
 
-        $DB->insert_record('quiz_overrides', $record);
+        $DB->insert_record('hippotrack_overrides', $record);
 
-        $this->assertTrue(quiz_is_overriden_calendar_event($event));
+        $this->assertTrue(hippotrack_is_overriden_calendar_event($event));
     }
 
     /**
      * Return true if there is a group override for the event and quiz instance.
      */
-    public function test_quiz_is_overriden_calendar_event_group_override() {
+    public function test_hippotrack_is_overriden_calendar_event_group_override() {
         global $CFG, $DB;
 
         $this->resetAfterTest();
@@ -313,15 +313,15 @@ class locallib_test extends \advanced_testcase {
             'groupid' => $groupid
         ];
 
-        $DB->insert_record('quiz_overrides', $record);
+        $DB->insert_record('hippotrack_overrides', $record);
 
-        $this->assertTrue(quiz_is_overriden_calendar_event($event));
+        $this->assertTrue(hippotrack_is_overriden_calendar_event($event));
     }
 
     /**
-     * Test test_quiz_get_user_timeclose().
+     * Test test_hippotrack_get_user_timeclose().
      */
-    public function test_quiz_get_user_timeclose() {
+    public function test_hippotrack_get_user_timeclose() {
         global $DB;
 
         $this->resetAfterTest();
@@ -370,7 +370,7 @@ class locallib_test extends \advanced_testcase {
             'groupid' => $group1id,
             'timeclose' => $basetimestamp + 10800 // In three hours.
         ];
-        $DB->insert_record('quiz_overrides', $record1);
+        $DB->insert_record('hippotrack_overrides', $record1);
 
         // Let's test quiz 1 closes in three hours for user student 1 since member of group 1.
         // Quiz 2 closes in two hours.
@@ -390,7 +390,7 @@ class locallib_test extends \advanced_testcase {
 
         $comparearray[$quiz2->id] = $object;
 
-        $this->assertEquals($comparearray, quiz_get_user_timeclose($course->id));
+        $this->assertEquals($comparearray, hippotrack_get_user_timeclose($course->id));
 
         // Let's test quiz 1 closes in two hours (the original value) for user student 3 since member of no group.
         $this->setUser($student3id);
@@ -409,7 +409,7 @@ class locallib_test extends \advanced_testcase {
 
         $comparearray[$quiz2->id] = $object;
 
-        $this->assertEquals($comparearray, quiz_get_user_timeclose($course->id));
+        $this->assertEquals($comparearray, hippotrack_get_user_timeclose($course->id));
 
         // User 2 gets an user override for quiz 1 to close in four hours.
         $record2 = (object) [
@@ -417,7 +417,7 @@ class locallib_test extends \advanced_testcase {
             'userid' => $student2id,
             'timeclose' => $basetimestamp + 14400 // In four hours.
         ];
-        $DB->insert_record('quiz_overrides', $record2);
+        $DB->insert_record('hippotrack_overrides', $record2);
 
         // Let's test quiz 1 closes in four hours for user student 2 since personally overriden.
         // Quiz 2 closes in two hours.
@@ -436,7 +436,7 @@ class locallib_test extends \advanced_testcase {
 
         $comparearray[$quiz2->id] = $object;
 
-        $this->assertEquals($comparearray, quiz_get_user_timeclose($course->id));
+        $this->assertEquals($comparearray, hippotrack_get_user_timeclose($course->id));
 
         // Let's test a teacher sees the original times.
         // Quiz 1 and quiz 2 close in two hours.
@@ -455,7 +455,7 @@ class locallib_test extends \advanced_testcase {
 
         $comparearray[$quiz2->id] = $object;
 
-        $this->assertEquals($comparearray, quiz_get_user_timeclose($course->id));
+        $this->assertEquals($comparearray, hippotrack_get_user_timeclose($course->id));
     }
 
     /**
@@ -475,7 +475,7 @@ class locallib_test extends \advanced_testcase {
      * @return array An array of 2 elements: $quiz and $tagobjects.
      *      $tagobjects is an associative array of all created tag objects with its key being tag names.
      */
-    private function setup_quiz_and_tags($qnum, $randomqnum, $questiontags = [], $unusedtags = []) {
+    private function setup_hippotrack_and_tags($qnum, $randomqnum, $questiontags = [], $unusedtags = []) {
         global $SITE;
 
         $tagobjects = [];
@@ -510,7 +510,7 @@ class locallib_test extends \advanced_testcase {
         // Setup standard questions.
         for ($i = 0; $i < $qnum; $i++) {
             $question = $questiongenerator->create_question('shortanswer', null, array('category' => $cat->id));
-            quiz_add_quiz_question($question->id, $quiz);
+            hippotrack_add_hippotrack_question($question->id, $quiz);
         }
         // Setup random questions.
         for ($i = 0; $i < $randomqnum; $i++) {
@@ -522,13 +522,13 @@ class locallib_test extends \advanced_testcase {
                     $tagids[] = $tagobjects[$tagname]->id;
                 }
             }
-            quiz_add_random_questions($quiz, 0, $cat->id, 1, false, $tagids);
+            hippotrack_add_random_questions($quiz, 0, $cat->id, 1, false, $tagids);
         }
 
         return array($quiz, $tagobjects);
     }
 
-    public function test_quiz_override_summary() {
+    public function test_hippotrack_override_summary() {
         global $DB, $PAGE;
         $this->resetAfterTest();
         $generator = $this->getDataGenerator();
@@ -548,9 +548,9 @@ class locallib_test extends \advanced_testcase {
         // Initial test (as admin) with no data.
         $this->setAdminUser();
         $this->assertEquals(['group' => 0, 'user' => 0, 'mode' => 'allgroups'],
-                quiz_override_summary($quiz, $cm));
+                hippotrack_override_summary($quiz, $cm));
         $this->assertEquals(['group' => 0, 'user' => 0, 'mode' => 'onegroup'],
-                quiz_override_summary($quiz, $cm, $group->id));
+                hippotrack_override_summary($quiz, $cm, $group->id));
 
         // Editing teacher.
         $teacher = $generator->create_user();
@@ -577,17 +577,17 @@ class locallib_test extends \advanced_testcase {
         // Test as teacher.
         $this->setUser($teacher);
         $this->assertEquals(['group' => 0, 'user' => 0, 'mode' => 'allgroups'],
-                quiz_override_summary($quiz, $cm));
+                hippotrack_override_summary($quiz, $cm));
         $this->assertEquals(['group' => 0, 'user' => 0, 'mode' => 'onegroup'],
-                quiz_override_summary($quiz, $cm, $group->id));
+                hippotrack_override_summary($quiz, $cm, $group->id));
 
         // Test as tutor.
         $this->setUser($tutor);
         $this->assertEquals(['group' => 0, 'user' => 0, 'mode' => 'somegroups'],
-                quiz_override_summary($quiz, $cm));
+                hippotrack_override_summary($quiz, $cm));
         $this->assertEquals(['group' => 0, 'user' => 0, 'mode' => 'onegroup'],
-                quiz_override_summary($quiz, $cm, $group->id));
-        $this->assertEquals('', $renderer->quiz_override_summary_links($quiz, $cm));
+                hippotrack_override_summary($quiz, $cm, $group->id));
+        $this->assertEquals('', $renderer->hippotrack_override_summary_links($quiz, $cm));
 
         // Quiz setting overrides for students 1 and 3.
         $quizgenerator->create_override(['quiz' => $quiz->id, 'userid' => $student1->id, 'attempts' => 2]);
@@ -599,25 +599,25 @@ class locallib_test extends \advanced_testcase {
         // Test as teacher.
         $this->setUser($teacher);
         $this->assertEquals(['group' => 2, 'user' => 2, 'mode' => 'allgroups'],
-                quiz_override_summary($quiz, $cm));
+                hippotrack_override_summary($quiz, $cm));
         $this->assertEquals('Settings overrides exist (Groups: 2, Users: 2)',
                 // Links checked by Behat, so strip them for these tests.
-                html_to_text($renderer->quiz_override_summary_links($quiz, $cm), 0, false));
+                html_to_text($renderer->hippotrack_override_summary_links($quiz, $cm), 0, false));
         $this->assertEquals(['group' => 1, 'user' => 1, 'mode' => 'onegroup'],
-                quiz_override_summary($quiz, $cm, $group->id));
+                hippotrack_override_summary($quiz, $cm, $group->id));
         $this->assertEquals('Settings overrides exist (Groups: 1, Users: 1) for this group',
-                html_to_text($renderer->quiz_override_summary_links($quiz, $cm, $group->id), 0, false));
+                html_to_text($renderer->hippotrack_override_summary_links($quiz, $cm, $group->id), 0, false));
 
         // Test as tutor.
         $this->setUser($tutor);
         $this->assertEquals(['group' => 1, 'user' => 1, 'mode' => 'somegroups'],
-                quiz_override_summary($quiz, $cm));
+                hippotrack_override_summary($quiz, $cm));
         $this->assertEquals('Settings overrides exist (Groups: 1, Users: 1) for your groups',
-                html_to_text($renderer->quiz_override_summary_links($quiz, $cm), 0, false));
+                html_to_text($renderer->hippotrack_override_summary_links($quiz, $cm), 0, false));
         $this->assertEquals(['group' => 1, 'user' => 1, 'mode' => 'onegroup'],
-                quiz_override_summary($quiz, $cm, $group->id));
+                hippotrack_override_summary($quiz, $cm, $group->id));
         $this->assertEquals('Settings overrides exist (Groups: 1, Users: 1) for this group',
-                html_to_text($renderer->quiz_override_summary_links($quiz, $cm, $group->id), 0, false));
+                html_to_text($renderer->hippotrack_override_summary_links($quiz, $cm, $group->id), 0, false));
 
         // Now set the quiz to be group mode: no groups, and re-test as tutor.
         // In this case, the tutor should see all groups.
@@ -625,15 +625,15 @@ class locallib_test extends \advanced_testcase {
         $cm = get_coursemodule_from_id('quiz', $quiz->cmid, $course->id);
 
         $this->assertEquals(['group' => 2, 'user' => 2, 'mode' => 'allgroups'],
-                quiz_override_summary($quiz, $cm));
+                hippotrack_override_summary($quiz, $cm));
         $this->assertEquals('Settings overrides exist (Groups: 2, Users: 2)',
-                html_to_text($renderer->quiz_override_summary_links($quiz, $cm), 0, false));
+                html_to_text($renderer->hippotrack_override_summary_links($quiz, $cm), 0, false));
     }
 
     /**
-     *  Test quiz_send_confirmation function.
+     *  Test hippotrack_send_confirmation function.
      */
-    public function test_quiz_send_confirmation() {
+    public function test_hippotrack_send_confirmation() {
         global $CFG, $DB;
 
         $this->resetAfterTest();
@@ -649,7 +649,7 @@ class locallib_test extends \advanced_testcase {
 
         // Allow recipent to receive email confirm submission.
         $studentrole = $DB->get_record('role', array('shortname' => 'student'));
-        assign_capability('mod/quiz:emailconfirmsubmission', CAP_ALLOW, $studentrole->id,
+        assign_capability('mod/hippotrack:emailconfirmsubmission', CAP_ALLOW, $studentrole->id,
             \context_course::instance($course->id), true);
         $this->getDataGenerator()->enrol_user($recipient->id, $course->id, $studentrole->id, 'manual');
 
@@ -660,14 +660,14 @@ class locallib_test extends \advanced_testcase {
         $data->coursename      = $course->fullname;
         // Quiz info.
         $data->quizname        = $quiz->name;
-        $data->quizurl         = $CFG->wwwroot . '/mod/quiz/view.php?id=' . $cm->id;
+        $data->quizurl         = $CFG->wwwroot . '/mod/hippotrack/view.php?id=' . $cm->id;
         $data->quizid          = $quiz->id;
         $data->quizcmid        = $quiz->cmid;
         $data->attemptid       = 1;
         $data->submissiontime = userdate($timenow);
 
         $sink = $this->redirectEmails();
-        quiz_send_confirmation($recipient, $data, true);
+        hippotrack_send_confirmation($recipient, $data, true);
         $messages = $sink->get_messages();
         $message = reset($messages);
         $this->assertStringContainsString("Thank you for submitting your answers" ,
@@ -675,7 +675,7 @@ class locallib_test extends \advanced_testcase {
         $sink->close();
 
         $sink = $this->redirectEmails();
-        quiz_send_confirmation($recipient, $data, false);
+        hippotrack_send_confirmation($recipient, $data, false);
         $messages = $sink->get_messages();
         $message = reset($messages);
         $this->assertStringContainsString("Your answers were submitted automatically" ,

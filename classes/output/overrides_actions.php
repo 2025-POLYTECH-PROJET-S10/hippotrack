@@ -68,13 +68,13 @@ class overrides_actions implements renderable, templatable {
      * @return \single_button the button, ready to reander.
      */
     public function create_add_button(\renderer_base $output): \single_button {
-        $addoverrideurl = new moodle_url('/mod/quiz/overrideedit.php',
+        $addoverrideurl = new moodle_url('/mod/hippotrack/overrideedit.php',
                 ['cmid' => $this->cmid, 'action' => 'add' . $this->mode]);
 
         if ($this->mode === 'group') {
-            $label = get_string('addnewgroupoverride', 'quiz');
+            $label = get_string('addnewgroupoverride', 'hippotrack');
         } else {
-            $label = get_string('addnewuseroverride', 'quiz');
+            $label = get_string('addnewuseroverride', 'hippotrack');
         }
 
         $addoverridebutton = new \single_button($addoverrideurl, $label, 'get', true);
@@ -90,12 +90,12 @@ class overrides_actions implements renderable, templatable {
         $templatecontext = [];
 
         // Build the navigation drop-down.
-        $useroverridesurl = new moodle_url('/mod/quiz/overrides.php', ['cmid' => $this->cmid, 'mode' => 'user']);
-        $groupoverridesurl = new moodle_url('/mod/quiz/overrides.php', ['cmid' => $this->cmid, 'mode' => 'group']);
+        $useroverridesurl = new moodle_url('/mod/hippotrack/overrides.php', ['cmid' => $this->cmid, 'mode' => 'user']);
+        $groupoverridesurl = new moodle_url('/mod/hippotrack/overrides.php', ['cmid' => $this->cmid, 'mode' => 'group']);
 
         $menu = [
-            $useroverridesurl->out(false) => get_string('useroverrides', 'quiz'),
-            $groupoverridesurl->out(false) => get_string('groupoverrides', 'quiz')
+            $useroverridesurl->out(false) => get_string('useroverrides', 'hippotrack'),
+            $groupoverridesurl->out(false) => get_string('groupoverrides', 'hippotrack')
         ];
 
         $overridesnav = new url_select($menu, $PAGE->url->out(false), null, 'quizoverrides');

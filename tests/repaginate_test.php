@@ -29,8 +29,8 @@ use quiz;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/classes/repaginate.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/classes/repaginate.php');
 
 /**
  * Testable subclass, giving access to the protected methods of {@link \mod_hippotrack\repaginate}
@@ -72,7 +72,7 @@ class repaginate_test extends \advanced_testcase {
     private $repaginate = null;
 
     public function setUp(): void {
-        $this->set_quiz_slots($this->get_quiz_object()->get_slots());
+        $this->set_hippotrack_slots($this->get_hippotrack_object()->get_slots());
         $this->repaginate = new mod_hippotrack_repaginate_testable(0, $this->quizslots);
     }
 
@@ -84,7 +84,7 @@ class repaginate_test extends \advanced_testcase {
      * Create a quiz, add five questions to the quiz
      * which are all on one page and return the quiz object.
      */
-    private function get_quiz_object() {
+    private function get_hippotrack_object() {
         global $SITE;
         $this->resetAfterTest(true);
 
@@ -106,11 +106,11 @@ class repaginate_test extends \advanced_testcase {
         $match = $questiongenerator->create_question('match', null, array('category' => $cat->id));
 
         // Add them to the quiz.
-        quiz_add_quiz_question($shortanswer->id, $quiz);
-        quiz_add_quiz_question($numerical->id, $quiz);
-        quiz_add_quiz_question($essay->id, $quiz);
-        quiz_add_quiz_question($truefalse->id, $quiz);
-        quiz_add_quiz_question($match->id, $quiz);
+        hippotrack_add_hippotrack_question($shortanswer->id, $quiz);
+        hippotrack_add_hippotrack_question($numerical->id, $quiz);
+        hippotrack_add_hippotrack_question($essay->id, $quiz);
+        hippotrack_add_hippotrack_question($truefalse->id, $quiz);
+        hippotrack_add_hippotrack_question($match->id, $quiz);
 
         // Return the quiz object.
         $quizobj = new quiz($quiz, $cm, $SITE);
@@ -121,9 +121,9 @@ class repaginate_test extends \advanced_testcase {
      * Set the quiz slots
      * @param string $slots
      */
-    private function set_quiz_slots($slots = null) {
+    private function set_hippotrack_slots($slots = null) {
         if (!$slots) {
-            $this->quizslots = $this->get_quiz_object()->get_slots();
+            $this->quizslots = $this->get_hippotrack_object()->get_slots();
         } else {
             $this->quizslots = $slots;
         }
@@ -133,7 +133,7 @@ class repaginate_test extends \advanced_testcase {
      * Test the get_this_slot() method
      */
     public function test_get_this_slot() {
-        $this->set_quiz_slots();
+        $this->set_hippotrack_slots();
         $actual = array();
         $expected = $this->repaginate->get_slots_by_slot_number();
         $this->assertEquals($expected, $actual);
@@ -145,7 +145,7 @@ class repaginate_test extends \advanced_testcase {
     }
 
     public function test_get_slots_by_slotnumber() {
-        $this->set_quiz_slots();
+        $this->set_hippotrack_slots();
         $expected = array();
         $actual = $this->repaginate->get_slots_by_slot_number();
         $this->assertEquals($expected, $actual);
@@ -158,7 +158,7 @@ class repaginate_test extends \advanced_testcase {
     }
 
     public function test_get_slots_by_slotid() {
-        $this->set_quiz_slots();
+        $this->set_hippotrack_slots();
         $actual = $this->repaginate->get_slots_by_slotid();
         $this->assertEquals(array(), $actual);
 
@@ -168,7 +168,7 @@ class repaginate_test extends \advanced_testcase {
     }
 
     public function test_repaginate_n_questions_per_page() {
-        $this->set_quiz_slots();
+        $this->set_hippotrack_slots();
 
         // Expect 2 questions per page.
         $expected = array();
@@ -250,7 +250,7 @@ class repaginate_test extends \advanced_testcase {
     }
 
     public function test_repaginate_this_slot() {
-        $this->set_quiz_slots();
+        $this->set_hippotrack_slots();
         $slotsbyslotno = $this->repaginate->get_slots_by_slot_number($this->quizslots);
         $slotnumber = 3;
         $newpagenumber = 2;
@@ -262,7 +262,7 @@ class repaginate_test extends \advanced_testcase {
     }
 
     public function test_repaginate_the_rest() {
-        $this->set_quiz_slots();
+        $this->set_hippotrack_slots();
         $slotfrom = 1;
         $type = repaginate::LINK;
         $expected = array();

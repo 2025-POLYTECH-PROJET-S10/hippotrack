@@ -144,7 +144,7 @@ class custom_view extends \core_question\local\bank\view {
      *
      * @param bool $quizhasattempts whether the quiz has attempts.
      */
-    public function set_quiz_has_attempts($quizhasattempts): void {
+    public function set_hippotrack_has_attempts($quizhasattempts): void {
         $this->quizhasattempts = $quizhasattempts;
         if ($quizhasattempts && isset($this->visiblecolumns['addtoquizaction'])) {
             unset($this->visiblecolumns['addtoquizaction']);
@@ -158,7 +158,7 @@ class custom_view extends \core_question\local\bank\view {
      * @return \moodle_url
      */
     public function preview_question_url($question) {
-        return quiz_question_preview_url($this->quiz, $question);
+        return hippotrack_question_preview_url($this->quiz, $question);
     }
 
     /**
@@ -167,11 +167,11 @@ class custom_view extends \core_question\local\bank\view {
      * @param $questionid
      * @return \moodle_url
      */
-    public function add_to_quiz_url($questionid) {
+    public function add_to_hippotrack_url($questionid) {
         $params = $this->baseurl->params();
         $params['addquestion'] = $questionid;
         $params['sesskey'] = sesskey();
-        return new \moodle_url('/mod/quiz/edit.php', $params);
+        return new \moodle_url('/mod/hippotrack/edit.php', $params);
     }
 
     /**
@@ -205,7 +205,7 @@ class custom_view extends \core_question\local\bank\view {
                 'type' => 'submit',
                 'name' => 'add',
                 'class' => 'btn btn-primary',
-                'value' => get_string('addselectedquestionstoquiz', 'quiz'),
+                'value' => get_string('addselectedquestionstoquiz', 'hippotrack'),
                 'data-action' => 'toggle',
                 'data-togglegroup' => 'qbank',
                 'data-toggle' => 'action',

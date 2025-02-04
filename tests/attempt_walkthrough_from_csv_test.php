@@ -31,7 +31,7 @@ class attempt_walkthrough_from_csv_test extends \mod_hippotrack\tests\attempt_wa
         global $CFG;
 
         parent::setUpBeforeClass();
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+        require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
     }
 
     #[\Override]

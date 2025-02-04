@@ -24,13 +24,13 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 $slotid = required_param('slotid', PARAM_INT);
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
 
 // Get the quiz slot.
-$slot = $DB->get_record('quiz_slots', ['id' => $slotid]);
+$slot = $DB->get_record('hippotrack_slots', ['id' => $slotid]);
 if (!$slot) {
     new moodle_exception('invalidrandomslot', 'mod_hippotrack');
 }
@@ -46,10 +46,10 @@ require_login($cm->course, false, $cm);
 if ($returnurl) {
     $returnurl = new moodle_url($returnurl);
 } else {
-    $returnurl = new moodle_url('/mod/quiz/edit.php', ['cmid' => $cm->id]);
+    $returnurl = new moodle_url('/mod/hippotrack/edit.php', ['cmid' => $cm->id]);
 }
 
-$url = new moodle_url('/mod/quiz/editrandom.php', ['slotid' => $slotid]);
+$url = new moodle_url('/mod/hippotrack/editrandom.php', ['slotid' => $slotid]);
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
 $PAGE->add_body_class('limitedwidth');
@@ -71,7 +71,7 @@ $thiscontext = context_module::instance($cm->id);
 $contexts = new core_question\local\bank\question_edit_contexts($thiscontext);
 
 // Create the editing form.
-$mform = new mod_hippotrack\form\randomquestion_form(new moodle_url('/mod/quiz/editrandom.php'), ['contexts' => $contexts]);
+$mform = new mod_hippotrack\form\randomquestion_form(new moodle_url('/mod/hippotrack/editrandom.php'), ['contexts' => $contexts]);
 
 // Set the form data.
 $toform = new stdClass();

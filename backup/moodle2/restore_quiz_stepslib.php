@@ -22,7 +22,7 @@
  * @copyright  2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restore_quiz_activity_structure_step extends restore_questions_activity_structure_step {
+class restore_hippotrack_activity_structure_step extends restore_questions_activity_structure_step {
 
     /**
      * @var bool tracks whether the quiz contains at least one section. Before
@@ -36,7 +36,7 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
 
     /**
      * @var bool when restoring old quizzes (2.8 or before) this records the
-     * shufflequestionsoption quiz option which has moved to the quiz_sections table.
+     * shufflequestionsoption quiz option which has moved to the hippotrack_sections table.
      */
     protected $legacyshufflequestionsoption = false;
 
@@ -56,27 +56,27 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
         // A chance for access subplugings to set up their quiz data.
         $this->add_subplugin_structure('quizaccess', $quiz);
 
-        $quizquestioninstance = new restore_path_element('quiz_question_instance',
+        $quizquestioninstance = new restore_path_element('hippotrack_question_instance',
             '/activity/quiz/question_instances/question_instance');
         $paths[] = $quizquestioninstance;
         if ($this->task->get_old_moduleversion() < 2021091700) {
-            $paths[] = new restore_path_element('quiz_slot_tags',
+            $paths[] = new restore_path_element('hippotrack_slot_tags',
                 '/activity/quiz/question_instances/question_instance/tags/tag');
         } else {
             $this->add_question_references($quizquestioninstance, $paths);
             $this->add_question_set_references($quizquestioninstance, $paths);
         }
-        $paths[] = new restore_path_element('quiz_section', '/activity/quiz/sections/section');
-        $paths[] = new restore_path_element('quiz_feedback', '/activity/quiz/feedbacks/feedback');
-        $paths[] = new restore_path_element('quiz_override', '/activity/quiz/overrides/override');
+        $paths[] = new restore_path_element('hippotrack_section', '/activity/quiz/sections/section');
+        $paths[] = new restore_path_element('hippotrack_feedback', '/activity/quiz/feedbacks/feedback');
+        $paths[] = new restore_path_element('hippotrack_override', '/activity/quiz/overrides/override');
 
         if ($userinfo) {
-            $paths[] = new restore_path_element('quiz_grade', '/activity/quiz/grades/grade');
+            $paths[] = new restore_path_element('hippotrack_grade', '/activity/quiz/grades/grade');
 
             if ($this->task->get_old_moduleversion() > 2011010100) {
                 // Restoring from a version 2.1 dev or later.
                 // Process the new-style attempt data.
-                $quizattempt = new restore_path_element('quiz_attempt',
+                $quizattempt = new restore_path_element('hippotrack_attempt',
                         '/activity/quiz/attempts/attempt');
                 $paths[] = $quizattempt;
 
@@ -89,7 +89,7 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
             } else {
                 // Restoring from a version 2.0.x+ or earlier.
                 // Upgrade the legacy attempt data.
-                $quizattempt = new restore_path_element('quiz_attempt_legacy',
+                $quizattempt = new restore_path_element('hippotrack_attempt_legacy',
                         '/activity/quiz/attempts/attempt',
                         true);
                 $paths[] = $quizattempt;
@@ -120,7 +120,7 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
         $data->timeclose = $this->apply_date_offset($data->timeclose);
 
         if (property_exists($data, 'questions')) {
-            // Needed by {@link process_quiz_attempt_legacy}, in which case it will be present.
+            // Needed by {@link process_hippotrack_attempt_legacy}, in which case it will be present.
             $this->oldquizlayout = $data->questions;
         }
 
@@ -148,7 +148,7 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
         // The old review column from 2.0 need to be split into the seven new
         // review columns. See MDL-20636.
         if (isset($data->review)) {
-            require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+            require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
             if (!defined('QUIZ_OLD_IMMEDIATELY')) {
                 define('QUIZ_OLD_IMMEDIATELY', 0x3c003f);
@@ -315,7 +315,7 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
      *
      * @param stdClass|array $data
      */
-    protected function process_quiz_question_legacy_instance($data) {
+    protected function process_hippotrack_question_legacy_instance($data) {
         global $DB;
 
         $questionid = $this->get_mappingid('question', $data->questionid);
@@ -367,7 +367,7 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
      *
      * @param stdClass|array $data
      */
-    protected function process_quiz_question_instance($data) {
+    protected function process_hippotrack_question_instance($data) {
         global $CFG, $DB;
 
         $data = (object)$data;
@@ -409,26 +409,26 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
 
         $data->quizid = $this->get_new_parentid('quiz');
 
-        $newitemid = $DB->insert_record('quiz_slots', $data);
+        $newitemid = $DB->insert_record('hippotrack_slots', $data);
         // Add mapping, restore of slot tags (for random questions) need it.
-        $this->set_mapping('quiz_question_instance', $oldid, $newitemid);
+        $this->set_mapping('hippotrack_question_instance', $oldid, $newitemid);
 
         if ($this->task->get_old_moduleversion() < 2022020300) {
             $data->id = $newitemid;
-            $this->process_quiz_question_legacy_instance($data);
+            $this->process_hippotrack_question_legacy_instance($data);
         }
     }
 
     /**
-     * Process a quiz_slot_tags to restore the tags to the new structure.
+     * Process a hippotrack_slot_tags to restore the tags to the new structure.
      *
-     * @param stdClass|array $data The quiz_slot_tags data
+     * @param stdClass|array $data The hippotrack_slot_tags data
      */
-    protected function process_quiz_slot_tags($data) {
+    protected function process_hippotrack_slot_tags($data) {
         global $DB;
 
         $data = (object) $data;
-        $slotid = $this->get_new_parentid('quiz_question_instance');
+        $slotid = $this->get_new_parentid('hippotrack_question_instance');
 
         if ($this->task->is_samesite() && $tag = core_tag_tag::get($data->tagid, 'id, name')) {
             $data->tagname = $tag->name;
@@ -448,18 +448,18 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
         $DB->update_record('question_set_references', $setreferencedata);
     }
 
-    protected function process_quiz_section($data) {
+    protected function process_hippotrack_section($data) {
         global $DB;
 
         $data = (object) $data;
         $data->quizid = $this->get_new_parentid('quiz');
         $oldid = $data->id;
-        $newitemid = $DB->insert_record('quiz_sections', $data);
+        $newitemid = $DB->insert_record('hippotrack_sections', $data);
         $this->sectioncreated = true;
-        $this->set_mapping('quiz_section', $oldid, $newitemid, true);
+        $this->set_mapping('hippotrack_section', $oldid, $newitemid, true);
     }
 
-    protected function process_quiz_feedback($data) {
+    protected function process_hippotrack_feedback($data) {
         global $DB;
 
         $data = (object)$data;
@@ -467,11 +467,11 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
 
         $data->quizid = $this->get_new_parentid('quiz');
 
-        $newitemid = $DB->insert_record('quiz_feedback', $data);
-        $this->set_mapping('quiz_feedback', $oldid, $newitemid, true); // Has related files.
+        $newitemid = $DB->insert_record('hippotrack_feedback', $data);
+        $this->set_mapping('hippotrack_feedback', $oldid, $newitemid, true); // Has related files.
     }
 
-    protected function process_quiz_override($data) {
+    protected function process_hippotrack_override($data) {
         global $DB;
 
         $data = (object)$data;
@@ -503,13 +503,13 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
         $data->timeopen = $this->apply_date_offset($data->timeopen);
         $data->timeclose = $this->apply_date_offset($data->timeclose);
 
-        $newitemid = $DB->insert_record('quiz_overrides', $data);
+        $newitemid = $DB->insert_record('hippotrack_overrides', $data);
 
         // Add mapping, restore of logs needs it.
-        $this->set_mapping('quiz_override', $oldid, $newitemid);
+        $this->set_mapping('hippotrack_override', $oldid, $newitemid);
     }
 
-    protected function process_quiz_grade($data) {
+    protected function process_hippotrack_grade($data) {
         global $DB;
 
         $data = (object)$data;
@@ -520,10 +520,10 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
         $data->userid = $this->get_mappingid('user', $data->userid);
         $data->grade = $data->gradeval;
 
-        $DB->insert_record('quiz_grades', $data);
+        $DB->insert_record('hippotrack_grades', $data);
     }
 
-    protected function process_quiz_attempt($data) {
+    protected function process_hippotrack_attempt($data) {
         $data = (object)$data;
 
         $data->quiz = $this->get_new_parentid('quiz');
@@ -565,14 +565,14 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
         $this->currentquizattempt = clone($data);
     }
 
-    protected function process_quiz_attempt_legacy($data) {
+    protected function process_hippotrack_attempt_legacy($data) {
         global $DB;
 
-        $this->process_quiz_attempt($data);
+        $this->process_hippotrack_attempt($data);
 
         $quiz = $DB->get_record('quiz', array('id' => $this->get_new_parentid('quiz')));
         $quiz->oldquestions = $this->oldquizlayout;
-        $this->process_legacy_quiz_attempt_data($data, $quiz);
+        $this->process_legacy_hippotrack_attempt_data($data, $quiz);
     }
 
     protected function inform_new_usage_id($newusageid) {
@@ -586,10 +586,10 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
         $oldid = $data->id;
         $data->uniqueid = $newusageid;
 
-        $newitemid = $DB->insert_record('quiz_attempts', $data);
+        $newitemid = $DB->insert_record('hippotrack_attempts', $data);
 
-        // Save quiz_attempt->id mapping, because logs use it.
-        $this->set_mapping('quiz_attempt', $oldid, $newitemid, false);
+        // Save hippotrack_attempt->id mapping, because logs use it.
+        $this->set_mapping('hippotrack_attempt', $oldid, $newitemid, false);
     }
 
     protected function after_execute() {
@@ -598,11 +598,11 @@ class restore_quiz_activity_structure_step extends restore_questions_activity_st
         parent::after_execute();
         // Add quiz related files, no need to match by itemname (just internally handled context).
         $this->add_related_files('mod_hippotrack', 'intro', null);
-        // Add feedback related files, matching by itemname = 'quiz_feedback'.
-        $this->add_related_files('mod_hippotrack', 'feedback', 'quiz_feedback');
+        // Add feedback related files, matching by itemname = 'hippotrack_feedback'.
+        $this->add_related_files('mod_hippotrack', 'feedback', 'hippotrack_feedback');
 
         if (!$this->sectioncreated) {
-            $DB->insert_record('quiz_sections', array(
+            $DB->insert_record('hippotrack_sections', array(
                     'quizid' => $this->get_new_parentid('quiz'),
                     'firstslot' => 1, 'heading' => '',
                     'shufflequestions' => $this->legacyshufflequestionsoption));

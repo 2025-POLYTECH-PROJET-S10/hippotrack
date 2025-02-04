@@ -46,16 +46,16 @@ class restore_date_test extends \restore_date_testcase {
         $cat = $questiongenerator->create_question_category();
         $saq = $questiongenerator->create_question('shortanswer', null, array('category' => $cat->id));
         // Add to the quiz.
-        quiz_add_quiz_question($saq->id, $quiz);
+        hippotrack_add_hippotrack_question($saq->id, $quiz);
 
         // Create an attempt.
         $timestamp = 100;
         $quizobj = \quiz::create($quiz->id);
-        $attempt = quiz_create_attempt($quizobj, 1, false, $timestamp, false);
+        $attempt = hippotrack_create_attempt($quizobj, 1, false, $timestamp, false);
         $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
-        quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $timestamp);
-        quiz_attempt_save_started($quizobj, $quba, $attempt);
+        hippotrack_start_new_attempt($quizobj, $quba, $attempt, 1, $timestamp);
+        hippotrack_attempt_save_started($quizobj, $quba, $attempt);
 
         // Quiz grade.
         $grade = new \stdClass();
@@ -63,7 +63,7 @@ class restore_date_test extends \restore_date_testcase {
         $grade->userid = $USER->id;
         $grade->grade = 8.9;
         $grade->timemodified = $timestamp;
-        $grade->id = $DB->insert_record('quiz_grades', $grade);
+        $grade->id = $DB->insert_record('hippotrack_grades', $grade);
 
         // User override.
         $override = (object)[
@@ -74,10 +74,10 @@ class restore_date_test extends \restore_date_testcase {
             'timeopen' => 100,
             'timeclose' => 200
         ];
-        $DB->insert_record('quiz_overrides', $override);
+        $DB->insert_record('hippotrack_overrides', $override);
 
         // Set time fields to a constant for easy validation.
-        $DB->set_field('quiz_attempts', 'timefinish', $timestamp);
+        $DB->set_field('hippotrack_attempts', 'timefinish', $timestamp);
 
         // Do backup and restore.
         $newcourseid = $this->backup_and_restore($course);
@@ -87,9 +87,9 @@ class restore_date_test extends \restore_date_testcase {
         $props = ['timeclose', 'timeopen'];
         $this->assertFieldsRolledForward($quiz, $newquiz, $props);
 
-        $newattempt = $DB->get_record('quiz_attempts', ['quiz' => $newquiz->id]);
-        $newoverride = $DB->get_record('quiz_overrides', ['quiz' => $newquiz->id]);
-        $newgrade = $DB->get_record('quiz_grades', ['quiz' => $newquiz->id]);
+        $newattempt = $DB->get_record('hippotrack_attempts', ['quiz' => $newquiz->id]);
+        $newoverride = $DB->get_record('hippotrack_overrides', ['quiz' => $newquiz->id]);
+        $newgrade = $DB->get_record('hippotrack_grades', ['quiz' => $newquiz->id]);
 
         // Attempt time checks.
         $diff = $this->get_diff();

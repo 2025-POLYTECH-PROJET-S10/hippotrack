@@ -24,11 +24,11 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use quizaccess_seb\quiz_settings;
+use quizaccess_seb\hippotrack_settings;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/restore_mod_hippotrack_access_subplugin.class.php');
+require_once($CFG->dirroot . '/mod/hippotrack/backup/moodle2/restore_mod_hippotrack_access_subplugin.class.php');
 
 /**
  * Restore instructions for the seb (Safe Exam Browser) quiz access subplugin.
@@ -43,7 +43,7 @@ class restore_quizaccess_seb_subplugin extends restore_mod_hippotrack_access_sub
      *
      * @return array
      */
-    protected function define_quiz_subplugin_structure() {
+    protected function define_hippotrack_subplugin_structure() {
         $paths = [];
 
         // Quiz settings.
@@ -73,7 +73,7 @@ class restore_quizaccess_seb_subplugin extends restore_mod_hippotrack_access_sub
         unset($data->id);
         $data->timecreated = $data->timemodified = time();
         $data->usermodified = $USER->id;
-        $DB->insert_record(quizaccess_seb\quiz_settings::TABLE, $data);
+        $DB->insert_record(quizaccess_seb\hippotrack_settings::TABLE, $data);
 
         // Process attached files.
         $this->add_related_files('quizaccess_seb', 'filemanager_sebconfigfile', null);
@@ -112,7 +112,7 @@ class restore_quizaccess_seb_subplugin extends restore_mod_hippotrack_access_sub
         }
 
         // Update the restored quiz settings to use restored template.
-        $DB->set_field(\quizaccess_seb\quiz_settings::TABLE, 'templateid', $template->get('id'), ['quizid' => $quizid]);
+        $DB->set_field(\quizaccess_seb\hippotrack_settings::TABLE, 'templateid', $template->get('id'), ['quizid' => $quizid]);
     }
 
 }

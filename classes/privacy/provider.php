@@ -37,8 +37,8 @@ use core_privacy\manager;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/lib.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/lib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
  * Privacy Subsystem implementation for mod_hippotrack.
@@ -66,56 +66,56 @@ class provider implements
         // The table 'quiz' stores a record for each quiz.
         // It does not contain user personal data, but data is returned from it for contextual requirements.
 
-        // The table 'quiz_attempts' stores a record of each quiz attempt.
+        // The table 'hippotrack_attempts' stores a record of each quiz attempt.
         // It contains a userid which links to the user making the attempt and contains information about that attempt.
-        $items->add_database_table('quiz_attempts', [
-                'attempt'                    => 'privacy:metadata:quiz_attempts:attempt',
-                'currentpage'                => 'privacy:metadata:quiz_attempts:currentpage',
-                'preview'                    => 'privacy:metadata:quiz_attempts:preview',
-                'state'                      => 'privacy:metadata:quiz_attempts:state',
-                'timestart'                  => 'privacy:metadata:quiz_attempts:timestart',
-                'timefinish'                 => 'privacy:metadata:quiz_attempts:timefinish',
-                'timemodified'               => 'privacy:metadata:quiz_attempts:timemodified',
-                'timemodifiedoffline'        => 'privacy:metadata:quiz_attempts:timemodifiedoffline',
-                'timecheckstate'             => 'privacy:metadata:quiz_attempts:timecheckstate',
-                'sumgrades'                  => 'privacy:metadata:quiz_attempts:sumgrades',
-                'gradednotificationsenttime' => 'privacy:metadata:quiz_attempts:gradednotificationsenttime',
-            ], 'privacy:metadata:quiz_attempts');
+        $items->add_database_table('hippotrack_attempts', [
+                'attempt'                    => 'privacy:metadata:hippotrack_attempts:attempt',
+                'currentpage'                => 'privacy:metadata:hippotrack_attempts:currentpage',
+                'preview'                    => 'privacy:metadata:hippotrack_attempts:preview',
+                'state'                      => 'privacy:metadata:hippotrack_attempts:state',
+                'timestart'                  => 'privacy:metadata:hippotrack_attempts:timestart',
+                'timefinish'                 => 'privacy:metadata:hippotrack_attempts:timefinish',
+                'timemodified'               => 'privacy:metadata:hippotrack_attempts:timemodified',
+                'timemodifiedoffline'        => 'privacy:metadata:hippotrack_attempts:timemodifiedoffline',
+                'timecheckstate'             => 'privacy:metadata:hippotrack_attempts:timecheckstate',
+                'sumgrades'                  => 'privacy:metadata:hippotrack_attempts:sumgrades',
+                'gradednotificationsenttime' => 'privacy:metadata:hippotrack_attempts:gradednotificationsenttime',
+            ], 'privacy:metadata:hippotrack_attempts');
 
-        // The table 'quiz_feedback' contains the feedback responses which will be shown to users depending upon the
+        // The table 'hippotrack_feedback' contains the feedback responses which will be shown to users depending upon the
         // grade they achieve in the quiz.
         // It does not identify the user who wrote the feedback item so cannot be returned directly and is not
         // described, but relevant feedback items will be included with the quiz export for a user who has a grade.
 
-        // The table 'quiz_grades' contains the current grade for each quiz/user combination.
-        $items->add_database_table('quiz_grades', [
-                'quiz'                  => 'privacy:metadata:quiz_grades:quiz',
-                'userid'                => 'privacy:metadata:quiz_grades:userid',
-                'grade'                 => 'privacy:metadata:quiz_grades:grade',
-                'timemodified'          => 'privacy:metadata:quiz_grades:timemodified',
-            ], 'privacy:metadata:quiz_grades');
+        // The table 'hippotrack_grades' contains the current grade for each quiz/user combination.
+        $items->add_database_table('hippotrack_grades', [
+                'quiz'                  => 'privacy:metadata:hippotrack_grades:quiz',
+                'userid'                => 'privacy:metadata:hippotrack_grades:userid',
+                'grade'                 => 'privacy:metadata:hippotrack_grades:grade',
+                'timemodified'          => 'privacy:metadata:hippotrack_grades:timemodified',
+            ], 'privacy:metadata:hippotrack_grades');
 
-        // The table 'quiz_overrides' contains any user or group overrides for users.
+        // The table 'hippotrack_overrides' contains any user or group overrides for users.
         // It should be included where data exists for a user.
-        $items->add_database_table('quiz_overrides', [
-                'quiz'                  => 'privacy:metadata:quiz_overrides:quiz',
-                'userid'                => 'privacy:metadata:quiz_overrides:userid',
-                'timeopen'              => 'privacy:metadata:quiz_overrides:timeopen',
-                'timeclose'             => 'privacy:metadata:quiz_overrides:timeclose',
-                'timelimit'             => 'privacy:metadata:quiz_overrides:timelimit',
-            ], 'privacy:metadata:quiz_overrides');
+        $items->add_database_table('hippotrack_overrides', [
+                'quiz'                  => 'privacy:metadata:hippotrack_overrides:quiz',
+                'userid'                => 'privacy:metadata:hippotrack_overrides:userid',
+                'timeopen'              => 'privacy:metadata:hippotrack_overrides:timeopen',
+                'timeclose'             => 'privacy:metadata:hippotrack_overrides:timeclose',
+                'timelimit'             => 'privacy:metadata:hippotrack_overrides:timelimit',
+            ], 'privacy:metadata:hippotrack_overrides');
 
         // These define the structure of the quiz.
 
-        // The table 'quiz_sections' contains data about the structure of a quiz.
+        // The table 'hippotrack_sections' contains data about the structure of a quiz.
         // It does not contain any user identifying data and does not need a mapping.
 
-        // The table 'quiz_slots' contains data about the structure of a quiz.
+        // The table 'hippotrack_slots' contains data about the structure of a quiz.
         // It does not contain any user identifying data and does not need a mapping.
 
-        // The table 'quiz_reports' does not contain any user identifying data and does not need a mapping.
+        // The table 'hippotrack_reports' does not contain any user identifying data and does not need a mapping.
 
-        // The table 'quiz_statistics' contains abstract statistics about question usage and cannot be mapped to any
+        // The table 'hippotrack_statistics' contains abstract statistics about question usage and cannot be mapped to any
         // specific user.
         // It does not contain any user identifying data and does not need a mapping.
 
@@ -148,7 +148,7 @@ class provider implements
                   JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
                   JOIN {modules} m ON m.id = cm.module AND m.name = :modname
                   JOIN {quiz} q ON q.id = cm.instance
-                  JOIN {quiz_attempts} qa ON qa.quiz = q.id
+                  JOIN {hippotrack_attempts} qa ON qa.quiz = q.id
                  WHERE qa.userid = :userid AND qa.preview = 0";
         $params = ['contextlevel' => CONTEXT_MODULE, 'modname' => 'quiz', 'userid' => $userid];
         $resultset->add_from_sql($sql, $params);
@@ -159,7 +159,7 @@ class provider implements
                   JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
                   JOIN {modules} m ON m.id = cm.module AND m.name = :modname
                   JOIN {quiz} q ON q.id = cm.instance
-                  JOIN {quiz_overrides} qo ON qo.quiz = q.id
+                  JOIN {hippotrack_overrides} qo ON qo.quiz = q.id
                  WHERE qo.userid = :userid";
         $params = ['contextlevel' => CONTEXT_MODULE, 'modname' => 'quiz', 'userid' => $userid];
         $resultset->add_from_sql($sql, $params);
@@ -174,7 +174,7 @@ class provider implements
                   JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
                   JOIN {modules} m ON m.id = cm.module AND m.name = :modname
                   JOIN {quiz} q ON q.id = cm.instance
-                  JOIN {quiz_attempts} qa ON qa.quiz = q.id
+                  JOIN {hippotrack_attempts} qa ON qa.quiz = q.id
             " . $qubaid->from . "
             WHERE " . $qubaid->where() . " AND qa.preview = 0";
         $params = ['contextlevel' => CONTEXT_MODULE, 'modname' => 'quiz'] + $qubaid->from_where_params();
@@ -205,7 +205,7 @@ class provider implements
                   FROM {course_modules} cm
                   JOIN {modules} m ON m.id = cm.module AND m.name = :modname
                   JOIN {quiz} q ON q.id = cm.instance
-                  JOIN {quiz_attempts} qa ON qa.quiz = q.id
+                  JOIN {hippotrack_attempts} qa ON qa.quiz = q.id
                  WHERE cm.id = :cmid AND qa.preview = 0";
         $userlist->add_from_sql('userid', $sql, $params);
 
@@ -214,7 +214,7 @@ class provider implements
                   FROM {course_modules} cm
                   JOIN {modules} m ON m.id = cm.module AND m.name = :modname
                   JOIN {quiz} q ON q.id = cm.instance
-                  JOIN {quiz_overrides} qo ON qo.quiz = q.id
+                  JOIN {hippotrack_overrides} qo ON qo.quiz = q.id
                  WHERE cm.id = :cmid";
         $userlist->add_from_sql('userid', $sql, $params);
 
@@ -224,7 +224,7 @@ class provider implements
                   FROM {course_modules} cm
                   JOIN {modules} m ON m.id = cm.module AND m.name = :modname
                   JOIN {quiz} q ON q.id = cm.instance
-                  JOIN {quiz_attempts} qa ON qa.quiz = q.id
+                  JOIN {hippotrack_attempts} qa ON qa.quiz = q.id
                  WHERE cm.id = :cmid AND qa.preview = 0";
         \core_question\privacy\provider::get_users_in_context_from_sql($userlist, 'qn', $sql, $params);
     }
@@ -260,8 +260,8 @@ class provider implements
             INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
             INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
             INNER JOIN {quiz} q ON q.id = cm.instance
-             LEFT JOIN {quiz_overrides} qo ON qo.quiz = q.id AND qo.userid = :qouserid
-             LEFT JOIN {quiz_grades} qg ON qg.quiz = q.id AND qg.userid = :qguserid
+             LEFT JOIN {hippotrack_overrides} qo ON qo.quiz = q.id AND qo.userid = :qouserid
+             LEFT JOIN {hippotrack_grades} qg ON qg.quiz = q.id AND qg.userid = :qguserid
                  WHERE c.id {$contextsql}";
 
         $params = [
@@ -333,7 +333,7 @@ class provider implements
         $quizzes->close();
 
         // Store all quiz attempt data.
-        static::export_quiz_attempts($contextlist);
+        static::export_hippotrack_attempts($contextlist);
     }
 
     /**
@@ -365,10 +365,10 @@ class provider implements
             );
 
         // Delete all overrides - do not log.
-        quiz_delete_all_overrides($quiz, false);
+        hippotrack_delete_all_overrides($quiz, false);
 
         // This will delete all question attempts, quiz attempts, and quiz grades for this quiz.
-        quiz_delete_all_attempts($quiz);
+        hippotrack_delete_all_attempts($quiz);
     }
 
     /**
@@ -405,17 +405,17 @@ class provider implements
                 );
 
             // Remove overrides for this user.
-            $overrides = $DB->get_records('quiz_overrides' , [
+            $overrides = $DB->get_records('hippotrack_overrides' , [
                 'quiz' => $quizobj->get_quizid(),
                 'userid' => $user->id,
             ]);
 
             foreach ($overrides as $override) {
-                quiz_delete_override($quiz, $override->id, false);
+                hippotrack_delete_override($quiz, $override->id, false);
             }
 
             // This will delete all question attempts, quiz attempts, and quiz grades for this quiz.
-            quiz_delete_user_attempts($quizobj, $user);
+            hippotrack_delete_user_attempts($quizobj, $user);
         }
     }
 
@@ -455,17 +455,17 @@ class provider implements
 
         foreach ($userids as $userid) {
             // Remove overrides for this user.
-            $overrides = $DB->get_records('quiz_overrides' , [
+            $overrides = $DB->get_records('hippotrack_overrides' , [
                 'quiz' => $quizobj->get_quizid(),
                 'userid' => $userid,
             ]);
 
             foreach ($overrides as $override) {
-                quiz_delete_override($quiz, $override->id, false);
+                hippotrack_delete_override($quiz, $override->id, false);
             }
 
             // This will delete all question attempts, quiz attempts, and quiz grades for this user in the given quiz.
-            quiz_delete_user_attempts($quizobj, (object)['id' => $userid]);
+            hippotrack_delete_user_attempts($quizobj, (object)['id' => $userid]);
         }
     }
 
@@ -474,7 +474,7 @@ class provider implements
      *
      * @param   approved_contextlist    $contextlist
      */
-    protected static function export_quiz_attempts(approved_contextlist $contextlist) {
+    protected static function export_hippotrack_attempts(approved_contextlist $contextlist) {
         global $DB;
 
         $userid = $contextlist->get_user()->id;
@@ -489,7 +489,7 @@ class provider implements
                   JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
                   JOIN {modules} m ON m.id = cm.module AND m.name = 'quiz'
                   JOIN {quiz} q ON q.id = cm.instance
-                  JOIN {quiz_attempts} qa ON qa.quiz = q.id
+                  JOIN {hippotrack_attempts} qa ON qa.quiz = q.id
             " . $qubaid->from. "
             WHERE (
                 qa.userid = :qauserid OR
@@ -509,8 +509,8 @@ class provider implements
         foreach ($attempts as $attempt) {
             $quiz = $DB->get_record('quiz', ['id' => $attempt->quiz]);
             $context = \context_module::instance($attempt->cmid);
-            $attemptsubcontext = helper::get_quiz_attempt_subcontext($attempt, $contextlist->get_user());
-            $options = quiz_get_review_options($quiz, $attempt, $context);
+            $attemptsubcontext = helper::get_hippotrack_attempt_subcontext($attempt, $contextlist->get_user());
+            $options = hippotrack_get_review_options($quiz, $attempt, $context);
 
             if ($attempt->userid == $userid) {
                 // This attempt was made by the user.
@@ -526,7 +526,7 @@ class provider implements
 
                 // Store the quiz attempt data.
                 $data = (object) [
-                    'state' => \quiz_attempt::state_name($attempt->state),
+                    'state' => \hippotrack_attempt::state_name($attempt->state),
                 ];
 
                 if (!empty($attempt->timestart)) {
@@ -549,10 +549,10 @@ class provider implements
                 }
 
                 if ($options->marks == \question_display_options::MARK_AND_MAX) {
-                    $grade = quiz_rescale_grade($attempt->sumgrades, $quiz, false);
+                    $grade = hippotrack_rescale_grade($attempt->sumgrades, $quiz, false);
                     $data->grade = (object) [
-                            'grade' => quiz_format_grade($quiz, $grade),
-                            'feedback' => quiz_feedback_for_grade($grade, $quiz, $context),
+                            'grade' => hippotrack_format_grade($quiz, $grade),
+                            'feedback' => hippotrack_feedback_for_grade($grade, $quiz, $context),
                         ];
                 }
 

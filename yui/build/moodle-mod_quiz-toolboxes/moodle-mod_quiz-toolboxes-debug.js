@@ -482,7 +482,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
 
             if (typeof problemsection !== 'undefined') {
                 var alert = new M.core.alert({
-                    title: M.util.get_string('cannotremoveslots', 'quiz'),
+                    title: M.util.get_string('cannotremoveslots', 'hippotrack'),
                     message: M.util.get_string('cannotremoveallsectionslots', 'quiz', problemsection)
                 });
 
@@ -519,7 +519,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
 
             // Create the confirmation dialogue.
             var confirm = new M.core.confirm({
-                question: M.util.get_string('areyousureremoveselected', 'quiz'),
+                question: M.util.get_string('areyousureremoveselected', 'hippotrack'),
                 modal: true
             });
 
@@ -1031,7 +1031,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
                 var instancesectiontext = newtext;
                 if (newtext.trim() === '') {
                     // Add a sr-only default section heading text to make sure we don't end up with an empty section heading.
-                    instancesectiontext = M.util.get_string('sectionnoname', 'quiz');
+                    instancesectiontext = M.util.get_string('sectionnoname', 'hippotrack');
                     instancesection.addClass('sr-only');
                 } else {
                     // Show the section heading when a non-empty value is set.
@@ -1052,7 +1052,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
                         if (newtext !== response.instancesection) {
                             if (response.instancesection.trim() === '') {
                                 // Add a sr-only default section heading text.
-                                instancesectiontext = M.util.get_string('sectionnoname', 'quiz');
+                                instancesectiontext = M.util.get_string('sectionnoname', 'hippotrack');
                                 instancesection.addClass('sr-only');
                             } else {
                                 instancesectiontext = response.instancesection;

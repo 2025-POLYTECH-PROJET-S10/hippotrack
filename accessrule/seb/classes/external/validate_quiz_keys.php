@@ -29,8 +29,8 @@ use quiz;
 use quizaccess_seb\event\access_prevented;
 use quizaccess_seb\access_manager;
 
-require_once($CFG->dirroot . '/mod/quiz/accessmanager.php');
-require_once($CFG->dirroot . '/mod/quiz/attemptlib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/accessmanager.php');
+require_once($CFG->dirroot . '/mod/hippotrack/attemptlib.php');
 require_once($CFG->libdir . '/externallib.php');
 
 /**
@@ -41,7 +41,7 @@ require_once($CFG->libdir . '/externallib.php');
  * @copyright  2021 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class validate_quiz_keys extends external_api {
+class validate_hippotrack_keys extends external_api {
 
     /**
      * External function parameters.
@@ -91,7 +91,7 @@ class validate_quiz_keys extends external_api {
         }
 
         // Check quiz exists corresponding to cmid.
-        if (($quizid = self::get_quiz_id($cmid)) === 0) {
+        if (($quizid = self::get_hippotrack_id($cmid)) === 0) {
             throw new invalid_parameter_exception(get_string('error:ws:quiznotexists', 'quizaccess_seb', $cmid));
         }
 
@@ -141,7 +141,7 @@ class validate_quiz_keys extends external_api {
      * @param string $cmid Course module ID.
      * @return int Returns quiz id if cmid matches valid quiz, or 0 if there is no match.
      */
-    private static function get_quiz_id(string $cmid): int {
+    private static function get_hippotrack_id(string $cmid): int {
         $quizid = 0;
 
         $coursemodule = get_coursemodule_from_id('quiz', $cmid);

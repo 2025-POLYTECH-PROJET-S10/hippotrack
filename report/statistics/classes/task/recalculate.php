@@ -14,23 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quiz_statistics\task;
+namespace hippotrack_statistics\task;
 
 use core\dml\sql_join;
-use quiz_attempt;
-use quiz_statistics_report;
+use hippotrack_attempt;
+use hippotrack_statistics_report;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/statistics/statisticslib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/statistics/report.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/statistics/statisticslib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/reportlib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/statistics/report.php');
 
 /**
  * Re-calculate question statistics.
  *
- * @package    quiz_statistics
+ * @package    hippotrack_statistics
  * @copyright  2022 Catalyst IT Australia Pty Ltd
  * @author     Nathan Nguyen <nathannguyen@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -51,7 +51,7 @@ class recalculate extends \core\task\adhoc_task {
      */
     public static function instance(int $quizid): recalculate {
         $task = new self();
-        $task->set_component('quiz_statistics');
+        $task->set_component('hippotrack_statistics');
         $task->set_custom_data((object)[
             'quizid' => $quizid,
         ]);
@@ -60,7 +60,7 @@ class recalculate extends \core\task\adhoc_task {
 
 
     public function get_name(): string {
-        return get_string('recalculatetask', 'quiz_statistics');
+        return get_string('recalculatetask', 'hippotrack_statistics');
     }
 
     public function execute(): void {
@@ -77,7 +77,7 @@ class recalculate extends \core\task\adhoc_task {
             mtrace('Could not find course with ID ' . $quiz->course . '.');
             return;
         }
-        $attemptcount = $DB->count_records('quiz_attempts', ['quiz' => $data->quizid, 'state' => quiz_attempt::FINISHED]);
+        $attemptcount = $DB->count_records('hippotrack_attempts', ['quiz' => $data->quizid, 'state' => hippotrack_attempt::FINISHED]);
         if ($attemptcount === 0) {
             mtrace('Could not find any finished attempts for course with ID ' . $data->quizid . '.');
             return;
@@ -87,13 +87,13 @@ class recalculate extends \core\task\adhoc_task {
             "from course {$course->shortname} ({$course->id}) with {$attemptcount} attempts, start time " .
             userdate(time(), $dateformat) . " ...");
 
-        $qubaids = quiz_statistics_qubaids_condition(
+        $qubaids = hippotrack_statistics_qubaids_condition(
             $quiz->id,
             new sql_join(),
             $quiz->grademethod
         );
 
-        $report = new quiz_statistics_report();
+        $report = new hippotrack_statistics_report();
         $report->clear_cached_data($qubaids);
         $report->calculate_questions_stats_for_question_bank($quiz->id);
         mtrace('    Calculations completed at ' . userdate(time(), $dateformat) . '.');

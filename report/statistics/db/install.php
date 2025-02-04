@@ -16,7 +16,7 @@
 
 /**
  * Post-install script for the quiz statistics report.
- * @package   quiz_statistics
+ * @package   hippotrack_statistics
  * @copyright 2010 Petr Skoda (http://skodak.org)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Post-install script
  */
-function xmldb_quiz_statistics_install() {
+function xmldb_hippotrack_statistics_install() {
     global $DB;
 
     $dbman = $DB->get_manager();
@@ -36,9 +36,9 @@ function xmldb_quiz_statistics_install() {
     $record->displayorder = 8000;
     $record->capability   = 'quiz/statistics:view';
 
-    if ($dbman->table_exists('quiz_reports')) {
-        $DB->insert_record('quiz_reports', $record);
+    if ($dbman->table_exists('hippotrack_reports')) {
+        $DB->insert_record('hippotrack_reports', $record);
     } else {
-        $DB->insert_record('quiz_report', $record);
+        $DB->insert_record('hippotrack_report', $record);
     }
 }

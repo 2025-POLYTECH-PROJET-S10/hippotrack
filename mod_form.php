@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 
 /**
@@ -77,34 +77,34 @@ class mod_hippotrack_mod_form extends moodleform_mod {
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
         // Introduction.
-        $this->standard_intro_elements(get_string('introduction', 'quiz'));
+        $this->standard_intro_elements(get_string('introduction', 'hippotrack'));
 
         // -------------------------------------------------------------------------------
-        $mform->addElement('header', 'timing', get_string('timing', 'quiz'));
+        $mform->addElement('header', 'timing', get_string('timing', 'hippotrack'));
 
         // Open and close dates.
-        $mform->addElement('date_time_selector', 'timeopen', get_string('quizopen', 'quiz'),
+        $mform->addElement('date_time_selector', 'timeopen', get_string('quizopen', 'hippotrack'),
                 self::$datefieldoptions);
         $mform->addHelpButton('timeopen', 'quizopenclose', 'quiz');
 
-        $mform->addElement('date_time_selector', 'timeclose', get_string('quizclose', 'quiz'),
+        $mform->addElement('date_time_selector', 'timeclose', get_string('quizclose', 'hippotrack'),
                 self::$datefieldoptions);
 
         // Time limit.
-        $mform->addElement('duration', 'timelimit', get_string('timelimit', 'quiz'),
+        $mform->addElement('duration', 'timelimit', get_string('timelimit', 'hippotrack'),
                 array('optional' => true));
         $mform->addHelpButton('timelimit', 'timelimit', 'quiz');
 
         // What to do with overdue attempts.
-        $mform->addElement('select', 'overduehandling', get_string('overduehandling', 'quiz'),
-                quiz_get_overdue_handling_options());
+        $mform->addElement('select', 'overduehandling', get_string('overduehandling', 'hippotrack'),
+                hippotrack_get_overdue_handling_options());
         $mform->addHelpButton('overduehandling', 'overduehandling', 'quiz');
         // TODO Formslib does OR logic on disableif, and we need AND logic here.
         // $mform->disabledIf('overduehandling', 'timelimit', 'eq', 0);
         // $mform->disabledIf('overduehandling', 'timeclose', 'eq', 0);
 
         // Grace period time.
-        $mform->addElement('duration', 'graceperiod', get_string('graceperiod', 'quiz'),
+        $mform->addElement('duration', 'graceperiod', get_string('graceperiod', 'hippotrack'),
                 array('optional' => true));
         $mform->addHelpButton('graceperiod', 'graceperiod', 'quiz');
         $mform->hideIf('graceperiod', 'overduehandling', 'neq', 'graceperiod');
@@ -127,45 +127,45 @@ class mod_hippotrack_mod_form extends moodleform_mod {
         for ($i = 1; $i <= QUIZ_MAX_ATTEMPT_OPTION; $i++) {
             $attemptoptions[$i] = $i;
         }
-        $mform->addElement('select', 'attempts', get_string('attemptsallowed', 'quiz'),
+        $mform->addElement('select', 'attempts', get_string('attemptsallowed', 'hippotrack'),
                 $attemptoptions);
 
         // Grading method.
-        $mform->addElement('select', 'grademethod', get_string('grademethod', 'quiz'),
-                quiz_get_grading_options());
+        $mform->addElement('select', 'grademethod', get_string('grademethod', 'hippotrack'),
+                hippotrack_get_grading_options());
         $mform->addHelpButton('grademethod', 'grademethod', 'quiz');
         if ($this->get_max_attempts_for_any_override() < 2) {
             $mform->hideIf('grademethod', 'attempts', 'eq', 1);
         }
 
         // -------------------------------------------------------------------------------
-        $mform->addElement('header', 'layouthdr', get_string('layout', 'quiz'));
+        $mform->addElement('header', 'layouthdr', get_string('layout', 'hippotrack'));
 
         $pagegroup = array();
         $pagegroup[] = $mform->createElement('select', 'questionsperpage',
-                get_string('newpage', 'quiz'), quiz_questions_per_page_options(), array('id' => 'id_questionsperpage'));
+                get_string('newpage', 'hippotrack'), hippotrack_questions_per_page_options(), array('id' => 'id_questionsperpage'));
         $mform->setDefault('questionsperpage', $quizconfig->questionsperpage);
 
-        if (!empty($this->_cm) && !quiz_has_attempts($this->_cm->instance)) {
+        if (!empty($this->_cm) && !hippotrack_has_attempts($this->_cm->instance)) {
             $pagegroup[] = $mform->createElement('checkbox', 'repaginatenow', '',
-                    get_string('repaginatenow', 'quiz'), array('id' => 'id_repaginatenow'));
+                    get_string('repaginatenow', 'hippotrack'), array('id' => 'id_repaginatenow'));
         }
 
         $mform->addGroup($pagegroup, 'questionsperpagegrp',
-                get_string('newpage', 'quiz'), null, false);
+                get_string('newpage', 'hippotrack'), null, false);
         $mform->addHelpButton('questionsperpagegrp', 'newpage', 'quiz');
         $mform->setAdvanced('questionsperpagegrp', $quizconfig->questionsperpage_adv);
 
         // Navigation method.
-        $mform->addElement('select', 'navmethod', get_string('navmethod', 'quiz'),
-                quiz_get_navigation_options());
+        $mform->addElement('select', 'navmethod', get_string('navmethod', 'hippotrack'),
+                hippotrack_get_navigation_options());
         $mform->addHelpButton('navmethod', 'navmethod', 'quiz');
 
         // -------------------------------------------------------------------------------
-        $mform->addElement('header', 'interactionhdr', get_string('questionbehaviour', 'quiz'));
+        $mform->addElement('header', 'interactionhdr', get_string('questionbehaviour', 'hippotrack'));
 
         // Shuffle within questions.
-        $mform->addElement('selectyesno', 'shuffleanswers', get_string('shufflewithin', 'quiz'));
+        $mform->addElement('selectyesno', 'shuffleanswers', get_string('shufflewithin', 'hippotrack'));
         $mform->addHelpButton('shuffleanswers', 'shufflewithin', 'quiz');
 
         // How questions behave (question behaviour).
@@ -180,8 +180,8 @@ class mod_hippotrack_mod_form extends moodleform_mod {
         $mform->addHelpButton('preferredbehaviour', 'howquestionsbehave', 'question');
 
         // Can redo completed questions.
-        $redochoices = array(0 => get_string('no'), 1 => get_string('canredoquestionsyes', 'quiz'));
-        $mform->addElement('select', 'canredoquestions', get_string('canredoquestions', 'quiz'), $redochoices);
+        $redochoices = array(0 => get_string('no'), 1 => get_string('canredoquestionsyes', 'hippotrack'));
+        $mform->addElement('select', 'canredoquestions', get_string('canredoquestions', 'hippotrack'), $redochoices);
         $mform->addHelpButton('canredoquestions', 'canredoquestions', 'quiz');
         foreach ($behaviours as $behaviour => $notused) {
             if (!question_engine::can_questions_finish_during_the_attempt($behaviour)) {
@@ -191,7 +191,7 @@ class mod_hippotrack_mod_form extends moodleform_mod {
 
         // Each attempt builds on last.
         $mform->addElement('selectyesno', 'attemptonlast',
-                get_string('eachattemptbuildsonthelast', 'quiz'));
+                get_string('eachattemptbuildsonthelast', 'hippotrack'));
         $mform->addHelpButton('attemptonlast', 'eachattemptbuildsonthelast', 'quiz');
         if ($this->get_max_attempts_for_any_override() < 2) {
             $mform->hideIf('attemptonlast', 'attempts', 'eq', 1);
@@ -199,7 +199,7 @@ class mod_hippotrack_mod_form extends moodleform_mod {
 
         // -------------------------------------------------------------------------------
         $mform->addElement('header', 'reviewoptionshdr',
-                get_string('reviewoptionsheading', 'quiz'));
+                get_string('reviewoptionsheading', 'hippotrack'));
         $mform->addHelpButton('reviewoptionshdr', 'reviewoptionsheading', 'quiz');
 
         // Review options.
@@ -231,8 +231,8 @@ class mod_hippotrack_mod_form extends moodleform_mod {
         $mform->addElement('header', 'display', get_string('appearance'));
 
         // Show user picture.
-        $mform->addElement('select', 'showuserpicture', get_string('showuserpicture', 'quiz'),
-                quiz_get_user_image_options());
+        $mform->addElement('select', 'showuserpicture', get_string('showuserpicture', 'hippotrack'),
+                hippotrack_get_user_image_options());
         $mform->addHelpButton('showuserpicture', 'showuserpicture', 'quiz');
 
         // Overall decimal points.
@@ -240,45 +240,45 @@ class mod_hippotrack_mod_form extends moodleform_mod {
         for ($i = 0; $i <= QUIZ_MAX_DECIMAL_OPTION; $i++) {
             $options[$i] = $i;
         }
-        $mform->addElement('select', 'decimalpoints', get_string('decimalplaces', 'quiz'),
+        $mform->addElement('select', 'decimalpoints', get_string('decimalplaces', 'hippotrack'),
                 $options);
         $mform->addHelpButton('decimalpoints', 'decimalplaces', 'quiz');
 
         // Question decimal points.
-        $options = array(-1 => get_string('sameasoverall', 'quiz'));
+        $options = array(-1 => get_string('sameasoverall', 'hippotrack'));
         for ($i = 0; $i <= QUIZ_MAX_Q_DECIMAL_OPTION; $i++) {
             $options[$i] = $i;
         }
         $mform->addElement('select', 'questiondecimalpoints',
-                get_string('decimalplacesquestion', 'quiz'), $options);
+                get_string('decimalplacesquestion', 'hippotrack'), $options);
         $mform->addHelpButton('questiondecimalpoints', 'decimalplacesquestion', 'quiz');
 
         // Show blocks during quiz attempt.
-        $mform->addElement('selectyesno', 'showblocks', get_string('showblocks', 'quiz'));
+        $mform->addElement('selectyesno', 'showblocks', get_string('showblocks', 'hippotrack'));
         $mform->addHelpButton('showblocks', 'showblocks', 'quiz');
 
         // -------------------------------------------------------------------------------
-        $mform->addElement('header', 'security', get_string('extraattemptrestrictions', 'quiz'));
+        $mform->addElement('header', 'security', get_string('extraattemptrestrictions', 'hippotrack'));
 
         // Require password to begin quiz attempt.
-        $mform->addElement('passwordunmask', 'quizpassword', get_string('requirepassword', 'quiz'));
+        $mform->addElement('passwordunmask', 'quizpassword', get_string('requirepassword', 'hippotrack'));
         $mform->setType('quizpassword', PARAM_TEXT);
         $mform->addHelpButton('quizpassword', 'requirepassword', 'quiz');
 
         // IP address.
-        $mform->addElement('text', 'subnet', get_string('requiresubnet', 'quiz'));
+        $mform->addElement('text', 'subnet', get_string('requiresubnet', 'hippotrack'));
         $mform->setType('subnet', PARAM_TEXT);
         $mform->addHelpButton('subnet', 'requiresubnet', 'quiz');
 
         // Enforced time delay between quiz attempts.
-        $mform->addElement('duration', 'delay1', get_string('delay1st2nd', 'quiz'),
+        $mform->addElement('duration', 'delay1', get_string('delay1st2nd', 'hippotrack'),
                 array('optional' => true));
         $mform->addHelpButton('delay1', 'delay1st2nd', 'quiz');
         if ($this->get_max_attempts_for_any_override() < 2) {
             $mform->hideIf('delay1', 'attempts', 'eq', 1);
         }
 
-        $mform->addElement('duration', 'delay2', get_string('delaylater', 'quiz'),
+        $mform->addElement('duration', 'delay2', get_string('delaylater', 'hippotrack'),
                 array('optional' => true));
         $mform->addHelpButton('delay2', 'delaylater', 'quiz');
         if ($this->get_max_attempts_for_any_override() < 3) {
@@ -287,15 +287,15 @@ class mod_hippotrack_mod_form extends moodleform_mod {
         }
 
         // Browser security choices.
-        $mform->addElement('select', 'browsersecurity', get_string('browsersecurity', 'quiz'),
-                quiz_access_manager::get_browser_security_choices());
+        $mform->addElement('select', 'browsersecurity', get_string('browsersecurity', 'hippotrack'),
+                hippotrack_access_manager::get_browser_security_choices());
         $mform->addHelpButton('browsersecurity', 'browsersecurity', 'quiz');
 
         // Any other rule plugins.
-        quiz_access_manager::add_settings_form_fields($this, $mform);
+        hippotrack_access_manager::add_settings_form_fields($this, $mform);
 
         // -------------------------------------------------------------------------------
-        $mform->addElement('header', 'overallfeedbackhdr', get_string('overallfeedback', 'quiz'));
+        $mform->addElement('header', 'overallfeedbackhdr', get_string('overallfeedback', 'hippotrack'));
         $mform->addHelpButton('overallfeedbackhdr', 'overallfeedback', 'quiz');
 
         if (isset($this->current->grade)) {
@@ -305,24 +305,24 @@ class mod_hippotrack_mod_form extends moodleform_mod {
         }
         if ($needwarning) {
             $mform->addElement('static', 'nogradewarning', '',
-                    get_string('nogradewarning', 'quiz'));
+                    get_string('nogradewarning', 'hippotrack'));
         }
 
         $mform->addElement('static', 'gradeboundarystatic1',
-                get_string('gradeboundary', 'quiz'), '100%');
+                get_string('gradeboundary', 'hippotrack'), '100%');
 
         $repeatarray = array();
         $repeatedoptions = array();
         $repeatarray[] = $mform->createElement('editor', 'feedbacktext',
-                get_string('feedback', 'quiz'), array('rows' => 3), array('maxfiles' => EDITOR_UNLIMITED_FILES,
+                get_string('feedback', 'hippotrack'), array('rows' => 3), array('maxfiles' => EDITOR_UNLIMITED_FILES,
                         'noclean' => true, 'context' => $this->context));
         $repeatarray[] = $mform->createElement('text', 'feedbackboundaries',
-                get_string('gradeboundary', 'quiz'), array('size' => 10));
+                get_string('gradeboundary', 'hippotrack'), array('size' => 10));
         $repeatedoptions['feedbacktext']['type'] = PARAM_RAW;
         $repeatedoptions['feedbackboundaries']['type'] = PARAM_RAW;
 
         if (!empty($this->_instance)) {
-            $this->_feedbacks = $DB->get_records('quiz_feedback',
+            $this->_feedbacks = $DB->get_records('hippotrack_feedback',
                     array('quizid' => $this->_instance), 'mingrade DESC');
             $numfeedbacks = count($this->_feedbacks);
         } else {
@@ -333,16 +333,16 @@ class mod_hippotrack_mod_form extends moodleform_mod {
 
         $nextel = $this->repeat_elements($repeatarray, $numfeedbacks - 1,
                 $repeatedoptions, 'boundary_repeats', 'boundary_add_fields', 3,
-                get_string('addmoreoverallfeedbacks', 'quiz'), true);
+                get_string('addmoreoverallfeedbacks', 'hippotrack'), true);
 
         // Put some extra elements in before the button.
         $mform->insertElementBefore($mform->createElement('editor',
-                "feedbacktext[$nextel]", get_string('feedback', 'quiz'), array('rows' => 3),
+                "feedbacktext[$nextel]", get_string('feedback', 'hippotrack'), array('rows' => 3),
                 array('maxfiles' => EDITOR_UNLIMITED_FILES, 'noclean' => true,
                       'context' => $this->context)),
                 'boundary_add_fields');
         $mform->insertElementBefore($mform->createElement('static',
-                'gradeboundarystatic2', get_string('gradeboundary', 'quiz'), '0%'),
+                'gradeboundarystatic2', get_string('gradeboundary', 'hippotrack'), '0%'),
                 'boundary_add_fields');
 
         // Add the disabledif rules. We cannot do this using the $repeatoptions parameter to
@@ -478,7 +478,7 @@ class mod_hippotrack_mod_form extends moodleform_mod {
 
         // Load any settings belonging to the access rules.
         if (!empty($toform['instance'])) {
-            $accesssettings = quiz_access_manager::load_settings($toform['instance']);
+            $accesssettings = hippotrack_access_manager::load_settings($toform['instance']);
             foreach ($accesssettings as $name => $value) {
                 $toform[$name] = $value;
             }
@@ -516,7 +516,7 @@ class mod_hippotrack_mod_form extends moodleform_mod {
         // Check open and close times are consistent.
         if ($data['timeopen'] != 0 && $data['timeclose'] != 0 &&
                 $data['timeclose'] < $data['timeopen']) {
-            $errors['timeclose'] = get_string('closebeforeopen', 'quiz');
+            $errors['timeclose'] = get_string('closebeforeopen', 'hippotrack');
         }
 
         // Check that the grace period is not too short.
@@ -529,7 +529,7 @@ class mod_hippotrack_mod_form extends moodleform_mod {
 
         if (!empty($data['completionminattempts'])) {
             if ($data['attempts'] > 0 && $data['completionminattempts'] > $data['attempts']) {
-                $errors['completionminattemptsgroup'] = get_string('completionminattemptserror', 'quiz');
+                $errors['completionminattemptsgroup'] = get_string('completionminattemptserror', 'hippotrack');
             }
         }
 
@@ -588,7 +588,7 @@ class mod_hippotrack_mod_form extends moodleform_mod {
             unset($errors['gradepass']);
         }
         // Any other rule plugins.
-        $errors = quiz_access_manager::validate_settings_form_fields($errors, $data, $files, $this);
+        $errors = hippotrack_access_manager::validate_settings_form_fields($errors, $data, $files, $this);
 
         return $errors;
     }
@@ -603,17 +603,17 @@ class mod_hippotrack_mod_form extends moodleform_mod {
         $items = array();
 
         $mform->addElement('advcheckbox', 'completionattemptsexhausted', null,
-            get_string('completionattemptsexhausted', 'quiz'),
+            get_string('completionattemptsexhausted', 'hippotrack'),
             array('group' => 'cattempts'));
         $mform->disabledIf('completionattemptsexhausted', 'completionpassgrade', 'notchecked');
         $items[] = 'completionattemptsexhausted';
 
         $group = array();
         $group[] = $mform->createElement('checkbox', 'completionminattemptsenabled', '',
-            get_string('completionminattempts', 'quiz'));
+            get_string('completionminattempts', 'hippotrack'));
         $group[] = $mform->createElement('text', 'completionminattempts', '', array('size' => 3));
         $mform->setType('completionminattempts', PARAM_INT);
-        $mform->addGroup($group, 'completionminattemptsgroup', get_string('completionminattemptsgroup', 'quiz'), array(' '), false);
+        $mform->addGroup($group, 'completionminattemptsgroup', get_string('completionminattemptsgroup', 'hippotrack'), array(' '), false);
         $mform->disabledIf('completionminattempts', 'completionminattemptsenabled', 'notchecked');
 
         $items[] = 'completionminattemptsgroup';
@@ -649,7 +649,7 @@ class mod_hippotrack_mod_form extends moodleform_mod {
         if ($this->maxattemptsanyoverride === null) {
             $this->maxattemptsanyoverride = $DB->get_field_sql("
                     SELECT MAX(CASE WHEN attempts = 0 THEN 1000 ELSE attempts END)
-                      FROM {quiz_overrides}
+                      FROM {hippotrack_overrides}
                      WHERE quiz = ?",
                     array($this->_instance));
             if ($this->maxattemptsanyoverride < 1) {

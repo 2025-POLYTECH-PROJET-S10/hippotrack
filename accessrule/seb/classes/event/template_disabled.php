@@ -87,7 +87,7 @@ class template_disabled extends base {
             'id' => $this->objectid,
             'action' => 'edit',
         ];
-        return new \moodle_url('/mod/quiz/accessrule/seb/template.php', $params);
+        return new \moodle_url('/mod/hippotrack/accessrule/seb/template.php', $params);
     }
 
     /**

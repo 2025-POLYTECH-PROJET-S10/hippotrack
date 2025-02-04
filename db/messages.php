@@ -27,12 +27,12 @@ defined('MOODLE_INTERNAL') || die();
 $messageproviders = array(
     // Notify teacher that a student has submitted a quiz attempt.
     'submission' => array(
-        'capability' => 'mod/quiz:emailnotifysubmission'
+        'capability' => 'mod/hippotrack:emailnotifysubmission'
     ),
 
     // Confirm a student's quiz attempt.
     'confirmation' => array(
-        'capability' => 'mod/quiz:emailconfirmsubmission',
+        'capability' => 'mod/hippotrack:emailconfirmsubmission',
         'defaults' => array(
             'airnotifier' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_ENABLED,
         ),
@@ -41,14 +41,14 @@ $messageproviders = array(
     // Warning to the student that their quiz attempt is now overdue, if the quiz
     // has a grace period.
     'attempt_overdue' => array(
-        'capability' => 'mod/quiz:emailwarnoverdue',
+        'capability' => 'mod/hippotrack:emailwarnoverdue',
         'defaults' => array(
             'airnotifier' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_ENABLED,
         ),
     ),
 
     'attempt_grading_complete' => [
-        'capability' => 'mod/quiz:emailnotifyattemptgraded',
+        'capability' => 'mod/hippotrack:emailnotifyattemptgraded',
         'defaults' => [
             'airnotifier' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_ENABLED,
         ],

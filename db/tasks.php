@@ -36,7 +36,7 @@ $tasks = [
         'month' => '*'
     ],
     [
-        'classname' => 'mod_hippotrack\task\legacy_quiz_reports_cron',
+        'classname' => 'mod_hippotrack\task\legacy_hippotrack_reports_cron',
         'blocking' => 0,
         'minute' => '*',
         'hour' => '*',
@@ -45,7 +45,7 @@ $tasks = [
         'month' => '*'
     ],
     [
-        'classname' => 'mod_hippotrack\task\legacy_quiz_accessrules_cron',
+        'classname' => 'mod_hippotrack\task\legacy_hippotrack_accessrules_cron',
         'blocking' => 0,
         'minute' => '*',
         'hour' => '*',
@@ -54,7 +54,7 @@ $tasks = [
         'month' => '*'
     ],
     [
-        'classname' => 'mod_hippotrack\task\quiz_notify_attempt_manual_grading_completed',
+        'classname' => 'mod_hippotrack\task\hippotrack_notify_attempt_manual_grading_completed',
         'blocking' => 0,
         'minute' => 'R',
         'hour' => '*',

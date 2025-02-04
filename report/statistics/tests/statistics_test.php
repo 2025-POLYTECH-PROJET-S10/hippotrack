@@ -17,20 +17,20 @@
 /**
  * Unit tests for (some of) /question/engine/statistics.php
  *
- * @package   quiz_statistics
+ * @package   hippotrack_statistics
  * @category  test
  * @copyright 2008 Jamie Pratt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quiz_statistics;
+namespace hippotrack_statistics;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->libdir . '/questionlib.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/reportlib.php');
 
 class testable_all_calculated_for_qubaid_condition extends \core_question\statistics\questions\all_calculated_for_qubaid_condition {
 
@@ -57,7 +57,7 @@ class testable_question_statistics extends \core_question\statistics\questions\c
      */
     protected $lateststeps;
 
-    protected $statscollectionclassname = '\quiz_statistics\testable_all_calculated_for_qubaid_condition';
+    protected $statscollectionclassname = '\hippotrack_statistics\testable_all_calculated_for_qubaid_condition';
 
     public function set_step_data($states) {
         $this->lateststeps = $states;
@@ -117,7 +117,7 @@ class statistics_test extends \basic_testcase {
         $calculator->set_step_data($steps);
         $this->qstats = $calculator->calculate(null);
 
-        // Values expected are taken from contrib/tools/quiz_tools/stats.xls.
+        // Values expected are taken from contrib/tools/hippotrack_tools/stats.xls.
         $facility = array(0, 0, 0, 0, null, null, null, 41.19318182, 81.36363636,
             71.36363636, 65.45454545, 65.90909091, 36.36363636, 59.09090909, 50,
             59.09090909, 63.63636364, 45.45454545, 27.27272727, 50);

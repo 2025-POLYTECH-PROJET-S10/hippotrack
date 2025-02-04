@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Base class for the table used by a {@link quiz_attempts_report}.
+ * Base class for the table used by a {@link hippotrack_attempts_report}.
  *
  * @package   mod_hippotrack
  * @copyright 2010 The Open University
@@ -29,12 +29,12 @@ require_once($CFG->libdir.'/tablelib.php');
 
 
 /**
- * Base class for the table used by a {@link quiz_attempts_report}.
+ * Base class for the table used by a {@link hippotrack_attempts_report}.
  *
  * @copyright 2010 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class quiz_attempts_report_table extends table_sql {
+abstract class hippotrack_attempts_report_table extends table_sql {
     public $useridfield = 'userid';
 
     /** @var moodle_url the URL of this report. */
@@ -118,7 +118,7 @@ abstract class quiz_attempts_report_table extends table_sql {
                 'id' => "attemptid_{$attempt->attempt}",
                 'name' => 'attemptid[]',
                 'value' => $attempt->attempt,
-                'label' => get_string('selectattempt', 'quiz'),
+                'label' => get_string('selectattempt', 'hippotrack'),
                 'labelclasses' => 'accesshide',
             ]);
             return $OUTPUT->render($checkbox);
@@ -153,8 +153,8 @@ abstract class quiz_attempts_report_table extends table_sql {
         }
 
         return $html . html_writer::empty_tag('br') . html_writer::link(
-                new moodle_url('/mod/quiz/review.php', array('attempt' => $attempt->attempt)),
-                get_string('reviewattempt', 'quiz'), array('class' => 'reviewlink'));
+                new moodle_url('/mod/hippotrack/review.php', array('attempt' => $attempt->attempt)),
+                get_string('reviewattempt', 'hippotrack'), array('class' => 'reviewlink'));
     }
 
     /**
@@ -164,7 +164,7 @@ abstract class quiz_attempts_report_table extends table_sql {
      */
     public function col_state($attempt) {
         if (!is_null($attempt->attempt)) {
-            return quiz_attempt::state_name($attempt->state);
+            return hippotrack_attempt::state_name($attempt->state);
         } else {
             return  '-';
         }
@@ -215,12 +215,12 @@ abstract class quiz_attempts_report_table extends table_sql {
      * @return string HTML content to go inside the td.
      */
     public function col_feedbacktext($attempt) {
-        if ($attempt->state != quiz_attempt::FINISHED) {
+        if ($attempt->state != hippotrack_attempt::FINISHED) {
             return '-';
         }
 
-        $feedback = quiz_report_feedback_for_grade(
-                quiz_rescale_grade($attempt->sumgrades, $this->quiz, false),
+        $feedback = hippotrack_report_feedback_for_grade(
+                hippotrack_rescale_grade($attempt->sumgrades, $this->quiz, false),
                 $this->quiz->id, $this->context);
 
         if ($this->is_downloading()) {
@@ -267,11 +267,11 @@ abstract class quiz_attempts_report_table extends table_sql {
         if (isset($attempt->try)) {
             $reviewparams['step'] = $this->step_no_for_try($attempt->usageid, $slot, $attempt->try);
         }
-        $url = new moodle_url('/mod/quiz/reviewquestion.php', $reviewparams);
+        $url = new moodle_url('/mod/hippotrack/reviewquestion.php', $reviewparams);
         $output = $OUTPUT->action_link($url, $output,
                 new popup_action('click', $url, 'reviewquestion',
                         array('height' => 450, 'width' => 650)),
-                array('title' => get_string('reviewresponse', 'quiz')));
+                array('title' => get_string('reviewresponse', 'hippotrack')));
 
         if (!empty($CFG->enableplagiarism)) {
             require_once($CFG->libdir . '/plagiarismlib.php');
@@ -448,36 +448,36 @@ abstract class quiz_attempts_report_table extends table_sql {
             // than timestart when you have two load-balanced servers with very
             // badly synchronised clocks, and a student does a really quick attempt.
 
-        // This part is the same for all cases. Join the users and quiz_attempts tables.
+        // This part is the same for all cases. Join the users and hippotrack_attempts tables.
         $from = " {user} u";
         $from .= "\n{$userfields->joins}";
-        $from .= "\nLEFT JOIN {quiz_attempts} quiza ON
+        $from .= "\nLEFT JOIN {hippotrack_attempts} quiza ON
                                     quiza.userid = u.id AND quiza.quiz = :quizid";
         $params = array_merge($userfields->params, ['quizid' => $this->quiz->id]);
 
         if ($this->qmsubselect && $this->options->onlygraded) {
             $from .= " AND (quiza.state <> :finishedstate OR $this->qmsubselect)";
-            $params['finishedstate'] = quiz_attempt::FINISHED;
+            $params['finishedstate'] = hippotrack_attempt::FINISHED;
         }
 
         switch ($this->options->attempts) {
-            case quiz_attempts_report::ALL_WITH:
+            case hippotrack_attempts_report::ALL_WITH:
                 // Show all attempts, including students who are no longer in the course.
                 $where = 'quiza.id IS NOT NULL AND quiza.preview = 0';
                 break;
-            case quiz_attempts_report::ENROLLED_WITH:
+            case hippotrack_attempts_report::ENROLLED_WITH:
                 // Show only students with attempts.
                 $from .= "\n" . $allowedstudentsjoins->joins;
                 $where = "quiza.preview = 0 AND quiza.id IS NOT NULL AND " . $allowedstudentsjoins->wheres;
                 $params = array_merge($params, $allowedstudentsjoins->params);
                 break;
-            case quiz_attempts_report::ENROLLED_WITHOUT:
+            case hippotrack_attempts_report::ENROLLED_WITHOUT:
                 // Show only students without attempts.
                 $from .= "\n" . $allowedstudentsjoins->joins;
                 $where = "quiza.id IS NULL AND " . $allowedstudentsjoins->wheres;
                 $params = array_merge($params, $allowedstudentsjoins->params);
                 break;
-            case quiz_attempts_report::ENROLLED_ALL:
+            case hippotrack_attempts_report::ENROLLED_ALL:
                 // Show all students with or without attempts.
                 $from .= "\n" . $allowedstudentsjoins->joins;
                 $where = "(quiza.preview = 0 OR quiza.preview IS NULL) AND " . $allowedstudentsjoins->wheres;
@@ -546,7 +546,7 @@ abstract class quiz_attempts_report_table extends table_sql {
         // It is only used in a subselect to help crappy databases (see MDL-30122)
         // therefore, it is better to use a very simple join, which may include
         // too many records, than to do a super-accurate join.
-        $qubaids = new qubaid_join("{quiz_attempts} {$alias}quiza", "{$alias}quiza.uniqueid",
+        $qubaids = new qubaid_join("{hippotrack_attempts} {$alias}quiza", "{$alias}quiza.uniqueid",
                 "{$alias}quiza.quiz = :{$alias}quizid", array("{$alias}quizid" => $this->sql->params['quizid']));
 
         $dm = new question_engine_data_mapper();
@@ -650,13 +650,13 @@ abstract class quiz_attempts_report_table extends table_sql {
      */
     protected function submit_buttons() {
         global $PAGE;
-        if (has_capability('mod/quiz:deleteattempts', $this->context)) {
+        if (has_capability('mod/hippotrack:deleteattempts', $this->context)) {
             $deletebuttonparams = [
                 'type'  => 'submit',
                 'class' => 'btn btn-secondary mr-1',
                 'id'    => 'deleteattemptsbutton',
                 'name'  => 'delete',
-                'value' => get_string('deleteselected', 'quiz_overview'),
+                'value' => get_string('deleteselected', 'hippotrack_overview'),
                 'data-action' => 'toggle',
                 'data-togglegroup' => $this->togglegroup,
                 'data-toggle' => 'action',
@@ -664,7 +664,7 @@ abstract class quiz_attempts_report_table extends table_sql {
             ];
             echo html_writer::empty_tag('input', $deletebuttonparams);
             $PAGE->requires->event_handler('#deleteattemptsbutton', 'click', 'M.util.show_confirm_dialog',
-                    array('message' => get_string('deleteattemptcheck', 'quiz')));
+                    array('message' => get_string('deleteattemptcheck', 'hippotrack')));
         }
     }
 
@@ -684,8 +684,8 @@ abstract class quiz_attempts_report_table extends table_sql {
 
         // Build the select/deselect all control.
         $selectallid = $this->uniqueid . '-selectall-attempts';
-        $selectalltext = get_string('selectall', 'quiz');
-        $deselectalltext = get_string('selectnone', 'quiz');
+        $selectalltext = get_string('selectall', 'hippotrack');
+        $deselectalltext = get_string('selectnone', 'hippotrack');
         $mastercheckbox = new \core\output\checkbox_toggleall($this->togglegroup, true, [
             'id' => $selectallid,
             'name' => $selectallid,

@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem implementation for quiz_statistics.
+ * Privacy Subsystem implementation for hippotrack_statistics.
  *
- * @package    quiz_statistics
+ * @package    hippotrack_statistics
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quiz_statistics\privacy;
+namespace hippotrack_statistics\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Privacy Subsystem for quiz_statistics implementing null_provider.
+ * Privacy Subsystem for hippotrack_statistics implementing null_provider.
  *
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

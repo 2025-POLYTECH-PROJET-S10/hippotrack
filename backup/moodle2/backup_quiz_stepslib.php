@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Define all the backup steps that will be used by the backup_quiz_activity_task.
+ * Define all the backup steps that will be used by the backup_hippotrack_activity_task.
  *
  * @package    mod_hippotrack
  * @subpackage backup-moodle2
  * @copyright  2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class backup_quiz_activity_structure_step extends backup_questions_activity_structure_step {
+class backup_hippotrack_activity_structure_step extends backup_questions_activity_structure_step {
 
     protected function define_structure() {
 
@@ -109,11 +109,11 @@ class backup_quiz_activity_structure_step extends backup_questions_activity_stru
         // Define sources.
         $quiz->set_source_table('quiz', ['id' => backup::VAR_ACTIVITYID]);
 
-        $qinstance->set_source_table('quiz_slots', ['quizid' => backup::VAR_PARENTID]);
+        $qinstance->set_source_table('hippotrack_slots', ['quizid' => backup::VAR_PARENTID]);
 
-        $section->set_source_table('quiz_sections', ['quizid' => backup::VAR_PARENTID]);
+        $section->set_source_table('hippotrack_sections', ['quizid' => backup::VAR_PARENTID]);
 
-        $feedback->set_source_table('quiz_feedback', ['quizid' => backup::VAR_PARENTID]);
+        $feedback->set_source_table('hippotrack_feedback', ['quizid' => backup::VAR_PARENTID]);
 
         // Quiz overrides to backup are different depending of user info.
         $overrideparams = ['quiz' => backup::VAR_PARENTID];
@@ -128,14 +128,14 @@ class backup_quiz_activity_structure_step extends backup_questions_activity_stru
             $overrideparams['groupid'] = backup_helper::is_sqlparam(null);
         }
 
-        $override->set_source_table('quiz_overrides', $overrideparams);
+        $override->set_source_table('hippotrack_overrides', $overrideparams);
 
         // All the rest of elements only happen if we are including user info.
         if ($userinfo) {
-            $grade->set_source_table('quiz_grades', ['quiz' => backup::VAR_PARENTID]);
+            $grade->set_source_table('hippotrack_grades', ['quiz' => backup::VAR_PARENTID]);
             $attempt->set_source_sql('
                     SELECT *
-                    FROM {quiz_attempts}
+                    FROM {hippotrack_attempts}
                     WHERE quiz = :quiz AND preview = 0', ['quiz' => backup::VAR_PARENTID]);
         }
 

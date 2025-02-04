@@ -38,7 +38,7 @@ namespace mod_hippotrack\event;
  * @copyright  2021 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_grade_updated extends \core\event\base {
+class hippotrack_grade_updated extends \core\event\base {
     protected function init() {
         $this->data['objecttable'] = 'quiz';
         $this->data['crud'] = 'u';
@@ -56,7 +56,7 @@ class quiz_grade_updated extends \core\event\base {
     }
 
     public function get_url() {
-        return new \moodle_url('/mod/quiz/edit.php', [
+        return new \moodle_url('/mod/hippotrack/edit.php', [
             'cmid' => $this->contextinstanceid
         ]);
     }

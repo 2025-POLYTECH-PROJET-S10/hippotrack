@@ -14,15 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quiz_responses;
+namespace hippotrack_responses;
 
 use question_bank;
-use quiz_attempt;
+use hippotrack_attempt;
 
 /**
  * Quiz attempt walk through using data from csv file.
  *
- * @package    quiz_responses
+ * @package    hippotrack_responses
  * @category   test
  * @copyright  2013 The Open University
  * @author     Jamie Pratt <me@jamiep.org>
@@ -35,8 +35,8 @@ final class responses_from_steps_walkthrough_test extends \mod_hippotrack\tests\
 
         parent::setUpBeforeClass();
 
-        require_once($CFG->dirroot . '/mod/quiz/report/statistics/report.php');
-        require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
+        require_once($CFG->dirroot . '/mod/hippotrack/report/statistics/report.php');
+        require_once($CFG->dirroot . '/mod/hippotrack/report/reportlib.php');
     }
 
     #[\Override]
@@ -77,7 +77,7 @@ final class responses_from_steps_walkthrough_test extends \mod_hippotrack\tests\
      * @throws \coding_exception
      */
     protected function assert_response_test($quizattemptid, $responses): void {
-        $quizattempt = quiz_attempt::create($quizattemptid);
+        $quizattempt = hippotrack_attempt::create($quizattemptid);
 
         foreach ($responses['slot'] as $slot => $tests) {
             $slothastests = false;

@@ -108,7 +108,7 @@ M.mod_hippotrack.timer = {
         // If time has expired, set the hidden form field that says time has expired and submit
         if (secondsleft < 0) {
             M.mod_hippotrack.timer.stop(null);
-            Y.one('#quiz-time-left').setContent(M.util.get_string('timesup', 'quiz'));
+            Y.one('#quiz-time-left').setContent(M.util.get_string('timesup', 'hippotrack'));
             var input = Y.one('input[name=timeup]');
             input.set('value', 1);
             var form = input.ancestor('form');
@@ -310,7 +310,7 @@ M.mod_hippotrack.secure_window = {
     },
 
     prevent: function (e) {
-        alert(M.util.get_string('functiondisabledbysecuremode', 'quiz'));
+        alert(M.util.get_string('functiondisabledbysecuremode', 'hippotrack'));
         e.halt();
     },
 

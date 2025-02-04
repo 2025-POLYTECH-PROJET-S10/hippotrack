@@ -43,13 +43,13 @@ class repaginate {
 
     /** @var int the id of the quiz being manipulated. */
     private $quizid;
-    /** @var array the quiz_slots for that quiz. */
+    /** @var array the hippotrack_slots for that quiz. */
     private $slots;
 
     /**
      * Constructor.
      * @param int $quizid the id of the quiz being manipulated.
-     * @param stdClass[] $slots the quiz_slots for that quiz.
+     * @param stdClass[] $slots the hippotrack_slots for that quiz.
      */
     public function __construct($quizid = 0, $slots = null) {
         global $DB;
@@ -58,7 +58,7 @@ class repaginate {
             $this->slots = array();
         }
         if (!$slots) {
-            $this->slots = $DB->get_records('quiz_slots', array('quizid' => $this->quizid), 'slot');
+            $this->slots = $DB->get_records('hippotrack_slots', array('quizid' => $this->quizid), 'slot');
         } else {
             $this->slots = $slots;
         }
@@ -130,7 +130,7 @@ class repaginate {
      */
     public function repaginate_slots($nextslotnumber, $type) {
         global $DB;
-        $this->slots = $DB->get_records('quiz_slots', array('quizid' => $this->quizid), 'slot');
+        $this->slots = $DB->get_records('hippotrack_slots', array('quizid' => $this->quizid), 'slot');
         $nextslot = null;
         $newslots = array();
         foreach ($this->slots as $slot) {
@@ -140,7 +140,7 @@ class repaginate {
                 $nextslot = $this->repaginate_next_slot($nextslotnumber, $type);
 
                 // Update DB.
-                $DB->update_record('quiz_slots', $nextslot, true);
+                $DB->update_record('hippotrack_slots', $nextslot, true);
 
                 // Update returning object.
                 $newslots[$slot->id] = $nextslot;
@@ -225,7 +225,7 @@ class repaginate {
             }
             // Update DB.
             if ($dbupdate) {
-                $DB->update_record('quiz_slots', $slot);
+                $DB->update_record('hippotrack_slots', $slot);
             }
             $newslots[$slot->id] = $slot;
         }

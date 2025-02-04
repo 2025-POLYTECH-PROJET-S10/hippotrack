@@ -43,7 +43,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_settings extends persistent {
+class hippotrack_settings extends persistent {
 
     /** Table name for the persistent. */
     const TABLE = 'quizaccess_seb_quizsettings';
@@ -193,10 +193,10 @@ class quiz_settings extends persistent {
      * This method gets data from cache before doing any DB calls.
      *
      * @param int $quizid Quiz id.
-     * @return false|\quizaccess_seb\quiz_settings
+     * @return false|\quizaccess_seb\hippotrack_settings
      */
-    public static function get_by_quiz_id(int $quizid) {
-        if ($data = self::get_quiz_settings_cache()->get($quizid)) {
+    public static function get_by_hippotrack_id(int $quizid) {
+        if ($data = self::get_hippotrack_settings_cache()->get($quizid)) {
             return new static(0, $data);
         }
 
@@ -209,7 +209,7 @@ class quiz_settings extends persistent {
      * @param int $quizid Quiz id.
      * @return string|null
      */
-    public static function get_config_by_quiz_id(int $quizid) : ?string {
+    public static function get_config_by_hippotrack_id(int $quizid) : ?string {
         $config = self::get_config_cache()->get($quizid);
 
         if ($config !== false) {
@@ -217,7 +217,7 @@ class quiz_settings extends persistent {
         }
 
         $config = null;
-        if ($settings = self::get_by_quiz_id($quizid)) {
+        if ($settings = self::get_by_hippotrack_id($quizid)) {
             $config = $settings->get_config();
             self::get_config_cache()->set($quizid, $config);
         }
@@ -231,7 +231,7 @@ class quiz_settings extends persistent {
      * @param int $quizid Quiz id.
      * @return string|null
      */
-    public static function get_config_key_by_quiz_id(int $quizid) : ?string {
+    public static function get_config_key_by_hippotrack_id(int $quizid) : ?string {
         $configkey = self::get_config_key_cache()->get($quizid);
 
         if ($configkey !== false) {
@@ -239,7 +239,7 @@ class quiz_settings extends persistent {
         }
 
         $configkey = null;
-        if ($settings = self::get_by_quiz_id($quizid)) {
+        if ($settings = self::get_by_hippotrack_id($quizid)) {
             $configkey = $settings->get_config_key();
             self::get_config_key_cache()->set($quizid, $configkey);
         }
@@ -270,7 +270,7 @@ class quiz_settings extends persistent {
      *
      * @return \cache_application
      */
-    private static function get_quiz_settings_cache() : \cache_application {
+    private static function get_hippotrack_settings_cache() : \cache_application {
         return \cache::make('quizaccess_seb', 'quizsettings');
     }
 
@@ -294,7 +294,7 @@ class quiz_settings extends persistent {
      * Helper method to execute common stuff after create and update.
      */
     private function after_save() {
-        self::get_quiz_settings_cache()->set($this->get('quizid'), $this->to_record());
+        self::get_hippotrack_settings_cache()->set($this->get('quizid'), $this->to_record());
         self::get_config_cache()->set($this->get('quizid'), $this->config);
         self::get_config_key_cache()->set($this->get('quizid'), $this->configkey);
     }
@@ -304,7 +304,7 @@ class quiz_settings extends persistent {
      */
     protected function before_delete() {
         $key = $this->get('quizid');
-        self::get_quiz_settings_cache()->delete($key);
+        self::get_hippotrack_settings_cache()->delete($key);
         self::get_config_cache()->delete($key);
         self::get_config_key_cache()->delete($key);
     }
@@ -513,7 +513,7 @@ class quiz_settings extends persistent {
     private function process_required_enforced_settings() {
         global $CFG;
 
-        $quizurl = new moodle_url($CFG->wwwroot . "/mod/quiz/view.php", ['id' => $this->get('cmid')]);
+        $quizurl = new moodle_url($CFG->wwwroot . "/mod/hippotrack/view.php", ['id' => $this->get('cmid')]);
         $this->plist->set_or_update_value('startURL', new CFString($quizurl->out(true)));
         $this->plist->set_or_update_value('sendBrowserExamKey', new CFBoolean(true));
 
@@ -567,7 +567,7 @@ class quiz_settings extends persistent {
     }
 
     /**
-     * Sets the quitURL if found in the quiz_settings.
+     * Sets the quitURL if found in the hippotrack_settings.
      */
     private function process_quit_url_from_settings() {
         $settings = $this->to_record();
@@ -577,7 +577,7 @@ class quiz_settings extends persistent {
     }
 
     /**
-     * Sets the quiz_setting's linkquitseb if a quitURL value was found in a template or uploaded config.
+     * Sets the hippotrack_setting's linkquitseb if a quitURL value was found in a template or uploaded config.
      */
     private function process_quit_url_from_template_or_config() {
         // Does the plist (template or config file) have an existing quitURL?

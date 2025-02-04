@@ -367,7 +367,7 @@ class settings_provider {
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
     protected static function hide_seb_elements(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform) {
-        foreach (self::get_quiz_hideifs() as $elname => $rules) {
+        foreach (self::get_hippotrack_hideifs() as $elname => $rules) {
             if ($mform->elementExists($elname)) {
                 foreach ($rules as $hideif) {
                     $mform->hideIf(
@@ -395,7 +395,7 @@ class settings_provider {
             self::freeze_element($quizform, $mform, 'seb_showsebdownloadlink');
             self::freeze_element($quizform, $mform, 'seb_allowedbrowserexamkeys');
 
-            $quizsettings = quiz_settings::get_by_quiz_id((int) $quizform->get_instance());
+            $quizsettings = hippotrack_settings::get_by_hippotrack_id((int) $quizform->get_instance());
 
             // If the file has been uploaded, then replace it with the link to download the file.
             if (!empty($quizsettings) && $quizsettings->get('requiresafeexambrowser') == self::USE_SEB_UPLOAD_CONFIG) {
@@ -528,7 +528,7 @@ class settings_provider {
             return false;
         }
 
-        $settings = quiz_settings::get_record(['cmid' => (int) $context->instanceid]);
+        $settings = hippotrack_settings::get_record(['cmid' => (int) $context->instanceid]);
 
         if (empty($settings)) {
             return false;
@@ -956,7 +956,7 @@ class settings_provider {
      *
      * @return array List of rules per element.
      */
-    public static function get_quiz_hideifs() : array {
+    public static function get_hippotrack_hideifs() : array {
         $hideifs = [];
 
         // We are building rules based on the settings map, that means children will be dependant on parent.
@@ -1028,7 +1028,7 @@ class settings_provider {
             return false;
         }
 
-        return quiz_has_attempts($quizid);
+        return hippotrack_has_attempts($quizid);
     }
 
     /**

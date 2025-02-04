@@ -19,7 +19,7 @@ namespace mod_hippotrack;
 use question_bank;
 use question_engine;
 use quiz;
-use quiz_attempt;
+use hippotrack_attempt;
 
 /**
  * Quiz attempt walk through.
@@ -29,7 +29,7 @@ use quiz_attempt;
  * @copyright  2013 The Open University
  * @author     Jamie Pratt <me@jamiep.org>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers \quiz_attempt
+ * @covers \hippotrack_attempt
  */
 final class attempt_walkthrough_test extends \advanced_testcase {
     #[\Override]
@@ -38,13 +38,13 @@ final class attempt_walkthrough_test extends \advanced_testcase {
 
         parent::setUpBeforeClass();
 
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+        require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
     }
 
     /**
      * Create a quiz with questions and walk through a quiz attempt.
      */
-    public function test_quiz_attempt_walkthrough() {
+    public function test_hippotrack_attempt_walkthrough() {
         global $SITE;
 
         $this->resetAfterTest(true);
@@ -65,10 +65,10 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $description = $questiongenerator->create_question('description', null, ['category' => $cat->id]);
 
         // Add them to the quiz.
-        quiz_add_quiz_question($saq->id, $quiz);
-        quiz_add_quiz_question($numq->id, $quiz);
-        quiz_add_quiz_question($matchq->id, $quiz);
-        quiz_add_quiz_question($description->id, $quiz);
+        hippotrack_add_hippotrack_question($saq->id, $quiz);
+        hippotrack_add_hippotrack_question($numq->id, $quiz);
+        hippotrack_add_hippotrack_question($matchq->id, $quiz);
+        hippotrack_add_hippotrack_question($description->id, $quiz);
 
         // Make a user to do the quiz.
         $user1 = $this->getDataGenerator()->create_user();
@@ -80,15 +80,15 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         $timenow = time();
-        $attempt = quiz_create_attempt($quizobj, 1, false, $timenow, false, $user1->id);
+        $attempt = hippotrack_create_attempt($quizobj, 1, false, $timenow, false, $user1->id);
 
-        quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $timenow);
+        hippotrack_start_new_attempt($quizobj, $quba, $attempt, 1, $timenow);
         $this->assertEquals('1,2,3,4,0', $attempt->layout);
 
-        quiz_attempt_save_started($quizobj, $quba, $attempt);
+        hippotrack_attempt_save_started($quizobj, $quba, $attempt);
 
         // Process some responses from the student.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $this->assertFalse($attemptobj->has_response_to_at_least_one_graded_question());
         // The student has not answered any questions.
         $this->assertEquals(3, $attemptobj->get_number_of_unanswered_questions());
@@ -125,12 +125,12 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $this->assertEquals(0, $attemptobj->get_number_of_unanswered_questions());
 
         // Finish the attempt.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $this->assertTrue($attemptobj->has_response_to_at_least_one_graded_question());
         $attemptobj->process_finish($timenow, false);
 
         // Re-load quiz attempt data.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
 
         // Check that results are stored as expected.
         $this->assertEquals(1, $attemptobj->get_attempt_number());
@@ -142,7 +142,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $this->assertEquals(0, $attemptobj->get_number_of_unanswered_questions());
 
         // Check quiz grades.
-        $grades = quiz_get_user_grades($quiz, $user1->id);
+        $grades = hippotrack_get_user_grades($quiz, $user1->id);
         $grade = array_shift($grades);
         $this->assertEquals(100.0, $grade->rawgrade);
 
@@ -162,7 +162,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
      *
      * @return \stdClass the quiz that was created.
      */
-    protected function create_quiz_with_one_question(): \stdClass {
+    protected function create_hippotrack_with_one_question(): \stdClass {
         global $SITE;
         $this->resetAfterTest();
 
@@ -181,15 +181,15 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $saq = $questiongenerator->create_question('shortanswer', null, array('category' => $cat->id));
 
         // Add them to the quiz.
-        quiz_add_quiz_question($saq->id, $quiz, 0, 1);
-        quiz_update_sumgrades($quiz);
+        hippotrack_add_hippotrack_question($saq->id, $quiz, 0, 1);
+        hippotrack_update_sumgrades($quiz);
 
         return $quiz;
     }
 
-    public function test_quiz_attempt_walkthrough_submit_time_recorded_correctly_when_overdue() {
+    public function test_hippotrack_attempt_walkthrough_submit_time_recorded_correctly_when_overdue() {
 
-        $quiz = $this->create_quiz_with_one_question();
+        $quiz = $this->create_hippotrack_with_one_question();
 
         // Make a user to do the quiz.
         $user = $this->getDataGenerator()->create_user();
@@ -197,19 +197,19 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $quizobj = quiz::create($quiz->id, $user->id);
 
         // Start the attempt.
-        $attempt = quiz_prepare_and_start_new_attempt($quizobj, 1, null);
+        $attempt = hippotrack_prepare_and_start_new_attempt($quizobj, 1, null);
 
         // Process some responses from the student.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $this->assertEquals(1, $attemptobj->get_number_of_unanswered_questions());
         $attemptobj->process_submitted_actions($quiz->timeclose - 30 * MINSECS, false, [1 => ['answer' => 'frog']]);
 
         // Attempt goes overdue (e.g. if cron ran).
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_going_overdue($quiz->timeclose + 2 * get_config('quiz', 'graceperiodmin'), false);
 
         // Verify the attempt state.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $this->assertEquals(1, $attemptobj->get_attempt_number());
         $this->assertEquals(false, $attemptobj->is_finished());
         $this->assertEquals(0, $attemptobj->get_submitted_date());
@@ -218,11 +218,11 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $this->assertEquals(0, $attemptobj->get_number_of_unanswered_questions());
 
         // Student submits the attempt during the grace period.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_attempt($quiz->timeclose + 30 * MINSECS, true, false, 1);
 
         // Verify the attempt state.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $this->assertEquals(1, $attemptobj->get_attempt_number());
         $this->assertEquals(true, $attemptobj->is_finished());
         $this->assertEquals($quiz->timeclose + 30 * MINSECS, $attemptobj->get_submitted_date());
@@ -231,10 +231,10 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $this->assertEquals(0, $attemptobj->get_number_of_unanswered_questions());
     }
 
-    public function test_quiz_attempt_walkthrough_close_time_extended_at_last_minute() {
+    public function test_hippotrack_attempt_walkthrough_close_time_extended_at_last_minute() {
         global $DB;
 
-        $quiz = $this->create_quiz_with_one_question();
+        $quiz = $this->create_hippotrack_with_one_question();
         $originaltimeclose = $quiz->timeclose;
 
         // Make a user to do the quiz.
@@ -243,10 +243,10 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $quizobj = quiz::create($quiz->id, $user->id);
 
         // Start the attempt.
-        $attempt = quiz_prepare_and_start_new_attempt($quizobj, 1, null);
+        $attempt = hippotrack_prepare_and_start_new_attempt($quizobj, 1, null);
 
         // Process some responses from the student during the attempt.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_submitted_actions($originaltimeclose - 30 * MINSECS, false, [1 => ['answer' => 'frog']]);
 
         // Teacher edits the quiz to extend the time-limit by one minute.
@@ -255,14 +255,14 @@ final class attempt_walkthrough_test extends \advanced_testcase {
 
         // Timer expires in the student browser and thinks it is time to submit the quiz.
         // This sets $finishattempt to false - since the student did not click the button, and $timeup to true.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_attempt($originaltimeclose, false, true, 1);
 
         // Verify the attempt state - the $timeup was ignored becuase things have changed server-side.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $this->assertEquals(1, $attemptobj->get_attempt_number());
         $this->assertFalse($attemptobj->is_finished());
-        $this->assertEquals(quiz_attempt::IN_PROGRESS, $attemptobj->get_state());
+        $this->assertEquals(hippotrack_attempt::IN_PROGRESS, $attemptobj->get_state());
         $this->assertEquals(0, $attemptobj->get_submitted_date());
         $this->assertEquals($user->id, $attemptobj->get_userid());
     }
@@ -270,7 +270,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
     /**
      * Create a quiz with a random as well as other questions and walk through quiz attempts.
      */
-    public function test_quiz_with_random_question_attempt_walkthrough() {
+    public function test_hippotrack_with_random_question_attempt_walkthrough() {
         global $SITE;
 
         $this->resetAfterTest(true);
@@ -292,21 +292,21 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $numq = $questiongenerator->create_question('numerical', null, array('category' => $cat->id));
 
         // Add random question to the quiz.
-        quiz_add_random_questions($quiz, 0, $cat->id, 1, false);
+        hippotrack_add_random_questions($quiz, 0, $cat->id, 1, false);
 
         // Make another category.
         $cat2 = $questiongenerator->create_question_category();
         $match = $questiongenerator->create_question('match', null, array('category' => $cat->id));
 
-        quiz_add_quiz_question($match->id, $quiz, 0);
+        hippotrack_add_hippotrack_question($match->id, $quiz, 0);
 
         $multichoicemulti = $questiongenerator->create_question('multichoice', 'two_of_four', array('category' => $cat->id));
 
-        quiz_add_quiz_question($multichoicemulti->id, $quiz, 0);
+        hippotrack_add_hippotrack_question($multichoicemulti->id, $quiz, 0);
 
         $multichoicesingle = $questiongenerator->create_question('multichoice', 'one_of_four', array('category' => $cat->id));
 
-        quiz_add_quiz_question($multichoicesingle->id, $quiz, 0);
+        hippotrack_add_hippotrack_question($multichoicesingle->id, $quiz, 0);
 
         foreach (array($saq->id => 'frog', $numq->id => '3.14') as $randomqidtoselect => $randqanswer) {
             // Make a new user to do the quiz each loop.
@@ -320,15 +320,15 @@ final class attempt_walkthrough_test extends \advanced_testcase {
             $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
             $timenow = time();
-            $attempt = quiz_create_attempt($quizobj, 1, false, $timenow);
+            $attempt = hippotrack_create_attempt($quizobj, 1, false, $timenow);
 
-            quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $timenow, array(1 => $randomqidtoselect));
+            hippotrack_start_new_attempt($quizobj, $quba, $attempt, 1, $timenow, array(1 => $randomqidtoselect));
             $this->assertEquals('1,2,0,3,4,0', $attempt->layout);
 
-            quiz_attempt_save_started($quizobj, $quba, $attempt);
+            hippotrack_attempt_save_started($quizobj, $quba, $attempt);
 
             // Process some responses from the student.
-            $attemptobj = quiz_attempt::create($attempt->id);
+            $attemptobj = hippotrack_attempt::create($attempt->id);
             $this->assertFalse($attemptobj->has_response_to_at_least_one_graded_question());
             $this->assertEquals(4, $attemptobj->get_number_of_unanswered_questions());
 
@@ -345,13 +345,13 @@ final class attempt_walkthrough_test extends \advanced_testcase {
             $attemptobj->process_submitted_actions($timenow, false, $tosubmit);
 
             // Finish the attempt.
-            $attemptobj = quiz_attempt::create($attempt->id);
+            $attemptobj = hippotrack_attempt::create($attempt->id);
             $this->assertTrue($attemptobj->has_response_to_at_least_one_graded_question());
             $this->assertEquals(0, $attemptobj->get_number_of_unanswered_questions());
             $attemptobj->process_finish($timenow, false);
 
             // Re-load quiz attempt data.
-            $attemptobj = quiz_attempt::create($attempt->id);
+            $attemptobj = hippotrack_attempt::create($attempt->id);
 
             // Check that results are stored as expected.
             $this->assertEquals(1, $attemptobj->get_attempt_number());
@@ -363,7 +363,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
             $this->assertEquals(0, $attemptobj->get_number_of_unanswered_questions());
 
             // Check quiz grades.
-            $grades = quiz_get_user_grades($quiz, $user1->id);
+            $grades = hippotrack_get_user_grades($quiz, $user1->id);
             $grade = array_shift($grades);
             $this->assertEquals(100.0, $grade->rawgrade);
 
@@ -386,7 +386,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
      *
      * @dataProvider get_correct_response_for_variants
      */
-    public function test_quiz_with_question_with_variants_attempt_walkthrough($variantno, $correctresponse, $done = false) {
+    public function test_hippotrack_with_question_with_variants_attempt_walkthrough($variantno, $correctresponse, $done = false) {
         global $SITE;
 
         $this->resetAfterTest($done);
@@ -406,7 +406,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
 
             $cat = $questiongenerator->create_question_category();
             $calc = $questiongenerator->create_question('calculatedsimple', 'sumwithvariants', array('category' => $cat->id));
-            quiz_add_quiz_question($calc->id, $this->quizwithvariants, 0);
+            hippotrack_add_hippotrack_question($calc->id, $this->quizwithvariants, 0);
         }
 
 
@@ -420,15 +420,15 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         $timenow = time();
-        $attempt = quiz_create_attempt($quizobj, 1, false, $timenow);
+        $attempt = hippotrack_create_attempt($quizobj, 1, false, $timenow);
 
         // Select variant.
-        quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $timenow, array(), array(1 => $variantno));
+        hippotrack_start_new_attempt($quizobj, $quba, $attempt, 1, $timenow, array(), array(1 => $variantno));
         $this->assertEquals('1,0', $attempt->layout);
-        quiz_attempt_save_started($quizobj, $quba, $attempt);
+        hippotrack_attempt_save_started($quizobj, $quba, $attempt);
 
         // Process some responses from the student.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $this->assertFalse($attemptobj->has_response_to_at_least_one_graded_question());
         $this->assertEquals(1, $attemptobj->get_number_of_unanswered_questions());
 
@@ -436,14 +436,14 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $attemptobj->process_submitted_actions($timenow, false, $tosubmit);
 
         // Finish the attempt.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $this->assertTrue($attemptobj->has_response_to_at_least_one_graded_question());
         $this->assertEquals(0, $attemptobj->get_number_of_unanswered_questions());
 
         $attemptobj->process_finish($timenow, false);
 
         // Re-load quiz attempt data.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
 
         // Check that results are stored as expected.
         $this->assertEquals(1, $attemptobj->get_attempt_number());
@@ -455,7 +455,7 @@ final class attempt_walkthrough_test extends \advanced_testcase {
         $this->assertEquals(0, $attemptobj->get_number_of_unanswered_questions());
 
         // Check quiz grades.
-        $grades = quiz_get_user_grades($this->quizwithvariants, $user1->id);
+        $grades = hippotrack_get_user_grades($this->quizwithvariants, $user1->id);
         $grade = array_shift($grades);
         $this->assertEquals(100.0, $grade->rawgrade);
 

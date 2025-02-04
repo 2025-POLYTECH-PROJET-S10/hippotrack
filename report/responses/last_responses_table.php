@@ -17,7 +17,7 @@
 /**
  * This file defines the quiz responses table for showing last try at question.
  *
- * @package   quiz_responses
+ * @package   hippotrack_responses
  * @copyright 2008 Jean-Michel Vedrine
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/report/attemptsreport_table.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/attemptsreport_table.php');
 
 
 /**
@@ -34,20 +34,20 @@ require_once($CFG->dirroot . '/mod/quiz/report/attemptsreport_table.php');
  * @copyright 2008 Jean-Michel Vedrine
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_last_responses_table extends quiz_attempts_report_table {
+class hippotrack_last_responses_table extends hippotrack_attempts_report_table {
 
     /**
      * Constructor
      * @param object $quiz
      * @param context $context
      * @param string $qmsubselect
-     * @param quiz_responses_options $options
+     * @param hippotrack_responses_options $options
      * @param \core\dml\sql_join $groupstudentsjoins
      * @param \core\dml\sql_join $studentsjoins
      * @param array $questions
      * @param moodle_url $reporturl
      */
-    public function __construct($quiz, $context, $qmsubselect, quiz_responses_options $options,
+    public function __construct($quiz, $context, $qmsubselect, hippotrack_responses_options $options,
             \core\dml\sql_join $groupstudentsjoins, \core\dml\sql_join $studentsjoins, $questions, $reporturl) {
         parent::__construct('mod-quiz-report-responses-report', $quiz, $context,
                 $qmsubselect, $options, $groupstudentsjoins, $studentsjoins, $questions, $reporturl);
@@ -63,11 +63,11 @@ class quiz_last_responses_table extends quiz_attempts_report_table {
     }
 
     public function col_sumgrades($attempt) {
-        if ($attempt->state != quiz_attempt::FINISHED) {
+        if ($attempt->state != hippotrack_attempt::FINISHED) {
             return '-';
         }
 
-        $grade = quiz_rescale_grade($attempt->sumgrades, $this->quiz);
+        $grade = hippotrack_rescale_grade($attempt->sumgrades, $this->quiz);
         if ($this->is_downloading()) {
             return $grade;
         }

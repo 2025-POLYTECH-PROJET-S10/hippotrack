@@ -35,7 +35,7 @@ require_once($CFG->libdir.'/tablelib.php');
  * @copyright 2010 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class quiz_attempts_report extends quiz_default_report {
+abstract class hippotrack_attempts_report extends hippotrack_default_report {
     /** @var int default page size for reports. */
     const DEFAULT_PAGE_SIZE = 30;
 
@@ -87,7 +87,7 @@ abstract class quiz_attempts_report extends quiz_default_report {
         list($currentgroup, $studentsjoins, $groupstudentsjoins, $allowedjoins) = $this->get_students_joins(
                 $cm, $course);
 
-        $this->qmsubselect = quiz_report_qm_filter_select($quiz);
+        $this->qmsubselect = hippotrack_report_qm_filter_select($quiz);
 
         $this->form = new $formclass($this->get_base_url(),
                 array('quiz' => $quiz, 'currentgroup' => $currentgroup, 'context' => $this->context));
@@ -100,7 +100,7 @@ abstract class quiz_attempts_report extends quiz_default_report {
      * @return moodle_url the URL.
      */
     protected function get_base_url() {
-        return new moodle_url('/mod/quiz/report.php',
+        return new moodle_url('/mod/hippotrack/report.php',
                 array('id' => $this->context->instanceid, 'mode' => $this->mode));
     }
 
@@ -126,7 +126,7 @@ abstract class quiz_attempts_report extends quiz_default_report {
         }
 
         $studentsjoins = get_enrolled_with_capabilities_join($this->context, '',
-                array('mod/quiz:attempt', 'mod/quiz:reviewmyattempts'));
+                array('mod/hippotrack:attempt', 'mod/hippotrack:reviewmyattempts'));
 
         if (empty($currentgroup)) {
             return array($currentgroup, $studentsjoins, $empty, $studentsjoins);
@@ -134,7 +134,7 @@ abstract class quiz_attempts_report extends quiz_default_report {
 
         // We have a currently selected group.
         $groupstudentsjoins = get_enrolled_with_capabilities_join($this->context, '',
-                array('mod/quiz:attempt', 'mod/quiz:reviewmyattempts'), $currentgroup);
+                array('mod/hippotrack:attempt', 'mod/hippotrack:reviewmyattempts'), $currentgroup);
 
         return array($currentgroup, $studentsjoins, $groupstudentsjoins, $groupstudentsjoins);
     }
@@ -166,12 +166,12 @@ abstract class quiz_attempts_report extends quiz_default_report {
         }
 
         // Print information on the number of existing attempts.
-        if ($strattemptnum = quiz_num_attempt_summary($quiz, $cm, true, $currentgroup)) {
+        if ($strattemptnum = hippotrack_num_attempt_summary($quiz, $cm, true, $currentgroup)) {
             echo '<div class="quizattemptcounts">' . $strattemptnum . '</div>';
         }
 
         if (!$hasquestions) {
-            echo quiz_no_questions_message($quiz, $cm, $this->context);
+            echo hippotrack_no_questions_message($quiz, $cm, $this->context);
         } else if ($currentgroup == self::NO_GROUPS_ALLOWED) {
             echo $OUTPUT->notification(get_string('notingroup'));
         } else if (!$hasstudents) {
@@ -236,7 +236,7 @@ abstract class quiz_attempts_report extends quiz_default_report {
      */
     protected function add_state_column(&$columns, &$headers) {
         $columns[] = 'state';
-        $headers[] = get_string('attemptstate', 'quiz');
+        $headers[] = get_string('attemptstate', 'hippotrack');
     }
 
     /**
@@ -246,13 +246,13 @@ abstract class quiz_attempts_report extends quiz_default_report {
      */
     protected function add_time_columns(&$columns, &$headers) {
         $columns[] = 'timestart';
-        $headers[] = get_string('startedon', 'quiz');
+        $headers[] = get_string('startedon', 'hippotrack');
 
         $columns[] = 'timefinish';
-        $headers[] = get_string('timecompleted', 'quiz');
+        $headers[] = get_string('timecompleted', 'hippotrack');
 
         $columns[] = 'duration';
-        $headers[] = get_string('attemptduration', 'quiz');
+        $headers[] = get_string('attemptduration', 'hippotrack');
     }
 
     /**
@@ -267,13 +267,13 @@ abstract class quiz_attempts_report extends quiz_default_report {
     protected function add_grade_columns($quiz, $usercanseegrades, &$columns, &$headers, $includefeedback = true) {
         if ($usercanseegrades) {
             $columns[] = 'sumgrades';
-            $headers[] = get_string('grade', 'quiz') . '/' .
-                    quiz_format_grade($quiz, $quiz->grade);
+            $headers[] = get_string('grade', 'hippotrack') . '/' .
+                    hippotrack_format_grade($quiz, $quiz->grade);
         }
 
-        if ($includefeedback && quiz_has_feedback($quiz)) {
+        if ($includefeedback && hippotrack_has_feedback($quiz)) {
             $columns[] = 'feedbacktext';
-            $headers[] = get_string('feedback', 'quiz');
+            $headers[] = get_string('feedback', 'hippotrack');
         }
     }
 
@@ -318,7 +318,7 @@ abstract class quiz_attempts_report extends quiz_default_report {
         if (empty($currentgroup) || $this->hasgroupstudents) {
             if (optional_param('delete', 0, PARAM_BOOL) && confirm_sesskey()) {
                 if ($attemptids = optional_param_array('attemptid', array(), PARAM_INT)) {
-                    require_capability('mod/quiz:deleteattempts', $this->context);
+                    require_capability('mod/hippotrack:deleteattempts', $this->context);
                     $this->delete_selected_attempts($quiz, $cm, $attemptids, $allowedjoins);
                     redirect($redirecturl);
                 }
@@ -342,12 +342,12 @@ abstract class quiz_attempts_report extends quiz_default_report {
         foreach ($attemptids as $attemptid) {
             if (empty($allowedjoins->joins)) {
                 $sql = "SELECT quiza.*
-                          FROM {quiz_attempts} quiza
+                          FROM {hippotrack_attempts} quiza
                           JOIN {user} u ON u.id = quiza.userid
                          WHERE quiza.id = :attemptid";
             } else {
                 $sql = "SELECT quiza.*
-                          FROM {quiz_attempts} quiza
+                          FROM {hippotrack_attempts} quiza
                           JOIN {user} u ON u.id = quiza.userid
                         {$allowedjoins->joins}
                          WHERE {$allowedjoins->wheres} AND quiza.id = :attemptid";
@@ -360,9 +360,9 @@ abstract class quiz_attempts_report extends quiz_default_report {
                 continue;
             }
 
-            // Set the course module id before calling quiz_delete_attempt().
+            // Set the course module id before calling hippotrack_delete_attempt().
             $quiz->cmid = $cm->id;
-            quiz_delete_attempt($attempt, $quiz);
+            hippotrack_delete_attempt($attempt, $quiz);
         }
     }
 

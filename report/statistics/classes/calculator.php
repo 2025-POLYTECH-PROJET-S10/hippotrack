@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quiz_statistics;
+namespace hippotrack_statistics;
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -24,7 +24,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * http://docs.moodle.org/dev/Quiz_statistics_calculations#Test_statistics
  *
- * @package    quiz_statistics
+ * @package    hippotrack_statistics
  * @copyright  2013 The Open University
  * @author     James Pratt me@jamiep.org
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -74,7 +74,7 @@ class calculator {
 
             // Recalculate sql again this time possibly including test for first attempt.
             list($fromqa, $whereqa, $qaparams) =
-                quiz_statistics_attempts_sql($quizid, $groupstudentsjoins, $whichattempts);
+                hippotrack_statistics_attempts_sql($quizid, $groupstudentsjoins, $whichattempts);
 
             $quizstats->median = $this->median($s, $fromqa, $whereqa, $qaparams);
             $this->progress->progress(2);
@@ -115,7 +115,7 @@ class calculator {
                 }
             }
 
-            $quizstats->cache(quiz_statistics_qubaids_condition($quizid, $groupstudentsjoins, $whichattempts));
+            $quizstats->cache(hippotrack_statistics_qubaids_condition($quizid, $groupstudentsjoins, $whichattempts));
         }
         $this->progress->end_progress();
         return $quizstats;
@@ -137,7 +137,7 @@ class calculator {
         if (!$lastcalculatedtime) {
             return false;
         }
-        $fromdb = $DB->get_record('quiz_statistics', ['hashcode' => $qubaids->get_hash_code(),
+        $fromdb = $DB->get_record('hippotrack_statistics', ['hashcode' => $qubaids->get_hash_code(),
                 'timemodified' => $lastcalculatedtime]);
         $stats = new calculated();
         $stats->populate_from_record($fromdb);
@@ -152,7 +152,7 @@ class calculator {
      */
     public function get_last_calculated_time($qubaids) {
         global $DB;
-        $lastcalculatedtime = $DB->get_field('quiz_statistics', 'COALESCE(MAX(timemodified), 0)',
+        $lastcalculatedtime = $DB->get_field('hippotrack_statistics', 'COALESCE(MAX(timemodified), 0)',
                 ['hashcode' => $qubaids->get_hash_code()]);
         if ($lastcalculatedtime) {
             return $lastcalculatedtime;
@@ -174,11 +174,11 @@ class calculator {
      * @return string the appropriate lang string to describe this option.
      */
     public static function using_attempts_lang_string($whichattempts) {
-         return get_string(static::using_attempts_string_id($whichattempts), 'quiz_statistics');
+         return get_string(static::using_attempts_string_id($whichattempts), 'hippotrack_statistics');
     }
 
     /**
-     * Given a particular quiz grading method return a string id for use as a field name prefix in mdl_quiz_statistics or to
+     * Given a particular quiz grading method return a string id for use as a field name prefix in mdl_hippotrack_statistics or to
      * fetch the appropriate language string describing which attempts contribute to grade.
      *
      * Note internally we use the grading method constants to represent which attempts we are calculating statistics for, each
@@ -216,9 +216,9 @@ class calculator {
         global $DB;
 
         $attempttotals = new \stdClass();
-        foreach (array_keys(quiz_get_grading_options()) as $which) {
+        foreach (array_keys(hippotrack_get_grading_options()) as $which) {
 
-            list($fromqa, $whereqa, $qaparams) = quiz_statistics_attempts_sql($quizid, $groupstudentsjoins, $which);
+            list($fromqa, $whereqa, $qaparams) = hippotrack_statistics_attempts_sql($quizid, $groupstudentsjoins, $which);
 
             $fromdb = $DB->get_record_sql("SELECT COUNT(*) AS rcount, AVG(sumgrades) AS average FROM $fromqa WHERE $whereqa",
                                             $qaparams);

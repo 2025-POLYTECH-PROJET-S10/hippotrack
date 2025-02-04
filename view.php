@@ -26,7 +26,7 @@
 
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->libdir.'/gradelib.php');
-require_once($CFG->dirroot.'/mod/quiz/locallib.php');
+require_once($CFG->dirroot.'/mod/hippotrack/locallib.php');
 require_once($CFG->libdir . '/completionlib.php');
 require_once($CFG->dirroot . '/course/format/lib.php');
 
@@ -55,25 +55,25 @@ if ($id) {
 // Check login and get context.
 require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
-require_capability('mod/quiz:view', $context);
+require_capability('mod/hippotrack:view', $context);
 
 // Cache some other capabilities we use several times.
-$canattempt = has_capability('mod/quiz:attempt', $context);
-$canreviewmine = has_capability('mod/quiz:reviewmyattempts', $context);
-$canpreview = has_capability('mod/quiz:preview', $context);
+$canattempt = has_capability('mod/hippotrack:attempt', $context);
+$canreviewmine = has_capability('mod/hippotrack:reviewmyattempts', $context);
+$canpreview = has_capability('mod/hippotrack:preview', $context);
 
 // Create an object to manage all the other (non-roles) access rules.
 $timenow = time();
 $quizobj = quiz::create($cm->instance, $USER->id);
-$accessmanager = new quiz_access_manager($quizobj, $timenow,
-        has_capability('mod/quiz:ignoretimelimits', $context, null, false));
+$accessmanager = new hippotrack_access_manager($quizobj, $timenow,
+        has_capability('mod/hippotrack:ignoretimelimits', $context, null, false));
 $quiz = $quizobj->get_quiz();
 
 // Trigger course_module_viewed event and completion.
-quiz_view($quiz, $course, $cm, $context);
+hippotrack_view($quiz, $course, $cm, $context);
 
 // Initialize $PAGE, compute blocks.
-$PAGE->set_url('/mod/quiz/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/hippotrack/view.php', array('id' => $cm->id));
 
 // Create view object which collects all the information the renderer will need.
 $viewobj = new mod_hippotrack_view_object();
@@ -81,19 +81,19 @@ $viewobj->accessmanager = $accessmanager;
 $viewobj->canreviewmine = $canreviewmine || $canpreview;
 
 // Get this user's attempts.
-$attempts = quiz_get_user_attempts($quiz->id, $USER->id, 'finished', true);
+$attempts = hippotrack_get_user_attempts($quiz->id, $USER->id, 'finished', true);
 $lastfinishedattempt = end($attempts);
 $unfinished = false;
 $unfinishedattemptid = null;
-if ($unfinishedattempt = quiz_get_user_attempt_unfinished($quiz->id, $USER->id)) {
+if ($unfinishedattempt = hippotrack_get_user_attempt_unfinished($quiz->id, $USER->id)) {
     $attempts[] = $unfinishedattempt;
 
     // If the attempt is now overdue, deal with that - and pass isonline = false.
     // We want the student notified in this case.
     $quizobj->create_attempt_object($unfinishedattempt)->handle_if_time_expired(time(), false);
 
-    $unfinished = $unfinishedattempt->state == quiz_attempt::IN_PROGRESS ||
-            $unfinishedattempt->state == quiz_attempt::OVERDUE;
+    $unfinished = $unfinishedattempt->state == hippotrack_attempt::IN_PROGRESS ||
+            $unfinishedattempt->state == hippotrack_attempt::OVERDUE;
     if (!$unfinished) {
         $lastfinishedattempt = $unfinishedattempt;
     }
@@ -105,16 +105,16 @@ $numattempts = count($attempts);
 $viewobj->attempts = $attempts;
 $viewobj->attemptobjs = array();
 foreach ($attempts as $attempt) {
-    $viewobj->attemptobjs[] = new quiz_attempt($attempt, $quiz, $cm, $course, false);
+    $viewobj->attemptobjs[] = new hippotrack_attempt($attempt, $quiz, $cm, $course, false);
 }
 
 // Work out the final grade, checking whether it was overridden in the gradebook.
 if (!$canpreview) {
-    $mygrade = quiz_get_best_grade($quiz, $USER->id);
+    $mygrade = hippotrack_get_best_grade($quiz, $USER->id);
 } else if ($lastfinishedattempt) {
     // Users who can preview the quiz don't get a proper grade, so work out a
     // plausible value to display instead, so the page looks right.
-    $mygrade = quiz_rescale_grade($lastfinishedattempt->sumgrades, $quiz, false);
+    $mygrade = hippotrack_rescale_grade($lastfinishedattempt->sumgrades, $quiz, false);
 } else {
     $mygrade = null;
 }
@@ -153,16 +153,16 @@ $output = $PAGE->get_renderer('mod_hippotrack');
 // Print table with existing attempts.
 if ($attempts) {
     // Work out which columns we need, taking account what data is available in each attempt.
-    list($someoptions, $alloptions) = quiz_get_combined_reviewoptions($quiz, $attempts);
+    list($someoptions, $alloptions) = hippotrack_get_combined_reviewoptions($quiz, $attempts);
 
     $viewobj->attemptcolumn  = $quiz->attempts != 1;
 
     $viewobj->gradecolumn    = $someoptions->marks >= question_display_options::MARK_AND_MAX &&
-            quiz_has_grades($quiz);
+            hippotrack_has_grades($quiz);
     $viewobj->markcolumn     = $viewobj->gradecolumn && ($quiz->grade != $quiz->sumgrades);
     $viewobj->overallstats   = $lastfinishedattempt && $alloptions->marks >= question_display_options::MARK_AND_MAX;
 
-    $viewobj->feedbackcolumn = quiz_has_feedback($quiz) && $alloptions->overallfeedback;
+    $viewobj->feedbackcolumn = hippotrack_has_feedback($quiz) && $alloptions->overallfeedback;
 }
 
 $viewobj->timenow = $timenow;
@@ -173,8 +173,8 @@ $viewobj->moreattempts = $unfinished ||
 $viewobj->mygradeoverridden = $mygradeoverridden;
 $viewobj->gradebookfeedback = $gradebookfeedback;
 $viewobj->lastfinishedattempt = $lastfinishedattempt;
-$viewobj->canedit = has_capability('mod/quiz:manage', $context);
-$viewobj->editurl = new moodle_url('/mod/quiz/edit.php', array('cmid' => $cm->id));
+$viewobj->canedit = has_capability('mod/hippotrack:manage', $context);
+$viewobj->editurl = new moodle_url('/mod/hippotrack/edit.php', array('cmid' => $cm->id));
 $viewobj->backtocourseurl = new moodle_url('/course/view.php', array('id' => $course->id));
 $viewobj->startattempturl = $quizobj->start_attempt_url();
 
@@ -189,14 +189,14 @@ $viewobj->popupoptions = $accessmanager->get_popup_options();
 $viewobj->infomessages = $viewobj->accessmanager->describe_rules();
 if ($quiz->attempts != 1) {
     $viewobj->infomessages[] = get_string('gradingmethod', 'quiz',
-            quiz_get_grading_option_name($quiz->grademethod));
+            hippotrack_get_grading_option_name($quiz->grademethod));
 }
 
 // Inform user of the grade to pass if non-zero.
 if ($item && grade_floats_different($item->gradepass, 0)) {
     $a = new stdClass();
-    $a->grade = quiz_format_grade($quiz, $item->gradepass);
-    $a->maxgrade = quiz_format_grade($quiz, $quiz->grade);
+    $a->grade = hippotrack_format_grade($quiz, $item->gradepass);
+    $a->maxgrade = hippotrack_format_grade($quiz, $quiz->grade);
     $viewobj->infomessages[] = get_string('gradetopassoutof', 'quiz', $a);
 }
 
@@ -209,22 +209,22 @@ if (!$viewobj->quizhasquestions) {
 } else {
     if ($unfinished) {
         if ($canpreview) {
-            $viewobj->buttontext = get_string('continuepreview', 'quiz');
+            $viewobj->buttontext = get_string('continuepreview', 'hippotrack');
         } else if ($canattempt) {
-            $viewobj->buttontext = get_string('continueattemptquiz', 'quiz');
+            $viewobj->buttontext = get_string('continueattemptquiz', 'hippotrack');
         }
     } else {
         if ($canpreview) {
-            $viewobj->buttontext = get_string('previewquizstart', 'quiz');
+            $viewobj->buttontext = get_string('previewquizstart', 'hippotrack');
         } else if ($canattempt) {
             $viewobj->preventmessages = $viewobj->accessmanager->prevent_new_attempt(
                     $viewobj->numattempts, $viewobj->lastfinishedattempt);
             if ($viewobj->preventmessages) {
                 $viewobj->buttontext = '';
             } else if ($viewobj->numattempts == 0) {
-                $viewobj->buttontext = get_string('attemptquiz', 'quiz');
+                $viewobj->buttontext = get_string('attemptquiz', 'hippotrack');
             } else {
-                $viewobj->buttontext = get_string('reattemptquiz', 'quiz');
+                $viewobj->buttontext = get_string('reattemptquiz', 'hippotrack');
             }
         }
     }

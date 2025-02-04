@@ -1,4 +1,4 @@
-@mod @mod_hippotrack @quiz @quiz_overview @javascript
+@mod @mod_hippotrack @quiz @hippotrack_overview @javascript
 Feature: Quiz regrade when not possible
   In order avoid errors
   As a teacher

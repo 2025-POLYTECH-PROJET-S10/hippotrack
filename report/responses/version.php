@@ -17,7 +17,7 @@
 /**
  * Quiz responses report version information.
  *
- * @package   quiz_responses
+ * @package   hippotrack_responses
  * @copyright 2011 Tim Hunt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,5 +26,5 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version  = 2022112800;
 $plugin->requires = 2022111800;
-$plugin->component = 'quiz_responses';
+$plugin->component = 'hippotrack_responses';
 

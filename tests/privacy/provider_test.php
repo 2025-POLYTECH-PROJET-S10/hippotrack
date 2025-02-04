@@ -70,7 +70,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         // Make a quiz with an override.
         $this->setUser();
         $quiz = $this->create_test_quiz($course);
-        $DB->insert_record('quiz_overrides', [
+        $DB->insert_record('hippotrack_overrides', [
             'quiz' => $quiz->id,
             'userid' => $user->id,
             'timeclose' => 1300,
@@ -141,7 +141,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         // Make a quiz with an override.
         $this->setUser();
         $quiz = $this->create_test_quiz($course);
-        $DB->insert_record('quiz_overrides', [
+        $DB->insert_record('hippotrack_overrides', [
                 'quiz' => $quiz->id,
                 'userid' => $user->id,
                 'timeclose' => 1300,
@@ -173,7 +173,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertTrue($writer->has_any_data());
 
         $quizdata = $writer->get_data([]);
-        $this->assertEquals($quizobj->get_quiz_name(), $quizdata->name);
+        $this->assertEquals($quizobj->get_hippotrack_name(), $quizdata->name);
 
         // Every module has an intro.
         $this->assertTrue(isset($quizdata->intro));
@@ -188,7 +188,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
 
         $attempt = $attemptobj->get_attempt();
         $this->assertTrue(isset($attemptdata->state));
-        $this->assertEquals(\quiz_attempt::state_name($attemptobj->get_state()), $attemptdata->state);
+        $this->assertEquals(\hippotrack_attempt::state_name($attemptobj->get_state()), $attemptdata->state);
         $this->assertTrue(isset($attemptdata->timestart));
         $this->assertTrue(isset($attemptdata->timefinish));
         $this->assertTrue(isset($attemptdata->timemodified));
@@ -199,12 +199,12 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertEquals(100.00, $attemptdata->grade->grade);
 
         // Check that the exported question attempts are correct.
-        $attemptsubcontext = helper::get_quiz_attempt_subcontext($attemptobj->get_attempt(), $user);
+        $attemptsubcontext = helper::get_hippotrack_attempt_subcontext($attemptobj->get_attempt(), $user);
         $this->assert_question_attempt_exported(
             $context,
             $attemptsubcontext,
             \question_engine::load_questions_usage_by_activity($attemptobj->get_uniqueid()),
-            quiz_get_review_options($quiz, $attemptobj->get_attempt(), $context),
+            hippotrack_get_review_options($quiz, $attemptobj->get_attempt(), $context),
             $user
         );
 
@@ -212,7 +212,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->setUser();
         provider::delete_data_for_user($approvedcontextlist);
         $this->expectException(\dml_missing_record_exception::class);
-        \quiz_attempt::create($attemptobj->get_quizid());
+        \hippotrack_attempt::create($attemptobj->get_quizid());
     }
 
     /**
@@ -239,9 +239,9 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $cat = $questiongenerator->create_question_category();
 
         $saq = $questiongenerator->create_question('shortanswer', null, array('category' => $cat->id));
-        quiz_add_quiz_question($saq->id, $quiz);
+        hippotrack_add_hippotrack_question($saq->id, $quiz);
         $numq = $questiongenerator->create_question('numerical', null, array('category' => $cat->id));
-        quiz_add_quiz_question($numq->id, $quiz);
+        hippotrack_add_hippotrack_question($numq->id, $quiz);
 
         // Run as the user and make an attempt on the quiz.
         $this->setUser($user);
@@ -253,12 +253,12 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         // Start the attempt.
-        $attempt = quiz_create_attempt($quizobj, 1, false, $starttime, true, $user->id);
-        quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $starttime);
-        quiz_attempt_save_started($quizobj, $quba, $attempt);
+        $attempt = hippotrack_create_attempt($quizobj, 1, false, $starttime, true, $user->id);
+        hippotrack_start_new_attempt($quizobj, $quba, $attempt, 1, $starttime);
+        hippotrack_attempt_save_started($quizobj, $quba, $attempt);
 
         // Answer the questions.
-        $attemptobj = \quiz_attempt::create($attempt->id);
+        $attemptobj = \hippotrack_attempt::create($attempt->id);
 
         $tosubmit = [
             1 => ['answer' => 'frog'],
@@ -268,7 +268,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $attemptobj->process_submitted_actions($starttime, false, $tosubmit);
 
         // Finish the attempt.
-        $attemptobj = \quiz_attempt::create($attempt->id);
+        $attemptobj = \hippotrack_attempt::create($attempt->id);
         $this->assertTrue($attemptobj->has_response_to_at_least_one_graded_question());
         $attemptobj->process_finish($starttime, false);
 
@@ -292,7 +292,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         // Make a quiz with an override.
         $this->setUser();
         $quiz = $this->create_test_quiz($course);
-        $DB->insert_record('quiz_overrides', [
+        $DB->insert_record('hippotrack_overrides', [
                 'quiz' => $quiz->id,
                 'userid' => $user->id,
                 'timeclose' => 1300,
@@ -306,7 +306,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         // Create another quiz and questions, and repeat the data insertion.
         $this->setUser();
         $otherquiz = $this->create_test_quiz($course);
-        $DB->insert_record('quiz_overrides', [
+        $DB->insert_record('hippotrack_overrides', [
                 'quiz' => $otherquiz->id,
                 'userid' => $user->id,
                 'timeclose' => 1300,
@@ -323,13 +323,13 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         provider::delete_data_for_all_users_in_context($context);
 
         // The quiz attempt should have been deleted from this quiz.
-        $this->assertCount(0, $DB->get_records('quiz_attempts', ['quiz' => $quizobj->get_quizid()]));
-        $this->assertCount(0, $DB->get_records('quiz_overrides', ['quiz' => $quizobj->get_quizid()]));
+        $this->assertCount(0, $DB->get_records('hippotrack_attempts', ['quiz' => $quizobj->get_quizid()]));
+        $this->assertCount(0, $DB->get_records('hippotrack_overrides', ['quiz' => $quizobj->get_quizid()]));
         $this->assertCount(0, $DB->get_records('question_attempts', ['questionusageid' => $quba->get_id()]));
 
         // But not for the other quiz.
-        $this->assertNotCount(0, $DB->get_records('quiz_attempts', ['quiz' => $otherquizobj->get_quizid()]));
-        $this->assertNotCount(0, $DB->get_records('quiz_overrides', ['quiz' => $otherquizobj->get_quizid()]));
+        $this->assertNotCount(0, $DB->get_records('hippotrack_attempts', ['quiz' => $otherquizobj->get_quizid()]));
+        $this->assertNotCount(0, $DB->get_records('hippotrack_overrides', ['quiz' => $otherquizobj->get_quizid()]));
         $this->assertNotCount(0, $DB->get_records('question_attempts', ['questionusageid' => $otherquba->get_id()]));
     }
 
@@ -411,9 +411,9 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $cat = $questiongenerator->create_question_category();
 
         $saq = $questiongenerator->create_question('shortanswer', null, array('category' => $cat->id));
-        quiz_add_quiz_question($saq->id, $quiz);
+        hippotrack_add_hippotrack_question($saq->id, $quiz);
         $numq = $questiongenerator->create_question('numerical', null, array('category' => $cat->id));
-        quiz_add_quiz_question($numq->id, $quiz);
+        hippotrack_add_hippotrack_question($numq->id, $quiz);
 
         return $quiz;
     }
@@ -436,12 +436,12 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
         // Start the attempt.
-        $attempt = quiz_create_attempt($quizobj, 1, false, $starttime, false, $user->id);
-        quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $starttime);
-        quiz_attempt_save_started($quizobj, $quba, $attempt);
+        $attempt = hippotrack_create_attempt($quizobj, 1, false, $starttime, false, $user->id);
+        hippotrack_start_new_attempt($quizobj, $quba, $attempt, 1, $starttime);
+        hippotrack_attempt_save_started($quizobj, $quba, $attempt);
 
         // Answer the questions.
-        $attemptobj = \quiz_attempt::create($attempt->id);
+        $attemptobj = \hippotrack_attempt::create($attempt->id);
 
         $tosubmit = [
             1 => ['answer' => 'frog'],
@@ -451,7 +451,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $attemptobj->process_submitted_actions($starttime, false, $tosubmit);
 
         // Finish the attempt.
-        $attemptobj = \quiz_attempt::create($attempt->id);
+        $attemptobj = \hippotrack_attempt::create($attempt->id);
         $attemptobj->process_finish($starttime, false);
 
         $this->setUser();
@@ -476,7 +476,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $quiz = $this->create_test_quiz($course);
 
         // Create an override for user1.
-        $DB->insert_record('quiz_overrides', [
+        $DB->insert_record('hippotrack_overrides', [
             'quiz' => $quiz->id,
             'userid' => $user->id,
             'timeclose' => 1300,
@@ -518,7 +518,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->attempt_quiz($quiz1, $user2);
 
         // Create an override in quiz1 for user3.
-        $DB->insert_record('quiz_overrides', [
+        $DB->insert_record('hippotrack_overrides', [
             'quiz' => $quiz1->id,
             'userid' => $user3->id,
             'timeclose' => 1300,
@@ -537,19 +537,19 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         // Only the attempt of user2 should be remained in quiz1.
         $this->assertEquals(
                 [$user2->id],
-                $DB->get_fieldset_select('quiz_attempts', 'userid', 'quiz = ?', [$quiz1->id])
+                $DB->get_fieldset_select('hippotrack_attempts', 'userid', 'quiz = ?', [$quiz1->id])
         );
 
         // The attempt that user1 made in quiz2 should be remained.
         $this->assertEquals(
                 [$user1->id],
-                $DB->get_fieldset_select('quiz_attempts', 'userid', 'quiz = ?', [$quiz2->id])
+                $DB->get_fieldset_select('hippotrack_attempts', 'userid', 'quiz = ?', [$quiz2->id])
         );
 
         // The quiz override in quiz1 that we had for user3 should be deleted.
         $this->assertEquals(
                 [],
-                $DB->get_fieldset_select('quiz_overrides', 'userid', 'quiz = ?', [$quiz1->id])
+                $DB->get_fieldset_select('hippotrack_overrides', 'userid', 'quiz = ?', [$quiz1->id])
         );
     }
 }

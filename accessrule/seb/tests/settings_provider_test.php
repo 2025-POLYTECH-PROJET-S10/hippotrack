@@ -108,14 +108,14 @@ class settings_provider_test extends \advanced_testcase {
     }
 
     /**
-     * Test that settings types to be added to quiz settings, are part of quiz_settings persistent class.
+     * Test that settings types to be added to quiz settings, are part of hippotrack_settings persistent class.
      */
-    public function test_setting_elements_are_part_of_quiz_settings_table() {
-        $dbsettings = (array) (new quiz_settings())->to_record();
+    public function test_setting_elements_are_part_of_hippotrack_settings_table() {
+        $dbsettings = (array) (new hippotrack_settings())->to_record();
         $settingelements = settings_provider::get_seb_config_elements();
         $settingelements = (array) $this->strip_all_prefixes((object) $settingelements);
 
-        // Get all elements to be added to form, that are not in the persistent quiz_settings class.
+        // Get all elements to be added to form, that are not in the persistent hippotrack_settings class.
         $diffelements = array_diff_key($settingelements, $dbsettings);
 
         $this->assertEmpty($diffelements);
@@ -175,7 +175,7 @@ class settings_provider_test extends \advanced_testcase {
      * Test hideif rules.
      */
     public function test_hideifs() {
-        $settinghideifs = settings_provider::get_quiz_hideifs();
+        $settinghideifs = settings_provider::get_hippotrack_hideifs();
 
         $this->assertCount(23, $settinghideifs);
 
@@ -534,7 +534,7 @@ class settings_provider_test extends \advanced_testcase {
      */
     public function test_setting_hideifs_are_part_of_file_types() {
         $settingelements = settings_provider::get_seb_config_elements();
-        $settinghideifs = settings_provider::get_quiz_hideifs();
+        $settinghideifs = settings_provider::get_hippotrack_hideifs();
 
         // Add known additional elements.
         $settingelements['seb_templateid'] = '';
@@ -704,7 +704,7 @@ class settings_provider_test extends \advanced_testcase {
 
         $template = $this->create_template();
 
-        $settings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $settings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $settings->set('templateid', $template->get('id'));
         $settings->set('requiresafeexambrowser', settings_provider::USE_SEB_TEMPLATE);
         $settings->save();
@@ -731,7 +731,7 @@ class settings_provider_test extends \advanced_testcase {
 
         // Setup conflicting permissions.
         $template = $this->create_template();
-        $settings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $settings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $settings->set('templateid', $template->get('id'));
         $settings->set('requiresafeexambrowser', settings_provider::USE_SEB_TEMPLATE);
         $settings->save();
@@ -755,7 +755,7 @@ class settings_provider_test extends \advanced_testcase {
     /**
      * Test that All settings are frozen if quiz was attempted and use seb with manual settings.
      */
-    public function test_form_elements_are_locked_when_quiz_attempted_manual() {
+    public function test_form_elements_are_locked_when_hippotrack_attempted_manual() {
         $this->resetAfterTest();
         $this->course = $this->getDataGenerator()->create_course();
 
@@ -784,7 +784,7 @@ class settings_provider_test extends \advanced_testcase {
     /**
      * Test that All settings are frozen if a quiz was attempted and use template.
      */
-    public function test_form_elements_are_locked_when_quiz_attempted_template() {
+    public function test_form_elements_are_locked_when_hippotrack_attempted_template() {
         $this->resetAfterTest();
         $this->setAdminUser();
         $this->course = $this->getDataGenerator()->create_course();
@@ -794,7 +794,7 @@ class settings_provider_test extends \advanced_testcase {
 
         $template = $this->create_template();
 
-        $settings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $settings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $settings->set('templateid', $template->get('id'));
         $settings->set('requiresafeexambrowser', settings_provider::USE_SEB_TEMPLATE);
         $settings->save();
@@ -989,7 +989,7 @@ class settings_provider_test extends \advanced_testcase {
 
         settings_provider::save_filemanager_sebconfigfile_draftarea($draftitemid, $this->quiz->cmid);
 
-        $settings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $settings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $settings->set('requiresafeexambrowser', settings_provider::USE_SEB_UPLOAD_CONFIG);
         $settings->save();
 
@@ -1167,7 +1167,7 @@ class settings_provider_test extends \advanced_testcase {
 
         // Create a template.
         $template = $this->create_template();
-        $settings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $settings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $settings->set('templateid', $template->get('id'));
         $settings->set('requiresafeexambrowser', settings_provider::USE_SEB_TEMPLATE);
         $settings->save();
@@ -1197,7 +1197,7 @@ class settings_provider_test extends \advanced_testcase {
         $xml = file_get_contents(__DIR__ . '/fixtures/unencrypted.seb');
         $draftitemid = $this->create_test_draftarea_file($xml);
         settings_provider::save_filemanager_sebconfigfile_draftarea($draftitemid, $this->quiz->cmid);
-        $settings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $settings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $settings->set('requiresafeexambrowser', settings_provider::USE_SEB_UPLOAD_CONFIG);
         $settings->save();
 

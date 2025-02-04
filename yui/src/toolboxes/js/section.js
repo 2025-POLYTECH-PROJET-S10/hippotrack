@@ -215,7 +215,7 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
             var instancesectiontext = newtext;
             if (newtext.trim() === '') {
                 // Add a sr-only default section heading text to make sure we don't end up with an empty section heading.
-                instancesectiontext = M.util.get_string('sectionnoname', 'quiz');
+                instancesectiontext = M.util.get_string('sectionnoname', 'hippotrack');
                 instancesection.addClass('sr-only');
             } else {
                 // Show the section heading when a non-empty value is set.
@@ -236,7 +236,7 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
                     if (newtext !== response.instancesection) {
                         if (response.instancesection.trim() === '') {
                             // Add a sr-only default section heading text.
-                            instancesectiontext = M.util.get_string('sectionnoname', 'quiz');
+                            instancesectiontext = M.util.get_string('sectionnoname', 'hippotrack');
                             instancesection.addClass('sr-only');
                         } else {
                             instancesectiontext = response.instancesection;

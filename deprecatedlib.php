@@ -23,7 +23,7 @@
  */
 
 /**
- * Internal function used in quiz_get_completion_state. Check passing grade (or no attempts left) requirement for completion.
+ * Internal function used in hippotrack_get_completion_state. Check passing grade (or no attempts left) requirement for completion.
  *
  * @deprecated since Moodle 3.11
  * @todo MDL-71196 Final deprecation in Moodle 4.3
@@ -35,10 +35,10 @@
  * @return bool True if the passing grade (or no attempts left) requirement is disabled or met.
  * @throws coding_exception
  */
-function quiz_completion_check_passing_grade_or_all_attempts($course, $cm, $userid, $quiz) {
+function hippotrack_completion_check_passing_grade_or_all_attempts($course, $cm, $userid, $quiz) {
     global $CFG;
 
-    debugging('quiz_completion_check_passing_grade_or_all_attempts has been deprecated.', DEBUG_DEVELOPER);
+    debugging('hippotrack_completion_check_passing_grade_or_all_attempts has been deprecated.', DEBUG_DEVELOPER);
 
     if (!$cm->completionpassgrade) {
         return true;
@@ -62,21 +62,21 @@ function quiz_completion_check_passing_grade_or_all_attempts($course, $cm, $user
     }
 
     // Check if all attempts are used up.
-    $attempts = quiz_get_user_attempts($quiz->id, $userid, 'finished', true);
+    $attempts = hippotrack_get_user_attempts($quiz->id, $userid, 'finished', true);
     if (!$attempts) {
         return false;
     }
     $lastfinishedattempt = end($attempts);
     $context = context_module::instance($cm->id);
     $quizobj = quiz::create($quiz->id, $userid);
-    $accessmanager = new quiz_access_manager($quizobj, time(),
-            has_capability('mod/quiz:ignoretimelimits', $context, $userid, false));
+    $accessmanager = new hippotrack_access_manager($quizobj, time(),
+            has_capability('mod/hippotrack:ignoretimelimits', $context, $userid, false));
 
     return $accessmanager->is_finished(count($attempts), $lastfinishedattempt);
 }
 
 /**
- * Internal function used in quiz_get_completion_state. Check minimum attempts requirement for completion.
+ * Internal function used in hippotrack_get_completion_state. Check minimum attempts requirement for completion.
  *
  * @deprecated since Moodle 3.11
  * @todo MDL-71196 Final deprecation in Moodle 4.3
@@ -85,16 +85,16 @@ function quiz_completion_check_passing_grade_or_all_attempts($course, $cm, $user
  * @param stdClass $quiz
  * @return bool True if minimum attempts requirement is disabled or met.
  */
-function quiz_completion_check_min_attempts($userid, $quiz) {
+function hippotrack_completion_check_min_attempts($userid, $quiz) {
 
-    debugging('quiz_completion_check_min_attempts has been deprecated.', DEBUG_DEVELOPER);
+    debugging('hippotrack_completion_check_min_attempts has been deprecated.', DEBUG_DEVELOPER);
 
     if (empty($quiz->completionminattempts)) {
         return true;
     }
 
     // Check if the user has done enough attempts.
-    $attempts = quiz_get_user_attempts($quiz->id, $userid, 'finished', true);
+    $attempts = hippotrack_get_user_attempts($quiz->id, $userid, 'finished', true);
     return $quiz->completionminattempts <= count($attempts);
 }
 
@@ -112,7 +112,7 @@ function quiz_completion_check_min_attempts($userid, $quiz) {
  * @return bool True if completed, false if not. (If no conditions, then return
  *   value depends on comparison type)
  */
-function quiz_get_completion_state($course, $cm, $userid, $type) {
+function hippotrack_get_completion_state($course, $cm, $userid, $type) {
     global $DB;
 
     // No need to call debugging here. Deprecation debugging notice already being called in \completion_info::internal_get_state().
@@ -122,11 +122,11 @@ function quiz_get_completion_state($course, $cm, $userid, $type) {
         return $type;
     }
 
-    if (!quiz_completion_check_passing_grade_or_all_attempts($course, $cm, $userid, $quiz)) {
+    if (!hippotrack_completion_check_passing_grade_or_all_attempts($course, $cm, $userid, $quiz)) {
         return false;
     }
 
-    if (!quiz_completion_check_min_attempts($userid, $quiz)) {
+    if (!hippotrack_completion_check_min_attempts($userid, $quiz)) {
         return false;
     }
 

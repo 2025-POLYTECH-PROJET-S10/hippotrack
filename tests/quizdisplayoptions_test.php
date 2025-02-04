@@ -21,7 +21,7 @@ use mod_hippotrack_display_options;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
  * Unit tests for {@link mod_hippotrack_display_options}.

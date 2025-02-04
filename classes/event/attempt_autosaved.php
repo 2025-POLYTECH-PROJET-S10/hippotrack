@@ -44,7 +44,7 @@ class attempt_autosaved extends \core\event\base {
      * Init method.
      */
     protected function init() {
-        $this->data['objecttable'] = 'quiz_attempts';
+        $this->data['objecttable'] = 'hippotrack_attempts';
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
     }
@@ -78,7 +78,7 @@ class attempt_autosaved extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/quiz/review.php', [
+        return new \moodle_url('/mod/hippotrack/review.php', [
             'attempt' => $this->objectid,
             'page' => $this->other['page']
         ]);
@@ -113,7 +113,7 @@ class attempt_autosaved extends \core\event\base {
      * @return array List of mapping of other ids.
      */
     public static function get_objectid_mapping() {
-        return ['db' => 'quiz_attempts', 'restore' => 'quiz_attempt'];
+        return ['db' => 'hippotrack_attempts', 'restore' => 'hippotrack_attempt'];
     }
 
     /**

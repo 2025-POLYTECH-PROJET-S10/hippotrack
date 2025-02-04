@@ -7,16 +7,16 @@ This files describes API changes in the quiz code.
   `::get_test_files`. Both the existing instance property and the new static method can co-exist.
 
 === 4.1.7 ===
-* A quiz_structure_modified callback has been added for quiz_ plugins, called from
-  quiz_update_sumgrades(). Plugins can implement this by creating a `quiz_structure_modified`
-  class in their namespace with a static `callback` method, see quiz_statistics as an example.
+* A hippotrack_structure_modified callback has been added for hippotrack_ plugins, called from
+  hippotrack_update_sumgrades(). Plugins can implement this by creating a `hippotrack_structure_modified`
+  class in their namespace with a static `callback` method, see hippotrack_statistics as an example.
 
 === 4.1.1 ===
 * 'firstslotid' value is not used in section_shuffle_updated event anymore.
 
 === 4.1 ===
 
-* quiz_has_question_use is now deprecated. Use mod_hippotrack\structure::has_use_capability istead.
+* hippotrack_has_question_use is now deprecated. Use mod_hippotrack\structure::has_use_capability istead.
 
 === 4.0.3, 4.1 ===
 
@@ -25,30 +25,30 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
 
 === 4.0.2, 4.1 ===
 
-* No external code should be calling quiz_overview_report::regrade_attempt because it is an
-  internal method of the quiz_overview plugin. But if you are incorrectly using it, be aware
+* No external code should be calling hippotrack_overview_report::regrade_attempt because it is an
+  internal method of the hippotrack_overview plugin. But if you are incorrectly using it, be aware
   that the API changed slightly. It now returns an array listing any questions which could
   not be regraded.
-* New method called get_number_of_unanswered_questions() has been added to mod/quiz/attemptlib.php
+* New method called get_number_of_unanswered_questions() has been added to mod/hippotrack/attemptlib.php
   to get the total number of unanswered questions in the current attempt.
 
 === 4.0 ===
 
 * The following API methods have a new parameter, $studentisonline, to define whether the student is currently interacting:
-  - process_finish() in mod/quiz/attemptlib.php
-  - quiz_send_confirmation() in mod/quiz/locallib.php
-  - quiz_send_notification_messages() in mod/quiz/locallib.php
+  - process_finish() in mod/hippotrack/attemptlib.php
+  - hippotrack_send_confirmation() in mod/hippotrack/locallib.php
+  - hippotrack_send_notification_messages() in mod/hippotrack/locallib.php
 * The completionpass criteria has been moved to core as 'completionpassgrade'. Refer to completion/upgrade.txt for
   further information.
-* New argument quizhasquestions has been added to public methods: view_information in mod/quiz/renderer.php.
+* New argument quizhasquestions has been added to public methods: view_information in mod/hippotrack/renderer.php.
 * The function no_questions_message() in class mod_hippotrack_renderer is deprecated. There is no replacement.
-* Related to the Moodle 4.0 question bank changes, the quiz_slots database table.
+* Related to the Moodle 4.0 question bank changes, the hippotrack_slots database table.
   The fields removed are now manage by new core_question tables:
   - question_references -> Records where a specific question is used.
   - question_set_references -> Records where groups of questions are used (e.g. random questions).
-* The quiz_slots_tags database table has been removed entirely, as has the get_slot_tags_for_slot_id() method
-  from mod/quiz/classes/structure.php and the the locallib.php functions quiz_retrieve_slot_tags and
-  quiz_retrieve_slot_tag_ids. This information is now stored in question_set_references
+* The hippotrack_slots_tags database table has been removed entirely, as has the get_slot_tags_for_slot_id() method
+  from mod/hippotrack/classes/structure.php and the the locallib.php functions hippotrack_retrieve_slot_tags and
+  hippotrack_retrieve_slot_tag_ids. This information is now stored in question_set_references
   and can be accessed in the results of qbank_helper::get_question_structure.
 
 
@@ -78,17 +78,17 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
 === 3.6 ===
 
 * The following renamed classes have been completely removed:
-  - quiz_question_bank_view (now: mod_hippotrack\question\bank\custom_view)
-  - question_bank_add_to_quiz_action_column (now: mod_hippotrack\question\bank\add_action_column)
+  - hippotrack_question_bank_view (now: mod_hippotrack\question\bank\custom_view)
+  - question_bank_add_to_hippotrack_action_column (now: mod_hippotrack\question\bank\add_action_column)
   - question_bank_question_name_text_column (now: mod_hippotrack\question\bank\question_name_text_column)
 
 === 3.5 ===
-* Removed questionbank.ajax.php. Please use the quiz_question_bank fragment instead.
-* Adding "random" questions to a quiz via quiz_add_quiz_question() has been deprecated. Please use quiz_add_random_questions().
+* Removed questionbank.ajax.php. Please use the hippotrack_question_bank fragment instead.
+* Adding "random" questions to a quiz via hippotrack_add_hippotrack_question() has been deprecated. Please use hippotrack_add_random_questions().
 
 === 3.3.2 ===
 
-* quiz_refresh_events() Now takes two additional parameters to refine the update to a specific instance. This function
+* hippotrack_refresh_events() Now takes two additional parameters to refine the update to a specific instance. This function
   now optionally takes the module instance object or ID, and the course module object or ID. Please try to send the full
   objects instead of the ids to save DB calls.
 
@@ -100,7 +100,7 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
 
 === 3.1 ===
 
-* quiz_attempt::question_print_comment_fields() has been removed. It was broken
+* hippotrack_attempt::question_print_comment_fields() has been removed. It was broken
   since at least Moodle 2.0.
 
 * quiz::confirm_start_attempt_message and mod_hippotrack_view_object::$startattemptwarning
@@ -143,8 +143,8 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
 * The array values in mod_hippotrack_links_to_other_attempts may now be either a moodle_url,
   or renderable (or null). Previously they could only be a moodle_url or null.
 
-* The contents of the navigation block is now not just quiz_nav_question_button-s.
-  It can also contain quiz_nav_section_heading-s. If you have overridden
+* The contents of the navigation block is now not just hippotrack_nav_question_button-s.
+  It can also contain hippotrack_nav_section_heading-s. If you have overridden
   mod_hippotrack_renderer::navigation_panel, then you may need to account for this.
   This change also has implications for the Edit quiz page.
 
@@ -153,11 +153,11 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
 
 * Classes that were defined in various lib files have been moved to the classes
   folder to take advantage of auto-loading. This has involved renaming them.
-  see the list in mod/quiz/db/renamedclasses.php.
+  see the list in mod/hippotrack/db/renamedclasses.php.
 
 * The quiz no longer handles its own \mod_hippotrack\event\attempt_becameoverdue event,
-  and so the event handler function quiz_attempt_overdue_handler has been deleted.
-  Also, the internal function quiz_send_overdue_message has add the arguments
+  and so the event handler function hippotrack_attempt_overdue_handler has been deleted.
+  Also, the internal function hippotrack_send_overdue_message has add the arguments
   changed. It now takes the $attemptobj object, not separate stdClass objects.
 
 * Major changes to the Edit quiz page.
@@ -165,18 +165,18 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
   The goal of this work was to increase usability, and also clean up the page
   enough that it will be possible to add new features in future.
 
-  Display of mod/quiz/edit.php is now entirely generated by
+  Display of mod/hippotrack/edit.php is now entirely generated by
   mod_hippotrack\output\edit_renderer. This uses a helper class mod_hippotrack\structure
   to provide details of the structure of the quiz, and mod_hippotrack\repaginate to
   alter that structure. (Actually, there are still some modification methods on
   mod_hippotrack\structure. Expect that to be cleaned up in future.)
 
-  The new code uses much more ajax, and there are new scripts mod/quiz/edit_rest.php
-  and mod/quiz/repaginate.php to handle this. (Again, don't be surprised if those
+  The new code uses much more ajax, and there are new scripts mod/hippotrack/edit_rest.php
+  and mod/hippotrack/repaginate.php to handle this. (Again, don't be surprised if those
   two scripts get merged in future.) Also questionbank.ajax.php (which may, in
   future, be made more generic, and moved into the core question bank code.)
 
-  As a result of this, mod/quiz/editlib.php has gone. (A few remaining functions
+  As a result of this, mod/hippotrack/editlib.php has gone. (A few remaining functions
   were moved to locallib.php.)
 
   Here is a list of all the old functions or classes that have changed.
@@ -185,44 +185,44 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
   of the quiz module, and you should not have been using them!)
 
   From editlib.php:
-      quiz_remove_slot
-      quiz_delete_empty_page
-      quiz_add_page_break_after_slot    - Use methods of structure or repaginate
-      quiz_update_slot_maxmark          - classes instead.
-      _quiz_move_question
-      quiz_move_question_up
-      quiz_move_question_down
+      hippotrack_remove_slot
+      hippotrack_delete_empty_page
+      hippotrack_add_page_break_after_slot    - Use methods of structure or repaginate
+      hippotrack_update_slot_maxmark          - classes instead.
+      _hippotrack_move_question
+      hippotrack_move_question_up
+      hippotrack_move_question_down
 
-      quiz_print_question_list
-      quiz_print_pagecontrols
-      quiz_print_singlequestion         - Use methods of edit_renderer instead.
-      quiz_print_randomquestion
-      quiz_print_singlequestion_reordertool
-      quiz_print_randomquestion_reordertool
+      hippotrack_print_question_list
+      hippotrack_print_pagecontrols
+      hippotrack_print_singlequestion         - Use methods of edit_renderer instead.
+      hippotrack_print_randomquestion
+      hippotrack_print_singlequestion_reordertool
+      hippotrack_print_randomquestion_reordertool
       print_random_option_icon
-      quiz_print_grading_form
-      quiz_print_status_bar
+      hippotrack_print_grading_form
+      hippotrack_print_status_bar
 
   Moved from editlib.php to locallib.php:
-      quiz_question_tostring - now always returns a string (the only option used).
+      hippotrack_question_tostring - now always returns a string (the only option used).
                                The $return argument has gone.
 
-  Old editing JavaScript (e.g. mod/quiz/edit.js) is gone. Replaced with YUI modules.
+  Old editing JavaScript (e.g. mod/hippotrack/edit.js) is gone. Replaced with YUI modules.
 
 
 === 2.7.1 ===
 
-* The function quiz_fire_attempt_started_event has been removed. This function
+* The function hippotrack_fire_attempt_started_event has been removed. This function
   should not have been used outside the quiz, but if you were using it, you should
   trigger the event outside this function. Note that the appropriate start event is
-  fired automatically by the quiz_attempt_save_started function.
+  fired automatically by the hippotrack_attempt_save_started function.
 
 
 === 2.7 ===
 
 * The old quiz.questions database column (comma-separated list of question ids)
-  is gone, and instead the quiz_question_instances table has been renamed to
-  to quiz_slots. Some of the columns of that table have been renamed to match
+  is gone, and instead the hippotrack_question_instances table has been renamed to
+  to hippotrack_slots. Some of the columns of that table have been renamed to match
   the coding guidelines. Specifically:
       quiz     -> quizid
       question -> questionid
@@ -235,18 +235,18 @@ related to out of sequence question except while reviewing the quiz (MDL-75210).
 
 * The following functions, which were part of the internal workings of the quiz,
   have been removed.
-      quiz_get_slot_for_question
-      quiz_number_of_questions_in_quiz
-      quiz_repaginate               (there is now a quiz_repaginate_questions with a different API).
-      quiz_add_page_break_at        (see quiz_add_page_break_after_slot)
-      quiz_add_page_break_after     (see quiz_add_page_break_after_slot)
-      quiz_number_of_pages
-      quiz_remove_question          (see quiz_remove_slot)
-      quiz_update_question_instance (see quiz_update_slot_maxmark)
+      hippotrack_get_slot_for_question
+      hippotrack_number_of_questions_in_quiz
+      hippotrack_repaginate               (there is now a hippotrack_repaginate_questions with a different API).
+      hippotrack_add_page_break_at        (see hippotrack_add_page_break_after_slot)
+      hippotrack_add_page_break_after     (see hippotrack_add_page_break_after_slot)
+      hippotrack_number_of_pages
+      hippotrack_remove_question          (see hippotrack_remove_slot)
+      hippotrack_update_question_instance (see hippotrack_update_slot_maxmark)
 
 * The following internal functions have had their API changed.
-      quiz_delete_empty_page: has had its arguments changed to $quiz and $pagenumber.
-      quiz_has_question_use: now takes $quiz and $slot, not $questionid.
+      hippotrack_delete_empty_page: has had its arguments changed to $quiz and $pagenumber.
+      hippotrack_has_question_use: now takes $quiz and $slot, not $questionid.
 
 
 === 2.6 ===

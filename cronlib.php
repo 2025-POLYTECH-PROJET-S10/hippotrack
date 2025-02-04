@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 
 /**
@@ -75,7 +75,7 @@ class mod_hippotrack_overdue_attempt_updater {
                 $quizforuser->timelimit = $attempt->usertimelimit;
 
                 // Trigger any transitions that are required.
-                $attemptobj = new quiz_attempt($attempt, $quizforuser, $cm, $course);
+                $attemptobj = new hippotrack_attempt($attempt, $quizforuser, $cm, $course);
                 $attemptobj->handle_if_time_expired($timenow, false);
                 $count += 1;
 
@@ -95,7 +95,7 @@ class mod_hippotrack_overdue_attempt_updater {
     }
 
     /**
-     * @return moodle_recordset of quiz_attempts that need to be processed because time has
+     * @return moodle_recordset of hippotrack_attempts that need to be processed because time has
      *     passed. The array is sorted by courseid then quizid.
      */
     public function get_list_of_overdue_attempts($processto) {
@@ -103,16 +103,16 @@ class mod_hippotrack_overdue_attempt_updater {
 
 
         // SQL to compute timeclose and timelimit for each attempt:
-        $quizausersql = quiz_get_attempt_usertime_sql(
+        $quizausersql = hippotrack_get_attempt_usertime_sql(
                 "iquiza.state IN ('inprogress', 'overdue') AND iquiza.timecheckstate <= :iprocessto");
 
-        // This query should have all the quiz_attempts columns.
+        // This query should have all the hippotrack_attempts columns.
         return $DB->get_recordset_sql("
          SELECT quiza.*,
                 quizauser.usertimeclose,
                 quizauser.usertimelimit
 
-           FROM {quiz_attempts} quiza
+           FROM {hippotrack_attempts} quiza
            JOIN {quiz} quiz ON quiz.id = quiza.quiz
            JOIN ( $quizausersql ) quizauser ON quizauser.id = quiza.id
 

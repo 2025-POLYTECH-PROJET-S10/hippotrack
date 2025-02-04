@@ -42,8 +42,8 @@ class mod_hippotrack_admin_setting_browsersecurity extends admin_setting_configs
             return true;
         }
 
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-        $this->choices = quiz_access_manager::get_browser_security_choices();
+        require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
+        $this->choices = hippotrack_access_manager::get_browser_security_choices();
 
         return true;
     }

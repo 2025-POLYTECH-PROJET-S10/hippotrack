@@ -45,7 +45,7 @@ class attempt_abandoned extends \core\event\base {
      * Init method.
      */
     protected function init() {
-        $this->data['objecttable'] = 'quiz_attempts';
+        $this->data['objecttable'] = 'hippotrack_attempts';
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
     }
@@ -75,7 +75,7 @@ class attempt_abandoned extends \core\event\base {
      * @return string legacy event name
      */
     static public function get_legacy_eventname() {
-        return 'quiz_attempt_abandoned';
+        return 'hippotrack_attempt_abandoned';
     }
 
     /**
@@ -84,7 +84,7 @@ class attempt_abandoned extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/quiz/review.php', array('attempt' => $this->objectid));
+        return new \moodle_url('/mod/hippotrack/review.php', array('attempt' => $this->objectid));
     }
 
     /**
@@ -93,7 +93,7 @@ class attempt_abandoned extends \core\event\base {
      * @return \stdClass
      */
     protected function get_legacy_eventdata() {
-        $attempt = $this->get_record_snapshot('quiz_attempts', $this->objectid);
+        $attempt = $this->get_record_snapshot('hippotrack_attempts', $this->objectid);
 
         $legacyeventdata = new \stdClass();
         $legacyeventdata->component = 'mod_hippotrack';
@@ -128,7 +128,7 @@ class attempt_abandoned extends \core\event\base {
     }
 
     public static function get_objectid_mapping() {
-        return array('db' => 'quiz_attempts', 'restore' => 'quiz_attempt');
+        return array('db' => 'hippotrack_attempts', 'restore' => 'hippotrack_attempt');
     }
 
     public static function get_other_mapping() {

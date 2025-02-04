@@ -25,14 +25,14 @@
  */
 
 use quizaccess_seb\access_manager;
-use quizaccess_seb\quiz_settings;
+use quizaccess_seb\hippotrack_settings;
 use quizaccess_seb\settings_provider;
 use \quizaccess_seb\event\access_prevented;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
+require_once($CFG->dirroot . '/mod/hippotrack/accessrule/accessrulebase.php');
 
 /**
  * Implementation of the quizaccess_seb plugin.
@@ -40,7 +40,7 @@ require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
  * @copyright  2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quizaccess_seb extends quiz_access_rule_base {
+class quizaccess_seb extends hippotrack_access_rule_base {
 
     /** @var access_manager $accessmanager Instance to manage the access to the quiz for this plugin. */
     private $accessmanager;
@@ -64,8 +64,8 @@ class quizaccess_seb extends quiz_access_rule_base {
      * @param quiz $quizobj information about the quiz in question.
      * @param int $timenow the time that should be considered as 'now'.
      * @param bool $canignoretimelimits whether the current user is exempt from
-     *      time limits by the mod/quiz:ignoretimelimits capability.
-     * @return quiz_access_rule_base|null the rule, if applicable, else null.
+     *      time limits by the mod/hippotrack:ignoretimelimits capability.
+     * @return hippotrack_access_rule_base|null the rule, if applicable, else null.
      */
     public static function make (quiz $quizobj, $timenow, $canignoretimelimits) {
         $accessmanager = new access_manager($quizobj);
@@ -120,7 +120,7 @@ class quizaccess_seb extends quiz_access_rule_base {
         $settings = settings_provider::filter_plugin_settings((object) $data);
 
         // Validate basic settings using persistent class.
-        $quizsettings = (new quiz_settings())->from_record($settings);
+        $quizsettings = (new hippotrack_settings())->from_record($settings);
         // Set non-form fields.
         $quizsettings->set('quizid', $quizid);
         $quizsettings->set('cmid', $cmid);
@@ -159,7 +159,7 @@ class quizaccess_seb extends quiz_access_rule_base {
 
     /**
      * Save any submitted settings when the quiz settings form is submitted. This
-     * is called from {@link quiz_after_add_or_update()} in lib.php.
+     * is called from {@link hippotrack_after_add_or_update()} in lib.php.
      *
      * @param object $quiz the data from the quiz form, including $quiz->id
      *      which is the id of the quiz being saved.
@@ -186,9 +186,9 @@ class quizaccess_seb extends quiz_access_rule_base {
         $settings->cmid = $cm->id;
 
         // Get existing settings or create new settings if none exist.
-        $quizsettings = quiz_settings::get_by_quiz_id($quiz->id);
+        $quizsettings = hippotrack_settings::get_by_hippotrack_id($quiz->id);
         if (empty($quizsettings)) {
-            $quizsettings = new quiz_settings(0, $settings);
+            $quizsettings = new hippotrack_settings(0, $settings);
         } else {
             $settings->id = $quizsettings->get('id');
             $quizsettings->from_record($settings);
@@ -212,13 +212,13 @@ class quizaccess_seb extends quiz_access_rule_base {
 
     /**
      * Delete any rule-specific settings when the quiz is deleted. This is called
-     * from {@link quiz_delete_instance()} in lib.php.
+     * from {@link hippotrack_delete_instance()} in lib.php.
      *
      * @param object $quiz the data from the database, including $quiz->id
      *      which is the id of the quiz being deleted.
      */
     public static function delete_settings($quiz) {
-        $quizsettings = quiz_settings::get_by_quiz_id($quiz->id);
+        $quizsettings = hippotrack_settings::get_by_hippotrack_id($quiz->id);
         // Check that there are existing settings.
         if ($quizsettings !== false) {
             $quizsettings->delete();
@@ -228,7 +228,7 @@ class quizaccess_seb extends quiz_access_rule_base {
     /**
      * Return the bits of SQL needed to load all the settings from all the access
      * plugins in one DB query. The easiest way to understand what you need to do
-     * here is probalby to read the code of {@link quiz_access_manager::load_settings()}.
+     * here is probalby to read the code of {@link hippotrack_access_manager::load_settings()}.
      *
      * If you have some settings that cannot be loaded in this way, then you can
      * use the {@link get_extra_settings()} method instead, but that has
@@ -336,10 +336,10 @@ class quizaccess_seb extends quiz_access_rule_base {
     private function get_user_finished_attempts() : array {
         global $USER;
 
-        return quiz_get_user_attempts(
+        return hippotrack_get_user_attempts(
             $this->quizobj->get_quizid(),
             $USER->id,
-            quiz_attempt::FINISHED,
+            hippotrack_attempt::FINISHED,
             false
         );
     }
@@ -452,7 +452,7 @@ class quizaccess_seb extends quiz_access_rule_base {
         if (!$this->prevent_access()) {
             $messages[] = $this->display_buttons($this->get_quit_button());
         } else {
-            $PAGE->requires->js_call_amd('quizaccess_seb/validate_quiz_access', 'init',
+            $PAGE->requires->js_call_amd('quizaccess_seb/validate_hippotrack_access', 'init',
                 [$this->quiz->cmid, (bool)get_config('quizaccess_seb', 'autoreconfigureseb')]);
         }
 

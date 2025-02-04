@@ -26,8 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $functions = [
-    'quizaccess_seb_validate_quiz_keys' => [
-        'classname' => 'quizaccess_seb\external\validate_quiz_keys',
+    'quizaccess_seb_validate_hippotrack_keys' => [
+        'classname' => 'quizaccess_seb\external\validate_hippotrack_keys',
         'methodname' => 'execute',
         'description' => 'Validate a Safe Exam Browser config key or a browser exam key.',
         'type' => 'read',

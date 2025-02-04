@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
  * Quiz module upgrade function.
  * @param string $oldversion the version we are upgrading from.
  */
-function xmldb_quiz_upgrade($oldversion) {
+function xmldb_hippotrack_upgrade($oldversion) {
     global $CFG, $DB;
     $dbman = $DB->get_manager();
 
@@ -38,7 +38,7 @@ function xmldb_quiz_upgrade($oldversion) {
     if ($oldversion < 2020061501) {
 
         // Define field completionminattempts to be added to quiz.
-        $table = new xmldb_table('quiz');
+        $table = new xmldb_table('hippotrack');
         $field = new xmldb_field('completionminattempts', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0',
             'completionpass');
 
@@ -48,22 +48,22 @@ function xmldb_quiz_upgrade($oldversion) {
         }
 
         // Quiz savepoint reached.
-        upgrade_mod_savepoint(true, 2020061501, 'quiz');
+        upgrade_mod_savepoint(true, 2020061501, 'hippotrack');
     }
 
     if ($oldversion < 2021052503) {
-        $table = new xmldb_table('quiz');
+        $table = new xmldb_table('hippotrack');
         $field = new xmldb_field('completionpass');
 
         if ($dbman->field_exists($table, $field)) {
             $sql = "SELECT q.id, m.id as quizid " .
-                "FROM {quiz} q " .
+                "FROM {hippotrack} q " .
                 "INNER JOIN {course_modules} cm ON cm.instance = q.id " .
                 "INNER JOIN {modules} m ON m.id = cm.module " .
                 "WHERE m.name = :name AND q.completionpass = :completionpass";
 
             /** @var moodle_recordset $records */
-            $records = $DB->get_recordset_sql($sql, ['name' => 'quiz', 'completionpass' => 1], 0, 1000);
+            $records = $DB->get_recordset_sql($sql, ['name' => 'hippotrack', 'completionpass' => 1], 0, 1000);
             while ($records->valid()) {
                 $quizmodule = null;
                 foreach ($records as $record) {
@@ -74,13 +74,13 @@ function xmldb_quiz_upgrade($oldversion) {
                 if ($ids) {
                     list($insql, $params) = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED);
                     $DB->set_field_select('course_modules', 'completionpassgrade', 1,
-                        "module = :quiz AND instance $insql", $params + ['quiz' => $quizmodule]);
+                        "module = :hippotrack AND instance $insql", $params + ['quiz' => $quizmodule]);
 
                     // Reset the value so it doesn't get picked on the next run. The field will be dropped later.
-                    $DB->set_field_select('quiz', 'completionpass', 0, "id $insql", $params);
+                    $DB->set_field_select('hippotrack', 'completionpass', 0, "id $insql", $params);
 
                     // Get the next batch of records.
-                    $records = $DB->get_recordset_sql($sql, ['name' => 'quiz', 'completionpass' => 1], 0, 1000);
+                    $records = $DB->get_recordset_sql($sql, ['name' => 'hippotrack', 'completionpass' => 1], 0, 1000);
                 }
             }
             $records->close();
@@ -91,20 +91,20 @@ function xmldb_quiz_upgrade($oldversion) {
             }
         }
 
-        upgrade_mod_savepoint(true, 2021052503, 'quiz');
+        upgrade_mod_savepoint(true, 2021052503, 'hippotrack');
     }
 
     if ($oldversion < 2021101900) {
 
-        // Define field gradednotificationsenttime to be added to quiz_attempts.
-        $table = new xmldb_table('quiz_attempts');
+        // Define field gradednotificationsenttime to be added to hippotrack_attempts.
+        $table = new xmldb_table('hippotrack_attempts');
         $field = new xmldb_field('gradednotificationsenttime', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'sumgrades');
 
         // Conditionally launch add field gradednotificationsenttime.
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
 
-            $DB->execute('UPDATE {quiz_attempts} SET gradednotificationsenttime = timefinish');
+            $DB->execute('UPDATE {hippotrack_attempts} SET gradednotificationsenttime = timefinish');
         }
 
         // Quiz savepoint reached.
@@ -112,24 +112,24 @@ function xmldb_quiz_upgrade($oldversion) {
     }
 
     if ($oldversion < 2022020300) {
-        // Define table quiz_slot_tags to be dropped.
-        $table = new xmldb_table('quiz_slot_tags');
+        // Define table hippotrack_slot_tags to be dropped.
+        $table = new xmldb_table('hippotrack_slot_tags');
 
-        // Conditionally launch drop table for quiz_slot_tags.
+        // Conditionally launch drop table for hippotrack_slot_tags.
         if ($dbman->table_exists($table)) {
             $dbman->drop_table($table);
         }
 
-        // Define fields to be dropped from quiz_slots.
-        $table = new xmldb_table('quiz_slots');
+        // Define fields to be dropped from hippotrack_slots.
+        $table = new xmldb_table('hippotrack_slots');
 
-        // Define key questionid (foreign) to be dropped form quiz_slots.
+        // Define key questionid (foreign) to be dropped form hippotrack_slots.
         $key = new xmldb_key('questionid', XMLDB_KEY_FOREIGN, ['questionid'], 'question', ['id']);
 
         // Launch drop key questionid.
         $dbman->drop_key($table, $key);
 
-        // Define key questioncategoryid (foreign) to be dropped form quiz_slots.
+        // Define key questioncategoryid (foreign) to be dropped form hippotrack_slots.
         $key = new xmldb_key('questioncategoryid', XMLDB_KEY_FOREIGN, ['questioncategoryid'], 'question_categories', ['id']);
 
         // Launch drop key questioncategoryid.

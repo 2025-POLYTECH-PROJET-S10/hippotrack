@@ -21,7 +21,7 @@ use mod_hippotrack\question\bank\qbank_helper;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
+require_once(__DIR__ . '/hippotrack_question_helper_test_trait.php');
 
 /**
  * Question versions test for quiz.
@@ -33,8 +33,8 @@ require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @coversDefaultClass \mod_hippotrack\question\bank\qbank_helper
  */
-class quiz_question_version_test extends \advanced_testcase {
-    use \quiz_question_helper_test_trait;
+class hippotrack_question_version_test extends \advanced_testcase {
+    use \hippotrack_question_helper_test_trait;
 
     /**
      * Called before every test.
@@ -53,7 +53,7 @@ class quiz_question_version_test extends \advanced_testcase {
      *
      * @covers ::get_version_options
      */
-    public function test_quiz_questions_for_changed_versions() {
+    public function test_hippotrack_questions_for_changed_versions() {
         $this->resetAfterTest();
         $quiz = $this->create_test_quiz($this->course);
         // Test for questions from a different context.
@@ -66,7 +66,7 @@ class quiz_question_version_test extends \advanced_testcase {
         // Create two version.
         $questiongenerator->update_question($numq, null, ['name' => 'This is the second version']);
         $questiongenerator->update_question($numq, null, ['name' => 'This is the third version']);
-        quiz_add_quiz_question($numq->id, $quiz);
+        hippotrack_add_hippotrack_question($numq->id, $quiz);
         // Create the quiz object.
         $quizobj = \quiz::create($quiz->id);
         $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
@@ -134,7 +134,7 @@ class quiz_question_version_test extends \advanced_testcase {
      *
      * @covers ::get_version_options
      */
-    public function test_quiz_question_attempts_with_changed_version() {
+    public function test_hippotrack_question_attempts_with_changed_version() {
         $this->resetAfterTest();
         $quiz = $this->create_test_quiz($this->course);
         // Test for questions from a different context.
@@ -147,7 +147,7 @@ class quiz_question_version_test extends \advanced_testcase {
         // Create two version.
         $questiongenerator->update_question($numq, null, ['name' => 'This is the second version']);
         $questiongenerator->update_question($numq, null, ['name' => 'This is the third version']);
-        quiz_add_quiz_question($numq->id, $quiz);
+        hippotrack_add_hippotrack_question($numq->id, $quiz);
         list($quizobj, $quba, $attemptobj) = $this->attempt_quiz($quiz, $this->student);
         $this->assertEquals('This is the third version', $attemptobj->get_question_attempt(1)->get_question()->name);
         // Create the quiz object.

@@ -83,47 +83,47 @@ class behat_mod_hippotrack extends behat_question_base {
 
         switch (strtolower($type)) {
             case 'view':
-                return new moodle_url('/mod/quiz/view.php',
-                        ['id' => $this->get_cm_by_quiz_name($identifier)->id]);
+                return new moodle_url('/mod/hippotrack/view.php',
+                        ['id' => $this->get_cm_by_hippotrack_name($identifier)->id]);
 
             case 'edit':
-                return new moodle_url('/mod/quiz/edit.php',
-                        ['cmid' => $this->get_cm_by_quiz_name($identifier)->id]);
+                return new moodle_url('/mod/hippotrack/edit.php',
+                        ['cmid' => $this->get_cm_by_hippotrack_name($identifier)->id]);
 
             case 'group overrides':
-                return new moodle_url('/mod/quiz/overrides.php',
-                    ['cmid' => $this->get_cm_by_quiz_name($identifier)->id, 'mode' => 'group']);
+                return new moodle_url('/mod/hippotrack/overrides.php',
+                    ['cmid' => $this->get_cm_by_hippotrack_name($identifier)->id, 'mode' => 'group']);
 
             case 'user overrides':
-                return new moodle_url('/mod/quiz/overrides.php',
-                    ['cmid' => $this->get_cm_by_quiz_name($identifier)->id, 'mode' => 'user']);
+                return new moodle_url('/mod/hippotrack/overrides.php',
+                    ['cmid' => $this->get_cm_by_hippotrack_name($identifier)->id, 'mode' => 'user']);
 
             case 'grades report':
-                return new moodle_url('/mod/quiz/report.php',
-                    ['id' => $this->get_cm_by_quiz_name($identifier)->id, 'mode' => 'overview']);
+                return new moodle_url('/mod/hippotrack/report.php',
+                    ['id' => $this->get_cm_by_hippotrack_name($identifier)->id, 'mode' => 'overview']);
 
             case 'responses report':
-                return new moodle_url('/mod/quiz/report.php',
-                    ['id' => $this->get_cm_by_quiz_name($identifier)->id, 'mode' => 'responses']);
+                return new moodle_url('/mod/hippotrack/report.php',
+                    ['id' => $this->get_cm_by_hippotrack_name($identifier)->id, 'mode' => 'responses']);
 
             case 'statistics report':
-                return new moodle_url('/mod/quiz/report.php',
-                    ['id' => $this->get_cm_by_quiz_name($identifier)->id, 'mode' => 'statistics']);
+                return new moodle_url('/mod/hippotrack/report.php',
+                    ['id' => $this->get_cm_by_hippotrack_name($identifier)->id, 'mode' => 'statistics']);
 
             case 'manual grading report':
-                return new moodle_url('/mod/quiz/report.php',
-                        ['id' => $this->get_cm_by_quiz_name($identifier)->id, 'mode' => 'grading']);
+                return new moodle_url('/mod/hippotrack/report.php',
+                        ['id' => $this->get_cm_by_hippotrack_name($identifier)->id, 'mode' => 'grading']);
             case 'attempt view':
                 list($quizname, $username, $attemptno, $pageno) = explode(' > ', $identifier);
                 $pageno = intval($pageno);
                 $pageno = $pageno > 0 ? $pageno - 1 : 0;
                 $attemptno = (int) trim(str_replace ('Attempt', '', $attemptno));
-                $quiz = $this->get_quiz_by_name($quizname);
+                $quiz = $this->get_hippotrack_by_name($quizname);
                 $quizcm = get_coursemodule_from_instance('quiz', $quiz->id, $quiz->course);
                 $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
-                $attempt = $DB->get_record('quiz_attempts',
+                $attempt = $DB->get_record('hippotrack_attempts',
                     ['quiz' => $quiz->id, 'userid' => $user->id, 'attempt' => $attemptno], '*', MUST_EXIST);
-                return new moodle_url('/mod/quiz/attempt.php', [
+                return new moodle_url('/mod/hippotrack/attempt.php', [
                     'attempt' => $attempt->id,
                     'cmid' => $quizcm->id,
                     'page' => $pageno
@@ -136,18 +136,18 @@ class behat_mod_hippotrack extends behat_question_base {
                 }
                 list($quizname, $username, $attemptno) = explode(' > ', $identifier);
                 $attemptno = (int) trim(str_replace ('Attempt', '', $attemptno));
-                $quiz = $this->get_quiz_by_name($quizname);
+                $quiz = $this->get_hippotrack_by_name($quizname);
                 $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
-                $attempt = $DB->get_record('quiz_attempts',
+                $attempt = $DB->get_record('hippotrack_attempts',
                         ['quiz' => $quiz->id, 'userid' => $user->id, 'attempt' => $attemptno], '*', MUST_EXIST);
-                return new moodle_url('/mod/quiz/review.php', ['attempt' => $attempt->id]);
+                return new moodle_url('/mod/hippotrack/review.php', ['attempt' => $attempt->id]);
 
             case 'question bank':
                 // The question bank does not handle fields at the edge of the viewport well.
                 // Increase the size to avoid this.
                 $this->execute('behat_general::i_change_window_size_to', ['window', 'large']);
                 return new moodle_url('/question/edit.php', [
-                    'cmid' => $this->get_cm_by_quiz_name($identifier)->id,
+                    'cmid' => $this->get_cm_by_hippotrack_name($identifier)->id,
                 ]);
 
 
@@ -162,7 +162,7 @@ class behat_mod_hippotrack extends behat_question_base {
      * @param string $name quiz name.
      * @return stdClass the corresponding DB row.
      */
-    protected function get_quiz_by_name(string $name): stdClass {
+    protected function get_hippotrack_by_name(string $name): stdClass {
         global $DB;
         return $DB->get_record('quiz', array('name' => $name), '*', MUST_EXIST);
     }
@@ -173,8 +173,8 @@ class behat_mod_hippotrack extends behat_question_base {
      * @param string $name quiz name.
      * @return stdClass cm from get_coursemodule_from_instance.
      */
-    protected function get_cm_by_quiz_name(string $name): stdClass {
-        $quiz = $this->get_quiz_by_name($name);
+    protected function get_cm_by_hippotrack_name(string $name): stdClass {
+        $quiz = $this->get_hippotrack_by_name($name);
         return get_coursemodule_from_instance('quiz', $quiz->id, $quiz->course);
     }
 
@@ -202,10 +202,10 @@ class behat_mod_hippotrack extends behat_question_base {
      *
      * @Given /^quiz "([^"]*)" contains the following questions:$/
      */
-    public function quiz_contains_the_following_questions($quizname, TableNode $data) {
+    public function hippotrack_contains_the_following_questions($quizname, TableNode $data) {
         global $DB;
 
-        $quiz = $this->get_quiz_by_name($quizname);
+        $quiz = $this->get_hippotrack_by_name($quizname);
 
         // Deal with backwards-compatibility, optional first row.
         $firstrow = $data->getRow(0);
@@ -277,17 +277,17 @@ class behat_mod_hippotrack extends behat_question_base {
                 } else {
                     $includingsubcategories = clean_param($questiondata['includingsubcategories'], PARAM_BOOL);
                 }
-                quiz_add_random_questions($quiz, $page, $question->category, 1, $includingsubcategories);
+                hippotrack_add_random_questions($quiz, $page, $question->category, 1, $includingsubcategories);
             } else {
                 // Add the question.
-                quiz_add_quiz_question($question->id, $quiz, $page, $maxmark);
+                hippotrack_add_hippotrack_question($question->id, $quiz, $page, $maxmark);
             }
 
             // Require previous.
             if (array_key_exists('requireprevious', $questiondata)) {
                 if ($questiondata['requireprevious'] === '1') {
-                    $slot = $DB->get_field('quiz_slots', 'MAX(slot)', array('quizid' => $quiz->id));
-                    $DB->set_field('quiz_slots', 'requireprevious', 1,
+                    $slot = $DB->get_field('hippotrack_slots', 'MAX(slot)', array('quizid' => $quiz->id));
+                    $DB->set_field('hippotrack_slots', 'requireprevious', 1,
                             array('quizid' => $quiz->id, 'slot' => $slot));
                 } else if ($questiondata['requireprevious'] !== '' && $questiondata['requireprevious'] !== '0') {
                     throw new ExpectationException('Require previous for question "' .
@@ -297,7 +297,7 @@ class behat_mod_hippotrack extends behat_question_base {
             }
         }
 
-        quiz_update_sumgrades($quiz);
+        hippotrack_update_sumgrades($quiz);
     }
 
     /**
@@ -317,7 +317,7 @@ class behat_mod_hippotrack extends behat_question_base {
      *
      * @Given /^quiz "([^"]*)" contains the following sections:$/
      */
-    public function quiz_contains_the_following_sections($quizname, TableNode $data) {
+    public function hippotrack_contains_the_following_sections($quizname, TableNode $data) {
         global $DB;
 
         $quiz = $DB->get_record('quiz', array('name' => $quizname), '*', MUST_EXIST);
@@ -339,7 +339,7 @@ class behat_mod_hippotrack extends behat_question_base {
             }
 
             if ($rownumber == 0) {
-                $section = $DB->get_record('quiz_sections', array('quizid' => $quiz->id), '*', MUST_EXIST);
+                $section = $DB->get_record('hippotrack_sections', array('quizid' => $quiz->id), '*', MUST_EXIST);
             } else {
                 $section = new stdClass();
                 $section->quizid = $quiz->id;
@@ -370,13 +370,13 @@ class behat_mod_hippotrack extends behat_question_base {
             }
 
             if ($rownumber == 0) {
-                $DB->update_record('quiz_sections', $section);
+                $DB->update_record('hippotrack_sections', $section);
             } else {
-                $DB->insert_record('quiz_sections', $section);
+                $DB->insert_record('hippotrack_sections', $section);
             }
         }
 
-        if ($section->firstslot > $DB->count_records('quiz_slots', array('quizid' => $quiz->id))) {
+        if ($section->firstslot > $DB->count_records('hippotrack_slots', array('quizid' => $quiz->id))) {
             throw new ExpectationException('The section firstslot must be less than the total number of slots in the quiz.',
                     $this->getSession());
         }
@@ -387,14 +387,14 @@ class behat_mod_hippotrack extends behat_question_base {
      *
      * The form for creating a question should be on one page.
      *
-     * @When /^I add a "(?P<question_type_string>(?:[^"]|\\")*)" question to the "(?P<quiz_name_string>(?:[^"]|\\")*)" quiz with:$/
+     * @When /^I add a "(?P<question_type_string>(?:[^"]|\\")*)" question to the "(?P<hippotrack_name_string>(?:[^"]|\\")*)" quiz with:$/
      * @param string $questiontype
      * @param string $quizname
      * @param TableNode $questiondata with data for filling the add question form
      */
-    public function i_add_question_to_the_quiz_with($questiontype, $quizname, TableNode $questiondata) {
+    public function i_add_question_to_the_hippotrack_with($questiontype, $quizname, TableNode $questiondata) {
         $quizname = $this->escape($quizname);
-        $addaquestion = $this->escape(get_string('addaquestion', 'quiz'));
+        $addaquestion = $this->escape(get_string('addaquestion', 'hippotrack'));
 
         $this->execute('behat_navigation::i_am_on_page_instance', [
             $quizname,
@@ -418,8 +418,8 @@ class behat_mod_hippotrack extends behat_question_base {
      * @param string $questionname the name of the question to set the max mark for.
      * @param string $newmark the mark to set
      */
-    public function i_set_the_max_mark_for_quiz_question($questionname, $newmark) {
-        $this->execute('behat_general::click_link', $this->escape(get_string('editmaxmark', 'quiz')));
+    public function i_set_the_max_mark_for_hippotrack_question($questionname, $newmark) {
+        $this->execute('behat_general::click_link', $this->escape(get_string('editmaxmark', 'hippotrack')));
 
         $this->execute('behat_general::wait_until_exists', array("li input[name=maxmark]", "css_element"));
 
@@ -434,7 +434,7 @@ class behat_mod_hippotrack extends behat_question_base {
      * @Given /^I open the "(?P<page_n_or_last_string>(?:[^"]|\\")*)" add to quiz menu$/
      * @param string $pageorlast either "Page n" or "last".
      */
-    public function i_open_the_add_to_quiz_menu_for($pageorlast) {
+    public function i_open_the_add_to_hippotrack_menu_for($pageorlast) {
 
         if (!$this->running_javascript()) {
             throw new DriverException('Activities actions menu not available when Javascript is disabled');
@@ -457,7 +457,7 @@ class behat_mod_hippotrack extends behat_question_base {
      * @param string $questionname the name of the question we are looking for.
      * @param number $pagenumber the page it should be found on.
      */
-    public function i_should_see_on_quiz_page($questionname, $pagenumber) {
+    public function i_should_see_on_hippotrack_page($questionname, $pagenumber) {
         $xpath = "//li[contains(., '" . $this->escape($questionname) .
             "')][./preceding-sibling::li[contains(@class, 'pagenumber')][1][contains(., 'Page " .
             $pagenumber . "')]]";
@@ -471,7 +471,7 @@ class behat_mod_hippotrack extends behat_question_base {
      * @param string $questionname the name of the question we are looking for.
      * @param number $pagenumber the page it should be found on.
      */
-    public function i_should_not_see_on_quiz_page($questionname, $pagenumber) {
+    public function i_should_not_see_on_hippotrack_page($questionname, $pagenumber) {
         $xpath = "//li[contains(., '" . $this->escape($questionname) .
                 "')][./preceding-sibling::li[contains(@class, 'pagenumber')][1][contains(., 'Page " .
                 $pagenumber . "')]]";
@@ -486,7 +486,7 @@ class behat_mod_hippotrack extends behat_question_base {
      * @param string $firstquestionname the name of the question that should come first in order.
      * @param string $secondquestionname the name of the question that should come immediately after it in order.
      */
-    public function i_should_see_before_on_the_edit_quiz_page($firstquestionname, $secondquestionname) {
+    public function i_should_see_before_on_the_edit_hippotrack_page($firstquestionname, $secondquestionname) {
         $xpath = "//li[contains(., '" . $this->escape($firstquestionname) .
                 "')]/following-sibling::li" .
                 "[contains(., '" . $this->escape($secondquestionname) . "')]";
@@ -500,7 +500,7 @@ class behat_mod_hippotrack extends behat_question_base {
      * @param string $questionname the name of the question we are looking for.
      * @param number $number the number (or 'i') that should be displayed beside that question.
      */
-    public function should_have_number_on_the_edit_quiz_page($questionname, $number) {
+    public function should_have_number_on_the_edit_hippotrack_page($questionname, $number) {
         $xpath = "//li[contains(@class, 'slot') and contains(., '" . $this->escape($questionname) .
                 "')]//span[contains(@class, 'slotnumber') and normalize-space(text()) = '" . $this->escape($number) . "']";
 
@@ -682,7 +682,7 @@ class behat_mod_hippotrack extends behat_question_base {
     public function i_set_the_section_heading_for($sectionname, $sectionheading) {
         // Empty section headings will have a default names of "Untitled heading".
         if (empty($sectionname)) {
-            $sectionname = get_string('sectionnoname', 'quiz');
+            $sectionname = get_string('sectionnoname', 'hippotrack');
         }
         $this->execute('behat_general::click_link', $this->escape("Edit heading '{$sectionname}'"));
 
@@ -701,7 +701,7 @@ class behat_mod_hippotrack extends behat_question_base {
      * @param int $questionnumber the number of the question to check.
      * @param string $sectionheading which section heading it should appear after.
      */
-    public function i_should_see_question_in_section_in_the_quiz_navigation($questionnumber, $sectionheading) {
+    public function i_should_see_question_in_section_in_the_hippotrack_navigation($questionnumber, $sectionheading) {
 
         // Using xpath literal to avoid quotes problems.
         $questionnumberliteral = behat_context_helper::escape('Question ' . $questionnumber);
@@ -717,7 +717,7 @@ class behat_mod_hippotrack extends behat_question_base {
 
     /**
      * Helper used by user_has_attempted_with_responses,
-     * user_has_started_an_attempt_at_quiz_with_details, etc.
+     * user_has_started_an_attempt_at_hippotrack_with_details, etc.
      *
      * @param TableNode $attemptinfo data table from the Behat step
      * @return array with two elements, $forcedrandomquestions, $forcedvariants,
@@ -861,7 +861,7 @@ class behat_mod_hippotrack extends behat_question_base {
      * @param TableNode $attemptinfo information about the questions to add, as above.
      * @Given /^user "([^"]*)" has started an attempt at quiz "([^"]*)" randomised as follows:$/
      */
-    public function user_has_started_an_attempt_at_quiz_with_details($username, $quizname, TableNode $attemptinfo) {
+    public function user_has_started_an_attempt_at_hippotrack_with_details($username, $quizname, TableNode $attemptinfo) {
         global $DB;
 
         /** @var mod_hippotrack_generator $quizgenerator */
@@ -909,7 +909,7 @@ class behat_mod_hippotrack extends behat_question_base {
 
         $this->set_user($user);
 
-        $attempts = quiz_get_user_attempts($quizid, $user->id, 'unfinished', true);
+        $attempts = hippotrack_get_user_attempts($quizid, $user->id, 'unfinished', true);
         $quizgenerator->submit_responses(key($attempts), $responses, false, false);
 
         $this->set_user();
@@ -946,7 +946,7 @@ class behat_mod_hippotrack extends behat_question_base {
 
         $this->set_user($user);
 
-        $attempts = quiz_get_user_attempts($quizid, $user->id, 'unfinished', true);
+        $attempts = hippotrack_get_user_attempts($quizid, $user->id, 'unfinished', true);
         $quizgenerator->submit_responses(key($attempts), $responses, true, false);
 
         $this->set_user();
@@ -967,8 +967,8 @@ class behat_mod_hippotrack extends behat_question_base {
 
         $this->set_user($user);
 
-        $attempts = quiz_get_user_attempts($quizid, $user->id, 'unfinished', true);
-        $attemptobj = quiz_attempt::create(key($attempts));
+        $attempts = hippotrack_get_user_attempts($quizid, $user->id, 'unfinished', true);
+        $attemptobj = hippotrack_attempt::create(key($attempts));
         $attemptobj->process_finish(time(), true);
 
         $this->set_user();

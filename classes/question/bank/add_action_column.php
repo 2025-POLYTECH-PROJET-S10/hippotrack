@@ -32,7 +32,7 @@ class add_action_column extends \core_question\local\bank\action_column_base {
 
     public function init(): void {
         parent::init();
-        $this->stradd = get_string('addtoquiz', 'quiz');
+        $this->stradd = get_string('addtoquiz', 'hippotrack');
     }
 
     public function get_name() {
@@ -43,6 +43,6 @@ class add_action_column extends \core_question\local\bank\action_column_base {
         if (!question_has_capability_on($question, 'use')) {
             return;
         }
-        $this->print_icon('t/add', $this->stradd, $this->qbank->add_to_quiz_url($question->id));
+        $this->print_icon('t/add', $this->stradd, $this->qbank->add_to_hippotrack_url($question->id));
     }
 }

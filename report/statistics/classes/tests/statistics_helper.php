@@ -13,12 +13,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-namespace quiz_statistics\tests;
+namespace hippotrack_statistics\tests;
 
 /**
  * Test helper functions for statistics
  *
- * @package   quiz_statistics
+ * @package   hippotrack_statistics
  * @copyright 2023 onwards Catalyst IT EU {@link https://catalyst-eu.net}
  * @author    Mark Johnson <mark.johnson@catalyst-eu.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -37,7 +37,7 @@ class statistics_helper {
         while ($task = \core\task\manager::get_next_adhoc_task(
             time() + HOURSECS + 1,
             false,
-            '\quiz_statistics\task\recalculate'
+            '\hippotrack_statistics\task\recalculate'
         )) {
             if ($discardoutput) {
                 ob_start();

@@ -14,39 +14,39 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quiz_overview;
+namespace hippotrack_overview;
 
 use core_question\local\bank\question_version_status;
 use mod_hippotrack\external\submit_question_version;
 use question_engine;
 use quiz;
-use quiz_attempt;
-use quiz_attempts_report;
-use quiz_overview_options;
-use quiz_overview_report;
-use quiz_overview_table;
+use hippotrack_attempt;
+use hippotrack_attempts_report;
+use hippotrack_overview_options;
+use hippotrack_overview_report;
+use hippotrack_overview_table;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/default.php');
-require_once($CFG->dirroot . '/mod/quiz/report/overview/report.php');
-require_once($CFG->dirroot . '/mod/quiz/report/overview/overview_form.php');
-require_once($CFG->dirroot . '/mod/quiz/report/overview/tests/helpers.php');
-require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/reportlib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/default.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/overview/report.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/overview/overview_form.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/overview/tests/helpers.php');
+require_once($CFG->dirroot . '/mod/hippotrack/tests/hippotrack_question_helper_test_trait.php');
 
 
 /**
  * Tests for the quiz overview report.
  *
- * @package    quiz_overview
+ * @package    hippotrack_overview
  * @copyright  2014 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class report_test extends \advanced_testcase {
-    use \quiz_question_helper_test_trait;
+    use \hippotrack_question_helper_test_trait;
 
     /**
      * Data provider for test_report_sql.
@@ -80,7 +80,7 @@ class report_test extends \advanced_testcase {
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
         $q = $questiongenerator->create_question('essay', 'plain', ['category' => $cat->id]);
-        quiz_add_quiz_question($q->id, $quiz, 0 , 10);
+        hippotrack_add_hippotrack_question($q->id, $quiz, 0 , 10);
 
         // Create some students and enrol them in the course.
         $student1 = $generator->create_user();
@@ -98,24 +98,24 @@ class report_test extends \advanced_testcase {
         $generator->enrol_user($student2->id, $course->id, null, 'self');
 
         // Also create a user who should not appear in the reports,
-        // because they have a role with neither 'mod/quiz:attempt'
-        // nor 'mod/quiz:reviewmyattempts'.
+        // because they have a role with neither 'mod/hippotrack:attempt'
+        // nor 'mod/hippotrack:reviewmyattempts'.
         $tutor = $generator->create_user();
         $generator->enrol_user($tutor->id, $course->id, 'teacher');
 
         // The test data.
         $timestamp = 1234567890;
         $attempts = array(
-            array($quiz, $student1, 1, 0.0,  quiz_attempt::FINISHED),
-            array($quiz, $student1, 2, 5.0,  quiz_attempt::FINISHED),
-            array($quiz, $student1, 3, 8.0,  quiz_attempt::FINISHED),
-            array($quiz, $student1, 4, null, quiz_attempt::ABANDONED),
-            array($quiz, $student1, 5, null, quiz_attempt::IN_PROGRESS),
-            array($quiz, $student2, 1, null, quiz_attempt::ABANDONED),
-            array($quiz, $student2, 2, null, quiz_attempt::ABANDONED),
-            array($quiz, $student2, 3, 7.0,  quiz_attempt::FINISHED),
-            array($quiz, $student2, 4, null, quiz_attempt::ABANDONED),
-            array($quiz, $student2, 5, null, quiz_attempt::ABANDONED),
+            array($quiz, $student1, 1, 0.0,  hippotrack_attempt::FINISHED),
+            array($quiz, $student1, 2, 5.0,  hippotrack_attempt::FINISHED),
+            array($quiz, $student1, 3, 8.0,  hippotrack_attempt::FINISHED),
+            array($quiz, $student1, 4, null, hippotrack_attempt::ABANDONED),
+            array($quiz, $student1, 5, null, hippotrack_attempt::IN_PROGRESS),
+            array($quiz, $student2, 1, null, hippotrack_attempt::ABANDONED),
+            array($quiz, $student2, 2, null, hippotrack_attempt::ABANDONED),
+            array($quiz, $student2, 3, 7.0,  hippotrack_attempt::FINISHED),
+            array($quiz, $student2, 4, null, hippotrack_attempt::ABANDONED),
+            array($quiz, $student2, 5, null, hippotrack_attempt::ABANDONED),
         );
 
         // Load it in to quiz attempts table.
@@ -128,23 +128,23 @@ class report_test extends \advanced_testcase {
             $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
             // Create the new attempt and initialize the question sessions.
-            $attempt = quiz_create_attempt($quizobj, $attemptnumber, null, $timestart, false, $student->id);
+            $attempt = hippotrack_create_attempt($quizobj, $attemptnumber, null, $timestart, false, $student->id);
 
-            $attempt = quiz_start_new_attempt($quizobj, $quba, $attempt, $attemptnumber, $timestamp);
-            $attempt = quiz_attempt_save_started($quizobj, $quba, $attempt);
+            $attempt = hippotrack_start_new_attempt($quizobj, $quba, $attempt, $attemptnumber, $timestamp);
+            $attempt = hippotrack_attempt_save_started($quizobj, $quba, $attempt);
 
             // Process some responses from the student.
-            $attemptobj = quiz_attempt::create($attempt->id);
+            $attemptobj = hippotrack_attempt::create($attempt->id);
             switch ($state) {
-                case quiz_attempt::ABANDONED:
+                case hippotrack_attempt::ABANDONED:
                     $attemptobj->process_abandon($timestart + 300, false);
                     break;
 
-                case quiz_attempt::IN_PROGRESS:
+                case hippotrack_attempt::IN_PROGRESS:
                     // Do nothing.
                     break;
 
-                case quiz_attempt::FINISHED:
+                case hippotrack_attempt::FINISHED:
                     // Save answer and finish attempt.
                     $attemptobj->process_submitted_actions($timestart + 300, false, [
                             1 => ['answer' => 'My essay by ' . $student->firstname, 'answerformat' => FORMAT_PLAIN]]);
@@ -159,8 +159,8 @@ class report_test extends \advanced_testcase {
                     $update->id = $attemptobj->get_attemptid();
                     $update->timemodified = $timestart + 1200;
                     $update->sumgrades = $quba->get_total_mark();
-                    $DB->update_record('quiz_attempts', $update);
-                    quiz_save_best_grade($attemptobj->get_quiz(), $student->id);
+                    $DB->update_record('hippotrack_attempts', $update);
+                    hippotrack_save_best_grade($attemptobj->get_quiz(), $student->id);
                     break;
             }
         }
@@ -169,26 +169,26 @@ class report_test extends \advanced_testcase {
         // some objects.
         $context = \context_module::instance($quiz->cmid);
         $cm = get_coursemodule_from_id('quiz', $quiz->cmid);
-        $qmsubselect = quiz_report_qm_filter_select($quiz);
+        $qmsubselect = hippotrack_report_qm_filter_select($quiz);
         $studentsjoins = get_enrolled_with_capabilities_join($context, '',
-                array('mod/quiz:attempt', 'mod/quiz:reviewmyattempts'));
+                array('mod/hippotrack:attempt', 'mod/hippotrack:reviewmyattempts'));
         $empty = new \core\dml\sql_join();
 
         // Set the options.
-        $reportoptions = new quiz_overview_options('overview', $quiz, $cm, null);
-        $reportoptions->attempts = quiz_attempts_report::ENROLLED_ALL;
+        $reportoptions = new hippotrack_overview_options('overview', $quiz, $cm, null);
+        $reportoptions->attempts = hippotrack_attempts_report::ENROLLED_ALL;
         $reportoptions->onlygraded = true;
-        $reportoptions->states = array(quiz_attempt::IN_PROGRESS, quiz_attempt::OVERDUE, quiz_attempt::FINISHED);
+        $reportoptions->states = array(hippotrack_attempt::IN_PROGRESS, hippotrack_attempt::OVERDUE, hippotrack_attempt::FINISHED);
 
         // Now do a minimal set-up of the table class.
         $q->slot = 1;
         $q->maxmark = 10;
-        $table = new quiz_overview_table($quiz, $context, $qmsubselect, $reportoptions,
+        $table = new hippotrack_overview_table($quiz, $context, $qmsubselect, $reportoptions,
                 $empty, $studentsjoins, array(1 => $q), null);
         $table->download = $isdownloading; // Cannot call the is_downloading API, because it gives errors.
         $table->define_columns(array('fullname'));
         $table->sortable(true, 'uniqueid');
-        $table->define_baseurl(new \moodle_url('/mod/quiz/report.php'));
+        $table->define_baseurl(new \moodle_url('/mod/hippotrack/report.php'));
         $table->setup();
 
         // Run the query.
@@ -270,7 +270,7 @@ class report_test extends \advanced_testcase {
         $this->resetAfterTest();
         $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $quiz = $quizgenerator->create_instance(['course' => SITEID, 'grade' => $grade]);
-        $this->assertEquals($expected, quiz_overview_report::get_bands_count_and_width($quiz));
+        $this->assertEquals($expected, hippotrack_overview_report::get_bands_count_and_width($quiz));
     }
 
     /**
@@ -299,7 +299,7 @@ class report_test extends \advanced_testcase {
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
         $q = $questiongenerator->create_question('essay', 'plain', ['category' => $cat->id]);
-        quiz_add_quiz_question($q->id, $quiz, 0 , 10);
+        hippotrack_add_hippotrack_question($q->id, $quiz, 0 , 10);
 
         // Create student and enrol them in the course.
         // Note: we create two enrolments, to test the problem reported in MDL-67942.
@@ -309,16 +309,16 @@ class report_test extends \advanced_testcase {
 
         $context = \context_module::instance($quiz->cmid);
         $cm = get_coursemodule_from_id('quiz', $quiz->cmid);
-        $allowedjoins = get_enrolled_with_capabilities_join($context, '', ['mod/quiz:attempt', 'mod/quiz:reviewmyattempts']);
-        $quizattemptsreport = new \testable_quiz_attempts_report();
+        $allowedjoins = get_enrolled_with_capabilities_join($context, '', ['mod/hippotrack:attempt', 'mod/hippotrack:reviewmyattempts']);
+        $quizattemptsreport = new \testable_hippotrack_attempts_report();
 
         // Create the new attempt and initialize the question sessions.
         $quizobj = quiz::create($quiz->id, $student->id);
         $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
         $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
-        $attempt = quiz_create_attempt($quizobj, 1, null, $timestart, false, $student->id);
-        $attempt = quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $timestamp);
-        $attempt = quiz_attempt_save_started($quizobj, $quba, $attempt);
+        $attempt = hippotrack_create_attempt($quizobj, 1, null, $timestart, false, $student->id);
+        $attempt = hippotrack_start_new_attempt($quizobj, $quba, $attempt, 1, $timestamp);
+        $attempt = hippotrack_attempt_save_started($quizobj, $quba, $attempt);
 
         // Delete the student's attempt.
         $quizattemptsreport->delete_selected_attempts($quiz, $cm, [$attempt->id], $allowedjoins);
@@ -356,12 +356,12 @@ class report_test extends \advanced_testcase {
         $DB->set_field('question_answers', 'fraction', 1, ['id' => $toadanswer->id]);
 
         // Add the question to the quiz.
-        quiz_add_quiz_question($q2->id, $quiz, 0, 10);
+        hippotrack_add_hippotrack_question($q2->id, $quiz, 0, 10);
 
         // Attempt the quiz, submitting response 'toad'.
         $quizobj = quiz::create($quiz->id);
-        $attempt = quiz_prepare_and_start_new_attempt($quizobj, 1, null);
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attempt = hippotrack_prepare_and_start_new_attempt($quizobj, 1, null);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_submitted_actions(time(), false, [1 => ['answer' => 'toad']]);
         $attemptobj->process_finish(time(), false);
 
@@ -373,12 +373,12 @@ class report_test extends \advanced_testcase {
         submit_question_version::execute($slot->slotid, 1);
 
         // Regrade.
-        $report = new quiz_overview_report();
-        $report->init('overview', 'quiz_overview_settings_form', $quiz, $cm, $course);
+        $report = new hippotrack_overview_report();
+        $report->init('overview', 'hippotrack_overview_settings_form', $quiz, $cm, $course);
         $report->regrade_attempt($attempt);
 
         // The mark should now be 8.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $this->assertEquals(8, $attemptobj->get_question_usage()->get_total_mark());
 
         // Now add two more versions, the second of which is draft.
@@ -403,7 +403,7 @@ class report_test extends \advanced_testcase {
         $report->regrade_attempt($attempt);
 
         // Score should now be 5, because v3 is the latest non-draft version.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $this->assertEquals(5, $attemptobj->get_question_usage()->get_total_mark());
     }
 }

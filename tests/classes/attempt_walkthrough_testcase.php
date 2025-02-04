@@ -19,7 +19,7 @@ namespace mod_hippotrack\tests;
 use core_question_generator;
 use question_engine;
 use quiz;
-use quiz_attempt;
+use hippotrack_attempt;
 use stdClass;
 
 /**
@@ -97,7 +97,7 @@ abstract class attempt_walkthrough_testcase extends \advanced_testcase {
         // CSV data files for these tests were generated using :
         // https://github.com/jamiepratt/moodle-quiz-tools/tree/master/responsegenerator
 
-        $this->create_quiz_simulate_attempts_and_check_results($quizsettings, $csvdata);
+        $this->create_hippotrack_simulate_attempts_and_check_results($quizsettings, $csvdata);
     }
 
     public function create_quiz($quizsettings, $qs) {
@@ -166,9 +166,9 @@ abstract class attempt_walkthrough_testcase extends \advanced_testcase {
         $this->randqids = array();
         foreach ($slots as $slotno => $slotquestion) {
             if ($slotquestion['type'] !== 'random') {
-                quiz_add_quiz_question($slotquestion['id'], $this->quiz, 0, $slotquestion['mark']);
+                hippotrack_add_hippotrack_question($slotquestion['id'], $this->quiz, 0, $slotquestion['mark']);
             } else {
-                quiz_add_random_questions($this->quiz, 0, $slotquestion['catid'], 1, 0);
+                hippotrack_add_random_questions($this->quiz, 0, $slotquestion['catid'], 1, 0);
                 $this->randqids[$slotno] = $qidsbycat[$slotquestion['catid']];
             }
         }
@@ -180,7 +180,7 @@ abstract class attempt_walkthrough_testcase extends \advanced_testcase {
      * @param array $quizsettings Quiz overrides for this quiz.
      * @param array $csvdata Data loaded from csv files for this test.
      */
-    protected function create_quiz_simulate_attempts_and_check_results(array $quizsettings, array $csvdata) {
+    protected function create_hippotrack_simulate_attempts_and_check_results(array $quizsettings, array $csvdata) {
         $this->resetAfterTest();
 
         $this->create_quiz($quizsettings, $csvdata['questions']);
@@ -253,7 +253,7 @@ abstract class attempt_walkthrough_testcase extends \advanced_testcase {
 
     /**
      * @param array $steps the step data from the csv file.
-     * @return array attempt no as in csv file => the id of the quiz_attempt as stored in the db.
+     * @return array attempt no as in csv file => the id of the hippotrack_attempt as stored in the db.
      */
     protected function walkthrough_attempts(array $steps): array {
         global $DB;
@@ -275,10 +275,10 @@ abstract class attempt_walkthrough_testcase extends \advanced_testcase {
                 $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
                 $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
 
-                $prevattempts = quiz_get_user_attempts($this->quiz->id, $user->id, 'all', true);
+                $prevattempts = hippotrack_get_user_attempts($this->quiz->id, $user->id, 'all', true);
                 $attemptnumber = count($prevattempts) + 1;
                 $timenow = time();
-                $attempt = quiz_create_attempt($quizobj, $attemptnumber, null, $timenow, false, $user->id);
+                $attempt = hippotrack_create_attempt($quizobj, $attemptnumber, null, $timenow, false, $user->id);
                 // Select variant and / or random sub question.
                 if (!isset($step['variants'])) {
                     $step['variants'] = array();
@@ -292,20 +292,20 @@ abstract class attempt_walkthrough_testcase extends \advanced_testcase {
                     $step['randqs'] = array();
                 }
 
-                quiz_start_new_attempt($quizobj, $quba, $attempt, $attemptnumber, $timenow, $step['randqs'], $step['variants']);
-                quiz_attempt_save_started($quizobj, $quba, $attempt);
+                hippotrack_start_new_attempt($quizobj, $quba, $attempt, $attemptnumber, $timenow, $step['randqs'], $step['variants']);
+                hippotrack_attempt_save_started($quizobj, $quba, $attempt);
                 $attemptid = $attemptids[$step['quizattempt']] = $attempt->id;
             } else {
                 $attemptid = $attemptids[$step['quizattempt']];
             }
 
             // Process some responses from the student.
-            $attemptobj = quiz_attempt::create($attemptid);
+            $attemptobj = hippotrack_attempt::create($attemptid);
             $attemptobj->process_submitted_actions($timenow, false, $step['responses']);
 
             // Finish the attempt.
             if (!isset($step['finished']) || ($step['finished'] == 1)) {
-                $attemptobj = quiz_attempt::create($attemptid);
+                $attemptobj = hippotrack_attempt::create($attemptid);
                 $attemptobj->process_finish($timenow, false);
             }
         }
@@ -314,13 +314,13 @@ abstract class attempt_walkthrough_testcase extends \advanced_testcase {
 
     /**
      * @param array $results the results data from the csv file.
-     * @param array $attemptids attempt no as in csv file => the id of the quiz_attempt as stored in the db.
+     * @param array $attemptids attempt no as in csv file => the id of the hippotrack_attempt as stored in the db.
      */
     protected function check_attempts_results(array $results, array $attemptids) {
         foreach ($results as $resultrow) {
             $result = $this->explode_dot_separated_keys_to_make_subindexs($resultrow);
             // Re-load quiz attempt data.
-            $attemptobj = quiz_attempt::create($attemptids[$result['quizattempt']]);
+            $attemptobj = hippotrack_attempt::create($attemptids[$result['quizattempt']]);
             $this->check_attempt_results($result, $attemptobj);
         }
     }
@@ -329,9 +329,9 @@ abstract class attempt_walkthrough_testcase extends \advanced_testcase {
      * Check that attempt results are as specified in $result.
      *
      * @param array        $result             row of data read from csv file.
-     * @param quiz_attempt $attemptobj         the attempt object loaded from db.
+     * @param hippotrack_attempt $attemptobj         the attempt object loaded from db.
      */
-    protected function check_attempt_results(array $result, quiz_attempt $attemptobj) {
+    protected function check_attempt_results(array $result, hippotrack_attempt $attemptobj) {
         foreach ($result as $fieldname => $value) {
             if ($value === '!NULL!') {
                 $value = null;
@@ -366,7 +366,7 @@ abstract class attempt_walkthrough_testcase extends \advanced_testcase {
                     break;
                 case 'quizgrade' :
                     // Check quiz grades.
-                    $grades = quiz_get_user_grades($attemptobj->get_quiz(), $attemptobj->get_userid());
+                    $grades = hippotrack_get_user_grades($attemptobj->get_quiz(), $attemptobj->get_userid());
                     $grade = array_shift($grades);
                     $this->assertEquals($value, $grade->rawgrade, "Quiz grade for attempt {$result['quizattempt']}.");
                     break;

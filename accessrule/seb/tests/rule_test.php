@@ -70,7 +70,7 @@ class rule_test extends \advanced_testcase {
      * @return string
      */
     private function get_seb_launch_link() {
-        return 'sebs://www.example.com/moodle/mod/quiz/accessrule/seb/config.php';
+        return 'sebs://www.example.com/moodle/mod/hippotrack/accessrule/seb/config.php';
     }
 
     /**
@@ -79,7 +79,7 @@ class rule_test extends \advanced_testcase {
      * @return string
      */
     private function get_seb_config_download_link() {
-        return 'https://www.example.com/moodle/mod/quiz/accessrule/seb/config.php';
+        return 'https://www.example.com/moodle/mod/hippotrack/accessrule/seb/config.php';
     }
 
     /**
@@ -285,7 +285,7 @@ class rule_test extends \advanced_testcase {
         $this->quiz->seb_requiresafeexambrowser = settings_provider::USE_SEB_NO;
         quizaccess_seb::save_settings($this->quiz);
 
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $this->assertEquals(settings_provider::USE_SEB_CONFIG_MANUALLY, $quizsettings->get('requiresafeexambrowser'));
     }
 
@@ -328,7 +328,7 @@ class rule_test extends \advanced_testcase {
 
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
-        // Using a generator will create the quiz_settings record.
+        // Using a generator will create the hippotrack_settings record.
         $this->assertNotFalse($DB->record_exists('quizaccess_seb_quizsettings', ['quizid' => $this->quiz->id]));
         quizaccess_seb::delete_settings($this->quiz);
         $this->assertFalse($DB->record_exists('quizaccess_seb_quizsettings', ['quizid' => $this->quiz->id]));
@@ -369,7 +369,7 @@ class rule_test extends \advanced_testcase {
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         // Set up dummy request.
-        $FULLME = 'https://example.com/moodle/mod/quiz/attempt.php?attemptid=123&page=4';
+        $FULLME = 'https://example.com/moodle/mod/hippotrack/attempt.php?attemptid=123&page=4';
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_CONFIGKEYHASH'] = 'Broken config key';
 
         $user = $this->getDataGenerator()->create_user();
@@ -388,14 +388,14 @@ class rule_test extends \advanced_testcase {
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         // Set quiz setting to require seb and save BEK.
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_UPLOAD_CONFIG);
         $xml = file_get_contents(__DIR__ . '/fixtures/unencrypted.seb');
         $this->create_module_test_file($xml, $this->quiz->cmid);
         $quizsettings->save();
 
         // Set up dummy request.
-        $FULLME = 'https://example.com/moodle/mod/quiz/attempt.php?attemptid=123&page=4';
+        $FULLME = 'https://example.com/moodle/mod/hippotrack/attempt.php?attemptid=123&page=4';
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_CONFIGKEYHASH'] = 'Broken config key';
 
         $user = $this->getDataGenerator()->create_user();
@@ -414,13 +414,13 @@ class rule_test extends \advanced_testcase {
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         // Set quiz setting to require seb and save BEK.
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_TEMPLATE);
         $quizsettings->set('templateid', $this->create_template()->get('id'));
         $quizsettings->save();
 
         // Set up dummy request.
-        $FULLME = 'https://example.com/moodle/mod/quiz/attempt.php?attemptid=123&page=4';
+        $FULLME = 'https://example.com/moodle/mod/hippotrack/attempt.php?attemptid=123&page=4';
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_CONFIGKEYHASH'] = 'Broken config key';
 
         $user = $this->getDataGenerator()->create_user();
@@ -442,10 +442,10 @@ class rule_test extends \advanced_testcase {
         $this->setUser($user);
 
         // Set quiz setting to require seb.
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
 
         // Set up dummy request.
-        $FULLME = 'https://example.com/moodle/mod/quiz/attempt.php?attemptid=123&page=4';
+        $FULLME = 'https://example.com/moodle/mod/hippotrack/attempt.php?attemptid=123&page=4';
         $expectedhash = hash('sha256', $FULLME . $quizsettings->get_config_key());
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_CONFIGKEYHASH'] = $expectedhash;
 
@@ -463,7 +463,7 @@ class rule_test extends \advanced_testcase {
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         // Set quiz setting to require seb and save BEK.
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_TEMPLATE);
         $quizsettings->set('templateid', $this->create_template()->get('id'));
         $quizsettings->save();
@@ -472,7 +472,7 @@ class rule_test extends \advanced_testcase {
         $this->setUser($user);
 
         // Set up dummy request.
-        $FULLME = 'https://example.com/moodle/mod/quiz/attempt.php?attemptid=123&page=4';
+        $FULLME = 'https://example.com/moodle/mod/hippotrack/attempt.php?attemptid=123&page=4';
         $expectedhash = hash('sha256', $FULLME . $quizsettings->get_config_key());
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_CONFIGKEYHASH'] = $expectedhash;
 
@@ -490,7 +490,7 @@ class rule_test extends \advanced_testcase {
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         // Set quiz setting to require seb and save BEK.
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_UPLOAD_CONFIG);
         $xml = file_get_contents(__DIR__ . '/fixtures/unencrypted.seb');
         $this->create_module_test_file($xml, $this->quiz->cmid);
@@ -500,7 +500,7 @@ class rule_test extends \advanced_testcase {
         $this->setUser($user);
 
         // Set up dummy request.
-        $FULLME = 'https://example.com/moodle/mod/quiz/attempt.php?attemptid=123&page=4';
+        $FULLME = 'https://example.com/moodle/mod/hippotrack/attempt.php?attemptid=123&page=4';
         $expectedhash = hash('sha256', $FULLME . $quizsettings->get_config_key());
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_CONFIGKEYHASH'] = $expectedhash;
 
@@ -522,13 +522,13 @@ class rule_test extends \advanced_testcase {
 
         // Set quiz setting to require seb and save BEK.
         $browserexamkey = hash('sha256', 'testkey');
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_CLIENT_CONFIG); // Doesn't check config key.
         $quizsettings->set('allowedbrowserexamkeys', $browserexamkey);
         $quizsettings->save();
 
         // Set up dummy request.
-        $FULLME = 'https://example.com/moodle/mod/quiz/attempt.php?attemptid=123&page=4';
+        $FULLME = 'https://example.com/moodle/mod/hippotrack/attempt.php?attemptid=123&page=4';
         $expectedhash = hash('sha256', $FULLME . $browserexamkey);
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_REQUESTHASH'] = $expectedhash;
         $_SERVER['HTTP_USER_AGENT'] = 'SEB';
@@ -548,7 +548,7 @@ class rule_test extends \advanced_testcase {
 
         // Set quiz setting to require seb and save BEK.
         $browserexamkey = hash('sha256', 'testkey');
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_UPLOAD_CONFIG);
         $quizsettings->set('allowedbrowserexamkeys', $browserexamkey);
         $xml = file_get_contents(__DIR__ . '/fixtures/unencrypted.seb');
@@ -556,7 +556,7 @@ class rule_test extends \advanced_testcase {
         $quizsettings->save();
 
         // Set up dummy request.
-        $FULLME = 'https://example.com/moodle/mod/quiz/attempt.php?attemptid=123&page=4';
+        $FULLME = 'https://example.com/moodle/mod/hippotrack/attempt.php?attemptid=123&page=4';
         $expectedbrowserkey = hash('sha256', $FULLME . $browserexamkey);
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_REQUESTHASH'] = $expectedbrowserkey;
         $expectedconfigkey = hash('sha256', $FULLME . $quizsettings->get_config_key());
@@ -643,7 +643,7 @@ class rule_test extends \advanced_testcase {
 
         // Set quiz setting to require seb and save BEK.
         $browserexamkey = hash('sha256', 'testkey');
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_CLIENT_CONFIG); // Doesn't check config key.
         $quizsettings->set('allowedbrowserexamkeys', $browserexamkey);
         $quizsettings->save();
@@ -666,7 +666,7 @@ class rule_test extends \advanced_testcase {
 
         // Set quiz setting to require seb and save BEK.
         $browserexamkey = hash('sha256', 'testkey');
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_UPLOAD_CONFIG);
         $quizsettings->set('allowedbrowserexamkeys', $browserexamkey);
         $xml = file_get_contents(__DIR__ . '/fixtures/unencrypted.seb');
@@ -674,7 +674,7 @@ class rule_test extends \advanced_testcase {
         $quizsettings->save();
 
         // Set up dummy request.
-        $FULLME = 'https://example.com/moodle/mod/quiz/attempt.php?attemptid=123&page=4';
+        $FULLME = 'https://example.com/moodle/mod/hippotrack/attempt.php?attemptid=123&page=4';
         $expectedhash = hash('sha256', $FULLME . $quizsettings->get_config_key());
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_CONFIGKEYHASH'] = $expectedhash;
 
@@ -698,14 +698,14 @@ class rule_test extends \advanced_testcase {
 
         // Set quiz setting to require seb and save BEK.
         $browserexamkey = hash('sha256', 'testkey');
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_TEMPLATE);
         $quizsettings->set('allowedbrowserexamkeys', $browserexamkey);
         $quizsettings->set('templateid', $this->create_template()->get('id'));
         $quizsettings->save();
 
         // Set up dummy request.
-        $FULLME = 'https://example.com/moodle/mod/quiz/attempt.php?attemptid=123&page=4';
+        $FULLME = 'https://example.com/moodle/mod/hippotrack/attempt.php?attemptid=123&page=4';
         $expectedhash = hash('sha256', $FULLME . $quizsettings->get_config_key());
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_CONFIGKEYHASH'] = $expectedhash;
 
@@ -730,7 +730,7 @@ class rule_test extends \advanced_testcase {
         $this->setUser($user);
 
         // Set quiz setting to require seb.
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_CLIENT_CONFIG); // Doesn't check config key.
         $quizsettings->save();
 
@@ -752,7 +752,7 @@ class rule_test extends \advanced_testcase {
         $this->setUser($user);
 
         // Set quiz setting to require seb.
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_CLIENT_CONFIG); // Doesn't check config key.
         $quizsettings->save();
 
@@ -795,14 +795,14 @@ class rule_test extends \advanced_testcase {
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         // Set quiz setting to require seb.
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_UPLOAD_CONFIG); // Doesn't check basic header.
         $xml = file_get_contents(__DIR__ . '/fixtures/unencrypted.seb');
         $this->create_module_test_file($xml, $this->quiz->cmid);
         $quizsettings->save();
 
         // Set up dummy request.
-        $FULLME = 'https://example.com/moodle/mod/quiz/attempt.php?attemptid=123&page=4';
+        $FULLME = 'https://example.com/moodle/mod/hippotrack/attempt.php?attemptid=123&page=4';
         $expectedhash = hash('sha256', $FULLME . $quizsettings->get_config_key());
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_CONFIGKEYHASH'] = $expectedhash;
         $_SERVER['HTTP_USER_AGENT'] = 'WRONG_TEST_SITE';
@@ -824,13 +824,13 @@ class rule_test extends \advanced_testcase {
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         // Set quiz setting to require seb.
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_TEMPLATE);
         $quizsettings->set('templateid', $this->create_template()->get('id'));
         $quizsettings->save();
 
         // Set up dummy request.
-        $FULLME = 'https://example.com/moodle/mod/quiz/attempt.php?attemptid=123&page=4';
+        $FULLME = 'https://example.com/moodle/mod/hippotrack/attempt.php?attemptid=123&page=4';
         $expectedhash = hash('sha256', $FULLME . $quizsettings->get_config_key());
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_CONFIGKEYHASH'] = $expectedhash;
         $_SERVER['HTTP_USER_AGENT'] = 'WRONG_TEST_SITE';
@@ -853,7 +853,7 @@ class rule_test extends \advanced_testcase {
         $this->setUser($user);
 
         // Set quiz setting to not require seb.
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_NO);
         $quizsettings->save();
 
@@ -922,7 +922,7 @@ class rule_test extends \advanced_testcase {
     /**
      * Test that quiz form cannot be saved if the global settings are set to require a password and no password is set.
      */
-    public function test_mod_hippotrack_form_cannot_be_saved_if_global_settings_force_quiz_password_and_none_is_set() {
+    public function test_mod_hippotrack_form_cannot_be_saved_if_global_settings_force_hippotrack_password_and_none_is_set() {
         $this->setAdminUser();
         // Set global settings to require quiz password but set password to be empty.
         set_config('quizpasswordrequired', '1', 'quizaccess_seb');
@@ -945,7 +945,7 @@ class rule_test extends \advanced_testcase {
      * Test that access to quiz is allowed if global setting is set to restrict quiz if no quiz password is set, and global quiz
      * password is set.
      */
-    public function test_mod_hippotrack_form_can_be_saved_if_global_settings_force_quiz_password_and_is_set() {
+    public function test_mod_hippotrack_form_can_be_saved_if_global_settings_force_hippotrack_password_and_is_set() {
         $this->setAdminUser();
         // Set global settings to require quiz password but set password to be empty.
         set_config('quizpasswordrequired', '1', 'quizaccess_seb');
@@ -968,7 +968,7 @@ class rule_test extends \advanced_testcase {
     /**
      * Test that quiz form can be saved if the global settings are set to require a password and no seb usage selected.
      */
-    public function test_mod_hippotrack_form_can_be_saved_if_global_settings_force_quiz_password_and_none_no_seb() {
+    public function test_mod_hippotrack_form_can_be_saved_if_global_settings_force_hippotrack_password_and_none_no_seb() {
         $this->setAdminUser();
         // Set global settings to require quiz password but set password to be empty.
         set_config('quizpasswordrequired', '1', 'quizaccess_seb');
@@ -1044,7 +1044,7 @@ class rule_test extends \advanced_testcase {
         $method = $reflection->getMethod('get_action_buttons');
         $method->setAccessible(true);
 
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
 
         // Should see link when using manually.
         $this->assertStringContainsString($this->get_seb_launch_link(), $method->invoke($this->make_rule()));
@@ -1161,7 +1161,7 @@ class rule_test extends \advanced_testcase {
         $this->setAdminUser();
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
 
         $user = $this->getDataGenerator()->create_user();
         $roleid = $this->getDataGenerator()->create_role();
@@ -1211,14 +1211,14 @@ class rule_test extends \advanced_testcase {
 
         // Don't display blocks before start.
         set_config('displayblocksbeforestart', 0, 'quizaccess_seb');
-        $this->set_up_quiz_view_page();
+        $this->set_up_hippotrack_view_page();
         $this->make_rule()->prevent_access();
         $this->assertEquals('secure', $PAGE->pagelayout);
         $this->assertTrue($property->getValue($PAGE->blocks));
 
         // Display blocks before start.
         set_config('displayblocksbeforestart', 1, 'quizaccess_seb');
-        $this->set_up_quiz_view_page();
+        $this->set_up_hippotrack_view_page();
         $this->make_rule()->prevent_access();
         $this->assertEquals('secure', $PAGE->pagelayout);
         $this->assertFalse($property->getValue($PAGE->blocks));
@@ -1247,14 +1247,14 @@ class rule_test extends \advanced_testcase {
 
         // Don't display blocks after finish.
         set_config('displayblockswhenfinished', 0, 'quizaccess_seb');
-        $this->set_up_quiz_view_page();
+        $this->set_up_hippotrack_view_page();
         $this->make_rule()->prevent_access();
         $this->assertEquals('secure', $PAGE->pagelayout);
         $this->assertTrue($property->getValue($PAGE->blocks));
 
         // Display blocks after finish.
         set_config('displayblockswhenfinished', 1, 'quizaccess_seb');
-        $this->set_up_quiz_view_page();
+        $this->set_up_hippotrack_view_page();
         $this->make_rule()->prevent_access();
         $this->assertEquals('secure', $PAGE->pagelayout);
         $this->assertFalse($property->getValue($PAGE->blocks));
@@ -1268,7 +1268,7 @@ class rule_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $quizsettings = quiz_settings::get_record(['quizid' => $this->quiz->id]);
+        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
         $quizsettings->save();
         // Set access for Moodle session.
         $SESSION->quizaccess_seb_access = [$this->quiz->cmid => true];

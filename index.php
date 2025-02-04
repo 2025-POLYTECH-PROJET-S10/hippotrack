@@ -27,7 +27,7 @@ require_once("../../config.php");
 require_once("locallib.php");
 
 $id = required_param('id', PARAM_INT);
-$PAGE->set_url('/mod/quiz/index.php', array('id'=>$id));
+$PAGE->set_url('/mod/hippotrack/index.php', array('id'=>$id));
 if (!$course = $DB->get_record('course', array('id' => $id))) {
     throw new \moodle_exception('invalidcourseid');
 }
@@ -42,7 +42,7 @@ $event = \mod_hippotrack\event\course_module_instance_list_viewed::create($param
 $event->trigger();
 
 // Print the header.
-$strquizzes = get_string("modulenameplural", "quiz");
+$strquizzes = get_string("modulenameplural", "hippotrack");
 $PAGE->navbar->add($strquizzes);
 $PAGE->set_title($strquizzes);
 $PAGE->set_heading($course->fullname);
@@ -58,7 +58,7 @@ if (!$quizzes = get_all_instances_in_course("quiz", $course)) {
 // Check if we need the feedback header.
 $showfeedback = false;
 foreach ($quizzes as $quiz) {
-    if (quiz_has_feedback($quiz)) {
+    if (hippotrack_has_feedback($quiz)) {
         $showfeedback=true;
     }
     if ($showfeedback) {
@@ -70,7 +70,7 @@ foreach ($quizzes as $quiz) {
 $headings = array(get_string('name'));
 $align = array('left');
 
-array_push($headings, get_string('quizcloses', 'quiz'));
+array_push($headings, get_string('quizcloses', 'hippotrack'));
 array_push($align, 'left');
 
 if (course_format_uses_sections($course->format)) {
@@ -82,24 +82,24 @@ array_unshift($align, 'center');
 
 $showing = '';
 
-if (has_capability('mod/quiz:viewreports', $coursecontext)) {
-    array_push($headings, get_string('attempts', 'quiz'));
+if (has_capability('mod/hippotrack:viewreports', $coursecontext)) {
+    array_push($headings, get_string('attempts', 'hippotrack'));
     array_push($align, 'left');
     $showing = 'stats';
 
-} else if (has_any_capability(array('mod/quiz:reviewmyattempts', 'mod/quiz:attempt'),
+} else if (has_any_capability(array('mod/hippotrack:reviewmyattempts', 'mod/hippotrack:attempt'),
         $coursecontext)) {
-    array_push($headings, get_string('grade', 'quiz'));
+    array_push($headings, get_string('grade', 'hippotrack'));
     array_push($align, 'left');
     if ($showfeedback) {
-        array_push($headings, get_string('feedback', 'quiz'));
+        array_push($headings, get_string('feedback', 'hippotrack'));
         array_push($align, 'left');
     }
     $showing = 'grades';
 
     $grades = $DB->get_records_sql_menu('
             SELECT qg.quiz, qg.grade
-            FROM {quiz_grades} qg
+            FROM {hippotrack_grades} qg
             JOIN {quiz} q ON q.id = qg.quiz
             WHERE q.course = ? AND qg.userid = ?',
             array($course->id, $USER->id));
@@ -112,7 +112,7 @@ $table->align = $align;
 // Populate the table with the list of instances.
 $currentsection = '';
 // Get all closing dates.
-$timeclosedates = quiz_get_user_timeclose($course->id);
+$timeclosedates = hippotrack_get_user_timeclose($course->id);
 foreach ($quizzes as $quiz) {
     $cm = get_coursemodule_from_instance('quiz', $quiz->id);
     $context = context_module::instance($cm->id);
@@ -144,18 +144,18 @@ foreach ($quizzes as $quiz) {
     if (($timeclosedates[$quiz->id]->usertimeclose != 0)) {
         $data[] = userdate($timeclosedates[$quiz->id]->usertimeclose);
     } else {
-        $data[] = get_string('noclose', 'quiz');
+        $data[] = get_string('noclose', 'hippotrack');
     }
 
     if ($showing == 'stats') {
         // The $quiz objects returned by get_all_instances_in_course have the necessary $cm
         // fields set to make the following call work.
-        $data[] = quiz_attempt_summary_link_to_reports($quiz, $cm, $context);
+        $data[] = hippotrack_attempt_summary_link_to_reports($quiz, $cm, $context);
 
     } else if ($showing == 'grades') {
         // Grade and feedback.
-        $attempts = quiz_get_user_attempts($quiz->id, $USER->id, 'all');
-        list($someoptions, $alloptions) = quiz_get_combined_reviewoptions(
+        $attempts = hippotrack_get_user_attempts($quiz->id, $USER->id, 'all');
+        list($someoptions, $alloptions) = hippotrack_get_combined_reviewoptions(
                 $quiz, $attempts);
 
         $grade = '';
@@ -163,12 +163,12 @@ foreach ($quizzes as $quiz) {
         if ($quiz->grade && array_key_exists($quiz->id, $grades)) {
             if ($alloptions->marks >= question_display_options::MARK_AND_MAX) {
                 $a = new stdClass();
-                $a->grade = quiz_format_grade($quiz, $grades[$quiz->id]);
-                $a->maxgrade = quiz_format_grade($quiz, $quiz->grade);
+                $a->grade = hippotrack_format_grade($quiz, $grades[$quiz->id]);
+                $a->maxgrade = hippotrack_format_grade($quiz, $quiz->grade);
                 $grade = get_string('outofshort', 'quiz', $a);
             }
             if ($alloptions->overallfeedback) {
-                $feedback = quiz_feedback_for_grade($grades[$quiz->id], $quiz, $context);
+                $feedback = hippotrack_feedback_for_grade($grades[$quiz->id], $quiz, $context);
             }
         }
         $data[] = $grade;

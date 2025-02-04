@@ -1,4 +1,4 @@
-@mod @mod_hippotrack @quiz @quiz_statistics
+@mod @mod_hippotrack @quiz @hippotrack_statistics
 Feature: Statistics calculations with random questions
   In order to verify my quizzes are performing well
   As a teacher

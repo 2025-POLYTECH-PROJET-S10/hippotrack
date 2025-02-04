@@ -22,8 +22,8 @@ use qubaid_condition;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/accessmanager.php');
-require_once($CFG->dirroot . '/mod/quiz/attemptlib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/accessmanager.php');
+require_once($CFG->dirroot . '/mod/hippotrack/attemptlib.php');
 
 /**
  * Helper class for question bank and its associated data.
@@ -120,7 +120,7 @@ class qbank_helper {
                        qc.id AS category,
                        COALESCE(qc.contextid, qsr.questionscontextid) AS contextid
 
-                  FROM {quiz_slots} slot
+                  FROM {hippotrack_slots} slot
 
              -- case where a particular question has been added to the quiz.
              LEFT JOIN {question_references} qr ON qr.usingcontextid = :quizcontextid AND qr.component = 'mod_hippotrack'
@@ -137,7 +137,7 @@ class qbank_helper {
                    SELECT lv.questionbankentryid,
                           MAX(CASE WHEN lv.status <> :draft THEN lv.version END) AS usableversion,
                           MAX(lv.version) AS anyversion
-                     FROM {quiz_slots} lslot
+                     FROM {hippotrack_slots} lslot
                      JOIN {question_references} lqr ON lqr.usingcontextid = :quizcontextid2 AND lqr.component = 'mod_hippotrack'
                                         AND lqr.questionarea = 'slot' AND lqr.itemid = lslot.id
                      JOIN {question_versions} lv ON lv.questionbankentryid = lqr.questionbankentryid
@@ -178,14 +178,14 @@ class qbank_helper {
                 $slot->randomrecurse = (bool) $filtercondition->includingsubcategories;
                 $slot->randomtags = isset($filtercondition->tags) ? (array) $filtercondition->tags : [];
                 $slot->qtype = 'random';
-                $slot->name = get_string('random', 'quiz');
+                $slot->name = get_string('random', 'hippotrack');
                 $slot->length = 1;
             } else if ($slot->qtype === null) {
                 // This question must have gone missing. Put in a placeholder.
                 $slot->questionid = 's' . $slot->id; // Sometimes this is used as an array key, so needs to be unique.
                 $slot->category = 0;
                 $slot->qtype = 'missingtype';
-                $slot->name = get_string('missingquestion', 'quiz');
+                $slot->name = get_string('missingquestion', 'hippotrack');
                 $slot->questiontext = ' ';
                 $slot->questiontextformat = FORMAT_HTML;
                 $slot->length = 1;

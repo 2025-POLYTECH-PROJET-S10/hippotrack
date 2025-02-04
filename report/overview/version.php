@@ -17,7 +17,7 @@
 /**
  * Quiz overview report version information.
  *
- * @package   quiz_overview
+ * @package   hippotrack_overview
  * @copyright 2008 Jamie Pratt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,4 +26,4 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version  = 2022112800;
 $plugin->requires = 2022111800;
-$plugin->component = 'quiz_overview';
+$plugin->component = 'hippotrack_overview';

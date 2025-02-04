@@ -17,7 +17,7 @@
 /**
  * Capability definitions for the quiz statistics report.
  *
- * @package   quiz_statistics
+ * @package   hippotrack_statistics
  * @copyright 2008 Jamie Pratt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -33,6 +33,6 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW
         ),
-        'clonepermissionsfrom' =>  'mod/quiz:viewreports'
+        'clonepermissionsfrom' =>  'mod/hippotrack:viewreports'
     )
 );

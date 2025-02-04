@@ -421,7 +421,7 @@ YUI.add('moodle-mod_hippotrack-util-slot', function (Y, NAME) {
                 link.set('title', M.util.get_string('questiondependencyremove', 'quiz', a));
                 link.setData('action', 'removedependency');
                 window.require(['core/templates'], function (Templates) {
-                    Templates.renderPix('t/locked', 'core', M.util.get_string('questiondependsonprevious', 'quiz')).then(
+                    Templates.renderPix('t/locked', 'core', M.util.get_string('questiondependsonprevious', 'hippotrack')).then(
                         function (html) {
                             icon.replace(html);
                         }
@@ -431,7 +431,7 @@ YUI.add('moodle-mod_hippotrack-util-slot', function (Y, NAME) {
                 link.set('title', M.util.get_string('questiondependencyadd', 'quiz', a));
                 link.setData('action', 'adddependency');
                 window.require(['core/templates'], function (Templates) {
-                    Templates.renderPix('t/unlocked', 'core', M.util.get_string('questiondependencyfree', 'quiz')).then(
+                    Templates.renderPix('t/unlocked', 'core', M.util.get_string('questiondependencyfree', 'hippotrack')).then(
                         function (html) {
                             icon.replace(html);
                         }

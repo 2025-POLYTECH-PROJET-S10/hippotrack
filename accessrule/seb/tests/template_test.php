@@ -108,7 +108,7 @@ class template_test extends \advanced_testcase {
         $template->save();
         $this->assertTrue($template->can_delete());
 
-        $DB->insert_record(quiz_settings::TABLE, (object) [
+        $DB->insert_record(hippotrack_settings::TABLE, (object) [
             'quizid' => 1,
             'cmid' => 1,
             'templateid' => $template->get('id'),

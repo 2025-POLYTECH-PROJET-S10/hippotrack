@@ -170,7 +170,7 @@ class helper_test extends \advanced_testcase {
 
         $config = \quizaccess_seb\helper::get_seb_config_content($quiz->cmid);
 
-        $url = new \moodle_url("/mod/quiz/view.php", ['id' => $quiz->cmid]);
+        $url = new \moodle_url("/mod/hippotrack/view.php", ['id' => $quiz->cmid]);
 
         $this->assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             . "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"

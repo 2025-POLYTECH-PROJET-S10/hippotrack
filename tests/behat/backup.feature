@@ -68,7 +68,7 @@ Feature: Backup and restore of quizzes
   Scenario: Restore a Moodle 2.8 quiz backup
     When I am on the "Course 1" "restore" page
     And I press "Manage backup files"
-    And I upload "mod/quiz/tests/fixtures/moodle_28_quiz.mbz" file to "Files" filemanager
+    And I upload "mod/hippotrack/tests/fixtures/moodle_28_quiz.mbz" file to "Files" filemanager
     And I press "Save changes"
     And I restore "moodle_28_quiz.mbz" backup into "Course 1" course using this options:
     And I am on the "Restored Moodle 2.8 quiz" "mod_hippotrack > Edit" page

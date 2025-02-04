@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quiz_statistics;
+namespace hippotrack_statistics;
 
 use question_attempt;
 use question_bank;
 use question_finder;
-use quiz_statistics_report;
+use hippotrack_statistics_report;
 
 /**
  * Quiz attempt walk through using data from csv file.
@@ -32,7 +32,7 @@ use quiz_statistics_report;
  * The calculations in the spreadsheets are the same as for the other question stats but applied just to the attempts where the
  * variants appeared.
  *
- * @package    quiz_statistics
+ * @package    hippotrack_statistics
  * @category   test
  * @copyright  2013 The Open University
  * @author     Jamie Pratt <me@jamiep.org>
@@ -40,7 +40,7 @@ use quiz_statistics_report;
  */
 final class stats_from_steps_walkthrough_test extends \mod_hippotrack\tests\attempt_walkthrough_testcase {
     /**
-     * @var quiz_statistics_report object to do stats calculations.
+     * @var hippotrack_statistics_report object to do stats calculations.
      */
     protected $report;
 
@@ -50,9 +50,9 @@ final class stats_from_steps_walkthrough_test extends \mod_hippotrack\tests\atte
 
         parent::setUpBeforeClass();
 
-        require_once($CFG->dirroot . '/mod/quiz/report/statistics/report.php');
-        require_once($CFG->dirroot . '/mod/quiz/report/default.php');
-        require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
+        require_once($CFG->dirroot . '/mod/hippotrack/report/statistics/report.php');
+        require_once($CFG->dirroot . '/mod/hippotrack/report/default.php');
+        require_once($CFG->dirroot . '/mod/hippotrack/report/reportlib.php');
     }
 
     #[\Override]
@@ -67,7 +67,7 @@ final class stats_from_steps_walkthrough_test extends \mod_hippotrack\tests\atte
      * @dataProvider get_data_for_walkthrough
      */
     public function test_walkthrough_from_csv($quizsettings, $csvdata): void {
-        $this->create_quiz_simulate_attempts_and_check_results($quizsettings, $csvdata);
+        $this->create_hippotrack_simulate_attempts_and_check_results($quizsettings, $csvdata);
 
         $whichattempts = QUIZ_GRADEAVERAGE; // All attempts.
         $whichtries = question_attempt::ALL_TRIES;
@@ -76,8 +76,8 @@ final class stats_from_steps_walkthrough_test extends \mod_hippotrack\tests\atte
                     $this->check_stats_calculations_and_response_analysis($csvdata,
                             $whichattempts, $whichtries, $groupstudentsjoins);
         if ($quizsettings['testnumber'] === '00') {
-            $this->check_variants_count_for_quiz_00($questions, $questionstats, $whichtries, $qubaids);
-            $this->check_quiz_stats_for_quiz_00($quizstats);
+            $this->check_variants_count_for_hippotrack_00($questions, $questionstats, $whichtries, $qubaids);
+            $this->check_hippotrack_stats_for_hippotrack_00($quizstats);
         }
     }
 
@@ -247,7 +247,7 @@ final class stats_from_steps_walkthrough_test extends \mod_hippotrack\tests\atte
      * @param $whichtries
      * @param $qubaids
      */
-    protected function check_variants_count_for_quiz_00($questions, $questionstats, $whichtries, $qubaids) {
+    protected function check_variants_count_for_hippotrack_00($questions, $questionstats, $whichtries, $qubaids) {
         $expectedvariantcounts = array(2 => array(1  => 6,
                                                   4  => 4,
                                                   5  => 3,
@@ -325,7 +325,7 @@ final class stats_from_steps_walkthrough_test extends \mod_hippotrack\tests\atte
     /**
      * @param $quizstats
      */
-    protected function check_quiz_stats_for_quiz_00($quizstats) {
+    protected function check_hippotrack_stats_for_hippotrack_00($quizstats) {
         $quizstatsexpected = array(
             'median'             => 4.5,
             'firstattemptsavg'   => 4.617333332,
@@ -357,7 +357,7 @@ final class stats_from_steps_walkthrough_test extends \mod_hippotrack\tests\atte
      */
     protected function check_stats_calculations_and_response_analysis($csvdata, $whichattempts, $whichtries,
             \core\dml\sql_join $groupstudentsjoins) {
-        $this->report = new quiz_statistics_report();
+        $this->report = new hippotrack_statistics_report();
         $questions = $this->report->load_and_initialise_questions_for_calculations($this->quiz);
         list($quizstats, $questionstats) = $this->report->get_all_stats_and_analysis($this->quiz,
                                                                                      $whichattempts,
@@ -365,7 +365,7 @@ final class stats_from_steps_walkthrough_test extends \mod_hippotrack\tests\atte
                                                                                      $groupstudentsjoins,
                                                                                      $questions);
 
-        $qubaids = quiz_statistics_qubaids_condition($this->quiz->id, $groupstudentsjoins, $whichattempts);
+        $qubaids = hippotrack_statistics_qubaids_condition($this->quiz->id, $groupstudentsjoins, $whichattempts);
 
         // We will create some quiz and question stat calculator instances and some response analyser instances, just in order
         // to check the last analysed time then returned.

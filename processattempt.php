@@ -29,7 +29,7 @@
  */
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 // Remember the current time as the time any responses were submitted
 // (so as to make sure students don't get penalized for slow processing on this page).
@@ -46,7 +46,7 @@ $timeup        = optional_param('timeup',        0,      PARAM_BOOL); // True if
 $scrollpos     = optional_param('scrollpos',     '',     PARAM_RAW);
 $cmid          = optional_param('cmid', null, PARAM_INT);
 
-$attemptobj = quiz_create_attempt_handling_errors($attemptid, $cmid);
+$attemptobj = hippotrack_create_attempt_handling_errors($attemptid, $cmid);
 
 // Set $nexturl now.
 if ($next) {
@@ -71,17 +71,17 @@ require_sesskey();
 
 // Check that this attempt belongs to this user.
 if ($attemptobj->get_userid() != $USER->id) {
-    throw new moodle_quiz_exception($attemptobj->get_quizobj(), 'notyourattempt');
+    throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'notyourattempt');
 }
 
 // Check capabilities.
 if (!$attemptobj->is_preview_user()) {
-    $attemptobj->require_capability('mod/quiz:attempt');
+    $attemptobj->require_capability('mod/hippotrack:attempt');
 }
 
 // If the attempt is already closed, send them to the review page.
 if ($attemptobj->is_finished()) {
-    throw new moodle_quiz_exception($attemptobj->get_quizobj(),
+    throw new moodle_hippotrack_exception($attemptobj->get_quizobj(),
             'attemptalreadyclosed', null, $attemptobj->review_url());
 }
 
@@ -94,9 +94,9 @@ if (!$finishattempt && !$attemptobj->check_page_access($thispage)) {
 // Process the attempt, getting the new status for the attempt.
 $status = $attemptobj->process_attempt($timenow, $finishattempt, $timeup, $thispage);
 
-if ($status == quiz_attempt::OVERDUE) {
+if ($status == hippotrack_attempt::OVERDUE) {
     redirect($attemptobj->summary_url());
-} else if ($status == quiz_attempt::IN_PROGRESS) {
+} else if ($status == hippotrack_attempt::IN_PROGRESS) {
     redirect($nexturl);
 } else {
     // Attempt abandoned or finished.

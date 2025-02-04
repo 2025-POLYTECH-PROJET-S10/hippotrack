@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 
 /**
@@ -41,7 +41,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since     Moodle 2.2
  */
-abstract class quiz_access_rule_base {
+abstract class hippotrack_access_rule_base {
     /** @var stdClass the quiz settings. */
     protected $quiz;
     /** @var quiz the quiz object. */
@@ -66,8 +66,8 @@ abstract class quiz_access_rule_base {
      * @param quiz $quizobj information about the quiz in question.
      * @param int $timenow the time that should be considered as 'now'.
      * @param bool $canignoretimelimits whether the current user is exempt from
-     *      time limits by the mod/quiz:ignoretimelimits capability.
-     * @return quiz_access_rule_base|null the rule, if applicable, else null.
+     *      time limits by the mod/hippotrack:ignoretimelimits capability.
+     * @return hippotrack_access_rule_base|null the rule, if applicable, else null.
      */
     public static function make(quiz $quizobj, $timenow, $canignoretimelimits) {
         return null;
@@ -280,7 +280,7 @@ abstract class quiz_access_rule_base {
 
     /**
      * Save any submitted settings when the quiz settings form is submitted. This
-     * is called from {@link quiz_after_add_or_update()} in lib.php.
+     * is called from {@link hippotrack_after_add_or_update()} in lib.php.
      * @param object $quiz the data from the quiz form, including $quiz->id
      *      which is the id of the quiz being saved.
      */
@@ -290,7 +290,7 @@ abstract class quiz_access_rule_base {
 
     /**
      * Delete any rule-specific settings when the quiz is deleted. This is called
-     * from {@link quiz_delete_instance()} in lib.php.
+     * from {@link hippotrack_delete_instance()} in lib.php.
      * @param object $quiz the data from the database, including $quiz->id
      *      which is the id of the quiz being deleted.
      * @since Moodle 2.7.1, 2.6.4, 2.5.7
@@ -302,7 +302,7 @@ abstract class quiz_access_rule_base {
     /**
      * Return the bits of SQL needed to load all the settings from all the access
      * plugins in one DB query. The easiest way to understand what you need to do
-     * here is probalby to read the code of {@link quiz_access_manager::load_settings()}.
+     * here is probalby to read the code of {@link hippotrack_access_manager::load_settings()}.
      *
      * If you have some settings that cannot be loaded in this way, then you can
      * use the {@link get_extra_settings()} method instead, but that has

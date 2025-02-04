@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Makes some protected methods of quiz_attempts_report public to facilitate testing.
+ * Makes some protected methods of hippotrack_attempts_report public to facilitate testing.
  *
- * @package   quiz_overview
+ * @package   hippotrack_overview
  * @copyright 2020 Huong Nguyen <huongnv13@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,15 +25,15 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/report/attemptsreport.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/attemptsreport.php');
 
 /**
- * Makes some protected methods of quiz_attempts_report public to facilitate testing.
+ * Makes some protected methods of hippotrack_attempts_report public to facilitate testing.
  *
  * @copyright 2020 Huong Nguyen <huongnv13@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class testable_quiz_attempts_report extends quiz_attempts_report {
+class testable_hippotrack_attempts_report extends hippotrack_attempts_report {
 
     /**
      * Override this function to displays the report.

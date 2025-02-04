@@ -27,7 +27,7 @@ namespace mod_hippotrack\task;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
  * Legacy Cron Quiz Reports Task
@@ -38,7 +38,7 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  */
-class legacy_quiz_reports_cron extends \core\task\scheduled_task {
+class legacy_hippotrack_reports_cron extends \core\task\scheduled_task {
 
     public function get_name() {
         return get_string('legacyquizreportscron', 'mod_hippotrack');

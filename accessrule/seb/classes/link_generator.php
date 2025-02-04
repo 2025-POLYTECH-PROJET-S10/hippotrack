@@ -49,7 +49,7 @@ class link_generator {
         // Check if course module exists.
         get_coursemodule_from_id('quiz', $cmid, 0, false, MUST_EXIST);
 
-        $url = new moodle_url('/mod/quiz/accessrule/seb/config.php?cmid=' . $cmid);
+        $url = new moodle_url('/mod/hippotrack/accessrule/seb/config.php?cmid=' . $cmid);
         if ($seb) {
             $secure ? $url->set_scheme('sebs') : $url->set_scheme('seb');
         } else {

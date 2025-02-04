@@ -17,7 +17,7 @@
 /**
  * Post-install script for the quiz statistics report.
  *
- * @package   quiz_statistics
+ * @package   hippotrack_statistics
  * @copyright 2008 Jamie Pratt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Quiz statistics report upgrade code.
  */
-function xmldb_quiz_statistics_upgrade($oldversion) {
+function xmldb_hippotrack_statistics_upgrade($oldversion) {
     global $DB;
 
     // Automatically generated Moodle v3.9.0 release upgrade line.

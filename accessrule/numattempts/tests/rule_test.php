@@ -22,7 +22,7 @@ use quizaccess_numattempts;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/accessrule/numattempts/rule.php');
+require_once($CFG->dirroot . '/mod/hippotrack/accessrule/numattempts/rule.php');
 
 
 /**
@@ -49,9 +49,9 @@ class rule_test extends \basic_testcase {
         $this->assertFalse($rule->prevent_new_attempt(0, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(2, $attempt));
         $this->assertEquals($rule->prevent_new_attempt(3, $attempt),
-            get_string('nomoreattempts', 'quiz'));
+            get_string('nomoreattempts', 'hippotrack'));
         $this->assertEquals($rule->prevent_new_attempt(666, $attempt),
-            get_string('nomoreattempts', 'quiz'));
+            get_string('nomoreattempts', 'hippotrack'));
 
         $this->assertFalse($rule->is_finished(0, $attempt));
         $this->assertFalse($rule->is_finished(2, $attempt));

@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-use quizaccess_seb\quiz_settings;
+use quizaccess_seb\hippotrack_settings;
 
 require_once($CFG->libdir . '/externallib.php');
 
@@ -31,9 +31,9 @@ require_once($CFG->libdir . '/externallib.php');
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2021 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers \quizaccess_seb\external\validate_quiz_access
+ * @covers \quizaccess_seb\external\validate_hippotrack_access
  */
-class validate_quiz_access_test extends \advanced_testcase {
+class validate_hippotrack_access_test extends \advanced_testcase {
     use \quizaccess_seb_test_helper_trait;
 
     /**
@@ -115,7 +115,7 @@ class validate_quiz_access_test extends \advanced_testcase {
 
         $this->expectException(\invalid_parameter_exception::class);
         $this->expectExceptionMessageMatches($messageregex);
-        \external_api::validate_parameters(validate_quiz_keys::execute_parameters(), $params);
+        \external_api::validate_parameters(validate_hippotrack_keys::execute_parameters(), $params);
     }
 
     /**
@@ -128,7 +128,7 @@ class validate_quiz_access_test extends \advanced_testcase {
 
         $this->expectException(\require_login_exception::class);
         $this->expectExceptionMessage('Course or activity not accessible. (Not enrolled)');
-        validate_quiz_keys::execute($this->quiz->cmid, 'https://www.example.com/moodle', 'configkey');
+        validate_hippotrack_keys::execute($this->quiz->cmid, 'https://www.example.com/moodle', 'configkey');
     }
 
     /**
@@ -137,18 +137,18 @@ class validate_quiz_access_test extends \advanced_testcase {
     public function test_no_keys_provided() {
         $this->expectException(\invalid_parameter_exception::class);
         $this->expectExceptionMessage('At least one Safe Exam Browser key must be provided.');
-        validate_quiz_keys::execute($this->quiz->cmid, 'https://www.example.com/moodle');
+        validate_hippotrack_keys::execute($this->quiz->cmid, 'https://www.example.com/moodle');
     }
 
     /**
      * Test exception thrown if cmid doesn't match a quiz.
      */
-    public function test_quiz_does_not_exist() {
+    public function test_hippotrack_does_not_exist() {
         $this->setAdminUser();
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $this->course->id]);
         $this->expectException(\invalid_parameter_exception::class);
         $this->expectExceptionMessage('Quiz not found matching course module ID: ' . $forum->cmid);
-        validate_quiz_keys::execute($forum->cmid, 'https://www.example.com/moodle', 'configkey');
+        validate_hippotrack_keys::execute($forum->cmid, 'https://www.example.com/moodle', 'configkey');
     }
 
     /**
@@ -164,11 +164,11 @@ class validate_quiz_access_test extends \advanced_testcase {
         $url = 'https://www.example.com/moodle';
 
         // Create the quiz settings.
-        $quizsettings = new quiz_settings(0, $settings);
+        $quizsettings = new hippotrack_settings(0, $settings);
         $quizsettings->save();
 
         $fullconfigkey = hash('sha256', $url . $quizsettings->get_config_key());
-        $result = validate_quiz_keys::execute($this->quiz->cmid, $url, $fullconfigkey);
+        $result = validate_hippotrack_keys::execute($this->quiz->cmid, $url, $fullconfigkey);
         $this->assertTrue($result['configkey']);
         $this->assertTrue($result['browserexamkey']);
 
@@ -188,10 +188,10 @@ class validate_quiz_access_test extends \advanced_testcase {
         ]);
 
         // Create the quiz settings.
-        $quizsettings = new quiz_settings(0, $settings);
+        $quizsettings = new hippotrack_settings(0, $settings);
         $quizsettings->save();
 
-        $result = validate_quiz_keys::execute($this->quiz->cmid, 'https://www.example.com/moodle', 'badconfigkey');
+        $result = validate_hippotrack_keys::execute($this->quiz->cmid, 'https://www.example.com/moodle', 'badconfigkey');
         $this->assertFalse($result['configkey']);
         $this->assertTrue($result['browserexamkey']);
         $events = $sink->get_events();
@@ -217,11 +217,11 @@ class validate_quiz_access_test extends \advanced_testcase {
         ]);
 
         // Create the quiz settings.
-        $quizsettings = new quiz_settings(0, $settings);
+        $quizsettings = new hippotrack_settings(0, $settings);
         $quizsettings->save();
 
         $fullbrowserexamkey = hash('sha256', $url . $validbrowserexamkey);
-        $result = validate_quiz_keys::execute($this->quiz->cmid, $url, null, $fullbrowserexamkey);
+        $result = validate_hippotrack_keys::execute($this->quiz->cmid, $url, null, $fullbrowserexamkey);
         $this->assertTrue($result['configkey']);
         $this->assertTrue($result['browserexamkey']);
         $events = $sink->get_events();
@@ -243,10 +243,10 @@ class validate_quiz_access_test extends \advanced_testcase {
         ]);
 
         // Create the quiz settings.
-        $quizsettings = new quiz_settings(0, $settings);
+        $quizsettings = new hippotrack_settings(0, $settings);
         $quizsettings->save();
 
-        $result = validate_quiz_keys::execute($this->quiz->cmid, 'https://www.example.com/moodle', null,
+        $result = validate_hippotrack_keys::execute($this->quiz->cmid, 'https://www.example.com/moodle', null,
                 hash('sha256', 'badbrowserexamkey'));
         $this->assertTrue($result['configkey']);
         $this->assertFalse($result['browserexamkey']);

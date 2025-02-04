@@ -33,7 +33,7 @@ use core_privacy\local\request\contextlist;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
-use quizaccess_seb\quiz_settings;
+use quizaccess_seb\hippotrack_settings;
 use quizaccess_seb\template;
 
 defined('MOODLE_INTERNAL') || die();
@@ -162,7 +162,7 @@ class provider implements
             $index++;
             $subcontext = [
                 get_string('pluginname', 'quizaccess_seb'),
-                quiz_settings::TABLE,
+                hippotrack_settings::TABLE,
                 $index
             ];
 

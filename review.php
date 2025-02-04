@@ -27,15 +27,15 @@
 
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/reportlib.php');
 
 $attemptid = required_param('attempt', PARAM_INT);
 $page      = optional_param('page', 0, PARAM_INT);
 $showall   = optional_param('showall', null, PARAM_BOOL);
 $cmid      = optional_param('cmid', null, PARAM_INT);
 
-$url = new moodle_url('/mod/quiz/review.php', array('attempt'=>$attemptid));
+$url = new moodle_url('/mod/hippotrack/review.php', array('attempt'=>$attemptid));
 if ($page !== 0) {
     $url->param('page', $page);
 } else if ($showall) {
@@ -44,7 +44,7 @@ if ($page !== 0) {
 $PAGE->set_url($url);
 $PAGE->set_secondary_active_tab("modulepage");
 
-$attemptobj = quiz_create_attempt_handling_errors($attemptid, $cmid);
+$attemptobj = hippotrack_create_attempt_handling_errors($attemptid, $cmid);
 $attemptobj->preload_all_attempt_step_users();
 $page = $attemptobj->force_page_number_into_range($page);
 
@@ -65,7 +65,7 @@ $accessmanager->setup_attempt_page($PAGE);
 $options = $attemptobj->get_display_options(true);
 
 // Check permissions - warning there is similar code in reviewquestion.php and
-// quiz_attempt::check_file_access. If you change on, change them all.
+// hippotrack_attempt::check_file_access. If you change on, change them all.
 if ($attemptobj->is_own_attempt()) {
     if (!$attemptobj->is_finished()) {
         redirect($attemptobj->attempt_url(null, $page));
@@ -76,7 +76,7 @@ if ($attemptobj->is_own_attempt()) {
     }
 
 } else if (!$attemptobj->is_review_allowed()) {
-    throw new moodle_quiz_exception($attemptobj->get_quizobj(), 'noreviewattempt');
+    throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'noreviewattempt');
 }
 
 // Load the questions and states needed by this page.
@@ -117,7 +117,7 @@ $attempt = $attemptobj->get_attempt();
 $quiz = $attemptobj->get_quiz();
 $overtime = 0;
 
-if ($attempt->state == quiz_attempt::FINISHED) {
+if ($attempt->state == hippotrack_attempt::FINISHED) {
     if ($timetaken = ($attempt->timefinish - $attempt->timestart)) {
         if ($quiz->timelimit && $timetaken > ($quiz->timelimit + 60)) {
             $overtime = $timetaken - $quiz->timelimit;
@@ -128,7 +128,7 @@ if ($attempt->state == quiz_attempt::FINISHED) {
         $timetaken = "-";
     }
 } else {
-    $timetaken = get_string('unfinished', 'quiz');
+    $timetaken = get_string('unfinished', 'hippotrack');
 }
 
 // Prepare summary informat about the whole attempt.
@@ -146,12 +146,12 @@ if (!$attemptobj->get_quiz()->showuserpicture && $attemptobj->get_userid() != $U
     );
 }
 
-if ($attemptobj->has_capability('mod/quiz:viewreports')) {
+if ($attemptobj->has_capability('mod/hippotrack:viewreports')) {
     $attemptlist = $attemptobj->links_to_other_attempts($attemptobj->review_url(null, $page,
             $showall));
     if ($attemptlist) {
         $summarydata['attemptlist'] = array(
-            'title'   => get_string('attempts', 'quiz'),
+            'title'   => get_string('attempts', 'hippotrack'),
             'content' => $attemptlist,
         );
     }
@@ -159,62 +159,62 @@ if ($attemptobj->has_capability('mod/quiz:viewreports')) {
 
 // Timing information.
 $summarydata['startedon'] = array(
-    'title'   => get_string('startedon', 'quiz'),
+    'title'   => get_string('startedon', 'hippotrack'),
     'content' => userdate($attempt->timestart),
 );
 
 $summarydata['state'] = array(
-    'title'   => get_string('attemptstate', 'quiz'),
-    'content' => quiz_attempt::state_name($attempt->state),
+    'title'   => get_string('attemptstate', 'hippotrack'),
+    'content' => hippotrack_attempt::state_name($attempt->state),
 );
 
-if ($attempt->state == quiz_attempt::FINISHED) {
+if ($attempt->state == hippotrack_attempt::FINISHED) {
     $summarydata['completedon'] = array(
-        'title'   => get_string('completedon', 'quiz'),
+        'title'   => get_string('completedon', 'hippotrack'),
         'content' => userdate($attempt->timefinish),
     );
     $summarydata['timetaken'] = array(
-        'title'   => get_string('timetaken', 'quiz'),
+        'title'   => get_string('timetaken', 'hippotrack'),
         'content' => $timetaken,
     );
 }
 
 if (!empty($overtime)) {
     $summarydata['overdue'] = array(
-        'title'   => get_string('overdue', 'quiz'),
+        'title'   => get_string('overdue', 'hippotrack'),
         'content' => $overtime,
     );
 }
 
 // Show marks (if the user is allowed to see marks at the moment).
-$grade = quiz_rescale_grade($attempt->sumgrades, $quiz, false);
-if ($options->marks >= question_display_options::MARK_AND_MAX && quiz_has_grades($quiz)) {
+$grade = hippotrack_rescale_grade($attempt->sumgrades, $quiz, false);
+if ($options->marks >= question_display_options::MARK_AND_MAX && hippotrack_has_grades($quiz)) {
 
-    if ($attempt->state != quiz_attempt::FINISHED) {
+    if ($attempt->state != hippotrack_attempt::FINISHED) {
         // Cannot display grade.
 
     } else if (is_null($grade)) {
         $summarydata['grade'] = array(
-            'title'   => get_string('grade', 'quiz'),
-            'content' => quiz_format_grade($quiz, $grade),
+            'title'   => get_string('grade', 'hippotrack'),
+            'content' => hippotrack_format_grade($quiz, $grade),
         );
 
     } else {
         // Show raw marks only if they are different from the grade (like on the view page).
         if ($quiz->grade != $quiz->sumgrades) {
             $a = new stdClass();
-            $a->grade = quiz_format_grade($quiz, $attempt->sumgrades);
-            $a->maxgrade = quiz_format_grade($quiz, $quiz->sumgrades);
+            $a->grade = hippotrack_format_grade($quiz, $attempt->sumgrades);
+            $a->maxgrade = hippotrack_format_grade($quiz, $quiz->sumgrades);
             $summarydata['marks'] = array(
-                'title'   => get_string('marks', 'quiz'),
+                'title'   => get_string('marks', 'hippotrack'),
                 'content' => get_string('outofshort', 'quiz', $a),
             );
         }
 
         // Now the scaled grade.
         $a = new stdClass();
-        $a->grade = html_writer::tag('b', quiz_format_grade($quiz, $grade));
-        $a->maxgrade = quiz_format_grade($quiz, $quiz->grade);
+        $a->grade = html_writer::tag('b', hippotrack_format_grade($quiz, $grade));
+        $a->maxgrade = hippotrack_format_grade($quiz, $quiz->grade);
         if ($quiz->grade != 100) {
             // Show the percentage using the configured number of decimal places,
             // but without trailing zeroes.
@@ -226,7 +226,7 @@ if ($options->marks >= question_display_options::MARK_AND_MAX && quiz_has_grades
             $formattedgrade = get_string('outof', 'quiz', $a);
         }
         $summarydata['grade'] = array(
-            'title'   => get_string('grade', 'quiz'),
+            'title'   => get_string('grade', 'hippotrack'),
             'content' => $formattedgrade,
         );
     }
@@ -239,7 +239,7 @@ $summarydata = array_merge($summarydata, $attemptobj->get_additional_summary_dat
 $feedback = $attemptobj->get_overall_feedback($grade);
 if ($options->overallfeedback && $feedback) {
     $summarydata['feedback'] = array(
-        'title'   => get_string('feedback', 'quiz'),
+        'title'   => get_string('feedback', 'hippotrack'),
         'content' => $feedback,
     );
 }
@@ -257,7 +257,7 @@ if ($showall) {
 $output = $PAGE->get_renderer('mod_hippotrack');
 
 // Arrange for the navigation to be displayed.
-$navbc = $attemptobj->get_navigation_panel($output, 'quiz_review_nav_panel', $page, $showall);
+$navbc = $attemptobj->get_navigation_panel($output, 'hippotrack_review_nav_panel', $page, $showall);
 $regions = $PAGE->blocks->get_regions();
 $PAGE->blocks->add_fake_block($navbc, reset($regions));
 

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Base class for the options that control what is visible in an {@link quiz_attempts_report}.
+ * Base class for the options that control what is visible in an {@link hippotrack_attempts_report}.
  *
  * @package   mod_hippotrack
  * @copyright 2012 The Open University
@@ -29,7 +29,7 @@ require_once($CFG->libdir . '/formslib.php');
 
 
 /**
- * Base class for the options that control what is visible in an {@link quiz_attempts_report}.
+ * Base class for the options that control what is visible in an {@link hippotrack_attempts_report}.
  *
  * @copyright 2012 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -49,30 +49,30 @@ class mod_hippotrack_attempts_report_options {
     public $course;
 
     /**
-     * @var array form field name => corresponding quiz_attempt:: state constant.
+     * @var array form field name => corresponding hippotrack_attempt:: state constant.
      */
     protected static $statefields = array(
-        'stateinprogress' => quiz_attempt::IN_PROGRESS,
-        'stateoverdue'    => quiz_attempt::OVERDUE,
-        'statefinished'   => quiz_attempt::FINISHED,
-        'stateabandoned'  => quiz_attempt::ABANDONED,
+        'stateinprogress' => hippotrack_attempt::IN_PROGRESS,
+        'stateoverdue'    => hippotrack_attempt::OVERDUE,
+        'statefinished'   => hippotrack_attempt::FINISHED,
+        'stateabandoned'  => hippotrack_attempt::ABANDONED,
     );
 
     /**
-     * @var string quiz_attempts_report::ALL_WITH or quiz_attempts_report::ENROLLED_WITH
-     *      quiz_attempts_report::ENROLLED_WITHOUT or quiz_attempts_report::ENROLLED_ALL
+     * @var string hippotrack_attempts_report::ALL_WITH or hippotrack_attempts_report::ENROLLED_WITH
+     *      hippotrack_attempts_report::ENROLLED_WITHOUT or hippotrack_attempts_report::ENROLLED_ALL
      */
-    public $attempts = quiz_attempts_report::ENROLLED_WITH;
+    public $attempts = hippotrack_attempts_report::ENROLLED_WITH;
 
     /** @var int the currently selected group. 0 if no group is selected. */
     public $group = 0;
 
     /**
-     * @var array|null of quiz_attempt::IN_PROGRESS, etc. constants. null means
+     * @var array|null of hippotrack_attempt::IN_PROGRESS, etc. constants. null means
      *      no restriction.
      */
-    public $states = array(quiz_attempt::IN_PROGRESS, quiz_attempt::OVERDUE,
-            quiz_attempt::FINISHED, quiz_attempt::ABANDONED);
+    public $states = array(hippotrack_attempt::IN_PROGRESS, hippotrack_attempt::OVERDUE,
+            hippotrack_attempt::FINISHED, hippotrack_attempt::ABANDONED);
 
     /**
      * @var bool whether to show all finished attmepts, or just the one that gave
@@ -81,7 +81,7 @@ class mod_hippotrack_attempts_report_options {
     public $onlygraded = false;
 
     /** @var int Number of attempts to show per page. */
-    public $pagesize = quiz_attempts_report::DEFAULT_PAGE_SIZE;
+    public $pagesize = hippotrack_attempts_report::DEFAULT_PAGE_SIZE;
 
     /** @var string whether the data should be downloaded in some format, or '' to display it. */
     public $download = '';
@@ -105,7 +105,7 @@ class mod_hippotrack_attempts_report_options {
         $this->cm     = $cm;
         $this->course = $course;
 
-        $this->usercanseegrades = quiz_report_should_show_grades($quiz, context_module::instance($cm->id));
+        $this->usercanseegrades = hippotrack_report_should_show_grades($quiz, context_module::instance($cm->id));
     }
 
     /**
@@ -135,7 +135,7 @@ class mod_hippotrack_attempts_report_options {
      * @return moodle_url the URL.
      */
     public function get_url() {
-        return new moodle_url('/mod/quiz/report.php', $this->get_url_params());
+        return new moodle_url('/mod/hippotrack/report.php', $this->get_url_params());
     }
 
     /**
@@ -218,7 +218,7 @@ class mod_hippotrack_attempts_report_options {
      * (For those settings that are backed by user-preferences).
      */
     public function setup_from_user_preferences() {
-        $this->pagesize = get_user_preferences('quiz_report_pagesize', $this->pagesize);
+        $this->pagesize = get_user_preferences('hippotrack_report_pagesize', $this->pagesize);
     }
 
     /**
@@ -226,7 +226,7 @@ class mod_hippotrack_attempts_report_options {
      * (For those settings that are backed by user-preferences).
      */
     public function update_user_preferences() {
-        set_user_preference('quiz_report_pagesize', $this->pagesize);
+        set_user_preference('hippotrack_report_pagesize', $this->pagesize);
     }
 
     /**
@@ -235,17 +235,17 @@ class mod_hippotrack_attempts_report_options {
     public function resolve_dependencies() {
         if ($this->group) {
             // Default for when a group is selected.
-            if ($this->attempts === null || $this->attempts == quiz_attempts_report::ALL_WITH) {
-                $this->attempts = quiz_attempts_report::ENROLLED_WITH;
+            if ($this->attempts === null || $this->attempts == hippotrack_attempts_report::ALL_WITH) {
+                $this->attempts = hippotrack_attempts_report::ENROLLED_WITH;
             }
 
         } else if (!$this->group && $this->course->id == SITEID) {
             // Force report on front page to show all, unless a group is selected.
-            $this->attempts = quiz_attempts_report::ALL_WITH;
+            $this->attempts = hippotrack_attempts_report::ALL_WITH;
 
-        } else if (!in_array($this->attempts, array(quiz_attempts_report::ALL_WITH, quiz_attempts_report::ENROLLED_WITH,
-                quiz_attempts_report::ENROLLED_WITHOUT, quiz_attempts_report::ENROLLED_ALL))) {
-            $this->attempts = quiz_attempts_report::ENROLLED_WITH;
+        } else if (!in_array($this->attempts, array(hippotrack_attempts_report::ALL_WITH, hippotrack_attempts_report::ENROLLED_WITH,
+                hippotrack_attempts_report::ENROLLED_WITHOUT, hippotrack_attempts_report::ENROLLED_ALL))) {
+            $this->attempts = hippotrack_attempts_report::ENROLLED_WITH;
         }
 
         $cleanstates = array();
@@ -261,13 +261,13 @@ class mod_hippotrack_attempts_report_options {
             $this->states = null;
         }
 
-        if (!quiz_report_can_filter_only_graded($this->quiz)) {
+        if (!hippotrack_report_can_filter_only_graded($this->quiz)) {
             // A grading mode like 'average' has been selected, so we cannot do
             // the show the attempt that gave the final grade thing.
             $this->onlygraded = false;
         }
 
-        if ($this->attempts == quiz_attempts_report::ENROLLED_WITHOUT) {
+        if ($this->attempts == hippotrack_attempts_report::ENROLLED_WITHOUT) {
             $this->states = null;
             $this->onlygraded = false;
         }
@@ -277,7 +277,7 @@ class mod_hippotrack_attempts_report_options {
         }
 
         if ($this->pagesize < 1) {
-            $this->pagesize = quiz_attempts_report::DEFAULT_PAGE_SIZE;
+            $this->pagesize = hippotrack_attempts_report::DEFAULT_PAGE_SIZE;
         }
     }
 
@@ -286,6 +286,6 @@ class mod_hippotrack_attempts_report_options {
      * @return boolean
      */
     protected function is_showing_finished_attempts() {
-        return $this->states === null || in_array(quiz_attempt::FINISHED, $this->states);
+        return $this->states === null || in_array(hippotrack_attempt::FINISHED, $this->states);
     }
 }
