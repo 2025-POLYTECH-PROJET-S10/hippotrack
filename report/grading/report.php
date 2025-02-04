@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file defines the quiz manual grading report class.
+ * This file defines the hippotrack manual grading report class.
  *
  * @package   hippotrack_grading
  * @copyright 2006 Gustav Delius
@@ -29,7 +29,7 @@ require_once($CFG->dirroot . '/mod/hippotrack/report/grading/gradingsettings_for
 
 
 /**
- * Quiz report to help teachers manually grade questions that need it.
+ * HippoTrack report to help teachers manually grade questions that need it.
  *
  * This report basically provides two screens:
  * - List question that might need manual grading (or optionally all questions).
@@ -60,13 +60,13 @@ class hippotrack_grading_report extends hippotrack_default_report {
     /** @var stdClass the course_module settings. */
     protected $cm;
 
-    /** @var stdClass the quiz settings. */
-    protected $quiz;
+    /** @var stdClass the hippotrack settings. */
+    protected $hippotrack;
 
-    /** @var context the quiz context. */
+    /** @var context the hippotrack context. */
     protected $context;
 
-    /** @var hippotrack_grading_renderer Renderer of Quiz Grading. */
+    /** @var hippotrack_grading_renderer Renderer of HippoTrack Grading. */
     protected $renderer;
 
     /** @var string fragment of SQL code to restrict to the relevant users. */
@@ -75,9 +75,9 @@ class hippotrack_grading_report extends hippotrack_default_report {
     /** @var array extra user fields. */
     protected $extrauserfields = [];
 
-    public function display($quiz, $cm, $course) {
+    public function display($hippotrack, $cm, $course) {
 
-        $this->quiz = $quiz;
+        $this->hippotrack = $hippotrack;
         $this->cm = $cm;
         $this->course = $course;
 
@@ -119,9 +119,9 @@ class hippotrack_grading_report extends hippotrack_default_report {
         // Check permissions.
         $this->context = context_module::instance($this->cm->id);
         require_capability('mod/hippotrack:grade', $this->context);
-        $shownames = has_capability('quiz/grading:viewstudentnames', $this->context);
+        $shownames = has_capability('hippotrack/grading:viewstudentnames', $this->context);
         // Whether the current user can see custom user fields.
-        $showcustomfields = has_capability('quiz/grading:viewidnumber', $this->context);
+        $showcustomfields = has_capability('hippotrack/grading:viewidnumber', $this->context);
         $userfieldsapi = \core_user\fields::for_identity($this->context)->with_name();
         $customfields = [];
         foreach ($userfieldsapi->get_required_fields([\core_user\fields::PURPOSE_IDENTITY]) as $field) {
@@ -140,8 +140,8 @@ class hippotrack_grading_report extends hippotrack_default_report {
             $page = 0;
         }
 
-        // Get the list of questions in this quiz.
-        $this->questions = hippotrack_report_get_significant_questions($quiz);
+        // Get the list of questions in this hippotrack.
+        $this->questions = hippotrack_report_get_significant_questions($hippotrack);
         if ($slot && !array_key_exists($slot, $this->questions)) {
             throw new moodle_exception('unknownquestion', 'hippotrack_grading');
         }
@@ -169,10 +169,10 @@ class hippotrack_grading_report extends hippotrack_default_report {
                     array('mod/hippotrack:reviewmyattempts', 'mod/hippotrack:attempt'), $this->currentgroup);
         }
 
-        $hasquestions = hippotrack_has_questions($this->quiz->id);
+        $hasquestions = hippotrack_has_questions($this->hippotrack->id);
         if (!$hasquestions) {
-            $this->print_header_and_tabs($cm, $course, $quiz, 'grading');
-            echo $this->renderer->render_hippotrack_no_question_notification($quiz, $cm, $this->context);
+            $this->print_header_and_tabs($cm, $course, $hippotrack, 'grading');
+            echo $this->renderer->render_hippotrack_no_question_notification($hippotrack, $cm, $this->context);
             return true;
         }
 
@@ -210,10 +210,10 @@ class hippotrack_grading_report extends hippotrack_default_report {
      */
     protected function get_qubaids_condition() {
 
-        $where = "quiza.quiz = :mangrquizid AND
-                quiza.preview = 0 AND
-                quiza.state = :statefinished";
-        $params = array('mangrquizid' => $this->cm->instance, 'statefinished' => hippotrack_attempt::FINISHED);
+        $where = "hippotracka.hippotrack = :mangrhippotrackid AND
+                hippotracka.preview = 0 AND
+                hippotracka.state = :statefinished";
+        $params = array('mangrhippotrackid' => $this->cm->instance, 'statefinished' => hippotrack_attempt::FINISHED);
 
         $usersjoin = '';
         $currentgroup = groups_get_activity_group($this->cm, true);
@@ -223,30 +223,30 @@ class hippotrack_grading_report extends hippotrack_default_report {
             $userssql = get_enrolled_sql($this->context,
                     array('mod/hippotrack:reviewmyattempts', 'mod/hippotrack:attempt'), $currentgroup);
             if ($enrolleduserscount < 1) {
-                $where .= ' AND quiza.userid = 0';
+                $where .= ' AND hippotracka.userid = 0';
             } else {
-                $usersjoin = "JOIN ({$userssql[0]}) AS enr ON quiza.userid = enr.id";
+                $usersjoin = "JOIN ({$userssql[0]}) AS enr ON hippotracka.userid = enr.id";
                 $params += $userssql[1];
             }
         }
 
-        return new qubaid_join("{hippotrack_attempts} quiza $usersjoin ", 'quiza.uniqueid', $where, $params);
+        return new qubaid_join("{hippotrack_attempts} hippotracka $usersjoin ", 'hippotracka.uniqueid', $where, $params);
     }
 
     /**
      * Load the hippotrack_attempts rows corresponding to a list of question_usage ids.
      *
      * @param int[] $qubaids the question_usage ids of the hippotrack_attempts to load.
-     * @return array quiz attempts, with added user name fields.
+     * @return array hippotrack attempts, with added user name fields.
      */
     protected function load_attempts_by_usage_ids($qubaids) {
         global $DB;
 
         list($asql, $params) = $DB->get_in_or_equal($qubaids);
         $params[] = hippotrack_attempt::FINISHED;
-        $params[] = $this->quiz->id;
+        $params[] = $this->hippotrack->id;
 
-        $fields = 'quiza.*, ';
+        $fields = 'hippotracka.*, ';
         $userfieldsapi = \core_user\fields::for_identity($this->context)->with_name();
         $userfieldssql = $userfieldsapi->get_sql('u', false, '', 'userid', false);
         $fields .= $userfieldssql->selects;
@@ -256,10 +256,10 @@ class hippotrack_grading_report extends hippotrack_default_report {
         $params = array_merge($userfieldssql->params, $params);
         $attemptsbyid = $DB->get_records_sql("
                 SELECT $fields
-                FROM {hippotrack_attempts} quiza
-                JOIN {user} u ON u.id = quiza.userid
+                FROM {hippotrack_attempts} hippotracka
+                JOIN {user} u ON u.id = hippotracka.userid
                 {$userfieldssql->joins}
-                WHERE quiza.uniqueid $asql AND quiza.state = ? AND quiza.quiz = ?",
+                WHERE hippotracka.uniqueid $asql AND hippotracka.state = ? AND hippotracka.hippotrack = ?",
                 $params);
 
         $attempts = array();
@@ -347,7 +347,7 @@ class hippotrack_grading_report extends hippotrack_default_report {
     protected function display_index($includeauto) {
         global $PAGE, $OUTPUT;
 
-        $this->print_header_and_tabs($this->cm, $this->course, $this->quiz, 'grading');
+        $this->print_header_and_tabs($this->cm, $this->course, $this->hippotrack, 'grading');
 
         if ($groupmode = groups_get_activity_groupmode($this->cm)) {
             // Groups is being used.
@@ -480,13 +480,13 @@ class hippotrack_grading_report extends hippotrack_default_report {
         $paginginfo->of = $count;
         $qubaidlist = implode(',', $qubaids);
 
-        $this->print_header_and_tabs($this->cm, $this->course, $this->quiz, 'grading');
+        $this->print_header_and_tabs($this->cm, $this->course, $this->hippotrack, 'grading');
 
         $gradequestioncontent = '';
         foreach ($qubaids as $qubaid) {
             $attempt = $attempts[$qubaid];
             $quba = question_engine::load_questions_usage_by_activity($qubaid);
-            $displayoptions = hippotrack_get_review_options($this->quiz, $attempt, $this->context);
+            $displayoptions = hippotrack_get_review_options($this->hippotrack, $attempt, $this->context);
             $displayoptions->generalfeedback = question_display_options::HIDDEN;
             $displayoptions->history = question_display_options::HIDDEN;
             $displayoptions->manualcomment = question_display_options::EDITABLE;
@@ -580,7 +580,7 @@ class hippotrack_grading_report extends hippotrack_default_report {
         $attemptsgraded = false;
         foreach ($qubaids as $qubaid) {
             $attempt = $attempts[$qubaid];
-            $attemptobj = new hippotrack_attempt($attempt, $this->quiz, $this->cm, $this->course);
+            $attemptobj = new hippotrack_attempt($attempt, $this->hippotrack, $this->cm, $this->course);
 
             // State of the attempt before grades are changed.
             $attemptoldtstate = $attemptobj->get_question_state($assumedslotforevents);
@@ -601,7 +601,7 @@ class hippotrack_grading_report extends hippotrack_default_report {
                 'courseid' => $attemptobj->get_courseid(),
                 'context' => context_module::instance($attemptobj->get_cmid()),
                 'other' => [
-                    'quizid' => $attemptobj->get_quizid(),
+                    'hippotrackid' => $attemptobj->get_hippotrackid(),
                     'attemptid' => $attemptobj->get_attemptid(),
                     'slot' => $assumedslotforevents,
                 ],
@@ -684,7 +684,7 @@ class hippotrack_grading_report extends hippotrack_default_report {
                     ) as tcreated";
             $orderby = "tcreated";
         } else if ($orderby === 'studentfirstname' || $orderby === 'studentlastname' || in_array($orderby, $customfields)) {
-            $qubaids->from .= " JOIN {user} u ON quiza.userid = u.id {$userfieldssql->joins}";
+            $qubaids->from .= " JOIN {user} u ON hippotracka.userid = u.id {$userfieldssql->joins}";
             // For name sorting, map orderby form value to
             // actual column names; 'idnumber' maps naturally.
             if ($orderby === "studentlastname") {
@@ -705,13 +705,13 @@ class hippotrack_grading_report extends hippotrack_default_report {
      *
      * @param object $cm the course_module information.
      * @param object $course the course settings.
-     * @param object $quiz the quiz settings.
+     * @param object $hippotrack the hippotrack settings.
      * @param string $reportmode the report name.
      */
-    public function print_header_and_tabs($cm, $course, $quiz, $reportmode = 'overview') {
+    public function print_header_and_tabs($cm, $course, $hippotrack, $reportmode = 'overview') {
         global $PAGE;
         $this->renderer = $PAGE->get_renderer('hippotrack_grading');
-        parent::print_header_and_tabs($cm, $course, $quiz, $reportmode);
+        parent::print_header_and_tabs($cm, $course, $hippotrack, $reportmode);
     }
 
     /**

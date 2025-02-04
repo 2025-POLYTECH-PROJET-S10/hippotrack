@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page handles listing of quiz overrides
+ * This page handles listing of hippotrack overrides
  *
  * @package    mod_hippotrack
  * @copyright  2010 Matt Petro
@@ -31,8 +31,8 @@ require_once($CFG->dirroot.'/mod/hippotrack/override_form.php');
 $cmid = required_param('cmid', PARAM_INT);
 $mode = optional_param('mode', '', PARAM_ALPHA); // One of 'user' or 'group', default is 'group'.
 
-list($course, $cm) = get_course_and_cm_from_cmid($cmid, 'quiz');
-$quiz = $DB->get_record('quiz', ['id' => $cm->instance], '*', MUST_EXIST);
+list($course, $cm) = get_course_and_cm_from_cmid($cmid, 'hippotrack');
+$hippotrack = $DB->get_record('hippotrack', ['id' => $cm->instance], '*', MUST_EXIST);
 
 require_login($course, false, $cm);
 
@@ -44,8 +44,8 @@ if (!$canedit) {
     require_capability('mod/hippotrack:viewoverrides', $context);
 }
 
-$quizgroupmode = groups_get_activity_groupmode($cm);
-$showallgroups = ($quizgroupmode == NOGROUPS) || has_capability('moodle/site:accessallgroups', $context);
+$hippotrackgroupmode = groups_get_activity_groupmode($cm);
+$showallgroups = ($hippotrackgroupmode == NOGROUPS) || has_capability('moodle/site:accessallgroups', $context);
 
 // Get the course groups that the current user can access.
 $groups = $showallgroups ? groups_get_all_groups($cm->course) : groups_get_activity_allowed_groups($cm);
@@ -62,8 +62,8 @@ $groupmode = ($mode == "group");
 
 $url = new moodle_url('/mod/hippotrack/overrides.php', ['cmid' => $cm->id, 'mode' => $mode]);
 
-$title = get_string('overridesforquiz', 'quiz',
-        format_string($quiz->name, true, ['context' => $context]));
+$title = get_string('overridesforhippotrack', 'hippotrack',
+        format_string($hippotrack->name, true, ['context' => $context]));
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
 $PAGE->add_body_class('limitedwidth');
@@ -80,8 +80,8 @@ $sql = 'SELECT o.id
      LEFT JOIN {groups} g ON o.groupid = g.id
          WHERE o.groupid IS NOT NULL
                AND g.id IS NULL
-               AND o.quiz = ?';
-$params = [$quiz->id];
+               AND o.hippotrack = ?';
+$params = [$hippotrack->id];
 $orphaned = $DB->get_records_sql($sql, $params);
 if (!empty($orphaned)) {
     $DB->delete_records_list('hippotrack_overrides', 'id', array_keys($orphaned));
@@ -96,14 +96,14 @@ if ($groupmode) {
     $headers[] = get_string('group');
     // To filter the result by the list of groups that the current user has access to.
     if ($groups) {
-        $params = ['quizid' => $quiz->id];
+        $params = ['hippotrackid' => $hippotrack->id];
         list($insql, $inparams) = $DB->get_in_or_equal(array_keys($groups), SQL_PARAMS_NAMED);
         $params += $inparams;
 
         $sql = "SELECT o.*, g.name
                   FROM {hippotrack_overrides} o
                   JOIN {groups} g ON o.groupid = g.id
-                 WHERE o.quiz = :quizid AND g.id $insql
+                 WHERE o.hippotrack = :hippotrackid AND g.id $insql
               ORDER BY g.name";
 
         $overrides = $DB->get_records_sql($sql, $params);
@@ -122,7 +122,7 @@ if ($groupmode) {
     }
 
     list($sort, $params) = users_order_by_sql('u', null, $context, $extrauserfields);
-    $params['quizid'] = $quiz->id;
+    $params['hippotrackid'] = $hippotrack->id;
 
     if ($showallgroups) {
         $groupsjoin = '';
@@ -146,7 +146,7 @@ if ($groupmode) {
               JOIN {user} u ON o.userid = u.id
                   {$userfieldssql->joins}
               $groupsjoin
-             WHERE o.quiz = :quizid
+             WHERE o.hippotrack = :hippotrackid
                $groupswhere
              ORDER BY $sort
             ", array_merge($params, $userfieldssql->params));
@@ -182,7 +182,7 @@ foreach ($overrides as $override) {
     $active = true;
     if (!$groupmode) {
         if (!has_capability('mod/hippotrack:attempt', $context, $override->userid)) {
-            // User not allowed to take the quiz.
+            // User not allowed to take the hippotrack.
             $active = false;
         } else if (!\core_availability\info_module::is_user_visible($cm, $override->userid)) {
             // User cannot access the module.
@@ -199,13 +199,13 @@ foreach ($overrides as $override) {
 
     // Format timeopen.
     if (isset($override->timeopen)) {
-        $fields[] = get_string('quizopens', 'hippotrack');
+        $fields[] = get_string('hippotrackopens', 'hippotrack');
         $values[] = $override->timeopen > 0 ?
                 userdate($override->timeopen) : get_string('noopen', 'hippotrack');
     }
     // Format timeclose.
     if (isset($override->timeclose)) {
-        $fields[] = get_string('quizcloses', 'hippotrack');
+        $fields[] = get_string('hippotrackcloses', 'hippotrack');
         $values[] = $override->timeclose > 0 ?
                 userdate($override->timeclose) : get_string('noclose', 'hippotrack');
     }
@@ -314,7 +314,7 @@ if ($canedit) {
             $addenabled = false;
         }
     } else {
-        // See if there are any students in the quiz.
+        // See if there are any students in the hippotrack.
         if ($showallgroups) {
             $users = get_users_by_capability($context, 'mod/hippotrack:attempt', 'u.id');
             $nousermessage = get_string('usersnone', 'hippotrack');
@@ -349,7 +349,7 @@ if ($mode === 'user') {
 }
 
 // Output the table and button.
-echo html_writer::start_tag('div', ['id' => 'quizoverrides']);
+echo html_writer::start_tag('div', ['id' => 'hippotrackoverrides']);
 if (count($table->data)) {
     echo html_writer::table($table);
 } else {

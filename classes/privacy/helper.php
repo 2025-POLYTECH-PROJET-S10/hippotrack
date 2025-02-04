@@ -45,7 +45,7 @@ require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
  */
 class helper {
     /**
-     * Determine the subcontext for the specified quiz attempt.
+     * Determine the subcontext for the specified hippotrack attempt.
      *
      * @param   \stdClass       $attempt    The attempt data retrieved from the database.
      * @param   \stdClass       $user       The user record.

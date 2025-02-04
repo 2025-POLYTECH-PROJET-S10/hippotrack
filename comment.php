@@ -38,7 +38,7 @@ $student = $DB->get_record('user', array('id' => $attemptobj->get_userid()));
 
 // Can only grade finished attempts.
 if (!$attemptobj->is_finished()) {
-    throw new \moodle_exception('attemptclosed', 'quiz');
+    throw new \moodle_exception('attemptclosed', 'hippotrack');
 }
 
 // Check login and permissions.
@@ -47,9 +47,9 @@ $attemptobj->require_capability('mod/hippotrack:grade');
 
 // Print the page header.
 $PAGE->set_pagelayout('popup');
-$PAGE->set_title(get_string('manualgradequestion', 'quiz', array(
+$PAGE->set_title(get_string('manualgradequestion', 'hippotrack', array(
         'question' => format_string($attemptobj->get_question_name($slot)),
-        'quiz' => format_string($attemptobj->get_hippotrack_name()), 'user' => fullname($student))));
+        'hippotrack' => format_string($attemptobj->get_hippotrack_name()), 'user' => fullname($student))));
 $PAGE->set_heading($attemptobj->get_course()->fullname);
 $output = $PAGE->get_renderer('mod_hippotrack');
 echo $output->header();
@@ -67,8 +67,8 @@ $summarydata['user'] = array(
             fullname($student, true)),
 );
 
-// Quiz name.
-$summarydata['quizname'] = array(
+// HippoTrack name.
+$summarydata['hippotrackname'] = array(
     'title'   => get_string('modulename', 'hippotrack'),
     'content' => format_string($attemptobj->get_hippotrack_name()),
 );
@@ -92,7 +92,7 @@ if (data_submitted() && confirm_sesskey()) {
             'courseid' => $attemptobj->get_courseid(),
             'context' => context_module::instance($attemptobj->get_cmid()),
             'other' => array(
-                'quizid' => $attemptobj->get_quizid(),
+                'hippotrackid' => $attemptobj->get_hippotrackid(),
                 'attemptid' => $attemptobj->get_attemptid(),
                 'slot' => $slot
             )
@@ -106,7 +106,7 @@ if (data_submitted() && confirm_sesskey()) {
     }
 }
 
-// Print quiz information.
+// Print hippotrack information.
 echo $output->review_summary_table($summarydata, 0);
 
 // Print the comment form.
@@ -125,7 +125,7 @@ echo $attemptobj->render_question_for_commenting($slot);
         <div class="fitem fitem_actionbuttons fitem_fsubmit mt-3">
             <fieldset class="felement fsubmit">
                 <input id="id_submitbutton" type="submit" name="submit" class="btn btn-primary" value="<?php
-                        print_string('save', 'quiz'); ?>"/>
+                        print_string('save', 'hippotrack'); ?>"/>
             </fieldset>
         </div>
     </div>

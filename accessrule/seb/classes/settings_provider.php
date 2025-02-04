@@ -15,11 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class for providing quiz settings, to make setting up quiz form manageable.
+ * Class for providing hippotrack settings, to make setting up hippotrack form manageable.
  *
  * To make sure there are no inconsistencies between data sets, run tests in tests/phpunit/settings_provider_test.php.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Luca Bösch <luca.boesch@bfh.ch>
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
@@ -27,7 +27,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_seb;
+namespace hippotrackaccess_seb;
 
 use context_module;
 use context_user;
@@ -38,7 +38,7 @@ use stored_file;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Helper class for providing quiz settings, to make setting up quiz form manageable.
+ * Helper class for providing hippotrack settings, to make setting up hippotrack form manageable.
  *
  * @copyright  2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -73,12 +73,12 @@ class settings_provider {
     /**
      * Insert form element.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      * @param \HTML_QuickForm_element $element Element to insert.
      * @param string $before Insert element before.
      */
-    protected static function insert_element(\mod_hippotrack_mod_form $quizform,
+    protected static function insert_element(\mod_hippotrack_mod_form $hippotrackform,
                                              \MoodleQuickForm $mform, \HTML_QuickForm_element $element, $before = 'security') {
         $mform->insertElementBefore($element, $before);
     }
@@ -86,11 +86,11 @@ class settings_provider {
     /**
      * Remove element from the form.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      * @param string $elementname Element name.
      */
-    protected static function remove_element(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform, string  $elementname) {
+    protected static function remove_element(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform, string  $elementname) {
         if ($mform->elementExists($elementname)) {
             $mform->removeElement($elementname);
             $mform->setDefault($elementname, null);
@@ -100,48 +100,48 @@ class settings_provider {
     /**
      * Add help button to the element.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      * @param string $elementname Element name.
      */
-    protected static function add_help_button(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform, string $elementname) {
+    protected static function add_help_button(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform, string $elementname) {
         if ($mform->elementExists($elementname)) {
-            $mform->addHelpButton($elementname, $elementname, 'quizaccess_seb');
+            $mform->addHelpButton($elementname, $elementname, 'hippotrackaccess_seb');
         }
     }
 
     /**
      * Set default value for the element.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      * @param string $elementname Element name.
      * @param mixed $value Default value.
      */
-    protected static function set_default(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform, string  $elementname, $value) {
+    protected static function set_default(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform, string  $elementname, $value) {
         $mform->setDefault($elementname, $value);
     }
 
     /**
      * Set element type.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      * @param string $elementname Element name.
      * @param string $type Type of the form element.
      */
-    protected static function set_type(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform, string $elementname, string $type) {
+    protected static function set_type(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform, string $elementname, string $type) {
         $mform->setType($elementname, $type);
     }
 
     /**
      * Freeze form element.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      * @param string $elementname Element name.
      */
-    protected static function freeze_element(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform, string $elementname) {
+    protected static function freeze_element(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform, string $elementname) {
         if ($mform->elementExists($elementname)) {
             $mform->freeze($elementname);
         }
@@ -150,114 +150,114 @@ class settings_provider {
     /**
      * Add SEB header element to  the form.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
-    protected static function add_seb_header_element(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform) {
+    protected static function add_seb_header_element(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform) {
         global  $OUTPUT;
 
-        $element = $mform->createElement('header', 'seb', get_string('seb', 'quizaccess_seb'));
-        self::insert_element($quizform, $mform, $element);
+        $element = $mform->createElement('header', 'seb', get_string('seb', 'hippotrackaccess_seb'));
+        self::insert_element($hippotrackform, $mform, $element);
 
         // Display notification about locked settings.
-        if (self::is_seb_settings_locked($quizform->get_instance())) {
+        if (self::is_seb_settings_locked($hippotrackform->get_instance())) {
             $notify = new \core\output\notification(
-                get_string('settingsfrozen', 'quizaccess_seb'),
+                get_string('settingsfrozen', 'hippotrackaccess_seb'),
                 \core\output\notification::NOTIFY_WARNING
             );
 
             $notifyelement = $mform->createElement('html', $OUTPUT->render($notify));
-            self::insert_element($quizform, $mform, $notifyelement);
+            self::insert_element($hippotrackform, $mform, $notifyelement);
         }
 
-        if (self::is_conflicting_permissions($quizform->get_context())) {
+        if (self::is_conflicting_permissions($hippotrackform->get_context())) {
             $notify = new \core\output\notification(
-                get_string('conflictingsettings', 'quizaccess_seb'),
+                get_string('conflictingsettings', 'hippotrackaccess_seb'),
                 \core\output\notification::NOTIFY_WARNING
             );
 
             $notifyelement = $mform->createElement('html', $OUTPUT->render($notify));
-            self::insert_element($quizform, $mform, $notifyelement);
+            self::insert_element($hippotrackform, $mform, $notifyelement);
         }
     }
 
     /**
      * Add SEB usage element with all available options.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
-    protected static function add_seb_usage_options(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform) {
+    protected static function add_seb_usage_options(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform) {
         $element = $mform->createElement(
             'select',
             'seb_requiresafeexambrowser',
-            get_string('seb_requiresafeexambrowser', 'quizaccess_seb'),
-            self::get_requiresafeexambrowser_options($quizform->get_context())
+            get_string('seb_requiresafeexambrowser', 'hippotrackaccess_seb'),
+            self::get_requiresafeexambrowser_options($hippotrackform->get_context())
         );
 
-        self::insert_element($quizform, $mform, $element);
-        self::set_type($quizform, $mform, 'seb_requiresafeexambrowser', PARAM_INT);
-        self::set_default($quizform, $mform, 'seb_requiresafeexambrowser', self::USE_SEB_NO);
-        self::add_help_button($quizform, $mform, 'seb_requiresafeexambrowser');
+        self::insert_element($hippotrackform, $mform, $element);
+        self::set_type($hippotrackform, $mform, 'seb_requiresafeexambrowser', PARAM_INT);
+        self::set_default($hippotrackform, $mform, 'seb_requiresafeexambrowser', self::USE_SEB_NO);
+        self::add_help_button($hippotrackform, $mform, 'seb_requiresafeexambrowser');
 
-        if (self::is_conflicting_permissions($quizform->get_context())) {
-            self::freeze_element($quizform, $mform, 'seb_requiresafeexambrowser');
+        if (self::is_conflicting_permissions($hippotrackform->get_context())) {
+            self::freeze_element($hippotrackform, $mform, 'seb_requiresafeexambrowser');
         }
     }
 
     /**
      * Add Templates element.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
-    protected static function add_seb_templates(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform) {
-        if (self::can_use_seb_template($quizform->get_context()) || self::is_conflicting_permissions($quizform->get_context())) {
+    protected static function add_seb_templates(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform) {
+        if (self::can_use_seb_template($hippotrackform->get_context()) || self::is_conflicting_permissions($hippotrackform->get_context())) {
             $element = $mform->createElement(
                 'select',
                 'seb_templateid',
-                get_string('seb_templateid', 'quizaccess_seb'),
+                get_string('seb_templateid', 'hippotrackaccess_seb'),
                 self::get_template_options()
             );
         } else {
             $element = $mform->createElement('hidden', 'seb_templateid');
         }
 
-        self::insert_element($quizform, $mform, $element);
-        self::set_type($quizform, $mform, 'seb_templateid', PARAM_INT);
-        self::set_default($quizform, $mform, 'seb_templateid', 0);
-        self::add_help_button($quizform, $mform, 'seb_templateid');
+        self::insert_element($hippotrackform, $mform, $element);
+        self::set_type($hippotrackform, $mform, 'seb_templateid', PARAM_INT);
+        self::set_default($hippotrackform, $mform, 'seb_templateid', 0);
+        self::add_help_button($hippotrackform, $mform, 'seb_templateid');
 
-        // In case if the user can't use templates, but the quiz is configured to use them,
+        // In case if the user can't use templates, but the hippotrack is configured to use them,
         // we'd like to display template, but freeze it.
-        if (self::is_conflicting_permissions($quizform->get_context())) {
-            self::freeze_element($quizform, $mform, 'seb_templateid');
+        if (self::is_conflicting_permissions($hippotrackform->get_context())) {
+            self::freeze_element($hippotrackform, $mform, 'seb_templateid');
         }
     }
 
     /**
      * Add upload config file element.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
-    protected static function add_seb_config_file(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform) {
+    protected static function add_seb_config_file(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform) {
         $itemid = 0;
 
         $draftitemid = 0;
         file_prepare_draft_area(
             $draftitemid,
-            $quizform->get_context()->id,
-            'quizaccess_seb',
+            $hippotrackform->get_context()->id,
+            'hippotrackaccess_seb',
             'filemanager_sebconfigfile',
             $itemid
         );
 
-        if (self::can_upload_seb_file($quizform->get_context())) {
+        if (self::can_upload_seb_file($hippotrackform->get_context())) {
             $element = $mform->createElement(
                 'filemanager',
                 'filemanager_sebconfigfile',
-                get_string('filemanager_sebconfigfile', 'quizaccess_seb'),
+                get_string('filemanager_sebconfigfile', 'hippotrackaccess_seb'),
                 null,
                 self::get_filemanager_options()
             );
@@ -265,77 +265,77 @@ class settings_provider {
             $element = $mform->createElement('hidden', 'filemanager_sebconfigfile');
         }
 
-        self::insert_element($quizform, $mform, $element);
-        self::set_type($quizform, $mform, 'filemanager_sebconfigfile', PARAM_RAW);
-        self::set_default($quizform, $mform, 'filemanager_sebconfigfile', $draftitemid);
-        self::add_help_button($quizform, $mform, 'filemanager_sebconfigfile');
+        self::insert_element($hippotrackform, $mform, $element);
+        self::set_type($hippotrackform, $mform, 'filemanager_sebconfigfile', PARAM_RAW);
+        self::set_default($hippotrackform, $mform, 'filemanager_sebconfigfile', $draftitemid);
+        self::add_help_button($hippotrackform, $mform, 'filemanager_sebconfigfile');
     }
 
     /**
      * Add Show Safe Exam Browser download button.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
-    protected static function add_seb_show_download_link(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform) {
-        if (self::can_change_seb_showsebdownloadlink($quizform->get_context())) {
+    protected static function add_seb_show_download_link(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform) {
+        if (self::can_change_seb_showsebdownloadlink($hippotrackform->get_context())) {
             $element = $mform->createElement('selectyesno',
                 'seb_showsebdownloadlink',
-                get_string('seb_showsebdownloadlink', 'quizaccess_seb')
+                get_string('seb_showsebdownloadlink', 'hippotrackaccess_seb')
             );
-            self::insert_element($quizform, $mform, $element);
-            self::set_type($quizform, $mform, 'seb_showsebdownloadlink', PARAM_BOOL);
-            self::set_default($quizform, $mform, 'seb_showsebdownloadlink', 1);
-            self::add_help_button($quizform, $mform, 'seb_showsebdownloadlink');
+            self::insert_element($hippotrackform, $mform, $element);
+            self::set_type($hippotrackform, $mform, 'seb_showsebdownloadlink', PARAM_BOOL);
+            self::set_default($hippotrackform, $mform, 'seb_showsebdownloadlink', 1);
+            self::add_help_button($hippotrackform, $mform, 'seb_showsebdownloadlink');
         }
     }
 
     /**
      * Add Allowed Browser Exam Keys setting.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
-    protected static function add_seb_allowedbrowserexamkeys(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform) {
-        if (self::can_change_seb_allowedbrowserexamkeys($quizform->get_context())) {
+    protected static function add_seb_allowedbrowserexamkeys(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform) {
+        if (self::can_change_seb_allowedbrowserexamkeys($hippotrackform->get_context())) {
             $element = $mform->createElement('textarea',
                 'seb_allowedbrowserexamkeys',
-                get_string('seb_allowedbrowserexamkeys', 'quizaccess_seb')
+                get_string('seb_allowedbrowserexamkeys', 'hippotrackaccess_seb')
             );
-            self::insert_element($quizform, $mform, $element);
-            self::set_type($quizform, $mform, 'seb_allowedbrowserexamkeys', PARAM_RAW);
-            self::set_default($quizform, $mform, 'seb_allowedbrowserexamkeys', '');
-            self::add_help_button($quizform, $mform, 'seb_allowedbrowserexamkeys');
+            self::insert_element($hippotrackform, $mform, $element);
+            self::set_type($hippotrackform, $mform, 'seb_allowedbrowserexamkeys', PARAM_RAW);
+            self::set_default($hippotrackform, $mform, 'seb_allowedbrowserexamkeys', '');
+            self::add_help_button($hippotrackform, $mform, 'seb_allowedbrowserexamkeys');
         }
     }
 
     /**
      * Add SEB config elements.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
-    protected static function add_seb_config_elements(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform) {
+    protected static function add_seb_config_elements(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform) {
         $defaults = self::get_seb_config_element_defaults();
         $types = self::get_seb_config_element_types();
 
         foreach (self::get_seb_config_elements() as $name => $type) {
-            if (!self::can_manage_seb_config_setting($name, $quizform->get_context())) {
+            if (!self::can_manage_seb_config_setting($name, $hippotrackform->get_context())) {
                 $type = 'hidden';
             }
 
-            $element = $mform->createElement($type, $name, get_string($name, 'quizaccess_seb'));
-            self::insert_element($quizform, $mform, $element);
+            $element = $mform->createElement($type, $name, get_string($name, 'hippotrackaccess_seb'));
+            self::insert_element($hippotrackform, $mform, $element);
             unset($element); // We need to make sure each &element only references the current element in loop.
 
-            self::add_help_button($quizform, $mform, $name);
+            self::add_help_button($hippotrackform, $mform, $name);
 
             if (isset($defaults[$name])) {
-                self::set_default($quizform, $mform, $name, $defaults[$name]);
+                self::set_default($hippotrackform, $mform, $name, $defaults[$name]);
             }
 
             if (isset($types[$name])) {
-                self::set_type($quizform, $mform, $name, $types[$name]);
+                self::set_type($hippotrackform, $mform, $name, $types[$name]);
             }
         }
     }
@@ -343,30 +343,30 @@ class settings_provider {
     /**
      * Add setting fields.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
-    public static function add_seb_settings_fields(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform) {
-        if (self::can_configure_seb($quizform->get_context())) {
-            self::add_seb_header_element($quizform, $mform);
-            self::add_seb_usage_options($quizform, $mform);
-            self::add_seb_templates($quizform, $mform);
-            self::add_seb_config_file($quizform, $mform);
-            self::add_seb_show_download_link($quizform, $mform);
-            self::add_seb_config_elements($quizform, $mform);
-            self::add_seb_allowedbrowserexamkeys($quizform, $mform);
-            self::hide_seb_elements($quizform, $mform);
-            self::lock_seb_elements($quizform, $mform);
+    public static function add_seb_settings_fields(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform) {
+        if (self::can_configure_seb($hippotrackform->get_context())) {
+            self::add_seb_header_element($hippotrackform, $mform);
+            self::add_seb_usage_options($hippotrackform, $mform);
+            self::add_seb_templates($hippotrackform, $mform);
+            self::add_seb_config_file($hippotrackform, $mform);
+            self::add_seb_show_download_link($hippotrackform, $mform);
+            self::add_seb_config_elements($hippotrackform, $mform);
+            self::add_seb_allowedbrowserexamkeys($hippotrackform, $mform);
+            self::hide_seb_elements($hippotrackform, $mform);
+            self::lock_seb_elements($hippotrackform, $mform);
         }
     }
 
     /**
      * Hide SEB elements if required.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
-    protected static function hide_seb_elements(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform) {
+    protected static function hide_seb_elements(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform) {
         foreach (self::get_hippotrack_hideifs() as $elname => $rules) {
             if ($mform->elementExists($elname)) {
                 foreach ($rules as $hideif) {
@@ -384,41 +384,41 @@ class settings_provider {
     /**
      * Lock SEB elements if required.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
-    protected static function lock_seb_elements(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform) {
-        if (self::is_seb_settings_locked($quizform->get_instance()) || self::is_conflicting_permissions($quizform->get_context())) {
-            // Freeze common quiz settings.
-            self::freeze_element($quizform, $mform, 'seb_requiresafeexambrowser');
-            self::freeze_element($quizform, $mform, 'seb_templateid');
-            self::freeze_element($quizform, $mform, 'seb_showsebdownloadlink');
-            self::freeze_element($quizform, $mform, 'seb_allowedbrowserexamkeys');
+    protected static function lock_seb_elements(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform) {
+        if (self::is_seb_settings_locked($hippotrackform->get_instance()) || self::is_conflicting_permissions($hippotrackform->get_context())) {
+            // Freeze common hippotrack settings.
+            self::freeze_element($hippotrackform, $mform, 'seb_requiresafeexambrowser');
+            self::freeze_element($hippotrackform, $mform, 'seb_templateid');
+            self::freeze_element($hippotrackform, $mform, 'seb_showsebdownloadlink');
+            self::freeze_element($hippotrackform, $mform, 'seb_allowedbrowserexamkeys');
 
-            $quizsettings = hippotrack_settings::get_by_hippotrack_id((int) $quizform->get_instance());
+            $hippotracksettings = hippotrack_settings::get_by_hippotrack_id((int) $hippotrackform->get_instance());
 
             // If the file has been uploaded, then replace it with the link to download the file.
-            if (!empty($quizsettings) && $quizsettings->get('requiresafeexambrowser') == self::USE_SEB_UPLOAD_CONFIG) {
-                self::remove_element($quizform, $mform, 'filemanager_sebconfigfile');
-                if ($link = self::get_uploaded_seb_file_download_link($quizform, $mform)) {
+            if (!empty($hippotracksettings) && $hippotracksettings->get('requiresafeexambrowser') == self::USE_SEB_UPLOAD_CONFIG) {
+                self::remove_element($hippotrackform, $mform, 'filemanager_sebconfigfile');
+                if ($link = self::get_uploaded_seb_file_download_link($hippotrackform, $mform)) {
                     $element = $mform->createElement(
                         'static',
                         'filemanager_sebconfigfile',
-                        get_string('filemanager_sebconfigfile', 'quizaccess_seb'),
+                        get_string('filemanager_sebconfigfile', 'hippotrackaccess_seb'),
                         $link
                     );
-                    self::insert_element($quizform, $mform, $element, 'seb_showsebdownloadlink');
+                    self::insert_element($hippotrackform, $mform, $element, 'seb_showsebdownloadlink');
                 }
             }
 
-            // Remove template ID if not using template for this quiz.
-            if (empty($quizsettings) || $quizsettings->get('requiresafeexambrowser') != self::USE_SEB_TEMPLATE) {
+            // Remove template ID if not using template for this hippotrack.
+            if (empty($hippotracksettings) || $hippotracksettings->get('requiresafeexambrowser') != self::USE_SEB_TEMPLATE) {
                 $mform->removeElement('seb_templateid');
             }
 
             // Freeze all SEB specific settings.
             foreach (self::get_seb_config_elements() as $element => $type) {
-                self::freeze_element($quizform, $mform, $element);
+                self::freeze_element($hippotrackform, $mform, $element);
             }
         }
     }
@@ -426,13 +426,13 @@ class settings_provider {
     /**
      * Return uploaded SEB config file link.
      *
-     * @param \mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param \mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param \MoodleQuickForm $mform the wrapped MoodleQuickForm.
      * @return string
      */
-    protected static function get_uploaded_seb_file_download_link(\mod_hippotrack_mod_form $quizform, \MoodleQuickForm $mform) : string {
+    protected static function get_uploaded_seb_file_download_link(\mod_hippotrack_mod_form $hippotrackform, \MoodleQuickForm $mform) : string {
         $link = '';
-        $file = self::get_module_context_sebconfig_file($quizform->get_coursemodule()->id);
+        $file = self::get_module_context_sebconfig_file($hippotrackform->get_coursemodule()->id);
 
         if ($file) {
             $url = \moodle_url::make_pluginfile_url(
@@ -444,18 +444,18 @@ class settings_provider {
                 $file->get_filename(),
                 true
             );
-            $link = \html_writer::link($url, get_string('downloadsebconfig', 'quizaccess_seb'));
+            $link = \html_writer::link($url, get_string('downloadsebconfig', 'hippotrackaccess_seb'));
         }
 
         return $link;
     }
 
     /**
-     * Get the type of element for each of the form elements in quiz settings.
+     * Get the type of element for each of the form elements in hippotrack settings.
      *
      * Contains all setting elements. Array key is name of 'form element'/'database column (excluding prefix)'.
      *
-     * @return array All quiz form elements to be added and their types.
+     * @return array All hippotrack form elements to be added and their types.
      */
     public static function get_seb_config_elements() : array {
         return [
@@ -483,7 +483,7 @@ class settings_provider {
 
 
     /**
-     * Get the types of the quiz settings elements.
+     * Get the types of the hippotrack settings elements.
      * @return array List of types for the setting elements.
      */
     public static function get_seb_config_element_types() : array {
@@ -515,7 +515,7 @@ class settings_provider {
      *
      * In Some point we can have settings save by the person who use specific
      * type of SEB usage (e.g. use templates). But then another person who can't
-     * use template (but still can update other settings) edit the same quiz. This is
+     * use template (but still can update other settings) edit the same hippotrack. This is
      * conflict of permissions and we'd like to build the settings form having this in
      * mind.
      *
@@ -562,20 +562,20 @@ class settings_provider {
         $options[self::USE_SEB_NO] = get_string('no');
 
         if (self::can_configure_manually($context) || self::is_conflicting_permissions($context)) {
-            $options[self::USE_SEB_CONFIG_MANUALLY] = get_string('seb_use_manually', 'quizaccess_seb');
+            $options[self::USE_SEB_CONFIG_MANUALLY] = get_string('seb_use_manually', 'hippotrackaccess_seb');
         }
 
         if (self::can_use_seb_template($context) || self::is_conflicting_permissions($context)) {
             if (!empty(self::get_template_options())) {
-                $options[self::USE_SEB_TEMPLATE] = get_string('seb_use_template', 'quizaccess_seb');
+                $options[self::USE_SEB_TEMPLATE] = get_string('seb_use_template', 'hippotrackaccess_seb');
             }
         }
 
         if (self::can_upload_seb_file($context) || self::is_conflicting_permissions($context)) {
-            $options[self::USE_SEB_UPLOAD_CONFIG] = get_string('seb_use_upload', 'quizaccess_seb');
+            $options[self::USE_SEB_UPLOAD_CONFIG] = get_string('seb_use_upload', 'hippotrackaccess_seb');
         }
 
-        $options[self::USE_SEB_CLIENT_CONFIG] = get_string('seb_use_client', 'quizaccess_seb');
+        $options[self::USE_SEB_CLIENT_CONFIG] = get_string('seb_use_client', 'hippotrackaccess_seb');
 
         return $options;
     }
@@ -609,7 +609,7 @@ class settings_provider {
     }
 
     /**
-     * Get the default values of the quiz settings.
+     * Get the default values of the hippotrack settings.
      *
      * Array key is name of 'form element'/'database column (excluding prefix)'.
      *
@@ -657,13 +657,13 @@ class settings_provider {
         // If we require an SEB config uploaded, and the file exists, parse it.
         if ($file) {
             if (!helper::is_valid_seb_config($file->get_content())) {
-                return new lang_string('fileparsefailed', 'quizaccess_seb');
+                return new lang_string('fileparsefailed', 'hippotrackaccess_seb');
             }
         }
 
         // If we require an SEB config uploaded, and the file does not exist, error.
         if (!$file) {
-            return new lang_string('filenotpresent', 'quizaccess_seb');
+            return new lang_string('filenotpresent', 'hippotrackaccess_seb');
         }
     }
 
@@ -693,7 +693,7 @@ class settings_provider {
         $fs = new \file_storage();
         $context = context_module::instance($cmid);
 
-        if (!$files = $fs->get_area_files($context->id, 'quizaccess_seb', 'filemanager_sebconfigfile', 0,
+        if (!$files = $fs->get_area_files($context->id, 'hippotrackaccess_seb', 'filemanager_sebconfigfile', 0,
             'id DESC', false)) {
             return null;
         }
@@ -705,13 +705,13 @@ class settings_provider {
      * Saves filemanager_sebconfigfile files to the moodle storage backend.
      *
      * @param string $draftitemid The id of the draft area to use.
-     * @param string $cmid The cmid of for the quiz.
+     * @param string $cmid The cmid of for the hippotrack.
      * @return bool Always true
      */
     public static function save_filemanager_sebconfigfile_draftarea(string $draftitemid, string $cmid) : bool {
         if ($draftitemid) {
             $context = context_module::instance($cmid);
-            file_save_draft_area_files($draftitemid, $context->id, 'quizaccess_seb', 'filemanager_sebconfigfile',
+            file_save_draft_area_files($draftitemid, $context->id, 'hippotrackaccess_seb', 'filemanager_sebconfigfile',
                 0, []);
         }
 
@@ -722,7 +722,7 @@ class settings_provider {
      * Cleanup function to delete the saved config when it has not been specified.
      * This will be called when settings_provider::USE_SEB_UPLOAD_CONFIG is not true.
      *
-     * @param string $cmid The cmid of for the quiz.
+     * @param string $cmid The cmid of for the hippotrack.
      * @return bool Always true or exception if error occurred
      */
     public static function delete_uploaded_config_file(string $cmid) : bool {
@@ -742,7 +742,7 @@ class settings_provider {
      * @return bool
      */
     public static function can_configure_seb(\context $context) : bool {
-        return has_capability('quizaccess/seb:manage_seb_requiresafeexambrowser', $context);
+        return has_capability('hippotrackaccess/seb:manage_seb_requiresafeexambrowser', $context);
     }
 
     /**
@@ -752,7 +752,7 @@ class settings_provider {
      * @return bool
      */
     public static function can_use_seb_template(\context $context) : bool {
-        return has_capability('quizaccess/seb:manage_seb_templateid', $context);
+        return has_capability('hippotrackaccess/seb:manage_seb_templateid', $context);
     }
 
     /**
@@ -762,7 +762,7 @@ class settings_provider {
      * @return bool
      */
     public static function can_upload_seb_file(\context $context) : bool {
-        return has_capability('quizaccess/seb:manage_filemanager_sebconfigfile', $context);
+        return has_capability('hippotrackaccess/seb:manage_filemanager_sebconfigfile', $context);
     }
 
     /**
@@ -772,7 +772,7 @@ class settings_provider {
      * @return bool
      */
     public static function can_change_seb_showsebdownloadlink(\context $context) : bool {
-        return has_capability('quizaccess/seb:manage_seb_showsebdownloadlink', $context);
+        return has_capability('hippotrackaccess/seb:manage_seb_showsebdownloadlink', $context);
     }
 
     /**
@@ -782,7 +782,7 @@ class settings_provider {
      * @return bool
      */
     public static function can_change_seb_allowedbrowserexamkeys(\context $context) : bool {
-        return has_capability('quizaccess/seb:manage_seb_allowedbrowserexamkeys', $context);
+        return has_capability('hippotrackaccess/seb:manage_seb_allowedbrowserexamkeys', $context);
     }
 
     /**
@@ -1011,30 +1011,30 @@ class settings_provider {
      */
     public static function build_setting_capability_name(string $settingname) : string {
         if (!key_exists($settingname, self::get_seb_config_elements())) {
-            throw new \coding_exception('Incorrect SEB quiz setting ' . $settingname);
+            throw new \coding_exception('Incorrect SEB hippotrack setting ' . $settingname);
         }
 
-        return 'quizaccess/seb:manage_' . $settingname;
+        return 'hippotrackaccess/seb:manage_' . $settingname;
     }
 
     /**
      * Check if settings is locked.
      *
-     * @param int $quizid Quiz ID.
+     * @param int $hippotrackid HippoTrack ID.
      * @return bool
      */
-    public static function is_seb_settings_locked($quizid) : bool {
-        if (empty($quizid)) {
+    public static function is_seb_settings_locked($hippotrackid) : bool {
+        if (empty($hippotrackid)) {
             return false;
         }
 
-        return hippotrack_has_attempts($quizid);
+        return hippotrack_has_attempts($hippotrackid);
     }
 
     /**
      * Filter a standard class by prefix.
      *
-     * @param stdClass $settings Quiz settings object.
+     * @param stdClass $settings HippoTrack settings object.
      * @return stdClass Filtered object.
      */
     private static function filter_by_prefix(\stdClass $settings): stdClass {
@@ -1051,7 +1051,7 @@ class settings_provider {
     /**
      * Filter settings based on the setting map. Set value of not allowed settings to null.
      *
-     * @param stdClass $settings Quiz settings.
+     * @param stdClass $settings HippoTrack settings.
      * @return \stdClass
      */
     private static function filter_by_settings_map(stdClass $settings) : stdClass {
@@ -1076,9 +1076,9 @@ class settings_provider {
     }
 
     /**
-     * Filter quiz settings for this plugin only.
+     * Filter hippotrack settings for this plugin only.
      *
-     * @param stdClass $settings Quiz settings.
+     * @param stdClass $settings HippoTrack settings.
      * @return stdClass Filtered settings.
      */
     public static function filter_plugin_settings(stdClass $settings) : stdClass {

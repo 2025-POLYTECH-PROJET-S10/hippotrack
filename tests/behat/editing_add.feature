@@ -1,8 +1,8 @@
 @mod @mod_hippotrack
-Feature: Edit quiz page - adding things
-  In order to build the quiz I want my students to attempt
+Feature: Edit hippotrack page - adding things
+  In order to build the hippotrack I want my students to attempt
   As a teacher
-  I need to be able to add questions to the quiz.
+  I need to be able to add questions to the hippotrack.
 
   Background:
     Given the following "users" exist:
@@ -16,12 +16,12 @@ Feature: Edit quiz page - adding things
       | teacher1 | C1     | editingteacher |
     And the following "activities" exist:
       | activity   | name   | intro                           | course | idnumber |
-      | quiz       | Quiz 1 | Quiz 1 for testing the Add menu | C1     | quiz1    |
-    And I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 for testing the Add menu | C1     | hippotrack1    |
+    And I am on the "HippoTrack 1" "mod_hippotrack > Edit" page logged in as "teacher1"
 
   @javascript
-  Scenario: Add some new question to the quiz using '+ a new question' options of the 'Add' menu.
-    When I open the "last" add to quiz menu
+  Scenario: Add some new question to the hippotrack using '+ a new question' options of the 'Add' menu.
+    When I open the "last" add to hippotrack menu
     And I follow "a new question"
     And I set the field "item_qtype_essay" to "1"
     And I press "submitbutton"
@@ -29,9 +29,9 @@ Feature: Edit quiz page - adding things
     And I set the field "Question name" to "Essay 01 new"
     And I set the field "Question text" to "Please write 200 words about Essay 01"
     And I press "id_submitbutton"
-    And I should see "Essay 01 new" on quiz page "1"
+    And I should see "Essay 01 new" on hippotrack page "1"
 
-    And I open the "Page 1" add to quiz menu
+    And I open the "Page 1" add to hippotrack menu
     And I follow "a new question"
     And I set the field "item_qtype_essay" to "1"
     And I press "submitbutton"
@@ -39,10 +39,10 @@ Feature: Edit quiz page - adding things
     And I set the field "Question name" to "Essay 02 new"
     And I set the field "Question text" to "Please write 200 words about Essay 02"
     And I press "id_submitbutton"
-    And I should see "Essay 01 new" on quiz page "1"
-    And I should see "Essay 02 new" on quiz page "1"
+    And I should see "Essay 01 new" on hippotrack page "1"
+    And I should see "Essay 02 new" on hippotrack page "1"
 
-    And I open the "Page 1" add to quiz menu
+    And I open the "Page 1" add to hippotrack menu
     And I follow "a new question"
     And I set the field "item_qtype_essay" to "1"
     And I press "submitbutton"
@@ -50,11 +50,11 @@ Feature: Edit quiz page - adding things
     And I set the field "Question name" to "Essay 03 new"
     And I set the field "Question text" to "Please write 300 words about Essay 03"
     And I press "id_submitbutton"
-    And I should see "Essay 01 new" on quiz page "1"
-    And I should see "Essay 02 new" on quiz page "1"
-    And I should see "Essay 03 new" on quiz page "1"
+    And I should see "Essay 01 new" on hippotrack page "1"
+    And I should see "Essay 02 new" on hippotrack page "1"
+    And I should see "Essay 03 new" on hippotrack page "1"
 
-    And I open the "Page 1" add to quiz menu
+    And I open the "Page 1" add to hippotrack menu
     And I follow "a new question"
     And I set the field "item_qtype_essay" to "1"
     And I press "submitbutton"
@@ -62,10 +62,10 @@ Feature: Edit quiz page - adding things
     And I set the field "Question name" to "Essay 04 new"
     And I set the field "Question text" to "Please write 300 words about Essay 04"
     And I press "id_submitbutton"
-    And I should see "Essay 01 new" on quiz page "1"
-    And I should see "Essay 02 new" on quiz page "1"
-    And I should see "Essay 03 new" on quiz page "1"
-    And I should see "Essay 04 new" on quiz page "1"
+    And I should see "Essay 01 new" on hippotrack page "1"
+    And I should see "Essay 02 new" on hippotrack page "1"
+    And I should see "Essay 03 new" on hippotrack page "1"
+    And I should see "Essay 04 new" on hippotrack page "1"
 
     # Repaginate as two questions per page.
     And I should not see "Page 2"
@@ -73,13 +73,13 @@ Feature: Edit quiz page - adding things
     Then I should see "Repaginate with"
     And I set the field "menuquestionsperpage" to "2"
     And I click on "Go" "button" in the "Repaginate" "dialogue"
-    And I should see "Essay 01 new" on quiz page "1"
-    And I should see "Essay 02 new" on quiz page "1"
-    And I should see "Essay 03 new" on quiz page "2"
-    And I should see "Essay 04 new" on quiz page "2"
+    And I should see "Essay 01 new" on hippotrack page "1"
+    And I should see "Essay 02 new" on hippotrack page "1"
+    And I should see "Essay 03 new" on hippotrack page "2"
+    And I should see "Essay 04 new" on hippotrack page "2"
 
     # Add a question to page 2.
-    When I open the "Page 2" add to quiz menu
+    When I open the "Page 2" add to hippotrack menu
     And I choose "a new question" in the open action menu
     And I set the field "item_qtype_essay" to "1"
     And I press "submitbutton"
@@ -87,15 +87,15 @@ Feature: Edit quiz page - adding things
     And I set the field "Question name" to "Essay for page 2"
     And I set the field "Question text" to "Please write 200 words about Essay for page 2"
     And I press "id_submitbutton"
-    And I should see "Essay 01 new" on quiz page "1"
-    And I should see "Essay 02 new" on quiz page "1"
-    And I should see "Essay 03 new" on quiz page "2"
-    And I should see "Essay 04 new" on quiz page "2"
-    And I should see "Essay for page 2" on quiz page "2"
+    And I should see "Essay 01 new" on hippotrack page "1"
+    And I should see "Essay 02 new" on hippotrack page "1"
+    And I should see "Essay 03 new" on hippotrack page "2"
+    And I should see "Essay 04 new" on hippotrack page "2"
+    And I should see "Essay for page 2" on hippotrack page "2"
 
   @javascript
-  Scenario: Add questions from question bank to the quiz. In order to be able to
-      add questions from question bank to the quiz, first we create some new questions
+  Scenario: Add questions from question bank to the hippotrack. In order to be able to
+      add questions from question bank to the hippotrack, first we create some new questions
       in various categories and add them to the question bank.
 
     # Create a couple of sub categories.
@@ -182,40 +182,40 @@ Feature: Edit quiz page - adding things
 
     # Add questions from question bank using the Add menu.
     # Add Essay 03 from question bank.
-    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
-    And I open the "last" add to quiz menu
+    And I am on the "HippoTrack 1" "mod_hippotrack > Edit" page
+    And I open the "last" add to hippotrack menu
     And I follow "from question bank"
-    Then the "Add selected questions to the quiz" "button" should be disabled
+    Then the "Add selected questions to the hippotrack" "button" should be disabled
     And I click on "Select" "checkbox" in the "Essay 03" "table_row"
-    Then the "Add selected questions to the quiz" "button" should be enabled
-    And I click on "Add to quiz" "link" in the "Essay 03" "table_row"
-    And I should see "Essay 03" on quiz page "1"
+    Then the "Add selected questions to the hippotrack" "button" should be enabled
+    And I click on "Add to hippotrack" "link" in the "Essay 03" "table_row"
+    And I should see "Essay 03" on hippotrack page "1"
 
     # Add Essay 01 from question bank.
-    And I open the "Page 1" add to quiz menu
+    And I open the "Page 1" add to hippotrack menu
     And I follow "from question bank"
-    And I click on "Add to quiz" "link" in the "Essay 01" "table_row"
-    And I should see "Essay 03" on quiz page "1"
-    And I should see "Essay 01" on quiz page "1"
+    And I click on "Add to hippotrack" "link" in the "Essay 01" "table_row"
+    And I should see "Essay 03" on hippotrack page "1"
+    And I should see "Essay 01" on hippotrack page "1"
 
     # Add Esay 02 from question bank.
-    And I open the "Page 1" add to quiz menu
+    And I open the "Page 1" add to hippotrack menu
     And I follow "from question bank"
     And I should see "Select a category"
     And I set the field "Select a category" to "Subcat 1"
-    And I click on "Add to quiz" "link" in the "Essay 02" "table_row"
-    And I should see "Essay 03" on quiz page "1"
-    And I should see "Essay 01" on quiz page "1"
-    And I should see "Essay 02" on quiz page "1"
+    And I click on "Add to hippotrack" "link" in the "Essay 02" "table_row"
+    And I should see "Essay 03" on hippotrack page "1"
+    And I should see "Essay 01" on hippotrack page "1"
+    And I should see "Essay 02" on hippotrack page "1"
 
     # Add a random question.
-    And I open the "Page 1" add to quiz menu
+    And I open the "Page 1" add to hippotrack menu
     And I follow "a random question"
     And I press "Add random question"
-    And I should see "Essay 03" on quiz page "1"
-    And I should see "Essay 01" on quiz page "1"
-    And I should see "Essay 02" on quiz page "1"
-    And I should see "Random" on quiz page "1"
+    And I should see "Essay 03" on hippotrack page "1"
+    And I should see "Essay 01" on hippotrack page "1"
+    And I should see "Essay 02" on hippotrack page "1"
+    And I should see "Random" on hippotrack page "1"
 
     # Repaginate as one question per page.
     And I should not see "Page 2"
@@ -223,13 +223,13 @@ Feature: Edit quiz page - adding things
     Then I should see "Repaginate with"
     And I set the field "menuquestionsperpage" to "1"
     When I click on "Go" "button" in the "Repaginate" "dialogue"
-    And I should see "Essay 03" on quiz page "1"
-    And I should see "Essay 01" on quiz page "2"
-    And I should see "Essay 02" on quiz page "3"
-    And I should see "Random" on quiz page "4"
+    And I should see "Essay 03" on hippotrack page "1"
+    And I should see "Essay 01" on hippotrack page "2"
+    And I should see "Essay 02" on hippotrack page "3"
+    And I should see "Random" on hippotrack page "4"
 
     # Add a random question to page 4.
-    And I open the "Page 4" add to quiz menu
+    And I open the "Page 4" add to hippotrack menu
     And I choose "a new question" in the open action menu
     And I set the field "item_qtype_essay" to "1"
     And I press "submitbutton"
@@ -237,8 +237,8 @@ Feature: Edit quiz page - adding things
     And I set the field "Question name" to "Essay for page 4"
     And I set the field "Question text" to "Please write 200 words about Essay for page 4"
     And I press "id_submitbutton"
-    And I should see "Essay 03" on quiz page "1"
-    And I should see "Essay 01" on quiz page "2"
-    And I should see "Essay 02" on quiz page "3"
-    And I should see "Random" on quiz page "4"
-    And I should see "Essay for page 4" on quiz page "4"
+    And I should see "Essay 03" on hippotrack page "1"
+    And I should see "Essay 01" on hippotrack page "2"
+    And I should see "Essay 02" on hippotrack page "3"
+    And I should see "Random" on hippotrack page "4"
+    And I should see "Essay for page 4" on hippotrack page "4"

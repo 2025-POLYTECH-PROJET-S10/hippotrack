@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz activity version information.
+ * HippoTrack activity version information.
  *
  * @package   mod_hippotrack
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
@@ -27,3 +27,5 @@ defined('MOODLE_INTERNAL') || die();
 $plugin->version   = 2025020400;
 $plugin->requires  = 2022111800;
 $plugin->component = 'mod_hippotrack';
+$plugin->maturity  = MATURITY_RC;
+$plugin->release   = '0.1 (Build: 2025100400)';

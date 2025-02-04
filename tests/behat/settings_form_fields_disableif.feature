@@ -1,6 +1,6 @@
 @mod @mod_hippotrack
 Feature: Settings form fields disabled if not required
-  In to create quizzes as simply as possible
+  In to create hippotrackzes as simply as possible
   As a teacher
   I don't need to to use certain form fields.
 
@@ -20,11 +20,11 @@ Feature: Settings form fields disabled if not required
       | student2 | C1     | student        |
     And the following "activities" exist:
       | activity | course | section | name        |
-      | quiz     | C1     | 1       | Test quiz 1 |
+      | hippotrack     | C1     | 1       | Test hippotrack 1 |
 
   @javascript
   Scenario: Depending on the number of attempts, different form fields are disabled.
-    When I am on the "Test quiz 1" "quiz activity editing" page logged in as teacher
+    When I am on the "Test hippotrack 1" "hippotrack activity editing" page logged in as teacher
     And I expand all fieldsets
     And I set the field "Attempts allowed" to "1"
     Then the "Grading method" "field" should be disabled
@@ -97,9 +97,9 @@ Feature: Settings form fields disabled if not required
   Scenario: Depending on whether there is a close date, some review options are disabled.
     When I log in as "teacher"
     And I am on "Course 1" course homepage with editing mode on
-    And I add a "Quiz" to section "1"
+    And I add a "HippoTrack" to section "1"
     And I expand all fieldsets
-    And I set the field "Name" to "Test quiz"
+    And I set the field "Name" to "Test hippotrack"
     Then the "id_attemptclosed" "checkbox" should be disabled
     And the "id_correctnessclosed" "checkbox" should be disabled
     And the "id_marksclosed" "checkbox" should be disabled
@@ -118,10 +118,10 @@ Feature: Settings form fields disabled if not required
     And I should not see "Repaginate now"
 
   @javascript
-  Scenario: If there are quiz attempts, there is not option to repaginate.
+  Scenario: If there are hippotrack attempts, there is not option to repaginate.
     Given the following "activities" exist:
       | activity   | name   | intro              | course | idnumber |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    |
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    |
     And the following "question categories" exist:
       | contextlevel | reference | name           |
       | Course       | C1        | Test questions |
@@ -129,15 +129,15 @@ Feature: Settings form fields disabled if not required
       | questioncategory | qtype       | name  | questiontext    |
       | Test questions   | truefalse   | TF1   | First question  |
       | Test questions   | truefalse   | TF2   | Second question |
-    And quiz "Quiz 1" contains the following questions:
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | maxmark |
       | TF1      | 1    |         |
-    When I am on the "Quiz 1" "quiz activity editing" page logged in as teacher
+    When I am on the "HippoTrack 1" "hippotrack activity editing" page logged in as teacher
     And I expand all fieldsets
     Then I should see "Repaginate now"
-    And user "student1" has attempted "Quiz 1" with responses:
+    And user "student1" has attempted "HippoTrack 1" with responses:
       | slot | response |
       |   1  | True     |
-    And I am on the "Quiz 1" "quiz activity editing" page
+    And I am on the "HippoTrack 1" "hippotrack activity editing" page
     And I expand all fieldsets
     And I should not see "Repaginate now"

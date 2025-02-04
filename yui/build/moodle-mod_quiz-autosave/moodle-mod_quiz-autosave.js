@@ -17,13 +17,13 @@ YUI.add('moodle-mod_hippotrack-autosave', function (Y, NAME) {
 
 
     /**
-     * Auto-save functionality for during quiz attempts.
+     * Auto-save functionality for during hippotrack attempts.
      *
      * @module moodle-mod_hippotrack-autosave
      */
 
     /**
-     * Auto-save functionality for during quiz attempts.
+     * Auto-save functionality for during hippotrack attempts.
      *
      * @class M.mod_hippotrack.autosave
      */
@@ -90,7 +90,7 @@ YUI.add('moodle-mod_hippotrack-autosave', function (Y, NAME) {
          * @static
          */
         SELECTORS: {
-            QUIZ_FORM: '#responseform',
+            HIPPOTRACK_FORM: '#responseform',
             VALUE_CHANGE_ELEMENTS: 'input, textarea, [contenteditable="true"]',
             CHANGE_ELEMENTS: 'input, select',
             HIDDEN_INPUTS: 'input[type=hidden]',
@@ -192,7 +192,7 @@ YUI.add('moodle-mod_hippotrack-autosave', function (Y, NAME) {
          * a save happening.
          */
         init: function (delay) {
-            this.form = Y.one(this.SELECTORS.QUIZ_FORM);
+            this.form = Y.one(this.SELECTORS.HIPPOTRACK_FORM);
             if (!this.form) {
                 return;
             }

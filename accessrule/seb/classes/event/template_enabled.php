@@ -17,17 +17,17 @@
 /**
  * Event for when a template is enabled.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Nicholas Hoobin <nicholashoobin@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_seb\event;
+namespace hippotrackaccess_seb\event;
 
 use context_system;
 use core\event\base;
-use quizaccess_seb\template;
+use hippotrackaccess_seb\template;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -64,7 +64,7 @@ class template_enabled extends base {
      * Initialize the event data.
      */
     protected function init() {
-        $this->data['objecttable'] = 'quizaccess_seb_template';
+        $this->data['objecttable'] = 'hippotrackaccess_seb_template';
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
     }
@@ -75,7 +75,7 @@ class template_enabled extends base {
      * @return string Name of event.
      */
     public static function get_name() {
-        return get_string('event:templateenabled', 'quizaccess_seb');
+        return get_string('event:templateenabled', 'hippotrackaccess_seb');
     }
 
     /**
@@ -106,7 +106,7 @@ class template_enabled extends base {
      * @return array Mapping of object id.
      */
     public static function get_objectid_mapping() : array {
-        return array('db' => 'quizaccess_seb_template', 'restore' => 'quizaccess_seb_template');
+        return array('db' => 'hippotrackaccess_seb_template', 'restore' => 'hippotrackaccess_seb_template');
     }
 
     /**

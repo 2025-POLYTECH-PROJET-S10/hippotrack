@@ -1,8 +1,8 @@
 @mod @mod_hippotrack @core_completion
-Feature: Set a quiz to be marked complete when the student passes
+Feature: Set a hippotrack to be marked complete when the student passes
   In order to ensure a student has learned the material before being marked complete
   As a teacher
-  I need to set a quiz to complete when the student recieves a passing grade
+  I need to set a hippotrack to complete when the student recieves a passing grade
 
   Background:
     Given the following "users" exist:
@@ -26,28 +26,28 @@ Feature: Set a quiz to be marked complete when the student passes
       | Test questions   | truefalse | First question | Answer the first question |
     And the following "activities" exist:
       | activity | name           | course | idnumber | attempts | gradepass | completion | completionusegrade | completionpassgrade | completionview |
-      | quiz     | Test quiz name | C1     | quiz1    | 4        | 5.00      | 2          | 1                  | 1                   | 1              |
-    And quiz "Test quiz name" contains the following questions:
+      | hippotrack     | Test hippotrack name | C1     | hippotrack1    | 4        | 5.00      | 2          | 1                  | 1                   | 1              |
+    And hippotrack "Test hippotrack name" contains the following questions:
       | question       | page |
       | First question | 1    |
 
   Scenario: student1 passes on the first try
     When I log in as "student1"
     And I am on "Course 1" course homepage
-    And the "Receive a grade" completion condition of "Test quiz name" is displayed as "todo"
-    And the "Receive a passing grade" completion condition of "Test quiz name" is displayed as "todo"
-    And the "View" completion condition of "Test quiz name" is displayed as "todo"
-    And user "student1" has attempted "Test quiz name" with responses:
+    And the "Receive a grade" completion condition of "Test hippotrack name" is displayed as "todo"
+    And the "Receive a passing grade" completion condition of "Test hippotrack name" is displayed as "todo"
+    And the "View" completion condition of "Test hippotrack name" is displayed as "todo"
+    And user "student1" has attempted "Test hippotrack name" with responses:
       | slot | response |
       |   1  | True     |
-    And I follow "Test quiz name"
-    Then the "Receive a grade" completion condition of "Test quiz name" is displayed as "done"
-    And the "Receive a passing grade" completion condition of "Test quiz name" is displayed as "done"
-    And the "View" completion condition of "Test quiz name" is displayed as "done"
+    And I follow "Test hippotrack name"
+    Then the "Receive a grade" completion condition of "Test hippotrack name" is displayed as "done"
+    And the "Receive a passing grade" completion condition of "Test hippotrack name" is displayed as "done"
+    And the "View" completion condition of "Test hippotrack name" is displayed as "done"
     And I am on "Course 1" course homepage
-    And the "Receive a grade" completion condition of "Test quiz name" is displayed as "done"
-    And the "Receive a passing grade" completion condition of "Test quiz name" is displayed as "done"
-    And the "View" completion condition of "Test quiz name" is displayed as "done"
+    And the "Receive a grade" completion condition of "Test hippotrack name" is displayed as "done"
+    And the "Receive a passing grade" completion condition of "Test hippotrack name" is displayed as "done"
+    And the "View" completion condition of "Test hippotrack name" is displayed as "done"
     And I log out
     And I log in as "teacher1"
     And I am on "Course 1" course homepage
@@ -61,8 +61,8 @@ Feature: Set a quiz to be marked complete when the student passes
       | core_langconfig | decsep   | <decsep> |
     And the following "activity" exist:
       | activity | name                             | course | idnumber | gradepass  | completion | completionpassgrade   |
-      | quiz     | Oh, grades, passgrades and floats| C1     | ohgrades | <gradepass>| 2          | <completionpassgrade> |
-    When  I am on the "ohgrades" "quiz activity editing" page logged in as "teacher1"
+      | hippotrack     | Oh, grades, passgrades and floats| C1     | ohgrades | <gradepass>| 2          | <completionpassgrade> |
+    When  I am on the "ohgrades" "hippotrack activity editing" page logged in as "teacher1"
     And I expand all fieldsets
     And I set the field "Grade to pass" to "<gradepass>"
     And I set the field "completionusegrade" to "1"

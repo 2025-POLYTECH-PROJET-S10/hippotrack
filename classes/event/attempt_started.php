@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
  * @property-read array $other {
  *      Extra information about event.
  *
- *      - int quizid: (optional) the id of the quiz.
+ *      - int hippotrackid: (optional) the id of the hippotrack.
  * }
  *
  * @package    mod_hippotrack
@@ -56,7 +56,7 @@ class attempt_started extends \core\event\base {
      */
     public function get_description() {
         return "The user with id '$this->relateduserid' has started the attempt with id '$this->objectid' for the " .
-            "quiz with course module id '$this->contextinstanceid'.";
+            "hippotrack with course module id '$this->contextinstanceid'.";
     }
 
     /**
@@ -65,7 +65,7 @@ class attempt_started extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('eventquizattemptstarted', 'mod_hippotrack');
+        return get_string('eventhippotrackattemptstarted', 'mod_hippotrack');
     }
 
     /**
@@ -100,7 +100,7 @@ class attempt_started extends \core\event\base {
         $legacyeventdata->timestart = $attempt->timestart;
         $legacyeventdata->timestamp = $attempt->timestart;
         $legacyeventdata->userid = $this->relateduserid;
-        $legacyeventdata->quizid = $attempt->quiz;
+        $legacyeventdata->hippotrackid = $attempt->hippotrack;
         $legacyeventdata->cmid = $this->contextinstanceid;
         $legacyeventdata->courseid = $this->courseid;
 
@@ -115,8 +115,8 @@ class attempt_started extends \core\event\base {
     protected function get_legacy_logdata() {
         $attempt = $this->get_record_snapshot('hippotrack_attempts', $this->objectid);
 
-        return array($this->courseid, 'quiz', 'attempt', 'review.php?attempt=' . $this->objectid,
-            $attempt->quiz, $this->contextinstanceid);
+        return array($this->courseid, 'hippotrack', 'attempt', 'review.php?attempt=' . $this->objectid,
+            $attempt->hippotrack, $this->contextinstanceid);
     }
 
     /**
@@ -138,7 +138,7 @@ class attempt_started extends \core\event\base {
 
     public static function get_other_mapping() {
         $othermapped = array();
-        $othermapped['quizid'] = array('db' => 'quiz', 'restore' => 'quiz');
+        $othermapped['hippotrackid'] = array('db' => 'hippotrack', 'restore' => 'hippotrack');
 
         return $othermapped;
     }

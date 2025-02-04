@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page handles editing and creation of quiz overrides
+ * This page handles editing and creation of hippotrack overrides
  *
  * @package   mod_hippotrack
  * @copyright 2010 Matt Petro
@@ -38,16 +38,16 @@ $override = null;
 if ($overrideid) {
 
     if (! $override = $DB->get_record('hippotrack_overrides', array('id' => $overrideid))) {
-        throw new \moodle_exception('invalidoverrideid', 'quiz');
+        throw new \moodle_exception('invalidoverrideid', 'hippotrack');
     }
-    if (! $quiz = $DB->get_record('quiz', array('id' => $override->quiz))) {
+    if (! $hippotrack = $DB->get_record('hippotrack', array('id' => $override->hippotrack))) {
         throw new \moodle_exception('invalidcoursemodule');
     }
-    list($course, $cm) = get_course_and_cm_from_instance($quiz, 'quiz');
+    list($course, $cm) = get_course_and_cm_from_instance($hippotrack, 'hippotrack');
 
 } else if ($cmid) {
-    list($course, $cm) = get_course_and_cm_from_cmid($cmid, 'quiz');
-    $quiz = $DB->get_record('quiz', array('id' => $cm->instance), '*', MUST_EXIST);
+    list($course, $cm) = get_course_and_cm_from_cmid($cmid, 'hippotrack');
+    $hippotrack = $DB->get_record('hippotrack', array('id' => $cm->instance), '*', MUST_EXIST);
 
 } else {
     throw new \moodle_exception('invalidcoursemodule');
@@ -82,11 +82,11 @@ if ($overrideid) {
 
     if ($override->groupid) {
         if (!groups_group_visible($override->groupid, $course, $cm)) {
-            throw new \moodle_exception('invalidoverrideid', 'quiz');
+            throw new \moodle_exception('invalidoverrideid', 'hippotrack');
         }
     } else {
         if (!groups_user_groups_visible($course, $override->userid, $cm)) {
-            throw new \moodle_exception('invalidoverrideid', 'quiz');
+            throw new \moodle_exception('invalidoverrideid', 'hippotrack');
         }
     }
 } else {
@@ -94,11 +94,11 @@ if ($overrideid) {
     $data = new stdClass();
 }
 
-// Merge quiz defaults with data.
+// Merge hippotrack defaults with data.
 $keys = array('timeopen', 'timeclose', 'timelimit', 'attempts', 'password');
 foreach ($keys as $key) {
     if (!isset($data->{$key}) || $reset) {
-        $data->{$key} = $quiz->{$key};
+        $data->{$key} = $hippotrack->{$key};
     }
 }
 
@@ -119,7 +119,7 @@ if (!$groupmode) {
 }
 
 // Setup the form.
-$mform = new hippotrack_override_form($url, $cm, $quiz, $context, $groupmode, $override);
+$mform = new hippotrack_override_form($url, $cm, $hippotrack, $context, $groupmode, $override);
 $mform->set_data($data);
 
 if ($mform->is_cancelled()) {
@@ -131,11 +131,11 @@ if ($mform->is_cancelled()) {
 
 } else if ($fromform = $mform->get_data()) {
     // Process the data.
-    $fromform->quiz = $quiz->id;
+    $fromform->hippotrack = $hippotrack->id;
 
     // Replace unchanged values with null.
     foreach ($keys as $key) {
-        if ($fromform->{$key} == $quiz->{$key}) {
+        if ($fromform->{$key} == $hippotrack->{$key}) {
             $fromform->{$key} = null;
         }
     }
@@ -152,7 +152,7 @@ if ($mform->is_cancelled()) {
 
     if ($userorgroupchanged) {
         $conditions = array(
-                'quiz' => $quiz->id,
+                'hippotrack' => $hippotrack->id,
                 'userid' => empty($fromform->userid)? null : $fromform->userid,
                 'groupid' => empty($fromform->groupid)? null : $fromform->groupid);
         if ($oldoverride = $DB->get_record('hippotrack_overrides', $conditions)) {
@@ -164,8 +164,8 @@ if ($mform->is_cancelled()) {
                 }
             }
             // Set the course module id before calling hippotrack_delete_override().
-            $quiz->cmid = $cm->id;
-            hippotrack_delete_override($quiz, $oldoverride->id);
+            $hippotrack->cmid = $cm->id;
+            hippotrack_delete_override($hippotrack, $oldoverride->id);
         }
     }
 
@@ -173,13 +173,13 @@ if ($mform->is_cancelled()) {
     $params = array(
         'context' => $context,
         'other' => array(
-            'quizid' => $quiz->id
+            'hippotrackid' => $hippotrack->id
         )
     );
     if (!empty($override->id)) {
         $fromform->id = $override->id;
         $DB->update_record('hippotrack_overrides', $fromform);
-        $cachekey = $groupmode ? "{$fromform->quiz}_g_{$fromform->groupid}" : "{$fromform->quiz}_u_{$fromform->userid}";
+        $cachekey = $groupmode ? "{$fromform->hippotrack}_g_{$fromform->groupid}" : "{$fromform->hippotrack}_u_{$fromform->userid}";
         cache::make('mod_hippotrack', 'overrides')->delete($cachekey);
 
         // Determine which override updated event to fire.
@@ -197,7 +197,7 @@ if ($mform->is_cancelled()) {
     } else {
         unset($fromform->id);
         $fromform->id = $DB->insert_record('hippotrack_overrides', $fromform);
-        $cachekey = $groupmode ? "{$fromform->quiz}_g_{$fromform->groupid}" : "{$fromform->quiz}_u_{$fromform->userid}";
+        $cachekey = $groupmode ? "{$fromform->hippotrack}_g_{$fromform->groupid}" : "{$fromform->hippotrack}_u_{$fromform->userid}";
         cache::make('mod_hippotrack', 'overrides')->delete($cachekey);
 
         // Determine which override created event to fire.
@@ -214,13 +214,13 @@ if ($mform->is_cancelled()) {
         $event->trigger();
     }
 
-    hippotrack_update_open_attempts(array('quizid'=>$quiz->id));
+    hippotrack_update_open_attempts(array('hippotrackid'=>$hippotrack->id));
     if ($groupmode) {
         // Priorities may have shifted, so we need to update all of the calendar events for group overrides.
-        hippotrack_update_events($quiz);
+        hippotrack_update_events($hippotrack);
     } else {
         // User override. We only need to update the calendar event for this user override.
-        hippotrack_update_events($quiz, $fromform);
+        hippotrack_update_events($hippotrack, $fromform);
     }
 
     if (!empty($fromform->submitbutton)) {
@@ -243,7 +243,7 @@ $PAGE->add_body_class('limitedwidth');
 $PAGE->set_title($pagetitle);
 $PAGE->set_heading($course->fullname);
 $PAGE->activityheader->set_attrs([
-    "title" => format_string($quiz->name, true, array('context' => $context)),
+    "title" => format_string($hippotrack->name, true, array('context' => $context)),
     "description" => "",
     "hidecompletion" => true
 ]);

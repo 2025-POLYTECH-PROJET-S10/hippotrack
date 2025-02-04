@@ -19,7 +19,7 @@ namespace mod_hippotrack\adminpresets;
 use core_adminpresets\local\setting\adminpresets_admin_setting_configselect_with_advanced;
 
 /**
- * Admin settings class for the quiz grading method.
+ * Admin settings class for the hippotrack grading method.
  *
  * @package          mod_hippotrack
  * @copyright        2021 Pimenko <support@pimenko.com><pimenko.com>

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Settings form for overrides in the quiz module.
+ * Settings form for overrides in the hippotrack module.
  *
  * @package    mod_hippotrack
  * @copyright  2010 Matt Petro
@@ -40,10 +40,10 @@ class hippotrack_override_form extends moodleform {
     /** @var cm_info course module object. */
     protected $cm;
 
-    /** @var stdClass the quiz settings object. */
-    protected $quiz;
+    /** @var stdClass the hippotrack settings object. */
+    protected $hippotrack;
 
-    /** @var context the quiz context. */
+    /** @var context the hippotrack context. */
     protected $context;
 
     /** @var bool editing group override (true) or user override (false). */
@@ -59,15 +59,15 @@ class hippotrack_override_form extends moodleform {
      * Constructor.
      * @param moodle_url $submiturl the form action URL.
      * @param object course module object.
-     * @param object the quiz settings object.
-     * @param context the quiz context.
+     * @param object the hippotrack settings object.
+     * @param context the hippotrack context.
      * @param bool editing group override (true) or user override (false).
      * @param object $override the override being edited, if it already exists.
      */
-    public function __construct($submiturl, $cm, $quiz, $context, $groupmode, $override) {
+    public function __construct($submiturl, $cm, $hippotrack, $context, $groupmode, $override) {
 
         $this->cm = $cm;
-        $this->quiz = $quiz;
+        $this->hippotrack = $hippotrack;
         $this->context = $context;
         $this->groupmode = $groupmode;
         $this->groupid = empty($override->groupid) ? 0 : $override->groupid;
@@ -84,8 +84,8 @@ class hippotrack_override_form extends moodleform {
 
         $mform->addElement('header', 'override', get_string('override', 'hippotrack'));
 
-        $quizgroupmode = groups_get_activity_groupmode($cm);
-        $accessallgroups = ($quizgroupmode == NOGROUPS) || has_capability('moodle/site:accessallgroups', $this->context);
+        $hippotrackgroupmode = groups_get_activity_groupmode($cm);
+        $accessallgroups = ($hippotrackgroupmode == NOGROUPS) || has_capability('moodle/site:accessallgroups', $this->context);
 
         if ($this->groupmode) {
             // Group override.
@@ -106,7 +106,7 @@ class hippotrack_override_form extends moodleform {
                 if (empty($groups)) {
                     // Generate an error.
                     $link = new moodle_url('/mod/hippotrack/overrides.php', array('cmid'=>$cm->id));
-                    throw new \moodle_exception('groupsnone', 'quiz', $link);
+                    throw new \moodle_exception('groupsnone', 'hippotrack', $link);
                 }
 
                 $groupchoices = array();
@@ -168,14 +168,14 @@ class hippotrack_override_form extends moodleform {
                         SELECT $userfieldsql->selects
                           FROM {user} u
                           LEFT JOIN {hippotrack_overrides} existingoverride ON
-                                      existingoverride.userid = u.id AND existingoverride.quiz = :quizid
+                                      existingoverride.userid = u.id AND existingoverride.hippotrack = :hippotrackid
                           $capabilityjoin->joins
                           $groupjoin
                           $userfieldsql->joins
                          WHERE existingoverride.id IS NULL
                            $capabilitywhere
                       ORDER BY $sort
-                        ", array_merge(['quizid' => $this->quiz->id], $capabilityjoin->params,
+                        ", array_merge(['hippotrackid' => $this->hippotrack->id], $capabilityjoin->params,
                         $groupparams, $userfieldsql->params, $sortparams));
 
                 // Filter users based on any fixed restrictions (groups, profile).
@@ -185,7 +185,7 @@ class hippotrack_override_form extends moodleform {
                 if (empty($users)) {
                     // Generate an error.
                     $link = new moodle_url('/mod/hippotrack/overrides.php', array('cmid'=>$cm->id));
-                    throw new \moodle_exception('usersnone', 'quiz', $link);
+                    throw new \moodle_exception('usersnone', 'hippotrack', $link);
                 }
 
                 $userchoices = [];
@@ -205,33 +205,33 @@ class hippotrack_override_form extends moodleform {
         // otherwise browsers will clear it when those fields are changed.
         $mform->addElement('passwordunmask', 'password', get_string('requirepassword', 'hippotrack'));
         $mform->setType('password', PARAM_TEXT);
-        $mform->addHelpButton('password', 'requirepassword', 'quiz');
-        $mform->setDefault('password', $this->quiz->password);
+        $mform->addHelpButton('password', 'requirepassword', 'hippotrack');
+        $mform->setDefault('password', $this->hippotrack->password);
 
         // Open and close dates.
         $mform->addElement('date_time_selector', 'timeopen',
-                get_string('quizopen', 'hippotrack'), mod_hippotrack_mod_form::$datefieldoptions);
-        $mform->setDefault('timeopen', $this->quiz->timeopen);
+                get_string('hippotrackopen', 'hippotrack'), mod_hippotrack_mod_form::$datefieldoptions);
+        $mform->setDefault('timeopen', $this->hippotrack->timeopen);
 
         $mform->addElement('date_time_selector', 'timeclose',
-                get_string('quizclose', 'hippotrack'), mod_hippotrack_mod_form::$datefieldoptions);
-        $mform->setDefault('timeclose', $this->quiz->timeclose);
+                get_string('hippotrackclose', 'hippotrack'), mod_hippotrack_mod_form::$datefieldoptions);
+        $mform->setDefault('timeclose', $this->hippotrack->timeclose);
 
         // Time limit.
         $mform->addElement('duration', 'timelimit',
                 get_string('timelimit', 'hippotrack'), array('optional' => true));
-        $mform->addHelpButton('timelimit', 'timelimit', 'quiz');
-        $mform->setDefault('timelimit', $this->quiz->timelimit);
+        $mform->addHelpButton('timelimit', 'timelimit', 'hippotrack');
+        $mform->setDefault('timelimit', $this->hippotrack->timelimit);
 
         // Number of attempts.
         $attemptoptions = array('0' => get_string('unlimited'));
-        for ($i = 1; $i <= QUIZ_MAX_ATTEMPT_OPTION; $i++) {
+        for ($i = 1; $i <= HIPPOTRACK_MAX_ATTEMPT_OPTION; $i++) {
             $attemptoptions[$i] = $i;
         }
         $mform->addElement('select', 'attempts',
                 get_string('attemptsallowed', 'hippotrack'), $attemptoptions);
-        $mform->addHelpButton('attempts', 'attempts', 'quiz');
-        $mform->setDefault('attempts', $this->quiz->attempts);
+        $mform->addHelpButton('attempts', 'attempts', 'hippotrack');
+        $mform->setDefault('attempts', $this->hippotrack->attempts);
 
         // Submit buttons.
         $mform->addElement('submit', 'resetbutton',
@@ -278,7 +278,7 @@ class hippotrack_override_form extends moodleform {
         $errors = parent::validation($data, $files);
 
         $mform =& $this->_form;
-        $quiz = $this->quiz;
+        $hippotrack = $this->hippotrack;
 
         if ($mform->elementExists('userid')) {
             if (empty($data['userid'])) {
@@ -299,11 +299,11 @@ class hippotrack_override_form extends moodleform {
             }
         }
 
-        // Ensure that at least one quiz setting was changed.
+        // Ensure that at least one hippotrack setting was changed.
         $changed = false;
         $keys = array('timeopen', 'timeclose', 'timelimit', 'attempts', 'password');
         foreach ($keys as $key) {
-            if ($data[$key] != $quiz->{$key}) {
+            if ($data[$key] != $hippotrack->{$key}) {
                 $changed = true;
                 break;
             }

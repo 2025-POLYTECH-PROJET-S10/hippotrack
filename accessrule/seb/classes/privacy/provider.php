@@ -15,15 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem implementation for quizaccess_seb.
+ * Privacy Subsystem implementation for hippotrackaccess_seb.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_seb\privacy;
+namespace hippotrackaccess_seb\privacy;
 
 use context;
 use core_privacy\local\metadata\collection;
@@ -33,13 +33,13 @@ use core_privacy\local\request\contextlist;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
-use quizaccess_seb\hippotrack_settings;
-use quizaccess_seb\template;
+use hippotrackaccess_seb\hippotrack_settings;
+use hippotrackaccess_seb\template;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Privacy Subsystem implementation for quizaccess_seb.
+ * Privacy Subsystem implementation for hippotrackaccess_seb.
  *
  * @copyright  2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -57,24 +57,24 @@ class provider implements
      */
     public static function get_metadata(collection $collection): collection {
         $collection->add_database_table(
-            'quizaccess_seb_quizsettings',
+            'hippotrackaccess_seb_hippotracksettings',
              [
-                 'quizid' => 'privacy:metadata:quizaccess_seb_quizsettings:quizid',
-                 'usermodified' => 'privacy:metadata:quizaccess_seb_quizsettings:usermodified',
-                 'timecreated' => 'privacy:metadata:quizaccess_seb_quizsettings:timecreated',
-                 'timemodified' => 'privacy:metadata:quizaccess_seb_quizsettings:timemodified',
+                 'hippotrackid' => 'privacy:metadata:hippotrackaccess_seb_hippotracksettings:hippotrackid',
+                 'usermodified' => 'privacy:metadata:hippotrackaccess_seb_hippotracksettings:usermodified',
+                 'timecreated' => 'privacy:metadata:hippotrackaccess_seb_hippotracksettings:timecreated',
+                 'timemodified' => 'privacy:metadata:hippotrackaccess_seb_hippotracksettings:timemodified',
              ],
-            'privacy:metadata:quizaccess_seb_quizsettings'
+            'privacy:metadata:hippotrackaccess_seb_hippotracksettings'
         );
 
         $collection->add_database_table(
-            'quizaccess_seb_template',
+            'hippotrackaccess_seb_template',
             [
-                'usermodified' => 'privacy:metadata:quizaccess_seb_template:usermodified',
-                'timecreated' => 'privacy:metadata:quizaccess_seb_template:timecreated',
-                'timemodified' => 'privacy:metadata:quizaccess_seb_template:timemodified',
+                'usermodified' => 'privacy:metadata:hippotrackaccess_seb_template:usermodified',
+                'timecreated' => 'privacy:metadata:hippotrackaccess_seb_template:timecreated',
+                'timemodified' => 'privacy:metadata:hippotrackaccess_seb_template:timemodified',
             ],
-            'privacy:metadata:quizaccess_seb_template'
+            'privacy:metadata:hippotrackaccess_seb_template'
         );
 
         return $collection;
@@ -89,10 +89,10 @@ class provider implements
     public static function get_contexts_for_userid(int $userid): contextlist {
         $contextlist = new contextlist();
 
-        // The data is associated at the module context level, so retrieve the quiz context id.
+        // The data is associated at the module context level, so retrieve the hippotrack context id.
         $sql = "SELECT c.id
-                  FROM {quizaccess_seb_quizsettings} qs
-                  JOIN {course_modules} cm ON cm.instance = qs.quizid
+                  FROM {hippotrackaccess_seb_hippotracksettings} qs
+                  JOIN {course_modules} cm ON cm.instance = qs.hippotrackid
                   JOIN {modules} m ON cm.module = m.id AND m.name = :modulename
                   JOIN {context} c ON c.instanceid = cm.id AND c.contextlevel = :context
                  WHERE qs.usermodified = :userid
@@ -100,16 +100,16 @@ class provider implements
 
         $params = [
             'context' => CONTEXT_MODULE,
-            'modulename' => 'quiz',
+            'modulename' => 'hippotrack',
             'userid' => $userid
         ];
 
         $contextlist->add_from_sql($sql, $params);
 
         $sql = "SELECT c.id
-                  FROM {quizaccess_seb_template} tem
-                  JOIN {quizaccess_seb_quizsettings} qs ON qs.templateid = tem.id
-                  JOIN {course_modules} cm ON cm.instance = qs.quizid
+                  FROM {hippotrackaccess_seb_template} tem
+                  JOIN {hippotrackaccess_seb_hippotracksettings} qs ON qs.templateid = tem.id
+                  JOIN {course_modules} cm ON cm.instance = qs.hippotrackid
                   JOIN {modules} m ON cm.module = m.id AND m.name = :modulename
                   JOIN {context} c ON c.instanceid = cm.id AND c.contextlevel = :context
                  WHERE qs.usermodified = :userid
@@ -136,41 +136,41 @@ class provider implements
             }
         }
 
-        // Do nothing if no matching quiz settings are found for the user.
+        // Do nothing if no matching hippotrack settings are found for the user.
         if (empty($cmids)) {
             return;
         }
 
         list($insql, $params) = $DB->get_in_or_equal($cmids, SQL_PARAMS_NAMED);
-        $params['modulename'] = 'quiz';
+        $params['modulename'] = 'hippotrack';
 
-        // SEB quiz settings.
+        // SEB hippotrack settings.
         $sql = "SELECT qs.id as id,
-                       qs.quizid as quizid,
+                       qs.hippotrackid as hippotrackid,
                        qs.usermodified as usermodified,
                        qs.timecreated as timecreated,
                        qs.timemodified as timemodified
-                  FROM {quizaccess_seb_quizsettings} qs
-                  JOIN {course_modules} cm ON cm.instance = qs.quizid
+                  FROM {hippotrackaccess_seb_hippotracksettings} qs
+                  JOIN {course_modules} cm ON cm.instance = qs.hippotrackid
                   JOIN {modules} m ON cm.module = m.id AND m.name = :modulename
                  WHERE cm.id {$insql}";
 
-        $quizsettingslist = $DB->get_records_sql($sql, $params);
+        $hippotracksettingslist = $DB->get_records_sql($sql, $params);
         $index = 0;
-        foreach ($quizsettingslist as $quizsettings) {
+        foreach ($hippotracksettingslist as $hippotracksettings) {
             // Data export is organised in: {Context}/{Plugin Name}/{Table name}/{index}/data.json.
             $index++;
             $subcontext = [
-                get_string('pluginname', 'quizaccess_seb'),
+                get_string('pluginname', 'hippotrackaccess_seb'),
                 hippotrack_settings::TABLE,
                 $index
             ];
 
             $data = (object) [
-                'quizid' => $quizsettings->quizid,
-                'usermodified' => $quizsettings->usermodified,
-                'timecreated' => transform::datetime($quizsettings->timecreated),
-                'timemodified' => transform::datetime($quizsettings->timemodified)
+                'hippotrackid' => $hippotracksettings->hippotrackid,
+                'usermodified' => $hippotracksettings->usermodified,
+                'timecreated' => transform::datetime($hippotracksettings->timecreated),
+                'timemodified' => transform::datetime($hippotracksettings->timemodified)
             ];
 
             writer::with_context($context)->export_data($subcontext, $data);
@@ -178,13 +178,13 @@ class provider implements
 
         // SEB template settings.
         $sql = "SELECT tem.id as id,
-                       qs.quizid as quizid,
+                       qs.hippotrackid as hippotrackid,
                        tem.usermodified as usermodified,
                        tem.timecreated as timecreated,
                        tem.timemodified as timemodified
-                  FROM {quizaccess_seb_template} tem
-                  JOIN {quizaccess_seb_quizsettings} qs ON qs.templateid = tem.id
-                  JOIN {course_modules} cm ON cm.instance = qs.quizid
+                  FROM {hippotrackaccess_seb_template} tem
+                  JOIN {hippotrackaccess_seb_hippotracksettings} qs ON qs.templateid = tem.id
+                  JOIN {course_modules} cm ON cm.instance = qs.hippotrackid
                   JOIN {modules} m ON cm.module = m.id AND m.name = :modulename
                  WHERE cm.id {$insql}";
 
@@ -194,14 +194,14 @@ class provider implements
             // Data export is organised in: {Context}/{Plugin Name}/{Table name}/{index}/data.json.
             $index++;
             $subcontext = [
-                get_string('pluginname', 'quizaccess_seb'),
+                get_string('pluginname', 'hippotrackaccess_seb'),
                 template::TABLE,
                 $index
             ];
 
             $data = (object) [
                 'templateid' => $templatesetting->id,
-                'quizid' => $templatesetting->quizid,
+                'hippotrackid' => $templatesetting->hippotrackid,
                 'usermodified' => $templatesetting->usermodified,
                 'timecreated' => transform::datetime($templatesetting->timecreated),
                 'timemodified' => transform::datetime($templatesetting->timemodified)
@@ -219,18 +219,18 @@ class provider implements
     public static function delete_data_for_all_users_in_context(\context $context) {
         global $DB;
 
-        // Sanity check that context is at the module context level, then get the quizid.
+        // Sanity check that context is at the module context level, then get the hippotrackid.
         if ($context->contextlevel !== CONTEXT_MODULE) {
             return;
         }
 
         $cmid = $context->instanceid;
-        $quizid = $DB->get_field('course_modules', 'instance', ['id' => $cmid]);
+        $hippotrackid = $DB->get_field('course_modules', 'instance', ['id' => $cmid]);
 
-        $params['quizid'] = $quizid;
-        $select = "id IN (SELECT templateid FROM {quizaccess_seb_quizsettings} qs WHERE qs.quizid = :quizid)";
-        $DB->set_field_select('quizaccess_seb_quizsettings', 'usermodified', 0, "quizid = :quizid", $params);
-        $DB->set_field_select('quizaccess_seb_template', 'usermodified', 0, $select, $params);
+        $params['hippotrackid'] = $hippotrackid;
+        $select = "id IN (SELECT templateid FROM {hippotrackaccess_seb_hippotracksettings} qs WHERE qs.hippotrackid = :hippotrackid)";
+        $DB->set_field_select('hippotrackaccess_seb_hippotracksettings', 'usermodified', 0, "hippotrackid = :hippotrackid", $params);
+        $DB->set_field_select('hippotrackaccess_seb_template', 'usermodified', 0, $select, $params);
     }
 
     /**
@@ -248,8 +248,8 @@ class provider implements
         }
 
         $params['usermodified'] = $contextlist->get_user()->id;
-        $DB->set_field_select('quizaccess_seb_quizsettings', 'usermodified', 0, "usermodified = :usermodified", $params);
-        $DB->set_field_select('quizaccess_seb_template', 'usermodified', 0, "usermodified = :usermodified", $params);
+        $DB->set_field_select('hippotrackaccess_seb_hippotracksettings', 'usermodified', 0, "usermodified = :usermodified", $params);
+        $DB->set_field_select('hippotrackaccess_seb_template', 'usermodified', 0, "usermodified = :usermodified", $params);
     }
 
     /**
@@ -264,13 +264,13 @@ class provider implements
             return;
         }
 
-        // The data is associated at the quiz module context level, so retrieve the user's context id.
+        // The data is associated at the hippotrack module context level, so retrieve the user's context id.
         $sql = "SELECT qs.usermodified AS userid
-                  FROM {quizaccess_seb_quizsettings} qs
-                  JOIN {course_modules} cm ON cm.instance = qs.quizid
+                  FROM {hippotrackaccess_seb_hippotracksettings} qs
+                  JOIN {course_modules} cm ON cm.instance = qs.hippotrackid
                   JOIN {modules} m ON cm.module = m.id AND m.name = ?
                  WHERE cm.id = ?";
-        $params = ['quiz', $context->instanceid];
+        $params = ['hippotrack', $context->instanceid];
         $userlist->add_from_sql('userid', $sql, $params);
     }
 
@@ -291,7 +291,7 @@ class provider implements
         $userids = $userlist->get_userids();
         list($insql, $inparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
 
-        $DB->set_field_select('quizaccess_seb_quizsettings', 'usermodified', 0, "usermodified {$insql}", $inparams);
-        $DB->set_field_select('quizaccess_seb_template', 'usermodified', 0, "usermodified {$insql}", $inparams);
+        $DB->set_field_select('hippotrackaccess_seb_hippotracksettings', 'usermodified', 0, "usermodified {$insql}", $inparams);
+        $DB->set_field_select('hippotrackaccess_seb_template', 'usermodified', 0, "usermodified {$insql}", $inparams);
     }
 }

@@ -28,7 +28,7 @@ use hippotrack_attempt;
 require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
- * Cron Quiz Notify Attempts Graded Task.
+ * Cron HippoTrack Notify Attempts Graded Task.
  *
  * @package    mod_hippotrack
  * @copyright  2021 The Open University
@@ -81,29 +81,29 @@ class hippotrack_notify_attempt_manual_grading_completed extends \core\task\sche
     public function execute() {
         global $DB;
 
-        mtrace('Looking for quiz attempts which may need a graded notification sent...');
+        mtrace('Looking for hippotrack attempts which may need a graded notification sent...');
 
         $attempts = $this->get_list_of_attempts();
         $course = null;
-        $quiz = null;
+        $hippotrack = null;
         $cm = null;
 
         foreach ($attempts as $attempt) {
-            mtrace('Checking attempt ' . $attempt->id . ' at quiz ' . $attempt->quiz . '.');
+            mtrace('Checking attempt ' . $attempt->id . ' at hippotrack ' . $attempt->hippotrack . '.');
 
-            if (!$quiz || $attempt->quiz != $quiz->id) {
-                $quiz = $DB->get_record('quiz', ['id' => $attempt->quiz], '*', MUST_EXIST);
-                $cm = get_coursemodule_from_instance('quiz', $attempt->quiz);
+            if (!$hippotrack || $attempt->hippotrack != $hippotrack->id) {
+                $hippotrack = $DB->get_record('hippotrack', ['id' => $attempt->hippotrack], '*', MUST_EXIST);
+                $cm = get_coursemodule_from_instance('hippotrack', $attempt->hippotrack);
             }
 
-            if (!$course || $course->id != $quiz->course) {
-                $course = $DB->get_record('course', ['id' => $quiz->course], '*', MUST_EXIST);
-                $coursecontext = context_course::instance($quiz->course);
+            if (!$course || $course->id != $hippotrack->course) {
+                $course = $DB->get_record('course', ['id' => $hippotrack->course], '*', MUST_EXIST);
+                $coursecontext = context_course::instance($hippotrack->course);
             }
 
-            $quiz = hippotrack_update_effective_access($quiz, $attempt->userid);
-            $attemptobj = new hippotrack_attempt($attempt, $quiz, $cm, $course, false);
-            $options = mod_hippotrack_display_options::make_from_quiz($quiz, hippotrack_attempt_state($quiz, $attempt));
+            $hippotrack = hippotrack_update_effective_access($hippotrack, $attempt->userid);
+            $attemptobj = new hippotrack_attempt($attempt, $hippotrack, $cm, $course, false);
+            $options = mod_hippotrack_display_options::make_from_hippotrack($hippotrack, hippotrack_attempt_state($hippotrack, $attempt));
 
             if ($options->manualcomment == question_display_options::HIDDEN) {
                 // User cannot currently see the feedback, so don't message them.
@@ -140,16 +140,16 @@ class hippotrack_notify_attempt_manual_grading_completed extends \core\task\sche
     public function get_list_of_attempts(): moodle_recordset {
         global $DB;
 
-        $delaytime = $this->get_time() - get_config('quiz', 'notifyattemptgradeddelay');
+        $delaytime = $this->get_time() - get_config('hippotrack', 'notifyattemptgradeddelay');
 
         $sql = "SELECT qa.*
                   FROM {hippotrack_attempts} qa
-                  JOIN {quiz} quiz ON quiz.id = qa.quiz
+                  JOIN {hippotrack} hippotrack ON hippotrack.id = qa.hippotrack
                  WHERE qa.state = 'finished'
                        AND qa.gradednotificationsenttime IS NULL
                        AND qa.sumgrades IS NOT NULL
                        AND qa.timemodified < :delaytime
-              ORDER BY quiz.course, qa.quiz";
+              ORDER BY hippotrack.course, qa.hippotrack";
 
         return $DB->get_recordset_sql($sql, ['delaytime' => $delaytime]);
     }

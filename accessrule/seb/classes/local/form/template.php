@@ -17,13 +17,13 @@
 /**
  * Form for manipulating with the template records.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_seb\local\form;
+namespace hippotrackaccess_seb\local\form;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
 class template extends \core\form\persistent {
 
     /** @var string Persistent class name. */
-    protected static $persistentclass = 'quizaccess_seb\\template';
+    protected static $persistentclass = 'hippotrackaccess_seb\\template';
 
     /**
      * Form definition.
@@ -44,22 +44,22 @@ class template extends \core\form\persistent {
     protected function definition() {
         $mform = $this->_form;
 
-        $mform->addElement('text', 'name', get_string('name', 'quizaccess_seb'));
+        $mform->addElement('text', 'name', get_string('name', 'hippotrackaccess_seb'));
         $mform->addRule('name', get_string('required'), 'required', null, 'client');
         $mform->setType('name', PARAM_TEXT);
 
-        $mform->addElement('textarea', 'description', get_string('description', 'quizaccess_seb'));
+        $mform->addElement('textarea', 'description', get_string('description', 'hippotrackaccess_seb'));
         $mform->setType('description', PARAM_TEXT);
 
         if ($this->get_persistent()->get('id')) {
-            $mform->addElement('textarea', 'content', get_string('content', 'quizaccess_seb'), ['rows' => 20, 'cols' => 60]);
+            $mform->addElement('textarea', 'content', get_string('content', 'hippotrackaccess_seb'), ['rows' => 20, 'cols' => 60]);
             $mform->addRule('content', get_string('required'), 'required');
         } else {
-            $mform->addElement('filepicker', 'content', get_string('content', 'quizaccess_seb'));
+            $mform->addElement('filepicker', 'content', get_string('content', 'hippotrackaccess_seb'));
             $mform->addRule('content', get_string('required'), 'required');
         }
 
-        $mform->addElement('selectyesno', 'enabled', get_string('enabled', 'quizaccess_seb'));
+        $mform->addElement('selectyesno', 'enabled', get_string('enabled', 'hippotrackaccess_seb'));
         $mform->setType('enabled', PARAM_INT);
 
         $this->add_action_buttons();
@@ -105,7 +105,7 @@ class template extends \core\form\persistent {
 
         // Check name.
         if (empty($data->name)) {
-            $newerrors['name'] = get_string('namerequired', 'quizaccess_seb');
+            $newerrors['name'] = get_string('namerequired', 'hippotrackaccess_seb');
         }
 
         return $newerrors;

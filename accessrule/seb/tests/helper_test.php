@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quizaccess_seb;
+namespace hippotrackaccess_seb;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -23,13 +23,13 @@ require_once(__DIR__ . '/test_helper_trait.php');
 /**
  * PHPUnit tests for helper class.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class helper_test extends \advanced_testcase {
-    use \quizaccess_seb_test_helper_trait;
+    use \hippotrackaccess_seb_test_helper_trait;
 
     /**
      * Test that we can check valid seb string.
@@ -49,9 +49,9 @@ class helper_test extends \advanced_testcase {
         $invalidseb = 'Invalid seb';
         $emptyseb = '';
 
-        $this->assertTrue(\quizaccess_seb\helper::is_valid_seb_config($validseb));
-        $this->assertFalse(\quizaccess_seb\helper::is_valid_seb_config($invalidseb));
-        $this->assertFalse(\quizaccess_seb\helper::is_valid_seb_config($emptyseb));
+        $this->assertTrue(\hippotrackaccess_seb\helper::is_valid_seb_config($validseb));
+        $this->assertFalse(\hippotrackaccess_seb\helper::is_valid_seb_config($invalidseb));
+        $this->assertFalse(\hippotrackaccess_seb\helper::is_valid_seb_config($emptyseb));
     }
 
     /**
@@ -59,7 +59,7 @@ class helper_test extends \advanced_testcase {
      */
     public function test_get_seb_file_headers() {
         $expiretime = 1582767914;
-        $headers = \quizaccess_seb\helper::get_seb_file_headers($expiretime);
+        $headers = \hippotrackaccess_seb\helper::get_seb_file_headers($expiretime);
 
         $this->assertCount(5, $headers);
         $this->assertEquals('Cache-Control: private, max-age=1, no-transform', $headers[0]);
@@ -85,15 +85,15 @@ class helper_test extends \advanced_testcase {
         $this->expectExceptionMessage("Can't find data record in database. (SELECT cm.*, m.name, md.name AS modname \n"
             . "              FROM {course_modules} cm\n"
             . "                   JOIN {modules} md ON md.id = cm.module\n"
-            . "                   JOIN {quiz} m ON m.id = cm.instance\n"
+            . "                   JOIN {hippotrack} m ON m.id = cm.instance\n"
             . "                   \n"
             . "             WHERE cm.id = :cmid AND md.name = :modulename\n"
             . "                   \n"
             . "[array (\n"
             . "  'cmid' => '999',\n"
-            . "  'modulename' => 'quiz',\n"
+            . "  'modulename' => 'hippotrack',\n"
             .')])');
-        \quizaccess_seb\helper::get_seb_config_content('999');
+        \hippotrackaccess_seb\helper::get_seb_config_content('999');
     }
 
     /**
@@ -104,37 +104,37 @@ class helper_test extends \advanced_testcase {
 
         $this->setAdminUser();
         $course = $this->getDataGenerator()->create_course();
-        $quiz = $this->create_test_quiz($course, \quizaccess_seb\settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $hippotrack = $this->create_test_hippotrack($course, \hippotrackaccess_seb\settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user); // Log user in.
 
         $this->expectException(\moodle_exception::class);
         $this->expectExceptionMessage('Unsupported redirect detected, script execution terminated');
-        \quizaccess_seb\helper::get_seb_config_content($quiz->cmid);
+        \hippotrackaccess_seb\helper::get_seb_config_content($hippotrack->cmid);
     }
 
     /**
-     * Test that if SEB quiz settings can't be found, a seb config content won't be provided.
+     * Test that if SEB hippotrack settings can't be found, a seb config content won't be provided.
      */
     public function test_can_not_get_config_content_if_config_not_found_for_cmid() {
         $this->resetAfterTest();
 
         $this->setAdminUser();
         $course = $this->getDataGenerator()->create_course();
-        $quiz = $this->create_test_quiz($course);
+        $hippotrack = $this->create_test_hippotrack($course);
 
         $user = $this->getDataGenerator()->create_user();
         $this->getDataGenerator()->enrol_user($user->id, $course->id);
         $this->setUser($user); // Log user in.
 
         $this->expectException(\moodle_exception::class);
-        $this->expectExceptionMessage("No SEB config could be found for quiz with cmid: $quiz->cmid");
-        \quizaccess_seb\helper::get_seb_config_content($quiz->cmid);
+        $this->expectExceptionMessage("No SEB config could be found for hippotrack with cmid: $hippotrack->cmid");
+        \hippotrackaccess_seb\helper::get_seb_config_content($hippotrack->cmid);
     }
 
     /**
-     * That that if config is empty for a quiz, a seb config content won't be provided.
+     * That that if config is empty for a hippotrack, a seb config content won't be provided.
      */
     public function test_can_not_get_config_content_if_config_empty() {
         $this->resetAfterTest();
@@ -142,15 +142,15 @@ class helper_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $course = $this->getDataGenerator()->create_course();
-        $quiz = $this->create_test_quiz($course, \quizaccess_seb\settings_provider::USE_SEB_NO);
+        $hippotrack = $this->create_test_hippotrack($course, \hippotrackaccess_seb\settings_provider::USE_SEB_NO);
 
         $user = $this->getDataGenerator()->create_user();
         $this->getDataGenerator()->enrol_user($user->id, $course->id);
         $this->setUser($user); // Log user in.
 
         $this->expectException(\moodle_exception::class);
-        $this->expectExceptionMessage("No SEB config could be found for quiz with cmid: $quiz->cmid");
-        \quizaccess_seb\helper::get_seb_config_content($quiz->cmid);
+        $this->expectExceptionMessage("No SEB config could be found for hippotrack with cmid: $hippotrack->cmid");
+        \hippotrackaccess_seb\helper::get_seb_config_content($hippotrack->cmid);
     }
 
     /**
@@ -162,15 +162,15 @@ class helper_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $course = $this->getDataGenerator()->create_course();
-        $quiz = $this->create_test_quiz($course, \quizaccess_seb\settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $hippotrack = $this->create_test_hippotrack($course, \hippotrackaccess_seb\settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         $user = $this->getDataGenerator()->create_user();
         $this->getDataGenerator()->enrol_user($user->id, $course->id);
         $this->setUser($user); // Log user in.
 
-        $config = \quizaccess_seb\helper::get_seb_config_content($quiz->cmid);
+        $config = \hippotrackaccess_seb\helper::get_seb_config_content($hippotrack->cmid);
 
-        $url = new \moodle_url("/mod/hippotrack/view.php", ['id' => $quiz->cmid]);
+        $url = new \moodle_url("/mod/hippotrack/view.php", ['id' => $hippotrack->cmid]);
 
         $this->assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
             . "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"

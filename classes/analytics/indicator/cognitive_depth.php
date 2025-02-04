@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Cognitive depth indicator - quiz.
+ * Cognitive depth indicator - hippotrack.
  *
  * @package   mod_hippotrack
  * @copyright 2017 David Monllao {@link http://www.davidmonllao.com}
@@ -27,7 +27,7 @@ namespace mod_hippotrack\analytics\indicator;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Cognitive depth indicator - quiz.
+ * Cognitive depth indicator - hippotrack.
  *
  * @package   mod_hippotrack
  * @copyright 2017 David Monllao {@link http://www.davidmonllao.com}

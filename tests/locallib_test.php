@@ -42,19 +42,19 @@ require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 class locallib_test extends \advanced_testcase {
 
     public function test_hippotrack_rescale_grade() {
-        $quiz = new \stdClass();
-        $quiz->decimalpoints = 2;
-        $quiz->questiondecimalpoints = 3;
-        $quiz->grade = 10;
-        $quiz->sumgrades = 10;
-        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $quiz, false), 0.12345678);
-        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $quiz, true), format_float(0.12, 2));
-        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $quiz, 'question'),
+        $hippotrack = new \stdClass();
+        $hippotrack->decimalpoints = 2;
+        $hippotrack->questiondecimalpoints = 3;
+        $hippotrack->grade = 10;
+        $hippotrack->sumgrades = 10;
+        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $hippotrack, false), 0.12345678);
+        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $hippotrack, true), format_float(0.12, 2));
+        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $hippotrack, 'question'),
             format_float(0.123, 3));
-        $quiz->sumgrades = 5;
-        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $quiz, false), 0.24691356);
-        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $quiz, true), format_float(0.25, 2));
-        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $quiz, 'question'),
+        $hippotrack->sumgrades = 5;
+        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $hippotrack, false), 0.24691356);
+        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $hippotrack, true), format_float(0.25, 2));
+        $this->assertEquals(hippotrack_rescale_grade(0.12345678, $hippotrack, 'question'),
             format_float(0.247, 3));
     }
 
@@ -79,7 +79,7 @@ class locallib_test extends \advanced_testcase {
      *
      * @param unknown $attemptstate as in the hippotrack_attempts.state DB column.
      * @param unknown $relativetimefinish time relative to now when the attempt finished, or null for 0.
-     * @param unknown $relativetimeclose time relative to now when the quiz closes, or null for 0.
+     * @param unknown $relativetimeclose time relative to now when the hippotrack closes, or null for 0.
      * @param unknown $expectedstate expected result. One of the mod_hippotrack_display_options constants/
      */
     public function test_hippotrack_attempt_state($attemptstate,
@@ -93,14 +93,14 @@ class locallib_test extends \advanced_testcase {
             $attempt->timefinish = time() + $relativetimefinish;
         }
 
-        $quiz = new \stdClass();
+        $hippotrack = new \stdClass();
         if ($relativetimeclose === null) {
-            $quiz->timeclose = 0;
+            $hippotrack->timeclose = 0;
         } else {
-            $quiz->timeclose = time() + $relativetimeclose;
+            $hippotrack->timeclose = time() + $relativetimeclose;
         }
 
-        $this->assertEquals($expectedstate, hippotrack_attempt_state($quiz, $attempt));
+        $this->assertEquals($expectedstate, hippotrack_attempt_state($hippotrack, $attempt));
     }
 
     /**
@@ -146,15 +146,15 @@ class locallib_test extends \advanced_testcase {
         $this->setAdminUser();
         // Setup test data.
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
-        $quiz = $this->getDataGenerator()->create_module('quiz', array('course' => $course->id),
+        $hippotrack = $this->getDataGenerator()->create_module('hippotrack', array('course' => $course->id),
                                                             array('completion' => 2, 'completionview' => 1));
-        $context = \context_module::instance($quiz->cmid);
-        $cm = get_coursemodule_from_instance('quiz', $quiz->id);
+        $context = \context_module::instance($hippotrack->cmid);
+        $cm = get_coursemodule_from_instance('hippotrack', $hippotrack->id);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
 
-        hippotrack_view($quiz, $course, $cm, $context);
+        hippotrack_view($hippotrack, $course, $cm, $context);
 
         $events = $sink->get_events();
         // 2 additional events thanks to completion.
@@ -175,7 +175,7 @@ class locallib_test extends \advanced_testcase {
     }
 
     /**
-     * Return false when there are not overrides for this quiz instance.
+     * Return false when there are not overrides for this hippotrack instance.
      */
     public function test_hippotrack_is_overriden_calendar_event_no_override() {
         global $CFG, $DB;
@@ -186,12 +186,12 @@ class locallib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(['course' => $course->id]);
+        $hippotrackgenerator = $generator->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(['course' => $course->id]);
 
         $event = new \calendar_event((object)[
-            'modulename' => 'quiz',
-            'instance' => $quiz->id,
+            'modulename' => 'hippotrack',
+            'instance' => $hippotrack->id,
             'userid' => $user->id
         ]);
 
@@ -199,7 +199,7 @@ class locallib_test extends \advanced_testcase {
     }
 
     /**
-     * Return false if the given event isn't an quiz module event.
+     * Return false if the given event isn't an hippotrack module event.
      */
     public function test_hippotrack_is_overriden_calendar_event_no_module_event() {
         global $CFG, $DB;
@@ -210,8 +210,8 @@ class locallib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(['course' => $course->id]);
+        $hippotrackgenerator = $generator->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(['course' => $course->id]);
 
         $event = new \calendar_event((object)[
             'userid' => $user->id
@@ -221,7 +221,7 @@ class locallib_test extends \advanced_testcase {
     }
 
     /**
-     * Return false if there is overrides for this use but they belong to another quiz
+     * Return false if there is overrides for this use but they belong to another hippotrack
      * instance.
      */
     public function test_hippotrack_is_overriden_calendar_event_different_hippotrack_instance() {
@@ -233,18 +233,18 @@ class locallib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(['course' => $course->id]);
-        $quiz2 = $quizgenerator->create_instance(['course' => $course->id]);
+        $hippotrackgenerator = $generator->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(['course' => $course->id]);
+        $hippotrack2 = $hippotrackgenerator->create_instance(['course' => $course->id]);
 
         $event = new \calendar_event((object) [
-            'modulename' => 'quiz',
-            'instance' => $quiz->id,
+            'modulename' => 'hippotrack',
+            'instance' => $hippotrack->id,
             'userid' => $user->id
         ]);
 
         $record = (object) [
-            'quiz' => $quiz2->id,
+            'hippotrack' => $hippotrack2->id,
             'userid' => $user->id
         ];
 
@@ -254,7 +254,7 @@ class locallib_test extends \advanced_testcase {
     }
 
     /**
-     * Return true if there is a user override for this event and quiz instance.
+     * Return true if there is a user override for this event and hippotrack instance.
      */
     public function test_hippotrack_is_overriden_calendar_event_user_override() {
         global $CFG, $DB;
@@ -265,17 +265,17 @@ class locallib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(['course' => $course->id]);
+        $hippotrackgenerator = $generator->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(['course' => $course->id]);
 
         $event = new \calendar_event((object) [
-            'modulename' => 'quiz',
-            'instance' => $quiz->id,
+            'modulename' => 'hippotrack',
+            'instance' => $hippotrack->id,
             'userid' => $user->id
         ]);
 
         $record = (object) [
-            'quiz' => $quiz->id,
+            'hippotrack' => $hippotrack->id,
             'userid' => $user->id
         ];
 
@@ -285,7 +285,7 @@ class locallib_test extends \advanced_testcase {
     }
 
     /**
-     * Return true if there is a group override for the event and quiz instance.
+     * Return true if there is a group override for the event and hippotrack instance.
      */
     public function test_hippotrack_is_overriden_calendar_event_group_override() {
         global $CFG, $DB;
@@ -296,20 +296,20 @@ class locallib_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(['course' => $course->id]);
-        $group = $this->getDataGenerator()->create_group(array('courseid' => $quiz->course));
+        $hippotrackgenerator = $generator->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(['course' => $course->id]);
+        $group = $this->getDataGenerator()->create_group(array('courseid' => $hippotrack->course));
         $groupid = $group->id;
         $userid = $user->id;
 
         $event = new \calendar_event((object) [
-            'modulename' => 'quiz',
-            'instance' => $quiz->id,
+            'modulename' => 'hippotrack',
+            'instance' => $hippotrack->id,
             'groupid' => $groupid
         ]);
 
         $record = (object) [
-            'quiz' => $quiz->id,
+            'hippotrack' => $hippotrack->id,
             'groupid' => $groupid
         ];
 
@@ -329,17 +329,17 @@ class locallib_test extends \advanced_testcase {
 
         $basetimestamp = time(); // The timestamp we will base the enddates on.
 
-        // Create generator, course and quizzes.
+        // Create generator, course and hippotrackzes.
         $student1 = $this->getDataGenerator()->create_user();
         $student2 = $this->getDataGenerator()->create_user();
         $student3 = $this->getDataGenerator()->create_user();
         $teacher = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
-        // Both quizzes close in two hours.
-        $quiz1 = $quizgenerator->create_instance(array('course' => $course->id, 'timeclose' => $basetimestamp + 7200));
-        $quiz2 = $quizgenerator->create_instance(array('course' => $course->id, 'timeclose' => $basetimestamp + 7200));
+        // Both hippotrackzes close in two hours.
+        $hippotrack1 = $hippotrackgenerator->create_instance(array('course' => $course->id, 'timeclose' => $basetimestamp + 7200));
+        $hippotrack2 = $hippotrackgenerator->create_instance(array('course' => $course->id, 'timeclose' => $basetimestamp + 7200));
         $group1 = $this->getDataGenerator()->create_group(array('courseid' => $course->id));
         $group2 = $this->getDataGenerator()->create_group(array('courseid' => $course->id));
 
@@ -364,107 +364,107 @@ class locallib_test extends \advanced_testcase {
         $this->getDataGenerator()->create_group_member(array('userid' => $student1id, 'groupid' => $group1id));
         $this->getDataGenerator()->create_group_member(array('userid' => $student2id, 'groupid' => $group2id));
 
-        // Group 1 gets an group override for quiz 1 to close in three hours.
+        // Group 1 gets an group override for hippotrack 1 to close in three hours.
         $record1 = (object) [
-            'quiz' => $quiz1->id,
+            'hippotrack' => $hippotrack1->id,
             'groupid' => $group1id,
             'timeclose' => $basetimestamp + 10800 // In three hours.
         ];
         $DB->insert_record('hippotrack_overrides', $record1);
 
-        // Let's test quiz 1 closes in three hours for user student 1 since member of group 1.
-        // Quiz 2 closes in two hours.
+        // Let's test hippotrack 1 closes in three hours for user student 1 since member of group 1.
+        // HippoTrack 2 closes in two hours.
         $this->setUser($student1id);
         $params = new \stdClass();
 
         $comparearray = array();
         $object = new \stdClass();
-        $object->id = $quiz1->id;
-        $object->usertimeclose = $basetimestamp + 10800; // The overriden timeclose for quiz 1.
+        $object->id = $hippotrack1->id;
+        $object->usertimeclose = $basetimestamp + 10800; // The overriden timeclose for hippotrack 1.
 
-        $comparearray[$quiz1->id] = $object;
+        $comparearray[$hippotrack1->id] = $object;
 
         $object = new \stdClass();
-        $object->id = $quiz2->id;
-        $object->usertimeclose = $basetimestamp + 7200; // The unchanged timeclose for quiz 2.
+        $object->id = $hippotrack2->id;
+        $object->usertimeclose = $basetimestamp + 7200; // The unchanged timeclose for hippotrack 2.
 
-        $comparearray[$quiz2->id] = $object;
+        $comparearray[$hippotrack2->id] = $object;
 
         $this->assertEquals($comparearray, hippotrack_get_user_timeclose($course->id));
 
-        // Let's test quiz 1 closes in two hours (the original value) for user student 3 since member of no group.
+        // Let's test hippotrack 1 closes in two hours (the original value) for user student 3 since member of no group.
         $this->setUser($student3id);
         $params = new \stdClass();
 
         $comparearray = array();
         $object = new \stdClass();
-        $object->id = $quiz1->id;
-        $object->usertimeclose = $basetimestamp + 7200; // The original timeclose for quiz 1.
+        $object->id = $hippotrack1->id;
+        $object->usertimeclose = $basetimestamp + 7200; // The original timeclose for hippotrack 1.
 
-        $comparearray[$quiz1->id] = $object;
+        $comparearray[$hippotrack1->id] = $object;
 
         $object = new \stdClass();
-        $object->id = $quiz2->id;
-        $object->usertimeclose = $basetimestamp + 7200; // The original timeclose for quiz 2.
+        $object->id = $hippotrack2->id;
+        $object->usertimeclose = $basetimestamp + 7200; // The original timeclose for hippotrack 2.
 
-        $comparearray[$quiz2->id] = $object;
+        $comparearray[$hippotrack2->id] = $object;
 
         $this->assertEquals($comparearray, hippotrack_get_user_timeclose($course->id));
 
-        // User 2 gets an user override for quiz 1 to close in four hours.
+        // User 2 gets an user override for hippotrack 1 to close in four hours.
         $record2 = (object) [
-            'quiz' => $quiz1->id,
+            'hippotrack' => $hippotrack1->id,
             'userid' => $student2id,
             'timeclose' => $basetimestamp + 14400 // In four hours.
         ];
         $DB->insert_record('hippotrack_overrides', $record2);
 
-        // Let's test quiz 1 closes in four hours for user student 2 since personally overriden.
-        // Quiz 2 closes in two hours.
+        // Let's test hippotrack 1 closes in four hours for user student 2 since personally overriden.
+        // HippoTrack 2 closes in two hours.
         $this->setUser($student2id);
 
         $comparearray = array();
         $object = new \stdClass();
-        $object->id = $quiz1->id;
-        $object->usertimeclose = $basetimestamp + 14400; // The overriden timeclose for quiz 1.
+        $object->id = $hippotrack1->id;
+        $object->usertimeclose = $basetimestamp + 14400; // The overriden timeclose for hippotrack 1.
 
-        $comparearray[$quiz1->id] = $object;
+        $comparearray[$hippotrack1->id] = $object;
 
         $object = new \stdClass();
-        $object->id = $quiz2->id;
-        $object->usertimeclose = $basetimestamp + 7200; // The unchanged timeclose for quiz 2.
+        $object->id = $hippotrack2->id;
+        $object->usertimeclose = $basetimestamp + 7200; // The unchanged timeclose for hippotrack 2.
 
-        $comparearray[$quiz2->id] = $object;
+        $comparearray[$hippotrack2->id] = $object;
 
         $this->assertEquals($comparearray, hippotrack_get_user_timeclose($course->id));
 
         // Let's test a teacher sees the original times.
-        // Quiz 1 and quiz 2 close in two hours.
+        // HippoTrack 1 and hippotrack 2 close in two hours.
         $this->setUser($teacherid);
 
         $comparearray = array();
         $object = new \stdClass();
-        $object->id = $quiz1->id;
-        $object->usertimeclose = $basetimestamp + 7200; // The unchanged timeclose for quiz 1.
+        $object->id = $hippotrack1->id;
+        $object->usertimeclose = $basetimestamp + 7200; // The unchanged timeclose for hippotrack 1.
 
-        $comparearray[$quiz1->id] = $object;
+        $comparearray[$hippotrack1->id] = $object;
 
         $object = new \stdClass();
-        $object->id = $quiz2->id;
-        $object->usertimeclose = $basetimestamp + 7200; // The unchanged timeclose for quiz 2.
+        $object->id = $hippotrack2->id;
+        $object->usertimeclose = $basetimestamp + 7200; // The unchanged timeclose for hippotrack 2.
 
-        $comparearray[$quiz2->id] = $object;
+        $comparearray[$hippotrack2->id] = $object;
 
         $this->assertEquals($comparearray, hippotrack_get_user_timeclose($course->id));
     }
 
     /**
-     * This function creates a quiz with some standard (non-random) and some random questions.
+     * This function creates a hippotrack with some standard (non-random) and some random questions.
      * The standard questions are created first and then random questions follow them.
-     * So in a quiz with 3 standard question and 2 random question, the first random question is at slot 4.
+     * So in a hippotrack with 3 standard question and 2 random question, the first random question is at slot 4.
      *
-     * @param int $qnum Number of standard questions that should be created in the quiz.
-     * @param int $randomqnum Number of random questions that should be created in the quiz.
+     * @param int $qnum Number of standard questions that should be created in the hippotrack.
+     * @param int $randomqnum Number of random questions that should be created in the hippotrack.
      * @param array $questiontags Tags to be used for random questions.
      *      This is an array in the following format:
      *      [
@@ -472,7 +472,7 @@ class locallib_test extends \advanced_testcase {
      *          1 => ['baz', 'qux']
      *      ]
      * @param string[] $unusedtags Some additional tags to be created.
-     * @return array An array of 2 elements: $quiz and $tagobjects.
+     * @return array An array of 2 elements: $hippotrack and $tagobjects.
      *      $tagobjects is an associative array of all created tag objects with its key being tag names.
      */
     private function setup_hippotrack_and_tags($qnum, $randomqnum, $questiontags = [], $unusedtags = []) {
@@ -499,9 +499,9 @@ class locallib_test extends \advanced_testcase {
             $tagobjects[$tagname] = $this->getDataGenerator()->create_tag($tagrecord);
         }
 
-        // Create a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
+        // Create a hippotrack.
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
 
         // Create a question category in the system context.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
@@ -510,7 +510,7 @@ class locallib_test extends \advanced_testcase {
         // Setup standard questions.
         for ($i = 0; $i < $qnum; $i++) {
             $question = $questiongenerator->create_question('shortanswer', null, array('category' => $cat->id));
-            hippotrack_add_hippotrack_question($question->id, $quiz);
+            hippotrack_add_hippotrack_question($question->id, $hippotrack);
         }
         // Setup random questions.
         for ($i = 0; $i < $randomqnum; $i++) {
@@ -522,35 +522,35 @@ class locallib_test extends \advanced_testcase {
                     $tagids[] = $tagobjects[$tagname]->id;
                 }
             }
-            hippotrack_add_random_questions($quiz, 0, $cat->id, 1, false, $tagids);
+            hippotrack_add_random_questions($hippotrack, 0, $cat->id, 1, false, $tagids);
         }
 
-        return array($quiz, $tagobjects);
+        return array($hippotrack, $tagobjects);
     }
 
     public function test_hippotrack_override_summary() {
         global $DB, $PAGE;
         $this->resetAfterTest();
         $generator = $this->getDataGenerator();
-        /** @var mod_hippotrack_generator $quizgenerator */
-        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
+        /** @var mod_hippotrack_generator $hippotrackgenerator */
+        $hippotrackgenerator = $generator->get_plugin_generator('mod_hippotrack');
         /** @var mod_hippotrack_renderer $renderer */
         $renderer = $PAGE->get_renderer('mod_hippotrack');
 
-        // Course with quiz and a group - plus some others, to verify they don't get counted.
+        // Course with hippotrack and a group - plus some others, to verify they don't get counted.
         $course = $generator->create_course();
-        $quiz = $quizgenerator->create_instance(['course' => $course->id, 'groupmode' => SEPARATEGROUPS]);
-        $cm = get_coursemodule_from_id('quiz', $quiz->cmid, $course->id);
+        $hippotrack = $hippotrackgenerator->create_instance(['course' => $course->id, 'groupmode' => SEPARATEGROUPS]);
+        $cm = get_coursemodule_from_id('hippotrack', $hippotrack->cmid, $course->id);
         $group = $generator->create_group(['courseid' => $course->id]);
         $othergroup = $generator->create_group(['courseid' => $course->id]);
-        $otherquiz = $quizgenerator->create_instance(['course' => $course->id]);
+        $otherhippotrack = $hippotrackgenerator->create_instance(['course' => $course->id]);
 
         // Initial test (as admin) with no data.
         $this->setAdminUser();
         $this->assertEquals(['group' => 0, 'user' => 0, 'mode' => 'allgroups'],
-                hippotrack_override_summary($quiz, $cm));
+                hippotrack_override_summary($hippotrack, $cm));
         $this->assertEquals(['group' => 0, 'user' => 0, 'mode' => 'onegroup'],
-                hippotrack_override_summary($quiz, $cm, $group->id));
+                hippotrack_override_summary($hippotrack, $cm, $group->id));
 
         // Editing teacher.
         $teacher = $generator->create_user();
@@ -577,57 +577,57 @@ class locallib_test extends \advanced_testcase {
         // Test as teacher.
         $this->setUser($teacher);
         $this->assertEquals(['group' => 0, 'user' => 0, 'mode' => 'allgroups'],
-                hippotrack_override_summary($quiz, $cm));
+                hippotrack_override_summary($hippotrack, $cm));
         $this->assertEquals(['group' => 0, 'user' => 0, 'mode' => 'onegroup'],
-                hippotrack_override_summary($quiz, $cm, $group->id));
+                hippotrack_override_summary($hippotrack, $cm, $group->id));
 
         // Test as tutor.
         $this->setUser($tutor);
         $this->assertEquals(['group' => 0, 'user' => 0, 'mode' => 'somegroups'],
-                hippotrack_override_summary($quiz, $cm));
+                hippotrack_override_summary($hippotrack, $cm));
         $this->assertEquals(['group' => 0, 'user' => 0, 'mode' => 'onegroup'],
-                hippotrack_override_summary($quiz, $cm, $group->id));
-        $this->assertEquals('', $renderer->hippotrack_override_summary_links($quiz, $cm));
+                hippotrack_override_summary($hippotrack, $cm, $group->id));
+        $this->assertEquals('', $renderer->hippotrack_override_summary_links($hippotrack, $cm));
 
-        // Quiz setting overrides for students 1 and 3.
-        $quizgenerator->create_override(['quiz' => $quiz->id, 'userid' => $student1->id, 'attempts' => 2]);
-        $quizgenerator->create_override(['quiz' => $quiz->id, 'userid' => $student3->id, 'attempts' => 2]);
-        $quizgenerator->create_override(['quiz' => $quiz->id, 'groupid' => $group->id, 'attempts' => 3]);
-        $quizgenerator->create_override(['quiz' => $quiz->id, 'groupid' => $othergroup->id, 'attempts' => 3]);
-        $quizgenerator->create_override(['quiz' => $otherquiz->id, 'userid' => $student2->id, 'attempts' => 2]);
+        // HippoTrack setting overrides for students 1 and 3.
+        $hippotrackgenerator->create_override(['hippotrack' => $hippotrack->id, 'userid' => $student1->id, 'attempts' => 2]);
+        $hippotrackgenerator->create_override(['hippotrack' => $hippotrack->id, 'userid' => $student3->id, 'attempts' => 2]);
+        $hippotrackgenerator->create_override(['hippotrack' => $hippotrack->id, 'groupid' => $group->id, 'attempts' => 3]);
+        $hippotrackgenerator->create_override(['hippotrack' => $hippotrack->id, 'groupid' => $othergroup->id, 'attempts' => 3]);
+        $hippotrackgenerator->create_override(['hippotrack' => $otherhippotrack->id, 'userid' => $student2->id, 'attempts' => 2]);
 
         // Test as teacher.
         $this->setUser($teacher);
         $this->assertEquals(['group' => 2, 'user' => 2, 'mode' => 'allgroups'],
-                hippotrack_override_summary($quiz, $cm));
+                hippotrack_override_summary($hippotrack, $cm));
         $this->assertEquals('Settings overrides exist (Groups: 2, Users: 2)',
                 // Links checked by Behat, so strip them for these tests.
-                html_to_text($renderer->hippotrack_override_summary_links($quiz, $cm), 0, false));
+                html_to_text($renderer->hippotrack_override_summary_links($hippotrack, $cm), 0, false));
         $this->assertEquals(['group' => 1, 'user' => 1, 'mode' => 'onegroup'],
-                hippotrack_override_summary($quiz, $cm, $group->id));
+                hippotrack_override_summary($hippotrack, $cm, $group->id));
         $this->assertEquals('Settings overrides exist (Groups: 1, Users: 1) for this group',
-                html_to_text($renderer->hippotrack_override_summary_links($quiz, $cm, $group->id), 0, false));
+                html_to_text($renderer->hippotrack_override_summary_links($hippotrack, $cm, $group->id), 0, false));
 
         // Test as tutor.
         $this->setUser($tutor);
         $this->assertEquals(['group' => 1, 'user' => 1, 'mode' => 'somegroups'],
-                hippotrack_override_summary($quiz, $cm));
+                hippotrack_override_summary($hippotrack, $cm));
         $this->assertEquals('Settings overrides exist (Groups: 1, Users: 1) for your groups',
-                html_to_text($renderer->hippotrack_override_summary_links($quiz, $cm), 0, false));
+                html_to_text($renderer->hippotrack_override_summary_links($hippotrack, $cm), 0, false));
         $this->assertEquals(['group' => 1, 'user' => 1, 'mode' => 'onegroup'],
-                hippotrack_override_summary($quiz, $cm, $group->id));
+                hippotrack_override_summary($hippotrack, $cm, $group->id));
         $this->assertEquals('Settings overrides exist (Groups: 1, Users: 1) for this group',
-                html_to_text($renderer->hippotrack_override_summary_links($quiz, $cm, $group->id), 0, false));
+                html_to_text($renderer->hippotrack_override_summary_links($hippotrack, $cm, $group->id), 0, false));
 
-        // Now set the quiz to be group mode: no groups, and re-test as tutor.
+        // Now set the hippotrack to be group mode: no groups, and re-test as tutor.
         // In this case, the tutor should see all groups.
         $DB->set_field('course_modules', 'groupmode', NOGROUPS, ['id' => $cm->id]);
-        $cm = get_coursemodule_from_id('quiz', $quiz->cmid, $course->id);
+        $cm = get_coursemodule_from_id('hippotrack', $hippotrack->cmid, $course->id);
 
         $this->assertEquals(['group' => 2, 'user' => 2, 'mode' => 'allgroups'],
-                hippotrack_override_summary($quiz, $cm));
+                hippotrack_override_summary($hippotrack, $cm));
         $this->assertEquals('Settings overrides exist (Groups: 2, Users: 2)',
-                html_to_text($renderer->hippotrack_override_summary_links($quiz, $cm), 0, false));
+                html_to_text($renderer->hippotrack_override_summary_links($hippotrack, $cm), 0, false));
     }
 
     /**
@@ -641,9 +641,9 @@ class locallib_test extends \advanced_testcase {
         $this->preventResetByRollback();
 
         $course = $this->getDataGenerator()->create_course();
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(['course' => $course->id]);
-        $cm = get_coursemodule_from_instance('quiz', $quiz->id);
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(['course' => $course->id]);
+        $cm = get_coursemodule_from_instance('hippotrack', $hippotrack->id);
 
         $recipient = $this->getDataGenerator()->create_user(['email' => 'student@example.com']);
 
@@ -658,11 +658,11 @@ class locallib_test extends \advanced_testcase {
         // Course info.
         $data->courseid        = $course->id;
         $data->coursename      = $course->fullname;
-        // Quiz info.
-        $data->quizname        = $quiz->name;
-        $data->quizurl         = $CFG->wwwroot . '/mod/hippotrack/view.php?id=' . $cm->id;
-        $data->quizid          = $quiz->id;
-        $data->quizcmid        = $quiz->cmid;
+        // HippoTrack info.
+        $data->hippotrackname        = $hippotrack->name;
+        $data->hippotrackurl         = $CFG->wwwroot . '/mod/hippotrack/view.php?id=' . $cm->id;
+        $data->hippotrackid          = $hippotrack->id;
+        $data->hippotrackcmid        = $hippotrack->cmid;
         $data->attemptid       = 1;
         $data->submissiontime = userdate($timenow);
 

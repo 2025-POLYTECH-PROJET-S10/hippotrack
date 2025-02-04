@@ -14,27 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quizaccess_seb\external;
+namespace hippotrackaccess_seb\external;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-use quizaccess_seb\hippotrack_settings;
+use hippotrackaccess_seb\hippotrack_settings;
 
 require_once($CFG->libdir . '/externallib.php');
 
 /**
  * PHPUnit tests for external function.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2021 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers \quizaccess_seb\external\validate_hippotrack_access
+ * @covers \hippotrackaccess_seb\external\validate_hippotrack_access
  */
 class validate_hippotrack_access_test extends \advanced_testcase {
-    use \quizaccess_seb_test_helper_trait;
+    use \hippotrackaccess_seb_test_helper_trait;
 
     /**
      * This method runs before every test.
@@ -45,7 +45,7 @@ class validate_hippotrack_access_test extends \advanced_testcase {
 
         // Generate data objects.
         $this->course = $this->getDataGenerator()->create_course();
-        $this->quiz = $this->create_test_quiz($this->course);
+        $this->hippotrack = $this->create_test_hippotrack($this->course);
         $this->user = $this->getDataGenerator()->create_user();
         $this->getDataGenerator()->enrol_user($this->user->id, $this->course->id, 'student');
         $this->setUser($this->user);
@@ -122,13 +122,13 @@ class validate_hippotrack_access_test extends \advanced_testcase {
      * Test that the user has permissions to access context.
      */
     public function test_context_is_not_valid_for_user() {
-        // Set user as user not enrolled in course and quiz.
+        // Set user as user not enrolled in course and hippotrack.
         $this->user = $this->getDataGenerator()->create_user();
         $this->setUser($this->user);
 
         $this->expectException(\require_login_exception::class);
         $this->expectExceptionMessage('Course or activity not accessible. (Not enrolled)');
-        validate_hippotrack_keys::execute($this->quiz->cmid, 'https://www.example.com/moodle', 'configkey');
+        validate_hippotrack_keys::execute($this->hippotrack->cmid, 'https://www.example.com/moodle', 'configkey');
     }
 
     /**
@@ -137,17 +137,17 @@ class validate_hippotrack_access_test extends \advanced_testcase {
     public function test_no_keys_provided() {
         $this->expectException(\invalid_parameter_exception::class);
         $this->expectExceptionMessage('At least one Safe Exam Browser key must be provided.');
-        validate_hippotrack_keys::execute($this->quiz->cmid, 'https://www.example.com/moodle');
+        validate_hippotrack_keys::execute($this->hippotrack->cmid, 'https://www.example.com/moodle');
     }
 
     /**
-     * Test exception thrown if cmid doesn't match a quiz.
+     * Test exception thrown if cmid doesn't match a hippotrack.
      */
     public function test_hippotrack_does_not_exist() {
         $this->setAdminUser();
         $forum = $this->getDataGenerator()->create_module('forum', ['course' => $this->course->id]);
         $this->expectException(\invalid_parameter_exception::class);
-        $this->expectExceptionMessage('Quiz not found matching course module ID: ' . $forum->cmid);
+        $this->expectExceptionMessage('HippoTrack not found matching course module ID: ' . $forum->cmid);
         validate_hippotrack_keys::execute($forum->cmid, 'https://www.example.com/moodle', 'configkey');
     }
 
@@ -156,19 +156,19 @@ class validate_hippotrack_access_test extends \advanced_testcase {
      */
     public function test_config_key_valid() {
         $sink = $this->redirectEvents();
-        // Test settings to populate the quiz.
+        // Test settings to populate the hippotrack.
         $settings = $this->get_test_settings([
-            'quizid' => $this->quiz->id,
-            'cmid' => $this->quiz->cmid,
+            'hippotrackid' => $this->hippotrack->id,
+            'cmid' => $this->hippotrack->cmid,
         ]);
         $url = 'https://www.example.com/moodle';
 
-        // Create the quiz settings.
-        $quizsettings = new hippotrack_settings(0, $settings);
-        $quizsettings->save();
+        // Create the hippotrack settings.
+        $hippotracksettings = new hippotrack_settings(0, $settings);
+        $hippotracksettings->save();
 
-        $fullconfigkey = hash('sha256', $url . $quizsettings->get_config_key());
-        $result = validate_hippotrack_keys::execute($this->quiz->cmid, $url, $fullconfigkey);
+        $fullconfigkey = hash('sha256', $url . $hippotracksettings->get_config_key());
+        $result = validate_hippotrack_keys::execute($this->hippotrack->cmid, $url, $fullconfigkey);
         $this->assertTrue($result['configkey']);
         $this->assertTrue($result['browserexamkey']);
 
@@ -181,23 +181,23 @@ class validate_hippotrack_access_test extends \advanced_testcase {
      */
     public function test_config_key_not_valid() {
         $sink = $this->redirectEvents();
-        // Test settings to populate the quiz.
+        // Test settings to populate the hippotrack.
         $settings = $this->get_test_settings([
-            'quizid' => $this->quiz->id,
-            'cmid' => $this->quiz->cmid,
+            'hippotrackid' => $this->hippotrack->id,
+            'cmid' => $this->hippotrack->cmid,
         ]);
 
-        // Create the quiz settings.
-        $quizsettings = new hippotrack_settings(0, $settings);
-        $quizsettings->save();
+        // Create the hippotrack settings.
+        $hippotracksettings = new hippotrack_settings(0, $settings);
+        $hippotracksettings->save();
 
-        $result = validate_hippotrack_keys::execute($this->quiz->cmid, 'https://www.example.com/moodle', 'badconfigkey');
+        $result = validate_hippotrack_keys::execute($this->hippotrack->cmid, 'https://www.example.com/moodle', 'badconfigkey');
         $this->assertFalse($result['configkey']);
         $this->assertTrue($result['browserexamkey']);
         $events = $sink->get_events();
         $this->assertCount(1, $events);
         $event = reset($events);
-        $this->assertInstanceOf('\quizaccess_seb\event\access_prevented', $event);
+        $this->assertInstanceOf('\hippotrackaccess_seb\event\access_prevented', $event);
         $this->assertStringContainsString('Invalid SEB config key', $event->get_description());
     }
 
@@ -206,22 +206,22 @@ class validate_hippotrack_access_test extends \advanced_testcase {
      */
     public function test_browser_exam_key_valid() {
         $sink = $this->redirectEvents();
-        // Test settings to populate the quiz.
+        // Test settings to populate the hippotrack.
         $url = 'https://www.example.com/moodle';
         $validbrowserexamkey = hash('sha256', 'validbrowserexamkey');
         $settings = $this->get_test_settings([
-            'quizid' => $this->quiz->id,
-            'cmid' => $this->quiz->cmid,
-            'requiresafeexambrowser' => \quizaccess_seb\settings_provider::USE_SEB_CLIENT_CONFIG,
+            'hippotrackid' => $this->hippotrack->id,
+            'cmid' => $this->hippotrack->cmid,
+            'requiresafeexambrowser' => \hippotrackaccess_seb\settings_provider::USE_SEB_CLIENT_CONFIG,
             'allowedbrowserexamkeys' => $validbrowserexamkey,
         ]);
 
-        // Create the quiz settings.
-        $quizsettings = new hippotrack_settings(0, $settings);
-        $quizsettings->save();
+        // Create the hippotrack settings.
+        $hippotracksettings = new hippotrack_settings(0, $settings);
+        $hippotracksettings->save();
 
         $fullbrowserexamkey = hash('sha256', $url . $validbrowserexamkey);
-        $result = validate_hippotrack_keys::execute($this->quiz->cmid, $url, null, $fullbrowserexamkey);
+        $result = validate_hippotrack_keys::execute($this->hippotrack->cmid, $url, null, $fullbrowserexamkey);
         $this->assertTrue($result['configkey']);
         $this->assertTrue($result['browserexamkey']);
         $events = $sink->get_events();
@@ -233,27 +233,27 @@ class validate_hippotrack_access_test extends \advanced_testcase {
      */
     public function test_browser_exam_key_not_valid() {
         $sink = $this->redirectEvents();
-        // Test settings to populate the quiz.
+        // Test settings to populate the hippotrack.
         $validbrowserexamkey = hash('sha256', 'validbrowserexamkey');
         $settings = $this->get_test_settings([
-            'quizid' => $this->quiz->id,
-            'cmid' => $this->quiz->cmid,
-            'requiresafeexambrowser' => \quizaccess_seb\settings_provider::USE_SEB_CLIENT_CONFIG,
+            'hippotrackid' => $this->hippotrack->id,
+            'cmid' => $this->hippotrack->cmid,
+            'requiresafeexambrowser' => \hippotrackaccess_seb\settings_provider::USE_SEB_CLIENT_CONFIG,
             'allowedbrowserexamkeys' => $validbrowserexamkey,
         ]);
 
-        // Create the quiz settings.
-        $quizsettings = new hippotrack_settings(0, $settings);
-        $quizsettings->save();
+        // Create the hippotrack settings.
+        $hippotracksettings = new hippotrack_settings(0, $settings);
+        $hippotracksettings->save();
 
-        $result = validate_hippotrack_keys::execute($this->quiz->cmid, 'https://www.example.com/moodle', null,
+        $result = validate_hippotrack_keys::execute($this->hippotrack->cmid, 'https://www.example.com/moodle', null,
                 hash('sha256', 'badbrowserexamkey'));
         $this->assertTrue($result['configkey']);
         $this->assertFalse($result['browserexamkey']);
         $events = $sink->get_events();
         $this->assertCount(1, $events);
         $event = reset($events);
-        $this->assertInstanceOf('\quizaccess_seb\event\access_prevented', $event);
+        $this->assertInstanceOf('\hippotrackaccess_seb\event\access_prevented', $event);
         $this->assertStringContainsString('Invalid SEB browser key', $event->get_description());
     }
 

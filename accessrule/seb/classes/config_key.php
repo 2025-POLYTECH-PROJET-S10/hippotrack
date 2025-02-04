@@ -17,13 +17,13 @@
 /**
  * Class for generating and representing a Safe Exam Browser config key.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_seb;
+namespace hippotrackaccess_seb;
 
 defined('MOODLE_INTERNAL') || die();
 

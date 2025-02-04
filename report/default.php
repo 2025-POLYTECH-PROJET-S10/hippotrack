@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Base class for quiz report plugins.
+ * Base class for hippotrack report plugins.
  *
  * @package   mod_hippotrack
  * @copyright 1999 onwards Martin Dougiamas and others {@link http://moodle.com}
@@ -27,16 +27,16 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * Base class for quiz report plugins.
+ * Base class for hippotrack report plugins.
  *
  * Doesn't do anything on it's own -- it needs to be extended.
- * This class displays quiz reports.  Because it is called from
+ * This class displays hippotrack reports.  Because it is called from
  * within /mod/hippotrack/report.php you can assume that the page header
  * and footer are taken care of.
  *
  * This file can refer to itself as report.php to pass variables
  * to itself - all these will also be globally available.  You must
- * pass "id=$cm->id" or q=$quiz->id", and "mode=reportname".
+ * pass "id=$cm->id" or q=$hippotrack->id", and "mode=reportname".
  *
  * @copyright 1999 onwards Martin Dougiamas and others {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -46,30 +46,30 @@ abstract class hippotrack_default_report {
 
     /**
      * Override this function to displays the report.
-     * @param $cm the course-module for this quiz.
+     * @param $cm the course-module for this hippotrack.
      * @param $course the coures we are in.
-     * @param $quiz this quiz.
+     * @param $hippotrack this hippotrack.
      */
-    public abstract function display($cm, $course, $quiz);
+    public abstract function display($cm, $course, $hippotrack);
 
     /**
      * Initialise some parts of $PAGE and start output.
      *
      * @param object $cm the course_module information.
      * @param object $coures the course settings.
-     * @param object $quiz the quiz settings.
+     * @param object $hippotrack the hippotrack settings.
      * @param string $reportmode the report name.
      */
-    public function print_header_and_tabs($cm, $course, $quiz, $reportmode = 'overview') {
+    public function print_header_and_tabs($cm, $course, $hippotrack, $reportmode = 'overview') {
         global $PAGE, $OUTPUT, $CFG;
 
         // Print the page header.
-        $PAGE->set_title($quiz->name);
+        $PAGE->set_title($hippotrack->name);
         $PAGE->set_heading($course->fullname);
         echo $OUTPUT->header();
         $context = context_module::instance($cm->id);
         if (!$PAGE->has_secondary_navigation()) {
-            echo $OUTPUT->heading(format_string($quiz->name, true, array('context' => $context)));
+            echo $OUTPUT->heading(format_string($hippotrack->name, true, array('context' => $context)));
         }
         if (!empty($CFG->enableplagiarism)) {
             require_once($CFG->libdir . '/plagiarismlib.php');
@@ -82,7 +82,7 @@ abstract class hippotrack_default_report {
      *
      * @param object $cm the course_module information.
      * @param object $coures the course settings.
-     * @param context $context the quiz context.
+     * @param context $context the hippotrack context.
      * @return int the current group id, if applicable. 0 for all users,
      *      NO_GROUPS_ALLOWED if the user cannot see any group.
      */

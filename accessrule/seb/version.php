@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for the quizaccess_seb plugin.
+ * Version information for the hippotrackaccess_seb plugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,5 +27,5 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version = 2022112800;
 $plugin->requires = 2022111800;
-$plugin->component = 'quizaccess_seb';
+$plugin->component = 'hippotrackaccess_seb';
 $plugin->maturity = MATURITY_STABLE;

@@ -40,98 +40,98 @@ class attempt_submitted_test extends \advanced_testcase {
 
 
     /**
-     * Attempting a quiz should queue the recalculation task for that quiz in 1 hour's time.
+     * Attempting a hippotrack should queue the recalculation task for that hippotrack in 1 hour's time.
      *
      * @return void
      */
     public function test_queue_task_on_submission(): void {
-        [$user, $quiz] = $this->create_test_data();
+        [$user, $hippotrack] = $this->create_test_data();
 
         $tasks = manager::get_adhoc_tasks(recalculate::class);
         $this->assertEmpty($tasks);
 
-        $this->attempt_quiz($quiz, $user);
+        $this->attempt_hippotrack($hippotrack, $user);
 
         $tasks = manager::get_adhoc_tasks(recalculate::class);
         $this->assertCount(1, $tasks);
         $task = reset($tasks);
-        $this->assert_task_is_queued_for_quiz($task, $quiz);
+        $this->assert_task_is_queued_for_hippotrack($task, $hippotrack);
     }
 
     /**
-     * Attempting a quiz multiple times should only queue one instance of the task.
+     * Attempting a hippotrack multiple times should only queue one instance of the task.
      *
      * @return void
      */
     public function test_queue_single_task_for_multiple_submissions(): void {
-        [$user1, $quiz] = $this->create_test_data();
+        [$user1, $hippotrack] = $this->create_test_data();
         $user2 = $this->getDataGenerator()->create_user();
 
         $tasks = manager::get_adhoc_tasks(recalculate::class);
         $this->assertEmpty($tasks);
 
-        $this->attempt_quiz($quiz, $user1);
-        $this->attempt_quiz($quiz, $user2);
+        $this->attempt_hippotrack($hippotrack, $user1);
+        $this->attempt_hippotrack($hippotrack, $user2);
 
         $tasks = manager::get_adhoc_tasks(recalculate::class);
         $this->assertCount(1, $tasks);
         $task = reset($tasks);
-        $this->assert_task_is_queued_for_quiz($task, $quiz);
+        $this->assert_task_is_queued_for_hippotrack($task, $hippotrack);
     }
 
     /**
-     * Attempting the quiz again after processing the task should queue a new task.
+     * Attempting the hippotrack again after processing the task should queue a new task.
      *
      * @return void
      */
     public function test_queue_new_task_after_processing(): void {
-        [$user1, $quiz, $course] = $this->create_test_data();
+        [$user1, $hippotrack, $course] = $this->create_test_data();
         $user2 = $this->getDataGenerator()->create_user();
 
         $tasks = manager::get_adhoc_tasks(recalculate::class);
         $this->assertEmpty($tasks);
 
-        $this->attempt_quiz($quiz, $user1);
+        $this->attempt_hippotrack($hippotrack, $user1);
 
         $tasks = manager::get_adhoc_tasks(recalculate::class);
         $this->assertCount(1, $tasks);
 
-        $this->expectOutputRegex("~Re-calculating statistics for quiz {$quiz->name} \({$quiz->id}\) " .
+        $this->expectOutputRegex("~Re-calculating statistics for hippotrack {$hippotrack->name} \({$hippotrack->id}\) " .
             "from course {$course->shortname} \({$course->id}\) with 1 attempts~");
         statistics_helper::run_pending_recalculation_tasks();
 
         $tasks = manager::get_adhoc_tasks(recalculate::class);
         $this->assertEmpty($tasks);
 
-        $this->attempt_quiz($quiz, $user2);
+        $this->attempt_hippotrack($hippotrack, $user2);
 
         $tasks = manager::get_adhoc_tasks(recalculate::class);
         $this->assertCount(1, $tasks);
 
         $task = reset($tasks);
-        $this->assert_task_is_queued_for_quiz($task, $quiz);
+        $this->assert_task_is_queued_for_hippotrack($task, $hippotrack);
     }
 
     /**
-     * Attempting different quizzes will queue a task for each.
+     * Attempting different hippotrackzes will queue a task for each.
      *
      * @return void
      */
-    public function test_queue_separate_tasks_for_multiple_quizzes(): void {
-        [$user1, $quiz1] = $this->create_test_data();
-        [$user2, $quiz2] = $this->create_test_data();
+    public function test_queue_separate_tasks_for_multiple_hippotrackzes(): void {
+        [$user1, $hippotrack1] = $this->create_test_data();
+        [$user2, $hippotrack2] = $this->create_test_data();
 
         $tasks = manager::get_adhoc_tasks(recalculate::class);
         $this->assertEmpty($tasks);
 
-        $this->attempt_quiz($quiz1, $user1);
-        $this->attempt_quiz($quiz2, $user2);
+        $this->attempt_hippotrack($hippotrack1, $user1);
+        $this->attempt_hippotrack($hippotrack2, $user2);
 
         $tasks = manager::get_adhoc_tasks(recalculate::class);
         $this->assertCount(2, $tasks);
         $task1 = array_shift($tasks);
-        $this->assert_task_is_queued_for_quiz($task1, $quiz1);
+        $this->assert_task_is_queued_for_hippotrack($task1, $hippotrack1);
         $task2 = array_shift($tasks);
-        $this->assert_task_is_queued_for_quiz($task2, $quiz2);
+        $this->assert_task_is_queued_for_hippotrack($task2, $hippotrack2);
     }
 }

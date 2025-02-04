@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This script displays a particular page of a quiz attempt that is in progress.
+ * This script displays a particular page of a hippotrack attempt that is in progress.
  *
  * @package   mod_hippotrack
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
@@ -29,8 +29,8 @@ require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 if ($id = optional_param('id', 0, PARAM_INT)) {
     redirect($CFG->wwwroot . '/mod/hippotrack/startattempt.php?cmid=' . $id . '&sesskey=' . sesskey());
 } else if ($qid = optional_param('q', 0, PARAM_INT)) {
-    if (!$cm = get_coursemodule_from_instance('quiz', $qid)) {
-        throw new \moodle_exception('invalidquizid', 'quiz');
+    if (!$cm = get_coursemodule_from_instance('hippotrack', $qid)) {
+        throw new \moodle_exception('invalidhippotrackid', 'hippotrack');
     }
     redirect(new moodle_url('/mod/hippotrack/startattempt.php',
             array('cmid' => $cm->id, 'sesskey' => sesskey())));
@@ -44,7 +44,7 @@ $cmid = optional_param('cmid', null, PARAM_INT);
 $attemptobj = hippotrack_create_attempt_handling_errors($attemptid, $cmid);
 $page = $attemptobj->force_page_number_into_range($page);
 $PAGE->set_url($attemptobj->attempt_url(null, $page));
-// During quiz attempts, the browser back/forwards buttons should force a reload.
+// During hippotrack attempts, the browser back/forwards buttons should force a reload.
 $PAGE->set_cacheable(false);
 
 $PAGE->set_secondary_active_tab("modulepage");
@@ -57,14 +57,14 @@ if ($attemptobj->get_userid() != $USER->id) {
     if ($attemptobj->has_capability('mod/hippotrack:viewreports')) {
         redirect($attemptobj->review_url(null, $page));
     } else {
-        throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'notyourattempt');
+        throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'notyourattempt');
     }
 }
 
 // Check capabilities and block settings.
 if (!$attemptobj->is_preview_user()) {
     $attemptobj->require_capability('mod/hippotrack:attempt');
-    if (empty($attemptobj->get_quiz()->showblocks)) {
+    if (empty($attemptobj->get_hippotrack()->showblocks)) {
         $PAGE->blocks->show_only_fake_blocks();
     }
 
@@ -85,7 +85,7 @@ $accessmanager->setup_attempt_page($PAGE);
 $output = $PAGE->get_renderer('mod_hippotrack');
 $messages = $accessmanager->prevent_access();
 if (!$attemptobj->is_preview_user() && $messages) {
-    throw new \moodle_exception('attempterror', 'quiz', $attemptobj->view_url(),
+    throw new \moodle_exception('attempterror', 'hippotrack', $attemptobj->view_url(),
             $output->access_messages($messages));
 }
 if ($accessmanager->is_preflight_check_required($attemptobj->get_attemptid())) {
@@ -93,7 +93,7 @@ if ($accessmanager->is_preflight_check_required($attemptobj->get_attemptid())) {
 }
 
 // Set up auto-save if required.
-$autosaveperiod = get_config('quiz', 'autosaveperiod');
+$autosaveperiod = get_config('hippotrack', 'autosaveperiod');
 if ($autosaveperiod) {
     $PAGE->requires->yui_module('moodle-mod_hippotrack-autosave',
             'M.mod_hippotrack.autosave.init', array($autosaveperiod));
@@ -107,7 +107,7 @@ $slots = $attemptobj->get_slots($page);
 
 // Check.
 if (empty($slots)) {
-    throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'noquestionsfound');
+    throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'noquestionsfound');
 }
 
 // Update attempt page, redirecting the user if $page is not valid.
@@ -118,7 +118,7 @@ if (!$attemptobj->set_currentpage($page)) {
 // Initialise the JavaScript.
 $headtags = $attemptobj->get_html_head_contributions($page);
 $PAGE->requires->js_init_call('M.mod_hippotrack.init_attempt_form', null, false, hippotrack_get_js_module());
-\core\session\manager::keepalive(); // Try to prevent sessions expiring during quiz attempts.
+\core\session\manager::keepalive(); // Try to prevent sessions expiring during hippotrack attempts.
 
 // Arrange for the navigation to be displayed in the first region on the page.
 $navbc = $attemptobj->get_navigation_panel($output, 'hippotrack_attempt_nav_panel', $page);

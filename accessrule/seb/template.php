@@ -17,7 +17,7 @@
 /**
  * Page to manipulate templates.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -30,5 +30,5 @@ $action = optional_param('action', 'view', PARAM_ALPHANUMEXT);
 
 $PAGE->set_context(context_system::instance());
 
-$manager = new \quizaccess_seb\template_controller();
+$manager = new \hippotrackaccess_seb\template_controller();
 $manager->execute($action);

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Thisscript processes ajax auto-save requests during the quiz.
+ * Thisscript processes ajax auto-save requests during the hippotrack.
  *
  * @package    mod_hippotrack
  * @copyright  2013 The Open University
@@ -45,7 +45,7 @@ require_login($attemptobj->get_course(), false, $attemptobj->get_cm());
 
 // Check that this attempt belongs to this user.
 if ($attemptobj->get_userid() != $USER->id) {
-    throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'notyourattempt');
+    throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'notyourattempt');
 }
 
 // Check capabilities.
@@ -55,7 +55,7 @@ if (!$attemptobj->is_preview_user()) {
 
 // If the attempt is already closed, send them to the review page.
 if ($attemptobj->is_finished()) {
-    throw new moodle_hippotrack_exception($attemptobj->get_quizobj(),
+    throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(),
             'attemptalreadyclosed', null, $attemptobj->review_url());
 }
 
@@ -65,7 +65,7 @@ $transaction->allow_commit();
 // Calculate time remaining.
 $timeleft = $attemptobj->get_time_left_display($timenow);
 
-// Build response, only returning timeleft if quiz in-progress
+// Build response, only returning timeleft if hippotrack in-progress
 // has a time limit.
 $r = new stdClass();
 $r->status = "OK";

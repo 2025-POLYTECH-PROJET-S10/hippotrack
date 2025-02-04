@@ -1,6 +1,6 @@
 @mod @mod_hippotrack
-Feature: Attempt a quiz where some questions require that the previous question has been answered.
-  In order to complete a quiz where questions require previous ones to be complete
+Feature: Attempt a hippotrack where some questions require that the previous question has been answered.
+  In order to complete a hippotrack where questions require previous ones to be complete
   As a student
   I need later questions to appear once earlier ones have been answered.
 
@@ -28,19 +28,19 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | Test questions   | truefalse   | TF2   | Second question |
     And the following "activities" exist:
       | activity   | name   | intro              | course | idnumber | preferredbehaviour |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    | <quizbehaviour>    |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | <hippotrackbehaviour>    |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | requireprevious |
       | TF1      | 1    | 0               |
       | TF2      | 1    | 1               |
 
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
-    And I press "Attempt quiz"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
+    And I press "Attempt hippotrack"
 
     Then I should see "First question"
     And I should see "This question cannot be attempted until the previous question has been completed."
     And I should not see "Second question"
-    And I am on the "Quiz 1 > student > Attempt 1" "mod_hippotrack > Attempt review" page logged in as "teacher"
+    And I am on the "HippoTrack 1 > student > Attempt 1" "mod_hippotrack > Attempt review" page logged in as "teacher"
     And I should see "First question"
     And I should see "This question cannot be attempted until the previous question has been completed."
     And I should not see "Second question"
@@ -48,31 +48,31 @@ Feature: Attempt a quiz where some questions require that the previous question 
     And "Question 2" "link" should not exist
 
     Examples:
-      | quizbehaviour     |
+      | hippotrackbehaviour     |
       | immediatefeedback |
       | interactive       |
 
   @javascript
-  Scenario Outline: A question is shown as blocked when previewing a quiz
+  Scenario Outline: A question is shown as blocked when previewing a hippotrack
     Given the following "questions" exist:
       | questioncategory | qtype       | name  | questiontext    |
       | Test questions   | truefalse   | TF1   | First question  |
       | Test questions   | truefalse   | TF2   | Second question |
     And the following "activities" exist:
       | activity   | name   | intro              | course | idnumber | preferredbehaviour |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    | <quizbehaviour>    |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | <hippotrackbehaviour>    |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | requireprevious |
       | TF1      | 1    | 0               |
       | TF2      | 1    | 1               |
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "teacher"
-    And I press "Preview quiz"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "teacher"
+    And I press "Preview hippotrack"
     Then I should see "First question"
     And I should see "This question cannot be attempted until the previous question has been completed."
     And I should not see "Second question"
 
     Examples:
-      | quizbehaviour     |
+      | hippotrackbehaviour     |
       | immediatefeedback |
       | interactive       |
 
@@ -84,14 +84,14 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | Test questions   | truefalse   | TF2   | Second question |
     And the following "activities" exist:
       | activity   | name   | intro              | course | idnumber | preferredbehaviour |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    | <quizbehaviour>    |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | <hippotrackbehaviour>    |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | requireprevious |
       | TF1      | 1    | 0               |
       | TF2      | 1    | 1               |
 
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
-    And I press "Attempt quiz"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
+    And I press "Attempt hippotrack"
     And I click on "True" "radio" in the "First question" "question"
     And I press "Check"
 
@@ -102,26 +102,26 @@ Feature: Attempt a quiz where some questions require that the previous question 
     And "Question 2" "link" should exist
 
     Examples:
-      | quizbehaviour     |
+      | hippotrackbehaviour     |
       | immediatefeedback |
       | interactive       |
 
   @javascript
-  Scenario: After quiz submitted, all questions show on the review page
+  Scenario: After hippotrack submitted, all questions show on the review page
     Given the following "questions" exist:
       | questioncategory | qtype       | name  | questiontext    |
       | Test questions   | truefalse   | TF1   | First question  |
       | Test questions   | truefalse   | TF2   | Second question |
     And the following "activities" exist:
       | activity | name   | intro              | course | idnumber | preferredbehaviour |
-      | quiz     | Quiz 1 | Quiz 1 description | C1     | quiz1    | immediatefeedback  |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack     | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | immediatefeedback  |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | requireprevious |
       | TF1      | 1    | 0               |
       | TF2      | 1    | 1               |
 
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
-    And I press "Attempt quiz"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
+    And I press "Attempt hippotrack"
     And I press "Finish attempt ..."
     And I press "Submit all and finish"
     And I click on "Submit all and finish" "button" in the "Submit all your answers and finish?" "dialogue"
@@ -130,21 +130,21 @@ Feature: Attempt a quiz where some questions require that the previous question 
     And the state of "Second question" question is shown as "Not answered"
 
   @javascript
-  Scenario: A questions cannot be blocked in a deferred feedback quiz (despite what is set in the DB).
+  Scenario: A questions cannot be blocked in a deferred feedback hippotrack (despite what is set in the DB).
     Given the following "questions" exist:
       | questioncategory | qtype       | name  | questiontext    |
       | Test questions   | truefalse   | TF1   | First question  |
       | Test questions   | truefalse   | TF2   | Second question |
     And the following "activities" exist:
       | activity   | name   | intro              | course | idnumber | preferredbehaviour |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    | deferredfeedback   |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | deferredfeedback   |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | requireprevious |
       | TF1      | 1    | 0               |
       | TF2      | 1    | 1               |
 
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
-    And I press "Attempt quiz"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
+    And I press "Attempt hippotrack"
 
     Then I should see "First question"
     And I should see "Second question"
@@ -158,17 +158,17 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | Test questions   | truefalse   | TF2   | Second question |
     And the following "activities" exist:
       | activity   | name   | intro              | course | idnumber | preferredbehaviour | questionsperpage |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    | immediatefeedback  | 2                |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | immediatefeedback  | 2                |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | requireprevious |
       | TF1      | 1    | 1               |
       | TF2      | 2    | 1               |
-    And quiz "Quiz 1" contains the following sections:
+    And hippotrack "HippoTrack 1" contains the following sections:
       | heading   | firstslot | shuffle |
       | Section 1 | 1         | 1       |
 
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
-    And I press "Attempt quiz"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
+    And I press "Attempt hippotrack"
 
     Then I should see "First question"
     And I should see "Second question"
@@ -182,39 +182,39 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | Test questions   | truefalse   | TF2   | Second question |
     And the following "activities" exist:
       | activity   | name   | intro              | course | idnumber | preferredbehaviour | questionsperpage |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    | immediatefeedback  | 2                |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | immediatefeedback  | 2                |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | requireprevious |
       | TF1      | 1    | 1               |
       | TF2      | 2    | 1               |
-    And quiz "Quiz 1" contains the following sections:
+    And hippotrack "HippoTrack 1" contains the following sections:
       | heading   | firstslot | shuffle |
       | Section 1 | 1         | 1       |
       | Section 2 | 2         | 0       |
 
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
-    And I press "Attempt quiz"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
+    And I press "Attempt hippotrack"
     And I press "Next page"
 
     Then I should see "Second question"
     And I should not see "This question cannot be attempted until the previous question has been completed."
 
   @javascript
-  Scenario: A questions cannot be blocked in sequential quiz (despite what is set in the DB).
+  Scenario: A questions cannot be blocked in sequential hippotrack (despite what is set in the DB).
     Given the following "questions" exist:
       | questioncategory | qtype       | name  | questiontext    |
       | Test questions   | truefalse   | TF1   | First question  |
       | Test questions   | truefalse   | TF2   | Second question |
     And the following "activities" exist:
       | activity   | name   | intro              | course | idnumber | preferredbehaviour | navmethod  |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    | immediatefeedback  | sequential |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | immediatefeedback  | sequential |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | requireprevious |
       | TF1      | 1    | 1               |
       | TF2      | 1    | 1               |
 
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
-    And I press "Attempt quiz"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
+    And I press "Attempt hippotrack"
 
     Then I should see "First question"
     And I should see "Second question"
@@ -228,14 +228,14 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | Test questions   | truefalse   | TF2   | Second question |
     And the following "activities" exist:
       | activity   | name   | intro              | course | idnumber | preferredbehaviour |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    | immediatefeedback  |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | immediatefeedback  |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | requireprevious |
       | Story    | 1    | 0               |
       | TF2      | 1    | 1               |
 
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
-    And I press "Attempt quiz"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
+    And I press "Attempt hippotrack"
 
     Then I should see "First question"
     And I should see "Second question"
@@ -249,14 +249,14 @@ Feature: Attempt a quiz where some questions require that the previous question 
       | Test questions   | truefalse   | TF1  | First question |
     And the following "activities" exist:
       | activity   | name   | intro              | course | idnumber | preferredbehaviour |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    | immediatefeedback  |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | immediatefeedback  |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | requireprevious |
       | Info     | 1    | 0               |
       | TF1      | 1    | 1               |
 
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
-    And I press "Attempt quiz"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
+    And I press "Attempt hippotrack"
 
     Then I should see "Read me"
     And I should see "First question"

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz statistics settings form definition.
+ * HippoTrack statistics settings form definition.
  *
  * @package   hippotrack_statistics
  * @copyright 2014 Open University
@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/formslib.php');
 
 /**
- * This is the settings form for the quiz statistics report.
+ * This is the settings form for the hippotrack statistics report.
  *
  * @package   hippotrack_statistics
  * @copyright 2014 Open University
@@ -48,7 +48,7 @@ class hippotrack_statistics_settings_form extends moodleform {
 
         $mform->addElement('select', 'whichattempts', get_string('calculatefrom', 'hippotrack_statistics'), $options);
 
-        if (hippotrack_allows_multiple_tries($this->_customdata['quiz'])) {
+        if (hippotrack_allows_multiple_tries($this->_customdata['hippotrack'])) {
             $mform->addElement('select', 'whichtries', get_string('whichtries', 'hippotrack_statistics'), array(
                                            question_attempt::FIRST_TRY    => get_string('firsttry', 'question'),
                                            question_attempt::LAST_TRY     => get_string('lasttry', 'question'),

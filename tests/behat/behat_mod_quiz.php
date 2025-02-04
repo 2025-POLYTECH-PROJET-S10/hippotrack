@@ -53,7 +53,7 @@ class behat_mod_hippotrack extends behat_question_base {
     protected function resolve_page_url(string $page): moodle_url {
         switch (strtolower($page)) {
             default:
-                throw new Exception('Unrecognised quiz page type "' . $page . '."');
+                throw new Exception('Unrecognised hippotrack page type "' . $page . '."');
         }
     }
 
@@ -62,19 +62,19 @@ class behat_mod_hippotrack extends behat_question_base {
      *
      * Recognised page names are:
      * | pagetype          | name meaning                                | description                                  |
-     * | View              | Quiz name                                   | The quiz info page (view.php)                |
-     * | Edit              | Quiz name                                   | The edit quiz page (edit.php)                |
-     * | Group overrides   | Quiz name                                   | The manage group overrides page              |
-     * | User overrides    | Quiz name                                   | The manage user overrides page               |
-     * | Grades report     | Quiz name                                   | The overview report for a quiz               |
-     * | Responses report  | Quiz name                                   | The responses report for a quiz              |
-     * | Manual grading report | Quiz name                               | The manual grading report for a quiz         |
-     * | Statistics report | Quiz name                                   | The statistics report for a quiz             |
-     * | Attempt review    | Quiz name > username > [Attempt] attempt no | Review page for a given attempt (review.php) |
-     * | Question bank     | Quiz name                                   | The question bank page for a quiz            |
+     * | View              | HippoTrack name                                   | The hippotrack info page (view.php)                |
+     * | Edit              | HippoTrack name                                   | The edit hippotrack page (edit.php)                |
+     * | Group overrides   | HippoTrack name                                   | The manage group overrides page              |
+     * | User overrides    | HippoTrack name                                   | The manage user overrides page               |
+     * | Grades report     | HippoTrack name                                   | The overview report for a hippotrack               |
+     * | Responses report  | HippoTrack name                                   | The responses report for a hippotrack              |
+     * | Manual grading report | HippoTrack name                               | The manual grading report for a hippotrack         |
+     * | Statistics report | HippoTrack name                                   | The statistics report for a hippotrack             |
+     * | Attempt review    | HippoTrack name > username > [Attempt] attempt no | Review page for a given attempt (review.php) |
+     * | Question bank     | HippoTrack name                                   | The question bank page for a hippotrack            |
      *
      * @param string $type identifies which type of page this is, e.g. 'Attempt review'.
-     * @param string $identifier identifies the particular page, e.g. 'Test quiz > student > Attempt 1'.
+     * @param string $identifier identifies the particular page, e.g. 'Test hippotrack > student > Attempt 1'.
      * @return moodle_url the corresponding URL.
      * @throws Exception with a meaningful error message if the specified page cannot be found.
      */
@@ -114,32 +114,32 @@ class behat_mod_hippotrack extends behat_question_base {
                 return new moodle_url('/mod/hippotrack/report.php',
                         ['id' => $this->get_cm_by_hippotrack_name($identifier)->id, 'mode' => 'grading']);
             case 'attempt view':
-                list($quizname, $username, $attemptno, $pageno) = explode(' > ', $identifier);
+                list($hippotrackname, $username, $attemptno, $pageno) = explode(' > ', $identifier);
                 $pageno = intval($pageno);
                 $pageno = $pageno > 0 ? $pageno - 1 : 0;
                 $attemptno = (int) trim(str_replace ('Attempt', '', $attemptno));
-                $quiz = $this->get_hippotrack_by_name($quizname);
-                $quizcm = get_coursemodule_from_instance('quiz', $quiz->id, $quiz->course);
+                $hippotrack = $this->get_hippotrack_by_name($hippotrackname);
+                $hippotrackcm = get_coursemodule_from_instance('hippotrack', $hippotrack->id, $hippotrack->course);
                 $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
                 $attempt = $DB->get_record('hippotrack_attempts',
-                    ['quiz' => $quiz->id, 'userid' => $user->id, 'attempt' => $attemptno], '*', MUST_EXIST);
+                    ['hippotrack' => $hippotrack->id, 'userid' => $user->id, 'attempt' => $attemptno], '*', MUST_EXIST);
                 return new moodle_url('/mod/hippotrack/attempt.php', [
                     'attempt' => $attempt->id,
-                    'cmid' => $quizcm->id,
+                    'cmid' => $hippotrackcm->id,
                     'page' => $pageno
                 ]);
             case 'attempt review':
                 if (substr_count($identifier, ' > ') !== 2) {
                     throw new coding_exception('For "attempt review", name must be ' .
-                            '"{Quiz name} > {username} > Attempt {attemptnumber}", ' .
-                            'for example "Quiz 1 > student > Attempt 1".');
+                            '"{HippoTrack name} > {username} > Attempt {attemptnumber}", ' .
+                            'for example "HippoTrack 1 > student > Attempt 1".');
                 }
-                list($quizname, $username, $attemptno) = explode(' > ', $identifier);
+                list($hippotrackname, $username, $attemptno) = explode(' > ', $identifier);
                 $attemptno = (int) trim(str_replace ('Attempt', '', $attemptno));
-                $quiz = $this->get_hippotrack_by_name($quizname);
+                $hippotrack = $this->get_hippotrack_by_name($hippotrackname);
                 $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
                 $attempt = $DB->get_record('hippotrack_attempts',
-                        ['quiz' => $quiz->id, 'userid' => $user->id, 'attempt' => $attemptno], '*', MUST_EXIST);
+                        ['hippotrack' => $hippotrack->id, 'userid' => $user->id, 'attempt' => $attemptno], '*', MUST_EXIST);
                 return new moodle_url('/mod/hippotrack/review.php', ['attempt' => $attempt->id]);
 
             case 'question bank':
@@ -152,34 +152,34 @@ class behat_mod_hippotrack extends behat_question_base {
 
 
             default:
-                throw new Exception('Unrecognised quiz page type "' . $type . '."');
+                throw new Exception('Unrecognised hippotrack page type "' . $type . '."');
         }
     }
 
     /**
-     * Get a quiz by name.
+     * Get a hippotrack by name.
      *
-     * @param string $name quiz name.
+     * @param string $name hippotrack name.
      * @return stdClass the corresponding DB row.
      */
     protected function get_hippotrack_by_name(string $name): stdClass {
         global $DB;
-        return $DB->get_record('quiz', array('name' => $name), '*', MUST_EXIST);
+        return $DB->get_record('hippotrack', array('name' => $name), '*', MUST_EXIST);
     }
 
     /**
-     * Get a quiz cmid from the quiz name.
+     * Get a hippotrack cmid from the hippotrack name.
      *
-     * @param string $name quiz name.
+     * @param string $name hippotrack name.
      * @return stdClass cm from get_coursemodule_from_instance.
      */
     protected function get_cm_by_hippotrack_name(string $name): stdClass {
-        $quiz = $this->get_hippotrack_by_name($name);
-        return get_coursemodule_from_instance('quiz', $quiz->id, $quiz->course);
+        $hippotrack = $this->get_hippotrack_by_name($name);
+        return get_coursemodule_from_instance('hippotrack', $hippotrack->id, $hippotrack->course);
     }
 
     /**
-     * Put the specified questions on the specified pages of a given quiz.
+     * Put the specified questions on the specified pages of a given hippotrack.
      *
      * The first row should be column names:
      * | question | page | maxmark | requireprevious |
@@ -197,15 +197,15 @@ class behat_mod_hippotrack extends behat_question_base {
      * (but strongly encouraged). If not specified, the columns are asseumed to be
      * | question | page | maxmark |.
      *
-     * @param string $quizname the name of the quiz to add questions to.
+     * @param string $hippotrackname the name of the hippotrack to add questions to.
      * @param TableNode $data information about the questions to add.
      *
-     * @Given /^quiz "([^"]*)" contains the following questions:$/
+     * @Given /^hippotrack "([^"]*)" contains the following questions:$/
      */
-    public function hippotrack_contains_the_following_questions($quizname, TableNode $data) {
+    public function hippotrack_contains_the_following_questions($hippotrackname, TableNode $data) {
         global $DB;
 
-        $quiz = $this->get_hippotrack_by_name($quizname);
+        $hippotrack = $this->get_hippotrack_by_name($hippotrackname);
 
         // Deal with backwards-compatibility, optional first row.
         $firstrow = $data->getRow(0);
@@ -215,7 +215,7 @@ class behat_mod_hippotrack extends behat_question_base {
             } else if (count($firstrow) == 3) {
                 $headings = array('question', 'page', 'maxmark');
             } else {
-                throw new ExpectationException('When adding questions to a quiz, you should give 2 or three 3 things: ' .
+                throw new ExpectationException('When adding questions to a hippotrack, you should give 2 or three 3 things: ' .
                         ' the question name, the page number, and optionally the maximum mark. ' .
                         count($firstrow) . ' values passed.', $this->getSession());
             }
@@ -228,11 +228,11 @@ class behat_mod_hippotrack extends behat_question_base {
         $lastpage = 0;
         foreach ($data->getHash() as $questiondata) {
             if (!array_key_exists('question', $questiondata)) {
-                throw new ExpectationException('When adding questions to a quiz, ' .
+                throw new ExpectationException('When adding questions to a hippotrack, ' .
                         'the question name column is required.', $this->getSession());
             }
             if (!array_key_exists('page', $questiondata)) {
-                throw new ExpectationException('When adding questions to a quiz, ' .
+                throw new ExpectationException('When adding questions to a hippotrack, ' .
                         'the page number column is required.', $this->getSession());
             }
 
@@ -252,7 +252,7 @@ class behat_mod_hippotrack extends behat_question_base {
                         $this->getSession());
             }
             if ($page < $lastpage || $page > $lastpage + 1) {
-                throw new ExpectationException('When adding questions to a quiz, ' .
+                throw new ExpectationException('When adding questions to a hippotrack, ' .
                         'the page number for each question must either be the same, ' .
                         'or one more, then the page number for the previous question.',
                         $this->getSession());
@@ -277,18 +277,18 @@ class behat_mod_hippotrack extends behat_question_base {
                 } else {
                     $includingsubcategories = clean_param($questiondata['includingsubcategories'], PARAM_BOOL);
                 }
-                hippotrack_add_random_questions($quiz, $page, $question->category, 1, $includingsubcategories);
+                hippotrack_add_random_questions($hippotrack, $page, $question->category, 1, $includingsubcategories);
             } else {
                 // Add the question.
-                hippotrack_add_hippotrack_question($question->id, $quiz, $page, $maxmark);
+                hippotrack_add_hippotrack_question($question->id, $hippotrack, $page, $maxmark);
             }
 
             // Require previous.
             if (array_key_exists('requireprevious', $questiondata)) {
                 if ($questiondata['requireprevious'] === '1') {
-                    $slot = $DB->get_field('hippotrack_slots', 'MAX(slot)', array('quizid' => $quiz->id));
+                    $slot = $DB->get_field('hippotrack_slots', 'MAX(slot)', array('hippotrackid' => $hippotrack->id));
                     $DB->set_field('hippotrack_slots', 'requireprevious', 1,
-                            array('quizid' => $quiz->id, 'slot' => $slot));
+                            array('hippotrackid' => $hippotrack->id, 'slot' => $slot));
                 } else if ($questiondata['requireprevious'] !== '' && $questiondata['requireprevious'] !== '0') {
                     throw new ExpectationException('Require previous for question "' .
                             $questiondata['question'] . '" should be 0, 1 or blank.',
@@ -297,11 +297,11 @@ class behat_mod_hippotrack extends behat_question_base {
             }
         }
 
-        hippotrack_update_sumgrades($quiz);
+        hippotrack_update_sumgrades($hippotrack);
     }
 
     /**
-     * Put the specified section headings to start at specified pages of a given quiz.
+     * Put the specified section headings to start at specified pages of a given hippotrack.
      *
      * The first row should be column names:
      * | heading | firstslot | shufflequestions |
@@ -312,37 +312,37 @@ class behat_mod_hippotrack extends behat_question_base {
      *
      * Then there should be a number of rows of data, one for each section you want to add.
      *
-     * @param string $quizname the name of the quiz to add sections to.
+     * @param string $hippotrackname the name of the hippotrack to add sections to.
      * @param TableNode $data information about the sections to add.
      *
-     * @Given /^quiz "([^"]*)" contains the following sections:$/
+     * @Given /^hippotrack "([^"]*)" contains the following sections:$/
      */
-    public function hippotrack_contains_the_following_sections($quizname, TableNode $data) {
+    public function hippotrack_contains_the_following_sections($hippotrackname, TableNode $data) {
         global $DB;
 
-        $quiz = $DB->get_record('quiz', array('name' => $quizname), '*', MUST_EXIST);
+        $hippotrack = $DB->get_record('hippotrack', array('name' => $hippotrackname), '*', MUST_EXIST);
 
         // Add the sections.
         $previousfirstslot = 0;
         foreach ($data->getHash() as $rownumber => $sectiondata) {
             if (!array_key_exists('heading', $sectiondata)) {
-                throw new ExpectationException('When adding sections to a quiz, ' .
+                throw new ExpectationException('When adding sections to a hippotrack, ' .
                         'the heading name column is required.', $this->getSession());
             }
             if (!array_key_exists('firstslot', $sectiondata)) {
-                throw new ExpectationException('When adding sections to a quiz, ' .
+                throw new ExpectationException('When adding sections to a hippotrack, ' .
                         'the firstslot name column is required.', $this->getSession());
             }
             if (!array_key_exists('shuffle', $sectiondata)) {
-                throw new ExpectationException('When adding sections to a quiz, ' .
+                throw new ExpectationException('When adding sections to a hippotrack, ' .
                         'the shuffle name column is required.', $this->getSession());
             }
 
             if ($rownumber == 0) {
-                $section = $DB->get_record('hippotrack_sections', array('quizid' => $quiz->id), '*', MUST_EXIST);
+                $section = $DB->get_record('hippotrack_sections', array('hippotrackid' => $hippotrack->id), '*', MUST_EXIST);
             } else {
                 $section = new stdClass();
-                $section->quizid = $quiz->id;
+                $section->hippotrackid = $hippotrack->id;
             }
 
             // Heading.
@@ -376,28 +376,28 @@ class behat_mod_hippotrack extends behat_question_base {
             }
         }
 
-        if ($section->firstslot > $DB->count_records('hippotrack_slots', array('quizid' => $quiz->id))) {
-            throw new ExpectationException('The section firstslot must be less than the total number of slots in the quiz.',
+        if ($section->firstslot > $DB->count_records('hippotrack_slots', array('hippotrackid' => $hippotrack->id))) {
+            throw new ExpectationException('The section firstslot must be less than the total number of slots in the hippotrack.',
                     $this->getSession());
         }
     }
 
     /**
-     * Adds a question to the existing quiz with filling the form.
+     * Adds a question to the existing hippotrack with filling the form.
      *
      * The form for creating a question should be on one page.
      *
-     * @When /^I add a "(?P<question_type_string>(?:[^"]|\\")*)" question to the "(?P<hippotrack_name_string>(?:[^"]|\\")*)" quiz with:$/
+     * @When /^I add a "(?P<question_type_string>(?:[^"]|\\")*)" question to the "(?P<hippotrack_name_string>(?:[^"]|\\")*)" hippotrack with:$/
      * @param string $questiontype
-     * @param string $quizname
+     * @param string $hippotrackname
      * @param TableNode $questiondata with data for filling the add question form
      */
-    public function i_add_question_to_the_hippotrack_with($questiontype, $quizname, TableNode $questiondata) {
-        $quizname = $this->escape($quizname);
+    public function i_add_question_to_the_hippotrack_with($questiontype, $hippotrackname, TableNode $questiondata) {
+        $hippotrackname = $this->escape($hippotrackname);
         $addaquestion = $this->escape(get_string('addaquestion', 'hippotrack'));
 
         $this->execute('behat_navigation::i_am_on_page_instance', [
-            $quizname,
+            $hippotrackname,
             'mod_hippotrack > Edit',
         ]);
 
@@ -412,7 +412,7 @@ class behat_mod_hippotrack extends behat_question_base {
     }
 
     /**
-     * Set the max mark for a question on the Edit quiz page.
+     * Set the max mark for a question on the Edit hippotrack page.
      *
      * @When /^I set the max mark for question "(?P<question_name_string>(?:[^"]|\\")*)" to "(?P<new_mark_string>(?:[^"]|\\")*)"$/
      * @param string $questionname the name of the question to set the max mark for.
@@ -430,8 +430,8 @@ class behat_mod_hippotrack extends behat_question_base {
     }
 
     /**
-     * Open the add menu on a given page, or at the end of the Edit quiz page.
-     * @Given /^I open the "(?P<page_n_or_last_string>(?:[^"]|\\")*)" add to quiz menu$/
+     * Open the add menu on a given page, or at the end of the Edit hippotrack page.
+     * @Given /^I open the "(?P<page_n_or_last_string>(?:[^"]|\\")*)" add to hippotrack menu$/
      * @param string $pageorlast either "Page n" or "last".
      */
     public function i_open_the_add_to_hippotrack_menu_for($pageorlast) {
@@ -445,15 +445,15 @@ class behat_mod_hippotrack extends behat_question_base {
         } else if (preg_match('~Page (\d+)~', $pageorlast, $matches)) {
             $xpath = "//li[@id = 'page-{$matches[1]}']//a[contains(@data-toggle, 'dropdown') and contains(., 'Add')]";
         } else {
-            throw new ExpectationException("The I open the add to quiz menu step must specify either 'Page N' or 'last'.",
+            throw new ExpectationException("The I open the add to hippotrack menu step must specify either 'Page N' or 'last'.",
                 $this->getSession());
         }
         $this->find('xpath', $xpath)->click();
     }
 
     /**
-     * Check whether a particular question is on a particular page of the quiz on the Edit quiz page.
-     * @Given /^I should see "(?P<question_name>(?:[^"]|\\")*)" on quiz page "(?P<page_number>\d+)"$/
+     * Check whether a particular question is on a particular page of the hippotrack on the Edit hippotrack page.
+     * @Given /^I should see "(?P<question_name>(?:[^"]|\\")*)" on hippotrack page "(?P<page_number>\d+)"$/
      * @param string $questionname the name of the question we are looking for.
      * @param number $pagenumber the page it should be found on.
      */
@@ -466,8 +466,8 @@ class behat_mod_hippotrack extends behat_question_base {
     }
 
     /**
-     * Check whether a particular question is not on a particular page of the quiz on the Edit quiz page.
-     * @Given /^I should not see "(?P<question_name>(?:[^"]|\\")*)" on quiz page "(?P<page_number>\d+)"$/
+     * Check whether a particular question is not on a particular page of the hippotrack on the Edit hippotrack page.
+     * @Given /^I should not see "(?P<question_name>(?:[^"]|\\")*)" on hippotrack page "(?P<page_number>\d+)"$/
      * @param string $questionname the name of the question we are looking for.
      * @param number $pagenumber the page it should be found on.
      */
@@ -480,9 +480,9 @@ class behat_mod_hippotrack extends behat_question_base {
     }
 
     /**
-     * Check whether one question comes before another on the Edit quiz page.
+     * Check whether one question comes before another on the Edit hippotrack page.
      * The two questions must be on the same page.
-     * @Given /^I should see "(?P<first_q_name>(?:[^"]|\\")*)" before "(?P<second_q_name>(?:[^"]|\\")*)" on the edit quiz page$/
+     * @Given /^I should see "(?P<first_q_name>(?:[^"]|\\")*)" before "(?P<second_q_name>(?:[^"]|\\")*)" on the edit hippotrack page$/
      * @param string $firstquestionname the name of the question that should come first in order.
      * @param string $secondquestionname the name of the question that should come immediately after it in order.
      */
@@ -495,8 +495,8 @@ class behat_mod_hippotrack extends behat_question_base {
     }
 
     /**
-     * Check the number displayed alongside a question on the Edit quiz page.
-     * @Given /^"(?P<question_name>(?:[^"]|\\")*)" should have number "(?P<number>(?:[^"]|\\")*)" on the edit quiz page$/
+     * Check the number displayed alongside a question on the Edit hippotrack page.
+     * @Given /^"(?P<question_name>(?:[^"]|\\")*)" should have number "(?P<number>(?:[^"]|\\")*)" on the edit hippotrack page$/
      * @param string $questionname the name of the question we are looking for.
      * @param number $number the number (or 'i') that should be displayed beside that question.
      */
@@ -577,7 +577,7 @@ class behat_mod_hippotrack extends behat_question_base {
      *
      * @param string $heading the heading of the section to change shuffle for.
      *
-     * @Given /^I click on shuffle for section "([^"]*)" on the quiz edit page$/
+     * @Given /^I click on shuffle for section "([^"]*)" on the hippotrack edit page$/
      */
     public function i_click_on_shuffle_for_section($heading) {
         $xpath = $this->get_xpath_for_shuffle_checkbox($heading);
@@ -591,7 +591,7 @@ class behat_mod_hippotrack extends behat_question_base {
      * @param string $heading the heading of the section to check shuffle for
      * @param int $value whether the shuffle checkbox should be on or off.
      *
-     * @Given /^shuffle for section "([^"]*)" should be "(On|Off)" on the quiz edit page$/
+     * @Given /^shuffle for section "([^"]*)" should be "(On|Off)" on the hippotrack edit page$/
      */
     public function shuffle_for_section_should_be($heading, $value) {
         $xpath = $this->get_xpath_for_shuffle_checkbox($heading);
@@ -599,12 +599,12 @@ class behat_mod_hippotrack extends behat_question_base {
         $this->ensure_node_is_visible($checkbox);
         if ($value == 'On' && !$checkbox->isChecked()) {
             $msg = "Shuffle for section '$heading' is not checked, but you are expecting it to be checked ($value). " .
-                    "Check the line with: \nshuffle for section \"$heading\" should be \"$value\" on the quiz edit page" .
+                    "Check the line with: \nshuffle for section \"$heading\" should be \"$value\" on the hippotrack edit page" .
                     "\nin your behat script";
             throw new ExpectationException($msg, $this->getSession());
         } else if ($value == 'Off' && $checkbox->isChecked()) {
             $msg = "Shuffle for section '$heading' is checked, but you are expecting it not to be ($value). " .
-                    "Check the line with: \nshuffle for section \"$heading\" should be \"$value\" on the quiz edit page" .
+                    "Check the line with: \nshuffle for section \"$heading\" should be \"$value\" on the hippotrack edit page" .
                     "\nin your behat script";
             throw new ExpectationException($msg, $this->getSession());
         }
@@ -621,9 +621,9 @@ class behat_mod_hippotrack extends behat_question_base {
     }
 
     /**
-     * Move a question on the Edit quiz page by first clicking on the Move icon,
+     * Move a question on the Edit hippotrack page by first clicking on the Move icon,
      * then clicking one of the "After ..." links.
-     * @When /^I move "(?P<question_name>(?:[^"]|\\")*)" to "(?P<target>(?:[^"]|\\")*)" in the quiz by clicking the move icon$/
+     * @When /^I move "(?P<question_name>(?:[^"]|\\")*)" to "(?P<target>(?:[^"]|\\")*)" in the hippotrack by clicking the move icon$/
      * @param string $questionname the name of the question we are looking for.
      * @param string $target the target place to move to. One of the links in the pop-up like
      *      "After Page 1" or "After Question N".
@@ -637,8 +637,8 @@ class behat_mod_hippotrack extends behat_question_base {
     }
 
     /**
-     * Move a question on the Edit quiz page by dragging a given question on top of another item.
-     * @When /^I move "(?P<question_name>(?:[^"]|\\")*)" to "(?P<target>(?:[^"]|\\")*)" in the quiz by dragging$/
+     * Move a question on the Edit hippotrack page by dragging a given question on top of another item.
+     * @When /^I move "(?P<question_name>(?:[^"]|\\")*)" to "(?P<target>(?:[^"]|\\")*)" in the hippotrack by dragging$/
      * @param string $questionname the name of the question we are looking for.
      * @param string $target the target place to move to. Ether a question name, or "Page N"
      */
@@ -654,9 +654,9 @@ class behat_mod_hippotrack extends behat_question_base {
     }
 
     /**
-     * Delete a question on the Edit quiz page by first clicking on the Delete icon,
+     * Delete a question on the Edit hippotrack page by first clicking on the Delete icon,
      * then clicking one of the "After ..." links.
-     * @When /^I delete "(?P<question_name>(?:[^"]|\\")*)" in the quiz by clicking the delete icon$/
+     * @When /^I delete "(?P<question_name>(?:[^"]|\\")*)" in the hippotrack by clicking the delete icon$/
      * @param string $questionname the name of the question we are looking for.
      * @return array of steps.
      */
@@ -673,9 +673,9 @@ class behat_mod_hippotrack extends behat_question_base {
     }
 
     /**
-     * Set the section heading for a given section on the Edit quiz page
+     * Set the section heading for a given section on the Edit hippotrack page
      *
-     * @When /^I change quiz section heading "(?P<section_name_string>(?:[^"]|\\")*)" to "(?P<new_section_heading_string>(?:[^"]|\\")*)"$/
+     * @When /^I change hippotrack section heading "(?P<section_name_string>(?:[^"]|\\")*)" to "(?P<new_section_heading_string>(?:[^"]|\\")*)"$/
      * @param string $sectionname the heading to change.
      * @param string $sectionheading the new heading to set.
      */
@@ -695,9 +695,9 @@ class behat_mod_hippotrack extends behat_question_base {
 
     /**
      * Check that a given question comes after a given section heading in the
-     * quiz navigation block.
+     * hippotrack navigation block.
      *
-     * @Then /^I should see question "(?P<questionnumber>\d+)" in section "(?P<section_heading_string>(?:[^"]|\\")*)" in the quiz navigation$/
+     * @Then /^I should see question "(?P<questionnumber>\d+)" in section "(?P<section_heading_string>(?:[^"]|\\")*)" in the hippotrack navigation$/
      * @param int $questionnumber the number of the question to check.
      * @param string $sectionheading which section heading it should appear after.
      */
@@ -709,7 +709,7 @@ class behat_mod_hippotrack extends behat_question_base {
 
         // Split in two checkings to give more feedback in case of exception.
         $exception = new ExpectationException('Question "' . $questionnumber . '" is not in section "' .
-                $sectionheading . '" in the quiz navigation.', $this->getSession());
+                $sectionheading . '" in the hippotrack navigation.', $this->getSession());
         $xpath = "//*[@id = 'mod_hippotrack_navblock']//*[contains(concat(' ', normalize-space(@class), ' '), ' qnbutton ') and " .
                 "contains(., {$questionnumberliteral}) and contains(preceding-sibling::h3[1], {$headingliteral})]";
         $this->find('xpath', $xpath);
@@ -721,7 +721,7 @@ class behat_mod_hippotrack extends behat_question_base {
      *
      * @param TableNode $attemptinfo data table from the Behat step
      * @return array with two elements, $forcedrandomquestions, $forcedvariants,
-     *      that can be passed to $quizgenerator->create_attempt.
+     *      that can be passed to $hippotrackgenerator->create_attempt.
      */
     protected function extract_forced_randomisation_from_attempt_info(TableNode $attemptinfo) {
         global $DB;
@@ -730,7 +730,7 @@ class behat_mod_hippotrack extends behat_question_base {
         $forcedvariants = [];
         foreach ($attemptinfo->getHash() as $slotinfo) {
             if (empty($slotinfo['slot'])) {
-                throw new ExpectationException('When simulating a quiz attempt, ' .
+                throw new ExpectationException('When simulating a hippotrack attempt, ' .
                         'the slot column is required.', $this->getSession());
             }
 
@@ -747,21 +747,21 @@ class behat_mod_hippotrack extends behat_question_base {
     }
 
     /**
-     * Helper used by user_has_attempted_with_responses, user_has_checked_answers_in_their_attempt_at_quiz,
-     * user_has_input_answers_in_their_attempt_at_quiz, etc.
+     * Helper used by user_has_attempted_with_responses, user_has_checked_answers_in_their_attempt_at_hippotrack,
+     * user_has_input_answers_in_their_attempt_at_hippotrack, etc.
      *
      * @param TableNode $attemptinfo data table from the Behat step
-     * @return array of responses that can be passed to $quizgenerator->submit_responses.
+     * @return array of responses that can be passed to $hippotrackgenerator->submit_responses.
      */
     protected function extract_responses_from_attempt_info(TableNode $attemptinfo) {
         $responses = [];
         foreach ($attemptinfo->getHash() as $slotinfo) {
             if (empty($slotinfo['slot'])) {
-                throw new ExpectationException('When simulating a quiz attempt, ' .
+                throw new ExpectationException('When simulating a hippotrack attempt, ' .
                         'the slot column is required.', $this->getSession());
             }
             if (!array_key_exists('response', $slotinfo)) {
-                throw new ExpectationException('When simulating a quiz attempt, ' .
+                throw new ExpectationException('When simulating a hippotrack attempt, ' .
                         'the response column is required.', $this->getSession());
             }
             $responses[$slotinfo['slot']] = $slotinfo['response'];
@@ -770,14 +770,14 @@ class behat_mod_hippotrack extends behat_question_base {
     }
 
     /**
-     * Attempt a quiz.
+     * Attempt a hippotrack.
      *
      * The first row should be column names:
      * | slot | actualquestion | variant | response |
      * The first two of those are required. The others are optional.
      *
      * slot           The slot
-     * actualquestion This column is optional, and is only needed if the quiz contains
+     * actualquestion This column is optional, and is only needed if the hippotrack contains
      *                random questions. If so, this will let you control which actual
      *                question gets picked when this slot is 'randomised' at the
      *                start of the attempt. If you don't specify, then one will be picked
@@ -787,7 +787,7 @@ class behat_mod_hippotrack extends behat_question_base {
      *                the question that ends up in this slot returns something greater
      *                than 1 for $question->get_num_variants(). Like with actualquestion,
      *                if you specify a value here it is used the fix the 'random' choice
-     *                made when the quiz is started.
+     *                made when the hippotrack is started.
      * response       The response that was submitted. How this is interpreted depends on
      *                the question type. It gets passed to
      *                {@link core_question_generator::get_simulated_post_data_for_question_attempt()}
@@ -798,17 +798,17 @@ class behat_mod_hippotrack extends behat_question_base {
      * left unanswered.
      *
      * @param string $username the username of the user that will attempt.
-     * @param string $quizname the name of the quiz the user will attempt.
+     * @param string $hippotrackname the name of the hippotrack the user will attempt.
      * @param TableNode $attemptinfo information about the questions to add, as above.
      * @Given /^user "([^"]*)" has attempted "([^"]*)" with responses:$/
      */
-    public function user_has_attempted_with_responses($username, $quizname, TableNode $attemptinfo) {
+    public function user_has_attempted_with_responses($username, $hippotrackname, TableNode $attemptinfo) {
         global $DB;
 
-        /** @var mod_hippotrack_generator $quizgenerator */
-        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
+        /** @var mod_hippotrack_generator $hippotrackgenerator */
+        $hippotrackgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
 
-        $quizid = $DB->get_field('quiz', 'id', ['name' => $quizname], MUST_EXIST);
+        $hippotrackid = $DB->get_field('hippotrack', 'id', ['name' => $hippotrackname], MUST_EXIST);
         $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
 
         list($forcedrandomquestions, $forcedvariants) =
@@ -817,57 +817,57 @@ class behat_mod_hippotrack extends behat_question_base {
 
         $this->set_user($user);
 
-        $attempt = $quizgenerator->create_attempt($quizid, $user->id,
+        $attempt = $hippotrackgenerator->create_attempt($hippotrackid, $user->id,
                 $forcedrandomquestions, $forcedvariants);
 
-        $quizgenerator->submit_responses($attempt->id, $responses, false, true);
+        $hippotrackgenerator->submit_responses($attempt->id, $responses, false, true);
 
         $this->set_user();
     }
 
     /**
-     * Start a quiz attempt without answers.
+     * Start a hippotrack attempt without answers.
      *
      * Then there should be a number of rows of data, one for each question you want to add.
      * There is no need to supply answers to all questions. If so, other qusetions will be
      * left unanswered.
      *
      * @param string $username the username of the user that will attempt.
-     * @param string $quizname the name of the quiz the user will attempt.
-     * @Given /^user "([^"]*)" has started an attempt at quiz "([^"]*)"$/
+     * @param string $hippotrackname the name of the hippotrack the user will attempt.
+     * @Given /^user "([^"]*)" has started an attempt at hippotrack "([^"]*)"$/
      */
-    public function user_has_started_an_attempt_at_quiz($username, $quizname) {
+    public function user_has_started_an_attempt_at_hippotrack($username, $hippotrackname) {
         global $DB;
 
-        /** @var mod_hippotrack_generator $quizgenerator */
-        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
+        /** @var mod_hippotrack_generator $hippotrackgenerator */
+        $hippotrackgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
 
-        $quizid = $DB->get_field('quiz', 'id', ['name' => $quizname], MUST_EXIST);
+        $hippotrackid = $DB->get_field('hippotrack', 'id', ['name' => $hippotrackname], MUST_EXIST);
         $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
         $this->set_user($user);
-        $quizgenerator->create_attempt($quizid, $user->id);
+        $hippotrackgenerator->create_attempt($hippotrackid, $user->id);
         $this->set_user();
     }
 
     /**
-     * Start a quiz attempt without answers.
+     * Start a hippotrack attempt without answers.
      *
      * The supplied data table for have a row for each slot where you want
      * to force either which random question was chose, or which random variant
      * was used, as for {@link user_has_attempted_with_responses()} above.
      *
      * @param string $username the username of the user that will attempt.
-     * @param string $quizname the name of the quiz the user will attempt.
+     * @param string $hippotrackname the name of the hippotrack the user will attempt.
      * @param TableNode $attemptinfo information about the questions to add, as above.
-     * @Given /^user "([^"]*)" has started an attempt at quiz "([^"]*)" randomised as follows:$/
+     * @Given /^user "([^"]*)" has started an attempt at hippotrack "([^"]*)" randomised as follows:$/
      */
-    public function user_has_started_an_attempt_at_hippotrack_with_details($username, $quizname, TableNode $attemptinfo) {
+    public function user_has_started_an_attempt_at_hippotrack_with_details($username, $hippotrackname, TableNode $attemptinfo) {
         global $DB;
 
-        /** @var mod_hippotrack_generator $quizgenerator */
-        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
+        /** @var mod_hippotrack_generator $hippotrackgenerator */
+        $hippotrackgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
 
-        $quizid = $DB->get_field('quiz', 'id', ['name' => $quizname], MUST_EXIST);
+        $hippotrackid = $DB->get_field('hippotrack', 'id', ['name' => $hippotrackname], MUST_EXIST);
         $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
 
         list($forcedrandomquestions, $forcedvariants) =
@@ -875,14 +875,14 @@ class behat_mod_hippotrack extends behat_question_base {
 
         $this->set_user($user);
 
-        $quizgenerator->create_attempt($quizid, $user->id,
+        $hippotrackgenerator->create_attempt($hippotrackid, $user->id,
                 $forcedrandomquestions, $forcedvariants);
 
         $this->set_user();
     }
 
     /**
-     * Input answers to particular questions an existing quiz attempt, without
+     * Input answers to particular questions an existing hippotrack attempt, without
      * simulating a click of the 'Check' button, if any.
      *
      * Then there should be a number of rows of data, with two columns slot and response,
@@ -891,32 +891,32 @@ class behat_mod_hippotrack extends behat_question_base {
      * left unanswered.
      *
      * @param string $username the username of the user that will attempt.
-     * @param string $quizname the name of the quiz the user will attempt.
+     * @param string $hippotrackname the name of the hippotrack the user will attempt.
      * @param TableNode $attemptinfo information about the questions to add, as above.
      * @throws \Behat\Mink\Exception\ExpectationException
-     * @Given /^user "([^"]*)" has input answers in their attempt at quiz "([^"]*)":$/
+     * @Given /^user "([^"]*)" has input answers in their attempt at hippotrack "([^"]*)":$/
      */
-    public function user_has_input_answers_in_their_attempt_at_quiz($username, $quizname, TableNode $attemptinfo) {
+    public function user_has_input_answers_in_their_attempt_at_hippotrack($username, $hippotrackname, TableNode $attemptinfo) {
         global $DB;
 
-        /** @var mod_hippotrack_generator $quizgenerator */
-        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
+        /** @var mod_hippotrack_generator $hippotrackgenerator */
+        $hippotrackgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
 
-        $quizid = $DB->get_field('quiz', 'id', ['name' => $quizname], MUST_EXIST);
+        $hippotrackid = $DB->get_field('hippotrack', 'id', ['name' => $hippotrackname], MUST_EXIST);
         $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
 
         $responses = $this->extract_responses_from_attempt_info($attemptinfo);
 
         $this->set_user($user);
 
-        $attempts = hippotrack_get_user_attempts($quizid, $user->id, 'unfinished', true);
-        $quizgenerator->submit_responses(key($attempts), $responses, false, false);
+        $attempts = hippotrack_get_user_attempts($hippotrackid, $user->id, 'unfinished', true);
+        $hippotrackgenerator->submit_responses(key($attempts), $responses, false, false);
 
         $this->set_user();
     }
 
     /**
-     * Submit answers to questions an existing quiz attempt, with a simulated click on the 'Check' button.
+     * Submit answers to questions an existing hippotrack attempt, with a simulated click on the 'Check' button.
      *
      * This step should only be used with question behaviours that have have
      * a 'Check' button. Those include Interactive with multiple tires, Immediate feedback
@@ -928,46 +928,46 @@ class behat_mod_hippotrack extends behat_question_base {
      * left unanswered.
      *
      * @param string $username the username of the user that will attempt.
-     * @param string $quizname the name of the quiz the user will attempt.
+     * @param string $hippotrackname the name of the hippotrack the user will attempt.
      * @param TableNode $attemptinfo information about the questions to add, as above.
      * @throws \Behat\Mink\Exception\ExpectationException
-     * @Given /^user "([^"]*)" has checked answers in their attempt at quiz "([^"]*)":$/
+     * @Given /^user "([^"]*)" has checked answers in their attempt at hippotrack "([^"]*)":$/
      */
-    public function user_has_checked_answers_in_their_attempt_at_quiz($username, $quizname, TableNode $attemptinfo) {
+    public function user_has_checked_answers_in_their_attempt_at_hippotrack($username, $hippotrackname, TableNode $attemptinfo) {
         global $DB;
 
-        /** @var mod_hippotrack_generator $quizgenerator */
-        $quizgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
+        /** @var mod_hippotrack_generator $hippotrackgenerator */
+        $hippotrackgenerator = behat_util::get_data_generator()->get_plugin_generator('mod_hippotrack');
 
-        $quizid = $DB->get_field('quiz', 'id', ['name' => $quizname], MUST_EXIST);
+        $hippotrackid = $DB->get_field('hippotrack', 'id', ['name' => $hippotrackname], MUST_EXIST);
         $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
 
         $responses = $this->extract_responses_from_attempt_info($attemptinfo);
 
         $this->set_user($user);
 
-        $attempts = hippotrack_get_user_attempts($quizid, $user->id, 'unfinished', true);
-        $quizgenerator->submit_responses(key($attempts), $responses, true, false);
+        $attempts = hippotrack_get_user_attempts($hippotrackid, $user->id, 'unfinished', true);
+        $hippotrackgenerator->submit_responses(key($attempts), $responses, true, false);
 
         $this->set_user();
     }
 
     /**
-     * Finish an existing quiz attempt.
+     * Finish an existing hippotrack attempt.
      *
      * @param string $username the username of the user that will attempt.
-     * @param string $quizname the name of the quiz the user will attempt.
-     * @Given /^user "([^"]*)" has finished an attempt at quiz "([^"]*)"$/
+     * @param string $hippotrackname the name of the hippotrack the user will attempt.
+     * @Given /^user "([^"]*)" has finished an attempt at hippotrack "([^"]*)"$/
      */
-    public function user_has_finished_an_attempt_at_quiz($username, $quizname) {
+    public function user_has_finished_an_attempt_at_hippotrack($username, $hippotrackname) {
         global $DB;
 
-        $quizid = $DB->get_field('quiz', 'id', ['name' => $quizname], MUST_EXIST);
+        $hippotrackid = $DB->get_field('hippotrack', 'id', ['name' => $hippotrackname], MUST_EXIST);
         $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
 
         $this->set_user($user);
 
-        $attempts = hippotrack_get_user_attempts($quizid, $user->id, 'unfinished', true);
+        $attempts = hippotrack_get_user_attempts($hippotrackid, $user->id, 'unfinished', true);
         $attemptobj = hippotrack_attempt::create(key($attempts));
         $attemptobj->process_finish(time(), true);
 

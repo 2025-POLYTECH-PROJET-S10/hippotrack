@@ -21,9 +21,9 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * The statistics calculator returns an instance of this class which contains the calculated statistics.
  *
- * These quiz statistics calculations are described here :
+ * These hippotrack statistics calculations are described here :
  *
- * http://docs.moodle.org/dev/Quiz_statistics_calculations#Test_statistics
+ * http://docs.moodle.org/dev/HippoTrack_statistics_calculations#Test_statistics
  *
  * @package    hippotrack_statistics
  * @copyright  2013 The Open University
@@ -34,8 +34,8 @@ class calculated {
 
     /**
      * @param  string $whichattempts which attempts to use, represented internally as one of the constants as used in
-     *                                   $quiz->grademethod ie.
-     *                                   QUIZ_GRADEAVERAGE, QUIZ_GRADEHIGHEST, QUIZ_ATTEMPTLAST or QUIZ_ATTEMPTFIRST
+     *                                   $hippotrack->grademethod ie.
+     *                                   HIPPOTRACK_GRADEAVERAGE, HIPPOTRACK_GRADEHIGHEST, HIPPOTRACK_ATTEMPTLAST or HIPPOTRACK_ATTEMPTFIRST
      *                                   we calculate stats based on which attempts would affect the grade for each student,
      *                                   the default null value is used when constructing an instance whose values will be
      *                                   populated from a db record.
@@ -51,7 +51,7 @@ class calculated {
      */
     public $whichattempts;
 
-    /* Following stats all described here : http://docs.moodle.org/dev/Quiz_statistics_calculations#Test_statistics  */
+    /* Following stats all described here : http://docs.moodle.org/dev/HippoTrack_statistics_calculations#Test_statistics  */
 
     public $firstattemptscount = 0;
 
@@ -121,10 +121,10 @@ class calculated {
     /**
      * @param $course
      * @param $cm
-     * @param $quiz
+     * @param $hippotrack
      * @return array to display in table or spreadsheet.
      */
-    public function get_formatted_hippotrack_info_data($course, $cm, $quiz) {
+    public function get_formatted_hippotrack_info_data($course, $cm, $hippotrack) {
 
         // You can edit this array to control which statistics are displayed.
         $todisplay = array('firstattemptscount' => 'number',
@@ -141,22 +141,22 @@ class calculated {
                            'errorratio' => 'number_format_percent',
                            'standarderror' => 'summarks_as_percentage');
 
-        // General information about the quiz.
-        $quizinfo = array();
-        $quizinfo[get_string('quizname', 'hippotrack_statistics')] = format_string($quiz->name);
-        $quizinfo[get_string('coursename', 'hippotrack_statistics')] = format_string($course->fullname);
+        // General information about the hippotrack.
+        $hippotrackinfo = array();
+        $hippotrackinfo[get_string('hippotrackname', 'hippotrack_statistics')] = format_string($hippotrack->name);
+        $hippotrackinfo[get_string('coursename', 'hippotrack_statistics')] = format_string($course->fullname);
         if ($cm->idnumber) {
-            $quizinfo[get_string('idnumbermod')] = $cm->idnumber;
+            $hippotrackinfo[get_string('idnumbermod')] = $cm->idnumber;
         }
-        if ($quiz->timeopen) {
-            $quizinfo[get_string('quizopen', 'hippotrack')] = userdate($quiz->timeopen);
+        if ($hippotrack->timeopen) {
+            $hippotrackinfo[get_string('hippotrackopen', 'hippotrack')] = userdate($hippotrack->timeopen);
         }
-        if ($quiz->timeclose) {
-            $quizinfo[get_string('quizclose', 'hippotrack')] = userdate($quiz->timeclose);
+        if ($hippotrack->timeclose) {
+            $hippotrackinfo[get_string('hippotrackclose', 'hippotrack')] = userdate($hippotrack->timeclose);
         }
-        if ($quiz->timeopen && $quiz->timeclose) {
-            $quizinfo[get_string('duration', 'hippotrack_statistics')] =
-                format_time($quiz->timeclose - $quiz->timeopen);
+        if ($hippotrack->timeopen && $hippotrack->timeclose) {
+            $hippotrackinfo[get_string('duration', 'hippotrack_statistics')] =
+                format_time($hippotrack->timeclose - $hippotrack->timeopen);
         }
 
         // The statistics.
@@ -168,15 +168,15 @@ class calculated {
 
             switch ($format) {
                 case 'summarks_as_percentage':
-                    $formattedvalue = hippotrack_report_scale_summarks_as_percentage($value, $quiz);
+                    $formattedvalue = hippotrack_report_scale_summarks_as_percentage($value, $hippotrack);
                     break;
                 case 'number_format_percent':
-                    $formattedvalue = hippotrack_format_grade($quiz, $value) . '%';
+                    $formattedvalue = hippotrack_format_grade($hippotrack, $value) . '%';
                     break;
                 case 'number_format':
                     // 2 extra decimal places, since not a percentage,
                     // and we want the same number of sig figs.
-                    $formattedvalue = format_float($value, $quiz->decimalpoints + 2);
+                    $formattedvalue = format_float($value, $hippotrack->decimalpoints + 2);
                     break;
                 case 'number':
                     $formattedvalue = $value + 0;
@@ -185,11 +185,11 @@ class calculated {
                     $formattedvalue = $value;
             }
 
-            $quizinfo[get_string($property, 'hippotrack_statistics',
+            $hippotrackinfo[get_string($property, 'hippotrack_statistics',
                                  calculator::using_attempts_lang_string($this->whichattempts))] = $formattedvalue;
         }
 
-        return $quizinfo;
+        return $hippotrackinfo;
     }
 
     /**

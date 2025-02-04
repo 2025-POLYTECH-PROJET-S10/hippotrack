@@ -52,9 +52,9 @@ $accessmanager = $attemptobj->get_access_manager(time());
 $options = $attemptobj->get_display_options(true);
 
 $PAGE->set_pagelayout('popup');
-$PAGE->set_title(get_string('reviewofquestion', 'quiz', array(
+$PAGE->set_title(get_string('reviewofquestion', 'hippotrack', array(
         'question' => format_string($attemptobj->get_question_name($slot)),
-        'quiz' => format_string($attemptobj->get_hippotrack_name()), 'user' => fullname($student))));
+        'hippotrack' => format_string($attemptobj->get_hippotrack_name()), 'user' => fullname($student))));
 $PAGE->set_heading($attemptobj->get_course()->fullname);
 $output = $PAGE->get_renderer('mod_hippotrack');
 
@@ -71,7 +71,7 @@ if ($attemptobj->is_own_attempt()) {
     }
 
 } else if (!$attemptobj->is_review_allowed()) {
-    throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'noreviewattempt');
+    throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'noreviewattempt');
 }
 
 // Prepare summary informat about this question attempt.
@@ -87,8 +87,8 @@ $summarydata['user'] = array(
             fullname($student, true)),
 );
 
-// Quiz name.
-$summarydata['quizname'] = array(
+// HippoTrack name.
+$summarydata['hippotrackname'] = array(
     'title'   => get_string('modulename', 'hippotrack'),
     'content' => format_string($attemptobj->get_hippotrack_name()),
 );
@@ -99,7 +99,7 @@ $summarydata['questionname'] = array(
     'content' => $attemptobj->get_question_name($slot),
 );
 
-// Other attempts at the quiz.
+// Other attempts at the hippotrack.
 if ($attemptobj->has_capability('mod/hippotrack:viewreports')) {
     $otherattemptsurl = clone($baseurl);
     $otherattemptsurl->param('slot', $attemptobj->get_original_slot($slot));

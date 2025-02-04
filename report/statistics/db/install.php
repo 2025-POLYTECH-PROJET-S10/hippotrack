@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Post-install script for the quiz statistics report.
+ * Post-install script for the hippotrack statistics report.
  * @package   hippotrack_statistics
  * @copyright 2010 Petr Skoda (http://skodak.org)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -34,7 +34,7 @@ function xmldb_hippotrack_statistics_install() {
     $record = new stdClass();
     $record->name         = 'statistics';
     $record->displayorder = 8000;
-    $record->capability   = 'quiz/statistics:view';
+    $record->capability   = 'hippotrack/statistics:view';
 
     if ($dbman->table_exists('hippotrack_reports')) {
         $DB->insert_record('hippotrack_reports', $record);

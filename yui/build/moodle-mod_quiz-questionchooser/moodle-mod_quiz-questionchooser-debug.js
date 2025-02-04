@@ -9,7 +9,7 @@ YUI.add('moodle-mod_hippotrack-questionchooser', function (Y, NAME) {
 
     /**
      * The questionchooser class  is responsible for instantiating and displaying the question chooser
-     * when viewing a quiz in editing mode.
+     * when viewing a hippotrack in editing mode.
      *
      * @class questionchooser
      * @constructor

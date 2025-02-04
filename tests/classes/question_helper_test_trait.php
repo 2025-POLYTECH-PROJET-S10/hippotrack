@@ -20,17 +20,17 @@ use backup;
 use backup_controller;
 use component_generator_base;
 use mod_hippotrack_generator;
-use quiz;
+use hippotrack;
 use hippotrack_attempt;
 use restore_controller;
 use stdClass;
 use question_engine;
 
 /**
- * Helper trait for quiz question unit tests.
+ * Helper trait for hippotrack question unit tests.
  *
- * This trait helps to execute different tests for quiz, for example if it needs to create a quiz, add question
- * to the question, add random quetion to the quiz, do a backup or restore.
+ * This trait helps to execute different tests for hippotrack, for example if it needs to create a hippotrack, add question
+ * to the question, add random quetion to the hippotrack, do a backup or restore.
  *
  * @package    mod_hippotrack
  * @category   test
@@ -39,27 +39,27 @@ use question_engine;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 trait question_helper_test_trait {
-    /** @var stdClass $course Test course to contain quiz. */
+    /** @var stdClass $course Test course to contain hippotrack. */
     protected $course;
 
-    /** @var stdClass $quiz A test quiz. */
-    protected $quiz;
+    /** @var stdClass $hippotrack A test hippotrack. */
+    protected $hippotrack;
 
     /** @var stdClass $user A test logged-in user. */
     protected $user;
 
     /**
-     * Create a test quiz for the specified course.
+     * Create a test hippotrack for the specified course.
      *
      * @param stdClass $course
      * @return  stdClass
      */
-    protected function create_test_quiz(stdClass $course): stdClass {
+    protected function create_test_hippotrack(stdClass $course): stdClass {
 
-        /** @var mod_hippotrack_generator $quizgenerator */
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        /** @var mod_hippotrack_generator $hippotrackgenerator */
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
-        return $quizgenerator->create_instance([
+        return $hippotrackgenerator->create_instance([
             'course' => $course->id,
             'questionsperpage' => 0,
             'grade' => 100.0,
@@ -68,80 +68,80 @@ trait question_helper_test_trait {
     }
 
     /**
-     * Helper method to add regular questions in quiz.
+     * Helper method to add regular questions in hippotrack.
      *
      * @param component_generator_base $questiongenerator
-     * @param stdClass $quiz
+     * @param stdClass $hippotrack
      * @param array $override
      */
-    protected function add_two_regular_questions($questiongenerator, stdClass $quiz, $override = null): void {
+    protected function add_two_regular_questions($questiongenerator, stdClass $hippotrack, $override = null): void {
         // Create a couple of questions.
         $cat = $questiongenerator->create_question_category($override);
 
         $saq = $questiongenerator->create_question('shortanswer', null, array('category' => $cat->id));
         // Create another version.
         $questiongenerator->update_question($saq);
-        hippotrack_add_hippotrack_question($saq->id, $quiz);
+        hippotrack_add_hippotrack_question($saq->id, $hippotrack);
         $numq = $questiongenerator->create_question('numerical', null, array('category' => $cat->id));
         // Create two version.
         $questiongenerator->update_question($numq);
         $questiongenerator->update_question($numq);
-        hippotrack_add_hippotrack_question($numq->id, $quiz);
+        hippotrack_add_hippotrack_question($numq->id, $hippotrack);
     }
 
     /**
-     * Helper method to add random question to quiz.
+     * Helper method to add random question to hippotrack.
      *
      * @param component_generator_base $questiongenerator
-     * @param stdClass $quiz
+     * @param stdClass $hippotrack
      * @param array $override
      */
-    protected function add_one_random_question($questiongenerator, stdClass $quiz, $override = []): void {
+    protected function add_one_random_question($questiongenerator, stdClass $hippotrack, $override = []): void {
         // Create a random question.
         $cat = $questiongenerator->create_question_category($override);
         $questiongenerator->create_question('truefalse', null, array('category' => $cat->id));
         $questiongenerator->create_question('essay', null, array('category' => $cat->id));
-        hippotrack_add_random_questions($quiz, 0, $cat->id, 1, false);
+        hippotrack_add_random_questions($hippotrack, 0, $cat->id, 1, false);
     }
 
     /**
-     * Attempt questions for a quiz and user.
+     * Attempt questions for a hippotrack and user.
      *
-     * @param stdClass $quiz Quiz to attempt.
-     * @param stdClass $user A user to attempt the quiz.
+     * @param stdClass $hippotrack HippoTrack to attempt.
+     * @param stdClass $user A user to attempt the hippotrack.
      * @param int $attemptnumber
      * @return array
      */
-    protected function attempt_quiz(stdClass $quiz, stdClass $user, $attemptnumber = 1): array {
+    protected function attempt_hippotrack(stdClass $hippotrack, stdClass $user, $attemptnumber = 1): array {
         $this->setUser($user);
 
         $starttime = time();
-        $quizobj = quiz::create($quiz->id, $user->id);
+        $hippotrackobj = hippotrack::create($hippotrack->id, $user->id);
 
-        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
-        $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $hippotrackobj->get_context());
+        $quba->set_preferred_behaviour($hippotrackobj->get_hippotrack()->preferredbehaviour);
 
         // Start the attempt.
-        $attempt = hippotrack_create_attempt($quizobj, $attemptnumber, null, $starttime, false, $user->id);
-        hippotrack_start_new_attempt($quizobj, $quba, $attempt, $attemptnumber, $starttime);
-        hippotrack_attempt_save_started($quizobj, $quba, $attempt);
+        $attempt = hippotrack_create_attempt($hippotrackobj, $attemptnumber, null, $starttime, false, $user->id);
+        hippotrack_start_new_attempt($hippotrackobj, $quba, $attempt, $attemptnumber, $starttime);
+        hippotrack_attempt_save_started($hippotrackobj, $quba, $attempt);
 
         // Finish the attempt.
         $attemptobj = hippotrack_attempt::create($attempt->id);
         $attemptobj->process_finish($starttime, false);
 
         $this->setUser();
-        return [$quizobj, $quba, $attemptobj];
+        return [$hippotrackobj, $quba, $attemptobj];
     }
 
     /**
-     * A helper method to backup test quiz.
+     * A helper method to backup test hippotrack.
      *
-     * @param stdClass $quiz Quiz to attempt.
-     * @param stdClass $user A user to attempt the quiz.
+     * @param stdClass $hippotrack HippoTrack to attempt.
+     * @param stdClass $user A user to attempt the hippotrack.
      * @return string A backup ID ready to be restored.
      */
-    protected function backup_quiz(stdClass $quiz, stdClass $user): string {
+    protected function backup_hippotrack(stdClass $hippotrack, stdClass $user): string {
         global $CFG;
 
         // Get the necessary files to perform backup and restore.
@@ -150,7 +150,7 @@ trait question_helper_test_trait {
 
         $backupid = 'test-question-backup-restore';
 
-        $bc = new backup_controller(backup::TYPE_1ACTIVITY, $quiz->cmid, backup::FORMAT_MOODLE,
+        $bc = new backup_controller(backup::TYPE_1ACTIVITY, $hippotrack->cmid, backup::FORMAT_MOODLE,
             backup::INTERACTIVE_NO, backup::MODE_GENERAL, $user->id);
         $bc->execute_plan();
 
@@ -171,7 +171,7 @@ trait question_helper_test_trait {
      * @param stdClass $course
      * @param stdClass $user
      */
-    protected function restore_quiz(string $backupid, stdClass $course, stdClass $user): void {
+    protected function restore_hippotrack(string $backupid, stdClass $course, stdClass $user): void {
         $rc = new restore_controller($backupid, $course->id,
             backup::INTERACTIVE_NO, backup::MODE_GENERAL, $user->id, backup::TARGET_CURRENT_ADDING);
         $this->assertTrue($rc->execute_precheck());
@@ -180,13 +180,13 @@ trait question_helper_test_trait {
     }
 
     /**
-     * A helper method to emulate duplication of the quiz.
+     * A helper method to emulate duplication of the hippotrack.
      *
      * @param stdClass $course
-     * @param stdClass $quiz
+     * @param stdClass $hippotrack
      * @return \cm_info|null
      */
-    protected function duplicate_quiz($course, $quiz): ?\cm_info {
-        return duplicate_module($course, get_fast_modinfo($course)->get_cm($quiz->cmid));
+    protected function duplicate_hippotrack($course, $hippotrack): ?\cm_info {
+        return duplicate_module($course, get_fast_modinfo($course)->get_cm($hippotrack->cmid));
     }
 }

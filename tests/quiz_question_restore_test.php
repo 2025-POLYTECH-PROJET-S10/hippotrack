@@ -24,7 +24,7 @@ require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
 require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
- * Quiz backup and restore tests.
+ * HippoTrack backup and restore tests.
  *
  * @package    mod_hippotrack
  * @category   test
@@ -53,38 +53,38 @@ class hippotrack_question_restore_test extends \advanced_testcase {
     }
 
     /**
-     * Test a quiz backup and restore in a different course without attempts for course question bank.
+     * Test a hippotrack backup and restore in a different course without attempts for course question bank.
      *
      * @covers \mod_hippotrack\question\bank\qbank_helper::get_question_structure
      */
     public function test_hippotrack_restore_in_a_different_course_using_course_question_bank() {
         $this->resetAfterTest();
 
-        // Create the test quiz.
-        $quiz = $this->create_test_quiz($this->course);
-        $oldquizcontext = \context_module::instance($quiz->cmid);
+        // Create the test hippotrack.
+        $hippotrack = $this->create_test_hippotrack($this->course);
+        $oldhippotrackcontext = \context_module::instance($hippotrack->cmid);
         // Test for questions from a different context.
         $coursecontext = \context_course::instance($this->course->id);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
-        $this->add_two_regular_questions($questiongenerator, $quiz, ['contextid' => $coursecontext->id]);
-        $this->add_one_random_question($questiongenerator, $quiz, ['contextid' => $coursecontext->id]);
+        $this->add_two_regular_questions($questiongenerator, $hippotrack, ['contextid' => $coursecontext->id]);
+        $this->add_one_random_question($questiongenerator, $hippotrack, ['contextid' => $coursecontext->id]);
 
         // Make the backup.
-        $backupid = $this->backup_quiz($quiz, $this->user);
+        $backupid = $this->backup_hippotrack($hippotrack, $this->user);
 
         // Delete the current course to make sure there is no data.
         delete_course($this->course, false);
 
         // Check if the questions and associated data are deleted properly.
         $this->assertEquals(0, count(\mod_hippotrack\question\bank\qbank_helper::get_question_structure(
-                $quiz->id, $oldquizcontext)));
+                $hippotrack->id, $oldhippotrackcontext)));
 
         // Restore the course.
         $newcourse = $this->getDataGenerator()->create_course();
-        $this->restore_quiz($backupid, $newcourse, $this->user);
+        $this->restore_hippotrack($backupid, $newcourse, $this->user);
 
         // Verify.
-        $modules = get_fast_modinfo($newcourse->id)->get_instances_of('quiz');
+        $modules = get_fast_modinfo($newcourse->id)->get_instances_of('hippotrack');
         $module = reset($modules);
         $questions = \mod_hippotrack\question\bank\qbank_helper::get_question_structure(
                 $module->instance, $module->context);
@@ -92,37 +92,37 @@ class hippotrack_question_restore_test extends \advanced_testcase {
     }
 
     /**
-     * Test a quiz backup and restore in a different course without attempts for quiz question bank.
+     * Test a hippotrack backup and restore in a different course without attempts for hippotrack question bank.
      *
      * @covers \mod_hippotrack\question\bank\qbank_helper::get_question_structure
      */
     public function test_hippotrack_restore_in_a_different_course_using_hippotrack_question_bank() {
         $this->resetAfterTest();
 
-        // Create the test quiz.
-        $quiz = $this->create_test_quiz($this->course);
+        // Create the test hippotrack.
+        $hippotrack = $this->create_test_hippotrack($this->course);
         // Test for questions from a different context.
-        $quizcontext = \context_module::instance($quiz->cmid);
+        $hippotrackcontext = \context_module::instance($hippotrack->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
-        $this->add_two_regular_questions($questiongenerator, $quiz, ['contextid' => $quizcontext->id]);
-        $this->add_one_random_question($questiongenerator, $quiz, ['contextid' => $quizcontext->id]);
+        $this->add_two_regular_questions($questiongenerator, $hippotrack, ['contextid' => $hippotrackcontext->id]);
+        $this->add_one_random_question($questiongenerator, $hippotrack, ['contextid' => $hippotrackcontext->id]);
 
         // Make the backup.
-        $backupid = $this->backup_quiz($quiz, $this->user);
+        $backupid = $this->backup_hippotrack($hippotrack, $this->user);
 
         // Delete the current course to make sure there is no data.
         delete_course($this->course, false);
 
         // Check if the questions and associated datas are deleted properly.
         $this->assertEquals(0, count(\mod_hippotrack\question\bank\qbank_helper::get_question_structure(
-                $quiz->id, $quizcontext)));
+                $hippotrack->id, $hippotrackcontext)));
 
         // Restore the course.
         $newcourse = $this->getDataGenerator()->create_course();
-        $this->restore_quiz($backupid, $newcourse, $this->user);
+        $this->restore_hippotrack($backupid, $newcourse, $this->user);
 
         // Verify.
-        $modules = get_fast_modinfo($newcourse->id)->get_instances_of('quiz');
+        $modules = get_fast_modinfo($newcourse->id)->get_instances_of('hippotrack');
         $module = reset($modules);
         $this->assertEquals(3, count(\mod_hippotrack\question\bank\qbank_helper::get_question_structure(
                 $module->instance, $module->context)));
@@ -154,76 +154,76 @@ class hippotrack_question_restore_test extends \advanced_testcase {
      */
     public function test_hippotrack_duplicate_does_not_duplicate_course_question_bank_questions() {
         $this->resetAfterTest();
-        $quiz = $this->create_test_quiz($this->course);
+        $hippotrack = $this->create_test_hippotrack($this->course);
         // Test for questions from a different context.
         $context = \context_course::instance($this->course->id);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
-        $this->add_two_regular_questions($questiongenerator, $quiz, ['contextid' => $context->id]);
-        $this->add_one_random_question($questiongenerator, $quiz, ['contextid' => $context->id]);
+        $this->add_two_regular_questions($questiongenerator, $hippotrack, ['contextid' => $context->id]);
+        $this->add_one_random_question($questiongenerator, $hippotrack, ['contextid' => $context->id]);
         // Count the questions in course context.
         $this->assertEquals(7, $this->question_count($context->id));
-        $newquiz = $this->duplicate_quiz($this->course, $quiz);
+        $newhippotrack = $this->duplicate_hippotrack($this->course, $hippotrack);
         $this->assertEquals(7, $this->question_count($context->id));
-        $context = \context_module::instance($newquiz->id);
-        // Count the questions in the quiz context.
+        $context = \context_module::instance($newhippotrack->id);
+        // Count the questions in the hippotrack context.
         $this->assertEquals(0, $this->question_count($context->id));
     }
 
     /**
-     * Test quiz duplicate for quiz question bank.
+     * Test hippotrack duplicate for hippotrack question bank.
      *
      * @covers ::duplicate_module
      */
     public function test_hippotrack_duplicate_for_hippotrack_question_bank_questions() {
         $this->resetAfterTest();
-        $quiz = $this->create_test_quiz($this->course);
+        $hippotrack = $this->create_test_hippotrack($this->course);
         // Test for questions from a different context.
-        $context = \context_module::instance($quiz->cmid);
+        $context = \context_module::instance($hippotrack->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
-        $this->add_two_regular_questions($questiongenerator, $quiz, ['contextid' => $context->id]);
-        $this->add_one_random_question($questiongenerator, $quiz, ['contextid' => $context->id]);
+        $this->add_two_regular_questions($questiongenerator, $hippotrack, ['contextid' => $context->id]);
+        $this->add_one_random_question($questiongenerator, $hippotrack, ['contextid' => $context->id]);
         // Count the questions in course context.
         $this->assertEquals(7, $this->question_count($context->id));
-        $newquiz = $this->duplicate_quiz($this->course, $quiz);
+        $newhippotrack = $this->duplicate_hippotrack($this->course, $hippotrack);
         $this->assertEquals(7, $this->question_count($context->id));
-        $context = \context_module::instance($newquiz->id);
-        // Count the questions in the quiz context.
+        $context = \context_module::instance($newhippotrack->id);
+        // Count the questions in the hippotrack context.
         $this->assertEquals(7, $this->question_count($context->id));
     }
 
     /**
-     * Test quiz restore with attempts.
+     * Test hippotrack restore with attempts.
      *
      * @covers \mod_hippotrack\question\bank\qbank_helper::get_question_structure
      */
     public function test_hippotrack_restore_with_attempts() {
         $this->resetAfterTest();
 
-        // Create a quiz.
-        $quiz = $this->create_test_quiz($this->course);
-        $quizcontext = \context_module::instance($quiz->cmid);
+        // Create a hippotrack.
+        $hippotrack = $this->create_test_hippotrack($this->course);
+        $hippotrackcontext = \context_module::instance($hippotrack->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
-        $this->add_two_regular_questions($questiongenerator, $quiz, ['contextid' => $quizcontext->id]);
-        $this->add_one_random_question($questiongenerator, $quiz, ['contextid' => $quizcontext->id]);
+        $this->add_two_regular_questions($questiongenerator, $hippotrack, ['contextid' => $hippotrackcontext->id]);
+        $this->add_one_random_question($questiongenerator, $hippotrack, ['contextid' => $hippotrackcontext->id]);
 
         // Attempt it as a student, and check.
         /** @var \question_usage_by_activity $quba */
-        [, $quba] = $this->attempt_quiz($quiz, $this->student);
+        [, $quba] = $this->attempt_hippotrack($hippotrack, $this->student);
         $this->assertEquals(3, $quba->question_count());
-        $this->assertCount(1, hippotrack_get_user_attempts($quiz->id, $this->student->id));
+        $this->assertCount(1, hippotrack_get_user_attempts($hippotrack->id, $this->student->id));
 
         // Make the backup.
-        $backupid = $this->backup_quiz($quiz, $this->user);
+        $backupid = $this->backup_hippotrack($hippotrack, $this->user);
 
         // Delete the current course to make sure there is no data.
         delete_course($this->course, false);
 
         // Restore the backup.
         $newcourse = $this->getDataGenerator()->create_course();
-        $this->restore_quiz($backupid, $newcourse, $this->user);
+        $this->restore_hippotrack($backupid, $newcourse, $this->user);
 
         // Verify.
-        $modules = get_fast_modinfo($newcourse->id)->get_instances_of('quiz');
+        $modules = get_fast_modinfo($newcourse->id)->get_instances_of('hippotrack');
         $module = reset($modules);
         $this->assertCount(1, hippotrack_get_user_attempts($module->instance, $this->student->id));
         $this->assertCount(3, \mod_hippotrack\question\bank\qbank_helper::get_question_structure(
@@ -231,7 +231,7 @@ class hippotrack_question_restore_test extends \advanced_testcase {
     }
 
     /**
-     * Test pre 4.0 quiz restore for regular questions.
+     * Test pre 4.0 hippotrack restore for regular questions.
      *
      * @covers \restore_hippotrack_activity_structure_step::process_hippotrack_question_legacy_instance
      */
@@ -241,7 +241,7 @@ class hippotrack_question_restore_test extends \advanced_testcase {
         $backupid = 'abc';
         $backuppath = make_backup_temp_directory($backupid);
         get_file_packer('application/vnd.moodle.backup')->extract_to_pathname(
-            __DIR__ . "/fixtures/moodle_28_quiz.mbz", $backuppath);
+            __DIR__ . "/fixtures/moodle_28_hippotrack.mbz", $backuppath);
 
         // Do the restore to new course with default settings.
         $categoryid = $DB->get_field_sql("SELECT MIN(id) FROM {course_categories}");
@@ -255,25 +255,25 @@ class hippotrack_question_restore_test extends \advanced_testcase {
 
         // Get the information about the resulting course and check that it is set up correctly.
         $modinfo = get_fast_modinfo($newcourseid);
-        $quiz = array_values($modinfo->get_instances_of('quiz'))[0];
-        $quizobj = \quiz::create($quiz->instance);
-        $structure = structure::create_for_quiz($quizobj);
+        $hippotrack = array_values($modinfo->get_instances_of('hippotrack'))[0];
+        $hippotrackobj = \hippotrack::create($hippotrack->instance);
+        $structure = structure::create_for_hippotrack($hippotrackobj);
 
         // Are the correct slots returned?
         $slots = $structure->get_slots();
         $this->assertCount(2, $slots);
 
-        $quizobj->preload_questions();
-        $quizobj->load_questions();
-        $questions = $quizobj->get_questions();
+        $hippotrackobj->preload_questions();
+        $hippotrackobj->load_questions();
+        $questions = $hippotrackobj->get_questions();
         $this->assertCount(2, $questions);
 
-        // Count the questions in quiz qbank.
-        $this->assertEquals(2, $this->question_count($quizobj->get_context()->id));
+        // Count the questions in hippotrack qbank.
+        $this->assertEquals(2, $this->question_count($hippotrackobj->get_context()->id));
     }
 
     /**
-     * Test pre 4.0 quiz restore for random questions.
+     * Test pre 4.0 hippotrack restore for random questions.
      *
      * @covers \restore_hippotrack_activity_structure_step::process_hippotrack_question_legacy_instance
      */
@@ -284,7 +284,7 @@ class hippotrack_question_restore_test extends \advanced_testcase {
         $backupid = 'abc';
         $backuppath = make_backup_temp_directory($backupid);
         get_file_packer('application/vnd.moodle.backup')->extract_to_pathname(
-            __DIR__ . "/fixtures/random_by_tag_quiz.mbz", $backuppath);
+            __DIR__ . "/fixtures/random_by_tag_hippotrack.mbz", $backuppath);
 
         // Do the restore to new course with default settings.
         $categoryid = $DB->get_field_sql("SELECT MIN(id) FROM {course_categories}");
@@ -298,17 +298,17 @@ class hippotrack_question_restore_test extends \advanced_testcase {
 
         // Get the information about the resulting course and check that it is set up correctly.
         $modinfo = get_fast_modinfo($newcourseid);
-        $quiz = array_values($modinfo->get_instances_of('quiz'))[0];
-        $quizobj = \quiz::create($quiz->instance);
-        $structure = structure::create_for_quiz($quizobj);
+        $hippotrack = array_values($modinfo->get_instances_of('hippotrack'))[0];
+        $hippotrackobj = \hippotrack::create($hippotrack->instance);
+        $structure = structure::create_for_hippotrack($hippotrackobj);
 
         // Are the correct slots returned?
         $slots = $structure->get_slots();
         $this->assertCount(1, $slots);
 
-        $quizobj->preload_questions();
-        $quizobj->load_questions();
-        $questions = $quizobj->get_questions();
+        $hippotrackobj->preload_questions();
+        $hippotrackobj->load_questions();
+        $questions = $hippotrackobj->get_questions();
         $this->assertCount(1, $questions);
 
         // Count the questions for course question bank.
@@ -316,12 +316,12 @@ class hippotrack_question_restore_test extends \advanced_testcase {
         $this->assertEquals(6, $this->question_count(\context_course::instance($newcourseid)->id,
             "AND q.qtype <> 'random'"));
 
-        // Count the questions in quiz qbank.
-        $this->assertEquals(0, $this->question_count($quizobj->get_context()->id));
+        // Count the questions in hippotrack qbank.
+        $this->assertEquals(0, $this->question_count($hippotrackobj->get_context()->id));
     }
 
     /**
-     * Test pre 4.0 quiz restore for random question tags.
+     * Test pre 4.0 hippotrack restore for random question tags.
      *
      * @covers \restore_hippotrack_activity_structure_step::process_hippotrack_question_legacy_instance
      */
@@ -336,7 +336,7 @@ class hippotrack_question_restore_test extends \advanced_testcase {
         $backupid = 'abc';
         $backuppath = make_backup_temp_directory($backupid);
         get_file_packer('application/vnd.moodle.backup')->extract_to_pathname(
-            __DIR__ . "/fixtures/moodle_311_quiz.mbz", $backuppath);
+            __DIR__ . "/fixtures/moodle_311_hippotrack.mbz", $backuppath);
 
         // Do the restore to new course with default settings.
         $categoryid = $DB->get_field_sql("SELECT MIN(id) FROM {course_categories}");
@@ -350,12 +350,12 @@ class hippotrack_question_restore_test extends \advanced_testcase {
 
         // Get the information about the resulting course and check that it is set up correctly.
         $modinfo = get_fast_modinfo($newcourseid);
-        $quiz = array_values($modinfo->get_instances_of('quiz'))[0];
-        $quizobj = \quiz::create($quiz->instance);
-        $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
+        $hippotrack = array_values($modinfo->get_instances_of('hippotrack'))[0];
+        $hippotrackobj = \hippotrack::create($hippotrack->instance);
+        $structure = \mod_hippotrack\structure::create_for_hippotrack($hippotrackobj);
 
-        // Count the questions in quiz qbank.
-        $context = \context_module::instance(get_coursemodule_from_instance("quiz", $quizobj->get_quizid(), $newcourseid)->id);
+        // Count the questions in hippotrack qbank.
+        $context = \context_module::instance(get_coursemodule_from_instance("hippotrack", $hippotrackobj->get_hippotrackid(), $newcourseid)->id);
         $this->assertEquals(2, $this->question_count($context->id));
 
         // Are the correct slots returned?
@@ -378,7 +378,7 @@ class hippotrack_question_restore_test extends \advanced_testcase {
     }
 
     /**
-     * Test pre 4.0 quiz restore for random question used on multiple quizzes.
+     * Test pre 4.0 hippotrack restore for random question used on multiple hippotrackzes.
      *
      * @covers \restore_hippotrack_activity_structure_step::process_hippotrack_question_legacy_instance
      */
@@ -402,21 +402,21 @@ class hippotrack_question_restore_test extends \advanced_testcase {
         $rc->destroy();
 
         // Get the information about the resulting course and check that it is set up correctly.
-        // Each quiz should contain an instance of the random question.
+        // Each hippotrack should contain an instance of the random question.
         $modinfo = get_fast_modinfo($newcourseid);
-        $quizzes = $modinfo->get_instances_of('quiz');
-        $this->assertCount(2, $quizzes);
-        foreach ($quizzes as $quiz) {
-            $quizobj = \quiz::create($quiz->instance);
-            $structure = structure::create_for_quiz($quizobj);
+        $hippotrackzes = $modinfo->get_instances_of('hippotrack');
+        $this->assertCount(2, $hippotrackzes);
+        foreach ($hippotrackzes as $hippotrack) {
+            $hippotrackobj = \hippotrack::create($hippotrack->instance);
+            $structure = structure::create_for_hippotrack($hippotrackobj);
 
             // Are the correct slots returned?
             $slots = $structure->get_slots();
             $this->assertCount(1, $slots);
 
-            $quizobj->preload_questions();
-            $quizobj->load_questions();
-            $questions = $quizobj->get_questions();
+            $hippotrackobj->preload_questions();
+            $hippotrackobj->load_questions();
+            $questions = $hippotrackobj->get_questions();
             $this->assertCount(1, $questions);
         }
 
@@ -426,8 +426,8 @@ class hippotrack_question_restore_test extends \advanced_testcase {
         $this->assertEquals(1, $this->question_count(\context_course::instance($newcourseid)->id,
                 "AND q.qtype <> 'random'"));
 
-        // Count the questions in quiz qbank.
-        $this->assertEquals(0, $this->question_count($quizobj->get_context()->id));
+        // Count the questions in hippotrack qbank.
+        $this->assertEquals(0, $this->question_count($hippotrackobj->get_context()->id));
     }
 
     /**
@@ -445,10 +445,10 @@ class hippotrack_question_restore_test extends \advanced_testcase {
         $user1 = $this->getDataGenerator()->create_and_enrol($course1, 'editingteacher');
         $this->getDataGenerator()->enrol_user($user1->id, $course2->id, 'editingteacher');
 
-        // Make a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        // Make a hippotrack.
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
-        $quiz = $quizgenerator->create_instance(['course' => $course1->id, 'questionsperpage' => 0, 'grade' => 100.0,
+        $hippotrack = $hippotrackgenerator->create_instance(['course' => $course1->id, 'questionsperpage' => 0, 'grade' => 100.0,
                 'sumgrades' => 3]);
 
         // Create some fixed and random questions.
@@ -463,37 +463,37 @@ class hippotrack_question_restore_test extends \advanced_testcase {
         $questiongenerator->create_question('numerical', null, ['category' => $randomcat->id]);
         $questiongenerator->create_question('match', null, ['category' => $randomcat->id]);
 
-        // Add them to the quiz.
-        hippotrack_add_hippotrack_question($saq->id, $quiz, 1, 3);
-        hippotrack_add_hippotrack_question($numq->id, $quiz, 2, 2);
-        hippotrack_add_hippotrack_question($matchq->id, $quiz, 3, 1);
-        hippotrack_add_random_questions($quiz, 3, $randomcat->id, 2, false);
+        // Add them to the hippotrack.
+        hippotrack_add_hippotrack_question($saq->id, $hippotrack, 1, 3);
+        hippotrack_add_hippotrack_question($numq->id, $hippotrack, 2, 2);
+        hippotrack_add_hippotrack_question($matchq->id, $hippotrack, 3, 1);
+        hippotrack_add_random_questions($hippotrack, 3, $randomcat->id, 2, false);
 
-        $quizobj = \quiz::create($quiz->id, $user1->id);
-        $originalstructure = \mod_hippotrack\structure::create_for_quiz($quizobj);
+        $hippotrackobj = \hippotrack::create($hippotrack->id, $user1->id);
+        $originalstructure = \mod_hippotrack\structure::create_for_hippotrack($hippotrackobj);
         $originalslots = $originalstructure->get_slots();
 
         // Set one slot to requireprevious.
         $lastslot = end($originalslots);
         $originalstructure->update_question_dependency($lastslot->id, true);
 
-        // Backup and restore the quiz.
-        $backupid = $this->backup_quiz($quiz, $user1);
-        $this->restore_quiz($backupid, $course2, $user1);
+        // Backup and restore the hippotrack.
+        $backupid = $this->backup_hippotrack($hippotrack, $user1);
+        $this->restore_hippotrack($backupid, $course2, $user1);
 
         // Ensure the restored slots match the original slots.
         $modinfo = get_fast_modinfo($course2);
-        $quizzes = $modinfo->get_instances_of('quiz');
-        $restoredquiz = reset($quizzes);
-        $restoredquizobj = \quiz::create($restoredquiz->instance, $user1->id);
-        $restoredstructure = \mod_hippotrack\structure::create_for_quiz($restoredquizobj);
+        $hippotrackzes = $modinfo->get_instances_of('hippotrack');
+        $restoredhippotrack = reset($hippotrackzes);
+        $restoredhippotrackobj = \hippotrack::create($restoredhippotrack->instance, $user1->id);
+        $restoredstructure = \mod_hippotrack\structure::create_for_hippotrack($restoredhippotrackobj);
         $restoredslots = array_values($restoredstructure->get_slots());
-        $originalstructure = \mod_hippotrack\structure::create_for_quiz($quizobj);
+        $originalstructure = \mod_hippotrack\structure::create_for_hippotrack($hippotrackobj);
         $originalslots = array_values($originalstructure->get_slots());
         foreach ($restoredslots as $key => $restoredslot) {
             $originalslot = $originalslots[$key];
-            $this->assertEquals($originalslot->quizid, $quiz->id);
-            $this->assertEquals($restoredslot->quizid, $restoredquiz->instance);
+            $this->assertEquals($originalslot->hippotrackid, $hippotrack->id);
+            $this->assertEquals($restoredslot->hippotrackid, $restoredhippotrack->instance);
             $this->assertEquals($originalslot->slot, $restoredslot->slot);
             $this->assertEquals($originalslot->page, $restoredslot->page);
             $this->assertEquals($originalslot->requireprevious, $restoredslot->requireprevious);

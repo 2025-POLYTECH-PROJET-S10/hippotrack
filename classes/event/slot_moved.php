@@ -30,10 +30,10 @@ namespace mod_hippotrack\event;
  * @property-read array $other {
  *      Extra information about event.
  *
- *      - int quizid: the id of the quiz.
- *      - int previousslotnumber: the previous slot number in quiz.
- *      - int afterslotnumber: the new slot number in quiz.
- *      - int page: the page of new slot position in quiz.
+ *      - int hippotrackid: the id of the hippotrack.
+ *      - int previousslotnumber: the previous slot number in hippotrack.
+ *      - int afterslotnumber: the new slot number in hippotrack.
+ *      - int page: the page of new slot position in hippotrack.
  * }
  *
  * @package    mod_hippotrack
@@ -59,7 +59,7 @@ class slot_moved extends \core\event\base {
         }
         return "The user with id '$this->userid' has moved the slot with id '{$this->objectid}' " .
             "and slot number '{$this->other['previousslotnumber']}' to the new position $newposition " .
-            "on page '{$this->other['page']}' belonging to the quiz with course module id '$this->contextinstanceid'.";
+            "on page '{$this->other['page']}' belonging to the hippotrack with course module id '$this->contextinstanceid'.";
     }
 
     public function get_url() {
@@ -79,8 +79,8 @@ class slot_moved extends \core\event\base {
             throw new \coding_exception('The \'contextinstanceid\' value must be set.');
         }
 
-        if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+        if (!isset($this->other['hippotrackid'])) {
+            throw new \coding_exception('The \'hippotrackid\' value must be set in other.');
         }
 
         if (!isset($this->other['previousslotnumber'])) {
@@ -102,7 +102,7 @@ class slot_moved extends \core\event\base {
 
     public static function get_other_mapping() {
         $othermapped = [];
-        $othermapped['quizid'] = ['db' => 'quiz', 'restore' => 'quiz'];
+        $othermapped['hippotrackid'] = ['db' => 'hippotrack', 'restore' => 'hippotrack'];
 
         return $othermapped;
     }

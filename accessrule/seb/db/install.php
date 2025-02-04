@@ -17,7 +17,7 @@
 /**
  * Install script for plugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -30,29 +30,29 @@ require_once($CFG->dirroot  . '/mod/hippotrack/accessrule/seb/lib.php');
 /**
  * Custom code to be run on installing the plugin.
  */
-function xmldb_quizaccess_seb_install() {
+function xmldb_hippotrackaccess_seb_install() {
     global $DB;
 
-    // Reconfigure all existing quizzes to use a new quizaccess_seb.
+    // Reconfigure all existing hippotrackzes to use a new hippotrackaccess_seb.
     $params = ['browsersecurity' => 'safebrowser'];
 
-    $total = $DB->count_records('quiz', $params);
+    $total = $DB->count_records('hippotrack', $params);
     if ($total > 0) {
-        $rs = $DB->get_recordset('quiz', $params);
+        $rs = $DB->get_recordset('hippotrack', $params);
 
         $i = 0;
-        $pbar = new progress_bar('updatequizrecords', 500, true);
+        $pbar = new progress_bar('updatehippotrackrecords', 500, true);
 
-        foreach ($rs as $quiz) {
-            if (!$DB->record_exists('quizaccess_seb_quizsettings', ['quizid' => $quiz->id])) {
-                $cm = get_coursemodule_from_instance('quiz', $quiz->id, $quiz->course);
+        foreach ($rs as $hippotrack) {
+            if (!$DB->record_exists('hippotrackaccess_seb_hippotracksettings', ['hippotrackid' => $hippotrack->id])) {
+                $cm = get_coursemodule_from_instance('hippotrack', $hippotrack->id, $hippotrack->course);
 
                 $sebsettings = new stdClass();
 
-                $sebsettings->quizid = $quiz->id;
+                $sebsettings->hippotrackid = $hippotrack->id;
                 $sebsettings->cmid = $cm->id;
                 $sebsettings->templateid = 0;
-                $sebsettings->requiresafeexambrowser = \quizaccess_seb\settings_provider::USE_SEB_CLIENT_CONFIG;
+                $sebsettings->requiresafeexambrowser = \hippotrackaccess_seb\settings_provider::USE_SEB_CLIENT_CONFIG;
                 $sebsettings->showsebtaskbar = null;
                 $sebsettings->showwificontrol = null;
                 $sebsettings->showreloadbutton = null;
@@ -78,14 +78,14 @@ function xmldb_quizaccess_seb_install() {
                 $sebsettings->timecreated = time();
                 $sebsettings->timemodified = time();
 
-                $DB->insert_record('quizaccess_seb_quizsettings', $sebsettings);
+                $DB->insert_record('hippotrackaccess_seb_hippotracksettings', $sebsettings);
 
-                $quiz->browsersecurity = '-';
-                $DB->update_record('quiz', $quiz);
+                $hippotrack->browsersecurity = '-';
+                $DB->update_record('hippotrack', $hippotrack);
             }
 
             $i++;
-            $pbar->update($i, $total, "Reconfiguring existing quizzes to use a new SEB plugin - $i/$total.");
+            $pbar->update($i, $total, "Reconfiguring existing hippotrackzes to use a new SEB plugin - $i/$total.");
         }
 
         $rs->close();

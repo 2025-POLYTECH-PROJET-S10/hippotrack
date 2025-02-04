@@ -44,16 +44,16 @@ class recalculate extends \core\task\adhoc_task {
     /**
      * Create a new instance of the task.
      *
-     * This sets the properties so that only one task will be queued at a time for a given quiz.
+     * This sets the properties so that only one task will be queued at a time for a given hippotrack.
      *
-     * @param int $quizid
+     * @param int $hippotrackid
      * @return recalculate
      */
-    public static function instance(int $quizid): recalculate {
+    public static function instance(int $hippotrackid): recalculate {
         $task = new self();
         $task->set_component('hippotrack_statistics');
         $task->set_custom_data((object)[
-            'quizid' => $quizid,
+            'hippotrackid' => $hippotrackid,
         ]);
         return $task;
     }
@@ -67,35 +67,35 @@ class recalculate extends \core\task\adhoc_task {
         global $DB;
         $dateformat = get_string('strftimedatetimeshortaccurate', 'core_langconfig');
         $data = $this->get_custom_data();
-        $quiz = $DB->get_record('quiz', ['id' => $data->quizid]);
-        if (!$quiz) {
-            mtrace('Could not find quiz with ID ' . $data->quizid . '.');
+        $hippotrack = $DB->get_record('hippotrack', ['id' => $data->hippotrackid]);
+        if (!$hippotrack) {
+            mtrace('Could not find hippotrack with ID ' . $data->hippotrackid . '.');
             return;
         }
-        $course = $DB->get_record('course', ['id' => $quiz->course]);
+        $course = $DB->get_record('course', ['id' => $hippotrack->course]);
         if (!$course) {
-            mtrace('Could not find course with ID ' . $quiz->course . '.');
+            mtrace('Could not find course with ID ' . $hippotrack->course . '.');
             return;
         }
-        $attemptcount = $DB->count_records('hippotrack_attempts', ['quiz' => $data->quizid, 'state' => hippotrack_attempt::FINISHED]);
+        $attemptcount = $DB->count_records('hippotrack_attempts', ['hippotrack' => $data->hippotrackid, 'state' => hippotrack_attempt::FINISHED]);
         if ($attemptcount === 0) {
-            mtrace('Could not find any finished attempts for course with ID ' . $data->quizid . '.');
+            mtrace('Could not find any finished attempts for course with ID ' . $data->hippotrackid . '.');
             return;
         }
 
-        mtrace("Re-calculating statistics for quiz {$quiz->name} ({$quiz->id}) " .
+        mtrace("Re-calculating statistics for hippotrack {$hippotrack->name} ({$hippotrack->id}) " .
             "from course {$course->shortname} ({$course->id}) with {$attemptcount} attempts, start time " .
             userdate(time(), $dateformat) . " ...");
 
         $qubaids = hippotrack_statistics_qubaids_condition(
-            $quiz->id,
+            $hippotrack->id,
             new sql_join(),
-            $quiz->grademethod
+            $hippotrack->grademethod
         );
 
         $report = new hippotrack_statistics_report();
         $report->clear_cached_data($qubaids);
-        $report->calculate_questions_stats_for_question_bank($quiz->id);
+        $report->calculate_questions_stats_for_question_bank($hippotrack->id);
         mtrace('    Calculations completed at ' . userdate(time(), $dateformat) . '.');
     }
 
@@ -103,14 +103,14 @@ class recalculate extends \core\task\adhoc_task {
      * Queue an instance of this task to happen after a delay.
      *
      * Multiple events may happen over a short period that require a recalculation. Rather than
-     * run the recalculation each time, this will queue a single run of the task for a given quiz,
+     * run the recalculation each time, this will queue a single run of the task for a given hippotrack,
      * within the delay period.
      *
-     * @param int $quizid The quiz to run the recalculation for.
+     * @param int $hippotrackid The hippotrack to run the recalculation for.
      * @return bool true of the task was queued.
      */
-    public static function queue_future_run(int $quizid): bool {
-        $task = self::instance($quizid);
+    public static function queue_future_run(int $hippotrackid): bool {
+        $task = self::instance($hippotrackid);
         $task->set_next_run_time(time() + self::DELAY);
         return \core\task\manager::queue_adhoc_task($task, true);
     }

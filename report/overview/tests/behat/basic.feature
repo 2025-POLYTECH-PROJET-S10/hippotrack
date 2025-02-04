@@ -1,6 +1,6 @@
-@mod @mod_hippotrack @quiz @hippotrack_overview
+@mod @mod_hippotrack @hippotrack @hippotrack_overview
 Feature: Basic use of the Grades report
-  In order to easily get an overview of quiz attempts
+  In order to easily get an overview of hippotrack attempts
   As a teacher
   I need to use the Grades report
 
@@ -39,22 +39,22 @@ Feature: Basic use of the Grades report
       | Course       | C1        | Test questions |
     And the following "activities" exist:
       | activity   | name   | intro              | course | idnumber | groupmode |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    | 2         |
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | 2         |
     And the following "questions" exist:
       | questioncategory | qtype       | name  | questiontext         |
-      | Test questions   | description | Intro | Welcome to this quiz |
+      | Test questions   | description | Intro | Welcome to this hippotrack |
       | Test questions   | truefalse   | TF1   | First question       |
       | Test questions   | truefalse   | TF2   | Second question      |
-    And quiz "Quiz 1" contains the following questions:
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | maxmark |
       | Intro    | 1    |         |
       | TF1      | 1    |         |
       | TF2      | 1    | 3.0     |
-    And user "student1" has attempted "Quiz 1" with responses:
+    And user "student1" has attempted "HippoTrack 1" with responses:
       | slot | response |
       |   2  | True     |
       |   3  | False    |
-    And user "student2" has attempted "Quiz 1" with responses:
+    And user "student2" has attempted "HippoTrack 1" with responses:
       | slot | response |
       |   2  | True     |
       |   3  | True     |
@@ -62,7 +62,7 @@ Feature: Basic use of the Grades report
   @javascript
   Scenario: Using the Grades report
     # Basic check of the Grades report
-    When I am on the "Quiz 1" "quiz activity" page logged in as teacher1
+    When I am on the "HippoTrack 1" "hippotrack activity" page logged in as teacher1
     And I navigate to "Results" in current page administration
     Then I should see "Attempts: 2"
 
@@ -77,13 +77,13 @@ Feature: Basic use of the Grades report
     And I should see "100.00" in the "S2 Student2" "table_row"
 
     # Check changing the form parameters
-    And I set the field "Attempts from" to "enrolled users who have not attempted the quiz"
+    And I set the field "Attempts from" to "enrolled users who have not attempted the hippotrack"
     And I press "Show report"
     # Note: teachers should not appear in the report.
     # Check student3's grade
     And I should see "-" in the "S3 Student3" "table_row"
 
-    And I set the field "Attempts from" to "enrolled users who have, or have not, attempted the quiz"
+    And I set the field "Attempts from" to "enrolled users who have, or have not, attempted the hippotrack"
     And I press "Show report"
     # Check student1's grade
     And I should see "25.00" in the "S1 Student1" "table_row"
@@ -92,7 +92,7 @@ Feature: Basic use of the Grades report
     # Check student3's grade
     And I should see "-" in the "S3 Student3" "table_row"
 
-    And I set the field "Attempts from" to "all users who have attempted the quiz"
+    And I set the field "Attempts from" to "all users who have attempted the hippotrack"
     And I press "Show report"
     # Check student1's grade
     And I should see "25.00" in the "S1 Student1" "table_row"
@@ -109,7 +109,7 @@ Feature: Basic use of the Grades report
   Scenario: View custom user profile fields in the grades report
     Given the following config values are set as admin:
       | showuseridentity | email,profile_field_fruit |
-    And I am on the "Quiz 1" "quiz activity" page logged in as teacher1
+    And I am on the "HippoTrack 1" "hippotrack activity" page logged in as teacher1
     And I navigate to "Results" in current page administration
     Then I should see "Apple" in the "S1 Student1" "table_row"
     And I should see "Banana" in the "S2 Student2" "table_row"

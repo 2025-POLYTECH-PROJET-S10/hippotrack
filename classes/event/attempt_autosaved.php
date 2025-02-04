@@ -30,7 +30,7 @@ namespace mod_hippotrack\event;
  * @property-read array $other {
  *      Extra information about event.
  *
- *      - int quizid: the id of the quiz.
+ *      - int hippotrackid: the id of the hippotrack.
  *      - int page: the page number of attempt.
  * }
  *
@@ -68,7 +68,7 @@ class attempt_autosaved extends \core\event\base {
 
         return "The user with id '$this->userid' is working on page " .
             "'{$pagenumber}' of the attempt " .
-            "with id '$this->objectid' for the quiz with course module id '$this->contextinstanceid', " .
+            "with id '$this->objectid' for the hippotrack with course module id '$this->contextinstanceid', " .
             "and their latest responses have been saved automatically.";
     }
 
@@ -97,8 +97,8 @@ class attempt_autosaved extends \core\event\base {
             throw new \coding_exception('The \'relateduserid\' must be set.');
         }
 
-        if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+        if (!isset($this->other['hippotrackid'])) {
+            throw new \coding_exception('The \'hippotrackid\' value must be set in other.');
         }
 
         if (!isset($this->other['page'])) {
@@ -124,7 +124,7 @@ class attempt_autosaved extends \core\event\base {
      */
     public static function get_other_mapping() {
         $othermapped = [];
-        $othermapped['quizid'] = ['db' => 'quiz', 'restore' => 'quiz'];
+        $othermapped['hippotrackid'] = ['db' => 'hippotrack', 'restore' => 'hippotrack'];
 
         return $othermapped;
     }

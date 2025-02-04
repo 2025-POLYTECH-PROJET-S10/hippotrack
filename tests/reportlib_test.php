@@ -58,29 +58,29 @@ class reportlib_test extends \advanced_testcase {
     }
 
     public function test_hippotrack_report_scale_summarks_as_percentage() {
-        $quiz = new \stdClass();
-        $quiz->sumgrades = 10;
-        $quiz->decimalpoints = 2;
+        $hippotrack = new \stdClass();
+        $hippotrack->sumgrades = 10;
+        $hippotrack->decimalpoints = 2;
 
         $this->assertEquals('12.34567%',
-            hippotrack_report_scale_summarks_as_percentage(1.234567, $quiz, false));
+            hippotrack_report_scale_summarks_as_percentage(1.234567, $hippotrack, false));
         $this->assertEquals('12.35%',
-            hippotrack_report_scale_summarks_as_percentage(1.234567, $quiz, true));
+            hippotrack_report_scale_summarks_as_percentage(1.234567, $hippotrack, true));
         $this->assertEquals('-',
-            hippotrack_report_scale_summarks_as_percentage('-', $quiz, true));
+            hippotrack_report_scale_summarks_as_percentage('-', $hippotrack, true));
     }
 
     public function test_hippotrack_report_qm_filter_select_only_one_attempt_allowed() {
-        $quiz = new \stdClass();
-        $quiz->attempts = 1;
-        $this->assertSame('', hippotrack_report_qm_filter_select($quiz));
+        $hippotrack = new \stdClass();
+        $hippotrack->attempts = 1;
+        $this->assertSame('', hippotrack_report_qm_filter_select($hippotrack));
     }
 
     public function test_hippotrack_report_qm_filter_select_average() {
-        $quiz = new \stdClass();
-        $quiz->attempts = 10;
-        $quiz->grademethod = QUIZ_GRADEAVERAGE;
-        $this->assertSame('', hippotrack_report_qm_filter_select($quiz));
+        $hippotrack = new \stdClass();
+        $hippotrack->attempts = 10;
+        $hippotrack->grademethod = HIPPOTRACK_GRADEAVERAGE;
+        $this->assertSame('', hippotrack_report_qm_filter_select($hippotrack));
     }
 
     public function test_hippotrack_report_qm_filter_select_first_last_best() {
@@ -89,13 +89,13 @@ class reportlib_test extends \advanced_testcase {
 
         $fakeattempt = new \stdClass();
         $fakeattempt->userid = 123;
-        $fakeattempt->quiz = 456;
+        $fakeattempt->hippotrack = 456;
         $fakeattempt->layout = '1,2,0,3,4,0,5';
         $fakeattempt->state = hippotrack_attempt::FINISHED;
 
         // We intentionally insert these in a funny order, to test the SQL better.
         // The test data is:
-        // id | quizid | user | attempt | sumgrades | state
+        // id | hippotrackid | user | attempt | sumgrades | state
         // ---------------------------------------------------
         // 4  | 456    | 123  | 1       | 30        | finished
         // 2  | 456    | 123  | 2       | 50        | finished
@@ -133,30 +133,30 @@ class reportlib_test extends \advanced_testcase {
         $fakeattempt->uniqueid = 65;
         $DB->insert_record('hippotrack_attempts', $fakeattempt);
 
-        $quiz = new \stdClass();
-        $quiz->attempts = 10;
+        $hippotrack = new \stdClass();
+        $hippotrack->attempts = 10;
 
-        $quiz->grademethod = QUIZ_ATTEMPTFIRST;
+        $hippotrack->grademethod = HIPPOTRACK_ATTEMPTFIRST;
         $firstattempt = $DB->get_records_sql("
-                SELECT * FROM {hippotrack_attempts} quiza WHERE userid = ? AND quiz = ? AND "
-                        . hippotrack_report_qm_filter_select($quiz), array(123, 456));
+                SELECT * FROM {hippotrack_attempts} hippotracka WHERE userid = ? AND hippotrack = ? AND "
+                        . hippotrack_report_qm_filter_select($hippotrack), array(123, 456));
         $this->assertEquals(1, count($firstattempt));
         $firstattempt = reset($firstattempt);
         $this->assertEquals(1, $firstattempt->attempt);
 
-        $quiz->grademethod = QUIZ_ATTEMPTLAST;
+        $hippotrack->grademethod = HIPPOTRACK_ATTEMPTLAST;
         $lastattempt = $DB->get_records_sql("
-                SELECT * FROM {hippotrack_attempts} quiza WHERE userid = ? AND quiz = ? AND "
-                . hippotrack_report_qm_filter_select($quiz), array(123, 456));
+                SELECT * FROM {hippotrack_attempts} hippotracka WHERE userid = ? AND hippotrack = ? AND "
+                . hippotrack_report_qm_filter_select($hippotrack), array(123, 456));
         $this->assertEquals(1, count($lastattempt));
         $lastattempt = reset($lastattempt);
         $this->assertEquals(3, $lastattempt->attempt);
 
-        $quiz->attempts = 0;
-        $quiz->grademethod = QUIZ_GRADEHIGHEST;
+        $hippotrack->attempts = 0;
+        $hippotrack->grademethod = HIPPOTRACK_GRADEHIGHEST;
         $bestattempt = $DB->get_records_sql("
-                SELECT * FROM {hippotrack_attempts} qa_alias WHERE userid = ? AND quiz = ? AND "
-                . hippotrack_report_qm_filter_select($quiz, 'qa_alias'), array(123, 456));
+                SELECT * FROM {hippotrack_attempts} qa_alias WHERE userid = ? AND hippotrack = ? AND "
+                . hippotrack_report_qm_filter_select($hippotrack, 'qa_alias'), array(123, 456));
         $this->assertEquals(1, count($bestattempt));
         $bestattempt = reset($bestattempt);
         $this->assertEquals(2, $bestattempt->attempt);
@@ -166,9 +166,9 @@ class reportlib_test extends \advanced_testcase {
         global $DB;
         $this->resetAfterTest();
 
-        $quizid = 7;
+        $hippotrackid = 7;
         $fakegrade = new \stdClass();
-        $fakegrade->quiz = $quizid;
+        $fakegrade->hippotrack = $hippotrackid;
 
         // Have 5 test grades.
         $fakegrade->userid = 10;
@@ -191,7 +191,7 @@ class reportlib_test extends \advanced_testcase {
         $fakegrade->grade = 33.33333;
         $DB->insert_record('hippotrack_grades', $fakegrade);
 
-        $data = hippotrack_report_grade_bands(5, 20, $quizid);
+        $data = hippotrack_report_grade_bands(5, 20, $hippotrackid);
         $this->assertGreaterThanOrEqual(0, min(array_keys($data)));
     }
 }

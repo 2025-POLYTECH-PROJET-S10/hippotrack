@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the form that limits student's access to attempt a quiz.
+ * Defines the form that limits student's access to attempt a hippotrack.
  *
  * @package   mod_hippotrack
  * @copyright 2011 The Open University
@@ -29,7 +29,7 @@ require_once($CFG->libdir.'/formslib.php');
 
 
 /**
- * A form that limits student's access to attempt a quiz.
+ * A form that limits student's access to attempt a hippotrack.
  *
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -64,7 +64,7 @@ class mod_hippotrack_preflight_check_form extends moodleform {
         $errors = parent::validation($data, $files);
 
         $timenow = time();
-        $accessmanager = $this->_customdata['quizobj']->get_access_manager($timenow);
+        $accessmanager = $this->_customdata['hippotrackobj']->get_access_manager($timenow);
         $errors = array_merge($errors, $accessmanager->validate_preflight_check($data, $files, $this->_customdata['attemptid']));
 
         return $errors;

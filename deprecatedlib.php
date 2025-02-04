@@ -31,11 +31,11 @@
  * @param stdClass $course
  * @param cm_info|stdClass $cm
  * @param int $userid
- * @param stdClass $quiz
+ * @param stdClass $hippotrack
  * @return bool True if the passing grade (or no attempts left) requirement is disabled or met.
  * @throws coding_exception
  */
-function hippotrack_completion_check_passing_grade_or_all_attempts($course, $cm, $userid, $quiz) {
+function hippotrack_completion_check_passing_grade_or_all_attempts($course, $cm, $userid, $hippotrack) {
     global $CFG;
 
     debugging('hippotrack_completion_check_passing_grade_or_all_attempts has been deprecated.', DEBUG_DEVELOPER);
@@ -47,7 +47,7 @@ function hippotrack_completion_check_passing_grade_or_all_attempts($course, $cm,
     // Check for passing grade.
     require_once($CFG->libdir . '/gradelib.php');
     $item = grade_item::fetch(array('courseid' => $course->id, 'itemtype' => 'mod',
-            'itemmodule' => 'quiz', 'iteminstance' => $cm->instance, 'outcomeid' => null));
+            'itemmodule' => 'hippotrack', 'iteminstance' => $cm->instance, 'outcomeid' => null));
     if ($item) {
         $grades = grade_grade::fetch_users_grades($item, array($userid), false);
         if (!empty($grades[$userid]) && $grades[$userid]->is_passed($item)) {
@@ -56,20 +56,20 @@ function hippotrack_completion_check_passing_grade_or_all_attempts($course, $cm,
     }
 
     // If a passing grade is required and exhausting all available attempts is not accepted for completion,
-    // then this quiz is not complete.
-    if (!$quiz->completionattemptsexhausted) {
+    // then this hippotrack is not complete.
+    if (!$hippotrack->completionattemptsexhausted) {
         return false;
     }
 
     // Check if all attempts are used up.
-    $attempts = hippotrack_get_user_attempts($quiz->id, $userid, 'finished', true);
+    $attempts = hippotrack_get_user_attempts($hippotrack->id, $userid, 'finished', true);
     if (!$attempts) {
         return false;
     }
     $lastfinishedattempt = end($attempts);
     $context = context_module::instance($cm->id);
-    $quizobj = quiz::create($quiz->id, $userid);
-    $accessmanager = new hippotrack_access_manager($quizobj, time(),
+    $hippotrackobj = hippotrack::create($hippotrack->id, $userid);
+    $accessmanager = new hippotrack_access_manager($hippotrackobj, time(),
             has_capability('mod/hippotrack:ignoretimelimits', $context, $userid, false));
 
     return $accessmanager->is_finished(count($attempts), $lastfinishedattempt);
@@ -82,25 +82,25 @@ function hippotrack_completion_check_passing_grade_or_all_attempts($course, $cm,
  * @todo MDL-71196 Final deprecation in Moodle 4.3
  * @see \mod_hippotrack\completion\custom_completion
  * @param int $userid
- * @param stdClass $quiz
+ * @param stdClass $hippotrack
  * @return bool True if minimum attempts requirement is disabled or met.
  */
-function hippotrack_completion_check_min_attempts($userid, $quiz) {
+function hippotrack_completion_check_min_attempts($userid, $hippotrack) {
 
     debugging('hippotrack_completion_check_min_attempts has been deprecated.', DEBUG_DEVELOPER);
 
-    if (empty($quiz->completionminattempts)) {
+    if (empty($hippotrack->completionminattempts)) {
         return true;
     }
 
     // Check if the user has done enough attempts.
-    $attempts = hippotrack_get_user_attempts($quiz->id, $userid, 'finished', true);
-    return $quiz->completionminattempts <= count($attempts);
+    $attempts = hippotrack_get_user_attempts($hippotrack->id, $userid, 'finished', true);
+    return $hippotrack->completionminattempts <= count($attempts);
 }
 
 /**
- * Obtains the automatic completion state for this quiz on any conditions
- * in quiz settings, such as if all attempts are used or a certain grade is achieved.
+ * Obtains the automatic completion state for this hippotrack on any conditions
+ * in hippotrack settings, such as if all attempts are used or a certain grade is achieved.
  *
  * @deprecated since Moodle 3.11
  * @todo MDL-71196 Final deprecation in Moodle 4.3
@@ -117,16 +117,16 @@ function hippotrack_get_completion_state($course, $cm, $userid, $type) {
 
     // No need to call debugging here. Deprecation debugging notice already being called in \completion_info::internal_get_state().
 
-    $quiz = $DB->get_record('quiz', array('id' => $cm->instance), '*', MUST_EXIST);
-    if (!$quiz->completionattemptsexhausted && !$cm->completionpassgrade && !$quiz->completionminattempts) {
+    $hippotrack = $DB->get_record('hippotrack', array('id' => $cm->instance), '*', MUST_EXIST);
+    if (!$hippotrack->completionattemptsexhausted && !$cm->completionpassgrade && !$hippotrack->completionminattempts) {
         return $type;
     }
 
-    if (!hippotrack_completion_check_passing_grade_or_all_attempts($course, $cm, $userid, $quiz)) {
+    if (!hippotrack_completion_check_passing_grade_or_all_attempts($course, $cm, $userid, $hippotrack)) {
         return false;
     }
 
-    if (!hippotrack_completion_check_min_attempts($userid, $quiz)) {
+    if (!hippotrack_completion_check_min_attempts($userid, $hippotrack)) {
         return false;
     }
 

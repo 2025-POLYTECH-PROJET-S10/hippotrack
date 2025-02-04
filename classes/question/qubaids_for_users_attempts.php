@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * A {@link qubaid_condition} representing all the attempts by one user at a given quiz.
+ * A {@link qubaid_condition} representing all the attempts by one user at a given hippotrack.
  *
  * @package   mod_hippotrack
  * @category  question
@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/mod/hippotrack/attemptlib.php');
 
 /**
- * A {@link qubaid_condition} representing all the attempts by one user at a given quiz.
+ * A {@link qubaid_condition} representing all the attempts by one user at a given hippotrack.
  *
  * @copyright 2015 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -41,14 +41,14 @@ class qubaids_for_users_attempts extends \qubaid_join {
      *
      * This takes the same arguments as {@link hippotrack_get_user_attempts()}.
      *
-     * @param int $quizid the quiz id.
+     * @param int $hippotrackid the hippotrack id.
      * @param int $userid the userid.
      * @param string $status 'all', 'finished' or 'unfinished' to control
      * @param bool $includepreviews defaults to false.
      */
-    public function __construct($quizid, $userid, $status = 'finished', $includepreviews = false) {
-        $where = 'quiza.quiz = :quizaquiz AND quiza.userid = :userid';
-        $params = array('quizaquiz' => $quizid, 'userid' => $userid);
+    public function __construct($hippotrackid, $userid, $status = 'finished', $includepreviews = false) {
+        $where = 'hippotracka.hippotrack = :hippotrackahippotrack AND hippotracka.userid = :userid';
+        $params = array('hippotrackahippotrack' => $hippotrackid, 'userid' => $userid);
 
         if (!$includepreviews) {
             $where .= ' AND preview = 0';
@@ -71,6 +71,6 @@ class qubaids_for_users_attempts extends \qubaid_join {
                 break;
         }
 
-        parent::__construct('{hippotrack_attempts} quiza', 'quiza.uniqueid', $where, $params);
+        parent::__construct('{hippotrack_attempts} hippotracka', 'hippotracka.uniqueid', $where, $params);
     }
 }

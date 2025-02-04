@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quizaccess_seb;
+namespace hippotrackaccess_seb;
 
 /**
  * PHPUnit tests for hideif_rule.
  *
- * @package   quizaccess_seb
+ * @package   hippotrackaccess_seb
  * @author    Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright 2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

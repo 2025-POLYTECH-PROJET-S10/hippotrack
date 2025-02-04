@@ -1,6 +1,6 @@
 @mod @mod_hippotrack
-Feature: Quiz reset
-  In order to reuse past quizzes
+Feature: HippoTrack reset
+  In order to reuse past hippotrackzes
   As a teacher
   I need to remove all previous data.
 
@@ -28,11 +28,11 @@ Feature: Quiz reset
       | Test questions   | truefalse | TF1  | First question |
     And the following "activities" exist:
       | activity | name           | intro                 | course | idnumber |
-      | quiz     | Test quiz name | Test quiz description | C1     | quiz1    |
-    And quiz "Test quiz name" contains the following questions:
+      | hippotrack     | Test hippotrack name | Test hippotrack description | C1     | hippotrack1    |
+    And hippotrack "Test hippotrack name" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    And user "student1" has attempted "Test quiz name" with responses:
+    And user "student1" has attempted "Test hippotrack name" with responses:
       | slot | response |
       |   1  | True     |
 
@@ -40,33 +40,33 @@ Feature: Quiz reset
     When I log in as "teacher1"
     And I am on the "Course 1" "reset" page
     And I set the following fields to these values:
-        | Delete all quiz attempts | 1 |
+        | Delete all hippotrack attempts | 1 |
     And I press "Reset course"
     And I press "Continue"
-    And I am on the "Test quiz name" "mod_hippotrack > Grades report" page
+    And I am on the "Test hippotrack name" "mod_hippotrack > Grades report" page
     Then I should see "Attempts: 0"
 
   Scenario: Use course reset to remove user overrides.
     Given the following "mod_hippotrack > user overrides" exist:
-      | quiz           | user     | attempts |
-      | Test quiz name | student1 | 2        |
+      | hippotrack           | user     | attempts |
+      | Test hippotrack name | student1 | 2        |
     When I log in as "teacher1"
     And I am on the "Course 1" "reset" page
     And I set the field "Delete all user overrides" to "1"
     And I press "Reset course"
     And I press "Continue"
-    And I am on the "Test quiz name" "mod_hippotrack > User overrides" page
+    And I am on the "Test hippotrack name" "mod_hippotrack > User overrides" page
     Then I should not see "Sam1 Student1"
 
   Scenario: Use course reset to remove group overrides.
     Given the following "mod_hippotrack > group overrides" exist:
-      | quiz           | group | attempts |
-      | Test quiz name | G1    | 2        |
+      | hippotrack           | group | attempts |
+      | Test hippotrack name | G1    | 2        |
     When I log in as "teacher1"
     And I am on the "Course 1" "reset" page
     And I set the following fields to these values:
         | Delete all group overrides | 1 |
     And I press "Reset course"
     And I press "Continue"
-    And I am on the "Test quiz name" "mod_hippotrack > Group overrides" page
+    And I am on the "Test hippotrack name" "mod_hippotrack > Group overrides" page
     Then I should not see "Group 1"

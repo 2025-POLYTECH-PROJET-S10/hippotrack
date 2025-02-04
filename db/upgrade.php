@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Upgrade script for the quiz module.
+ * Upgrade script for the hippotrack module.
  *
  * @package    mod_hippotrack
  * @copyright  2006 Eloy Lafuente (stronk7)
@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Quiz module upgrade function.
+ * HippoTrack module upgrade function.
  * @param string $oldversion the version we are upgrading from.
  */
 function xmldb_hippotrack_upgrade($oldversion) {
@@ -37,7 +37,7 @@ function xmldb_hippotrack_upgrade($oldversion) {
 
     if ($oldversion < 2020061501) {
 
-        // Define field completionminattempts to be added to quiz.
+        // Define field completionminattempts to be added to hippotrack.
         $table = new xmldb_table('hippotrack');
         $field = new xmldb_field('completionminattempts', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0',
             'completionpass');
@@ -47,7 +47,7 @@ function xmldb_hippotrack_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-        // Quiz savepoint reached.
+        // HippoTrack savepoint reached.
         upgrade_mod_savepoint(true, 2020061501, 'hippotrack');
     }
 
@@ -56,7 +56,7 @@ function xmldb_hippotrack_upgrade($oldversion) {
         $field = new xmldb_field('completionpass');
 
         if ($dbman->field_exists($table, $field)) {
-            $sql = "SELECT q.id, m.id as quizid " .
+            $sql = "SELECT q.id, m.id as hippotrackid " .
                 "FROM {hippotrack} q " .
                 "INNER JOIN {course_modules} cm ON cm.instance = q.id " .
                 "INNER JOIN {modules} m ON m.id = cm.module " .
@@ -65,16 +65,16 @@ function xmldb_hippotrack_upgrade($oldversion) {
             /** @var moodle_recordset $records */
             $records = $DB->get_recordset_sql($sql, ['name' => 'hippotrack', 'completionpass' => 1], 0, 1000);
             while ($records->valid()) {
-                $quizmodule = null;
+                $hippotrackmodule = null;
                 foreach ($records as $record) {
                     $ids[] = $record->id;
-                    $quizmodule = $record->quizid;
+                    $hippotrackmodule = $record->hippotrackid;
                 }
 
                 if ($ids) {
                     list($insql, $params) = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED);
                     $DB->set_field_select('course_modules', 'completionpassgrade', 1,
-                        "module = :hippotrack AND instance $insql", $params + ['quiz' => $quizmodule]);
+                        "module = :hippotrack AND instance $insql", $params + ['hippotrack' => $hippotrackmodule]);
 
                     // Reset the value so it doesn't get picked on the next run. The field will be dropped later.
                     $DB->set_field_select('hippotrack', 'completionpass', 0, "id $insql", $params);
@@ -107,8 +107,8 @@ function xmldb_hippotrack_upgrade($oldversion) {
             $DB->execute('UPDATE {hippotrack_attempts} SET gradednotificationsenttime = timefinish');
         }
 
-        // Quiz savepoint reached.
-        upgrade_mod_savepoint(true, 2021101900, 'quiz');
+        // HippoTrack savepoint reached.
+        upgrade_mod_savepoint(true, 2021101900, 'hippotrack');
     }
 
     if ($oldversion < 2022020300) {
@@ -153,8 +153,8 @@ function xmldb_hippotrack_upgrade($oldversion) {
             $dbman->drop_field($table, $field);
         }
 
-        // Quiz savepoint reached.
-        upgrade_mod_savepoint(true, 2022020300, 'quiz');
+        // HippoTrack savepoint reached.
+        upgrade_mod_savepoint(true, 2022020300, 'hippotrack');
     }
 
     // Automatically generated Moodle v4.0.0 release upgrade line.

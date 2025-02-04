@@ -54,12 +54,12 @@ class update_overdue_attempts extends \core\task\scheduled_task {
         $timenow = time();
         $overduehander = new \mod_hippotrack_overdue_attempt_updater();
 
-        $processto = $timenow - get_config('quiz', 'graceperiodmin');
+        $processto = $timenow - get_config('hippotrack', 'graceperiodmin');
 
-        mtrace('  Looking for quiz overdue quiz attempts...');
+        mtrace('  Looking for hippotrack overdue hippotrack attempts...');
 
-        list($count, $quizcount) = $overduehander->update_overdue_attempts($timenow, $processto);
+        list($count, $hippotrackcount) = $overduehander->update_overdue_attempts($timenow, $processto);
 
-        mtrace('  Considered ' . $count . ' attempts in ' . $quizcount . ' quizzes.');
+        mtrace('  Considered ' . $count . ' attempts in ' . $hippotrackcount . ' hippotrackzes.');
     }
 }

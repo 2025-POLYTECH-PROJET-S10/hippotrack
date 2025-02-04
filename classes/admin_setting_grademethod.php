@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Admin settings class for the quiz grading method.
+ * Admin settings class for the hippotrack grading method.
  *
  * @package   mod_hippotrack
  * @copyright 2008 Tim Hunt
@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * Admin settings class for the quiz grading method.
+ * Admin settings class for the hippotrack grading method.
  *
  * Just so we can lazy-load the choices.
  *

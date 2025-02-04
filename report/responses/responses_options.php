@@ -53,7 +53,7 @@ class hippotrack_responses_options extends mod_hippotrack_attempts_report_option
         $params['qtext']      = $this->showqtext;
         $params['resp']       = $this->showresponses;
         $params['right']      = $this->showright;
-        if (hippotrack_allows_multiple_tries($this->quiz)) {
+        if (hippotrack_allows_multiple_tries($this->hippotrack)) {
             $params['whichtries'] = $this->whichtries;
         }
         return $params;
@@ -64,7 +64,7 @@ class hippotrack_responses_options extends mod_hippotrack_attempts_report_option
         $toform->qtext      = $this->showqtext;
         $toform->resp       = $this->showresponses;
         $toform->right      = $this->showright;
-        if (hippotrack_allows_multiple_tries($this->quiz)) {
+        if (hippotrack_allows_multiple_tries($this->hippotrack)) {
             $toform->whichtries = $this->whichtries;
         }
 
@@ -77,7 +77,7 @@ class hippotrack_responses_options extends mod_hippotrack_attempts_report_option
         $this->showqtext     = $fromform->qtext;
         $this->showresponses = $fromform->resp;
         $this->showright     = $fromform->right;
-        if (hippotrack_allows_multiple_tries($this->quiz)) {
+        if (hippotrack_allows_multiple_tries($this->hippotrack)) {
             $this->whichtries = $fromform->whichtries;
         }
     }
@@ -88,7 +88,7 @@ class hippotrack_responses_options extends mod_hippotrack_attempts_report_option
         $this->showqtext     = optional_param('qtext', $this->showqtext,     PARAM_BOOL);
         $this->showresponses = optional_param('resp',  $this->showresponses, PARAM_BOOL);
         $this->showright     = optional_param('right', $this->showright,     PARAM_BOOL);
-        if (hippotrack_allows_multiple_tries($this->quiz)) {
+        if (hippotrack_allows_multiple_tries($this->hippotrack)) {
             $this->whichtries    = optional_param('whichtries', $this->whichtries, PARAM_ALPHA);
         }
     }
@@ -99,7 +99,7 @@ class hippotrack_responses_options extends mod_hippotrack_attempts_report_option
         $this->showqtext     = get_user_preferences('hippotrack_report_responses_qtext', $this->showqtext);
         $this->showresponses = get_user_preferences('hippotrack_report_responses_resp',  $this->showresponses);
         $this->showright     = get_user_preferences('hippotrack_report_responses_right', $this->showright);
-        if (hippotrack_allows_multiple_tries($this->quiz)) {
+        if (hippotrack_allows_multiple_tries($this->hippotrack)) {
             $this->whichtries    = get_user_preferences('hippotrack_report_responses_which_tries', $this->whichtries);
         }
     }
@@ -110,7 +110,7 @@ class hippotrack_responses_options extends mod_hippotrack_attempts_report_option
         set_user_preference('hippotrack_report_responses_qtext', $this->showqtext);
         set_user_preference('hippotrack_report_responses_resp',  $this->showresponses);
         set_user_preference('hippotrack_report_responses_right', $this->showright);
-        if (hippotrack_allows_multiple_tries($this->quiz)) {
+        if (hippotrack_allows_multiple_tries($this->hippotrack)) {
             set_user_preference('hippotrack_report_responses_which_tries', $this->whichtries);
         }
     }

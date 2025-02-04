@@ -41,7 +41,7 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
                 moveOnEnd: false
             });
             del.dd.plug(Y.Plugin.DDConstrained, {
-                // Keep it inside the .mod-quiz-edit-content
+                // Keep it inside the .mod-hippotrack-edit-content
                 constrain: '#' + CSS.PAGECONTENT,
                 stickY: true
             });
@@ -168,7 +168,7 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
         // Prepare request parameters
         params.sesskey = M.cfg.sesskey;
         params.courseid = this.get('courseid');
-        params.quizid = this.get('quizid');
+        params.hippotrackid = this.get('hippotrackid');
         params['class'] = 'section';
         params.field = 'move';
         params.id = dragnodeid;
@@ -246,7 +246,7 @@ Y.extend(DRAGSECTION, M.core.dragdrop, {
         courseid: {
             value: null
         },
-        quizid: {
+        hippotrackid: {
             value: null
         },
         ajaxurl: {

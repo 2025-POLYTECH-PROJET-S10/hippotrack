@@ -30,7 +30,7 @@ class backup_hippotrack_activity_structure_step extends backup_questions_activit
         $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated.
-        $quiz = new backup_nested_element('quiz', ['id'], [
+        $hippotrack = new backup_nested_element('hippotrack', ['id'], [
             'name', 'intro', 'introformat', 'timeopen', 'timeclose', 'timelimit',
             'overduehandling', 'graceperiod', 'preferredbehaviour', 'canredoquestions', 'attempts_number',
             'attemptonlast', 'grademethod', 'decimalpoints', 'questiondecimalpoints',
@@ -44,12 +44,12 @@ class backup_hippotrack_activity_structure_step extends backup_questions_activit
             'completionminattempts', 'allowofflineattempts']);
 
         // Define elements for access rule subplugin settings.
-        $this->add_subplugin_structure('quizaccess', $quiz, true);
+        $this->add_subplugin_structure('hippotrackaccess', $hippotrack, true);
 
         $qinstances = new backup_nested_element('question_instances');
 
         $qinstance = new backup_nested_element('question_instance', ['id'],
-                ['quizid', 'slot', 'page', 'requireprevious', 'maxmark']);
+                ['hippotrackid', 'slot', 'page', 'requireprevious', 'maxmark']);
 
         $this->add_question_references($qinstance, 'mod_hippotrack', 'slot');
 
@@ -85,38 +85,38 @@ class backup_hippotrack_activity_structure_step extends backup_questions_activit
         $this->add_question_usages($attempt, 'uniqueid');
 
         // Define elements for access rule subplugin attempt data.
-        $this->add_subplugin_structure('quizaccess', $attempt, true);
+        $this->add_subplugin_structure('hippotrackaccess', $attempt, true);
 
         // Build the tree.
-        $quiz->add_child($qinstances);
+        $hippotrack->add_child($qinstances);
         $qinstances->add_child($qinstance);
 
-        $quiz->add_child($sections);
+        $hippotrack->add_child($sections);
         $sections->add_child($section);
 
-        $quiz->add_child($feedbacks);
+        $hippotrack->add_child($feedbacks);
         $feedbacks->add_child($feedback);
 
-        $quiz->add_child($overrides);
+        $hippotrack->add_child($overrides);
         $overrides->add_child($override);
 
-        $quiz->add_child($grades);
+        $hippotrack->add_child($grades);
         $grades->add_child($grade);
 
-        $quiz->add_child($attempts);
+        $hippotrack->add_child($attempts);
         $attempts->add_child($attempt);
 
         // Define sources.
-        $quiz->set_source_table('quiz', ['id' => backup::VAR_ACTIVITYID]);
+        $hippotrack->set_source_table('hippotrack', ['id' => backup::VAR_ACTIVITYID]);
 
-        $qinstance->set_source_table('hippotrack_slots', ['quizid' => backup::VAR_PARENTID]);
+        $qinstance->set_source_table('hippotrack_slots', ['hippotrackid' => backup::VAR_PARENTID]);
 
-        $section->set_source_table('hippotrack_sections', ['quizid' => backup::VAR_PARENTID]);
+        $section->set_source_table('hippotrack_sections', ['hippotrackid' => backup::VAR_PARENTID]);
 
-        $feedback->set_source_table('hippotrack_feedback', ['quizid' => backup::VAR_PARENTID]);
+        $feedback->set_source_table('hippotrack_feedback', ['hippotrackid' => backup::VAR_PARENTID]);
 
-        // Quiz overrides to backup are different depending of user info.
-        $overrideparams = ['quiz' => backup::VAR_PARENTID];
+        // HippoTrack overrides to backup are different depending of user info.
+        $overrideparams = ['hippotrack' => backup::VAR_PARENTID];
         if (!$userinfo) { //  Without userinfo, skip user overrides.
             $overrideparams['userid'] = backup_helper::is_sqlparam(null);
 
@@ -132,15 +132,15 @@ class backup_hippotrack_activity_structure_step extends backup_questions_activit
 
         // All the rest of elements only happen if we are including user info.
         if ($userinfo) {
-            $grade->set_source_table('hippotrack_grades', ['quiz' => backup::VAR_PARENTID]);
+            $grade->set_source_table('hippotrack_grades', ['hippotrack' => backup::VAR_PARENTID]);
             $attempt->set_source_sql('
                     SELECT *
                     FROM {hippotrack_attempts}
-                    WHERE quiz = :quiz AND preview = 0', ['quiz' => backup::VAR_PARENTID]);
+                    WHERE hippotrack = :hippotrack AND preview = 0', ['hippotrack' => backup::VAR_PARENTID]);
         }
 
         // Define source alias.
-        $quiz->set_source_alias('attempts', 'attempts_number');
+        $hippotrack->set_source_alias('attempts', 'attempts_number');
         $grade->set_source_alias('grade', 'gradeval');
         $attempt->set_source_alias('attempt', 'attemptnum');
 
@@ -151,10 +151,10 @@ class backup_hippotrack_activity_structure_step extends backup_questions_activit
         $attempt->annotate_ids('user', 'userid');
 
         // Define file annotations.
-        $quiz->annotate_files('mod_hippotrack', 'intro', null); // This file area hasn't itemid.
+        $hippotrack->annotate_files('mod_hippotrack', 'intro', null); // This file area hasn't itemid.
         $feedback->annotate_files('mod_hippotrack', 'feedback', 'id');
 
-        // Return the root element (quiz), wrapped into standard activity structure.
-        return $this->prepare_activity_structure($quiz);
+        // Return the root element (hippotrack), wrapped into standard activity structure.
+        return $this->prepare_activity_structure($hippotrack);
     }
 }

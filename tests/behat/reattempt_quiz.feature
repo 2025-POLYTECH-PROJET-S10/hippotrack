@@ -1,8 +1,8 @@
 @mod @mod_hippotrack
-Feature: Several attempts in a quiz
+Feature: Several attempts in a hippotrack
   As a student
   In order to demonstrate what I know
-  I need to be able to attempt quizzes and sometimes take multiple attempts
+  I need to be able to attempt hippotrackzes and sometimes take multiple attempts
 
   Background:
     Given the following "users" exist:
@@ -27,29 +27,29 @@ Feature: Several attempts in a quiz
       | Test questions   | truefalse | TF2  | Second question |
     And the following "activities" exist:
       | activity | name   | intro              | course | idnumber | preferredbehaviour | navmethod  |
-      | quiz     | Quiz 1 | Quiz 1 description | C1     | quiz1    | immediatefeedback  | free       |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack     | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | immediatefeedback  | free       |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | requireprevious |
       | TF1      | 1    | 1               |
       | TF2      | 2    | 1               |
     # Add some attempts
-    And user "student1" has attempted "Quiz 1" with responses:
+    And user "student1" has attempted "HippoTrack 1" with responses:
       | slot | response |
       | 1    | True     |
       | 2    | False    |
-    And user "student2" has attempted "Quiz 1" with responses:
+    And user "student2" has attempted "HippoTrack 1" with responses:
       | slot | response |
       | 1    | True     |
       | 2    | True     |
     # Add a second attempt by student1
-    And user "student1" has attempted "Quiz 1" with responses:
+    And user "student1" has attempted "HippoTrack 1" with responses:
       | slot | response |
       | 1    | False    |
       | 2    | False    |
 
   @javascript
   Scenario: The redo question buttons are visible after 2 attempts are preset for student1.
-    Given I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student1"
-    Then "Re-attempt quiz" "button" should exist
-    And "1" row "Marks / 2.00" column of "quizattemptsummary" table should contain "1.00"
-    And "2" row "Marks / 2.00" column of "quizattemptsummary" table should contain "0.00"
+    Given I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student1"
+    Then "Re-attempt hippotrack" "button" should exist
+    And "1" row "Marks / 2.00" column of "hippotrackattemptsummary" table should contain "1.00"
+    And "2" row "Marks / 2.00" column of "hippotrackattemptsummary" table should contain "0.00"

@@ -12,7 +12,7 @@
  * Section toolbox class.
  *
  * This class is responsible for managing AJAX interactions with sections
- * when adding, editing, removing section headings when editing a quiz.
+ * when adding, editing, removing section headings when editing a hippotrack.
  *
  * @class section
  * @constructor
@@ -43,7 +43,7 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
      * @protected
      */
     initializer: function () {
-        M.mod_hippotrack.quizbase.register_module(this);
+        M.mod_hippotrack.hippotrackbase.register_module(this);
 
         BODY.delegate('key', this.handle_data_action, 'down:enter', SELECTOR.ACTIVITYACTION, this);
         Y.delegate('click', this.handle_data_action, BODY, SELECTOR.ACTIVITYACTION, this);
@@ -113,7 +113,7 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
 
         // Create the confirmation dialogue.
         var confirm = new M.core.confirm({
-            question: M.util.get_string('confirmremovesectionheading', 'quiz', activity.getData('sectionname')),
+            question: M.util.get_string('confirmremovesectionheading', 'hippotrack', activity.getData('sectionname')),
             modal: true
         });
 
@@ -247,13 +247,13 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
                     }
 
                     activity.one(SELECTOR.EDITSECTIONICON).set('title',
-                        M.util.get_string('sectionheadingedit', 'quiz', response.instancesection));
+                        M.util.get_string('sectionheadingedit', 'hippotrack', response.instancesection));
                     activity.one(SELECTOR.EDITSECTIONICON).set('alt',
-                        M.util.get_string('sectionheadingedit', 'quiz', response.instancesection));
+                        M.util.get_string('sectionheadingedit', 'hippotrack', response.instancesection));
                     var deleteicon = activity.one(SELECTOR.DELETESECTIONICON);
                     if (deleteicon) {
-                        deleteicon.set('title', M.util.get_string('sectionheadingremove', 'quiz', response.instancesection));
-                        deleteicon.set('alt', M.util.get_string('sectionheadingremove', 'quiz', response.instancesection));
+                        deleteicon.set('title', M.util.get_string('sectionheadingremove', 'hippotrack', response.instancesection));
+                        deleteicon.set('alt', M.util.get_string('sectionheadingremove', 'hippotrack', response.instancesection));
                     }
                 }
             });
@@ -350,7 +350,7 @@ Y.extend(SECTIONTOOLBOX, TOOLBOX, {
         courseid: {
             'value': 0
         },
-        quizid: {
+        hippotrackid: {
             'value': 0
         }
     }

@@ -17,7 +17,7 @@
 /**
  * Serves an encrypted/unencrypted string as a file for download.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,5 +27,5 @@ require_once(__DIR__ . '/../../../../config.php');
 
 $cmid = required_param('cmid', PARAM_RAW);
 
-$config = \quizaccess_seb\helper::get_seb_config_content($cmid);
-\quizaccess_seb\helper::send_seb_config_file($config);
+$config = \hippotrackaccess_seb\helper::get_seb_config_content($cmid);
+\hippotrackaccess_seb\helper::send_seb_config_file($config);

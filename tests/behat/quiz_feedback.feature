@@ -1,5 +1,5 @@
 @mod @mod_hippotrack
-Feature: Enable deferred or immediate feedback for quiz
+Feature: Enable deferred or immediate feedback for hippotrack
   As a teacher
   I should be able to set how questions behave to deferred or immediate feedback
 
@@ -23,10 +23,10 @@ Feature: Enable deferred or immediate feedback for quiz
       | Test questions   | truefalse   | TF1   | First question  |
 
   @javascript
-  Scenario: Attempt quiz with How questions behave set to Deferred Feedback
+  Scenario: Attempt hippotrack with How questions behave set to Deferred Feedback
     Given the following "activity" exists:
-      | activity                    | quiz             |
-      | name                        | Quiz 1           |
+      | activity                    | hippotrack             |
+      | name                        | HippoTrack 1           |
       | course                      | C1               |
       | preferredbehaviour          | deferredfeedback |
       | attemptimmediately          | 1                |
@@ -37,12 +37,12 @@ Feature: Enable deferred or immediate feedback for quiz
       | generalfeedbackimmediately  | 1                |
       | rightanswerimmediately      | 1                |
       | overallfeedbackimmediately  | 1                |
-    And quiz "Quiz 1" contains the following questions:
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    And I am on the "Quiz 1" "quiz activity" page logged in as student1
-    When I press "Attempt quiz"
-    # Confirm that check button does not exist when attempting quiz
+    And I am on the "HippoTrack 1" "hippotrack activity" page logged in as student1
+    When I press "Attempt hippotrack"
+    # Confirm that check button does not exist when attempting hippotrack
     Then "Check Question 1" "button" should not exist
     And I set the field "False" to "1"
     And I press "Finish attempt ..."
@@ -50,16 +50,16 @@ Feature: Enable deferred or immediate feedback for quiz
     And I should not see "You should have selected true."
     And I should not see "The correct answer is 'True'."
     And I press "Submit all and finish"
-    # Confirm that quiz answer feedback only appears when attempt is submitted
+    # Confirm that hippotrack answer feedback only appears when attempt is submitted
     And I click on "Submit all and finish" "button" in the "Submit all your answers and finish?" "dialogue"
     And I should see "This is the wrong answer."
     And I should see "You should have selected true."
     And I should see "The correct answer is 'True'."
 
-  Scenario: Attempt quiz with How questions behave set to Immediate Feedback
+  Scenario: Attempt hippotrack with How questions behave set to Immediate Feedback
     Given the following "activity" exists:
-      | activity                    | quiz             |
-      | name                        | Quiz 1           |
+      | activity                    | hippotrack             |
+      | name                        | HippoTrack 1           |
       | course                      | C1               |
       | preferredbehaviour          | immediatefeedback |
       | correctnessduring           | 1                 |
@@ -67,11 +67,11 @@ Feature: Enable deferred or immediate feedback for quiz
       | specificfeedbackduring      | 1                 |
       | generalfeedbackduring       | 1                 |
       | rightanswerduring           | 1                 |
-    And quiz "Quiz 1" contains the following questions:
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    And I am on the "Quiz 1" "quiz activity" page logged in as student1
-    When I press "Attempt quiz"
+    And I am on the "HippoTrack 1" "hippotrack activity" page logged in as student1
+    When I press "Attempt hippotrack"
     Then "Check Question 1" "button" should exist
     And I set the field "False" to "1"
     # Confirm you can check your answer immediately before submitting the attempt

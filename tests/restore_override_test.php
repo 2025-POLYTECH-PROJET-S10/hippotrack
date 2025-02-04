@@ -38,8 +38,8 @@ class restore_override_test extends \restore_date_testcase {
         $this->resetAfterTest();
 
         $course = $this->getDataGenerator()->create_course();
-        $quizgen = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgen->create_instance(['course' => $course->id]);
+        $hippotrackgen = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgen->create_instance(['course' => $course->id]);
 
         $group1 = $this->getDataGenerator()->create_group(array('courseid' => $course->id));
         $group2 = $this->getDataGenerator()->create_group(array('courseid' => $course->id));
@@ -48,7 +48,7 @@ class restore_override_test extends \restore_date_testcase {
 
         // Group overrides.
         $groupoverride1 = (object)[
-            'quiz' => $quiz->id,
+            'hippotrack' => $hippotrack->id,
             'groupid' => $group1->id,
             'timeopen' => $now,
             'timeclose' => $now + 20
@@ -56,20 +56,20 @@ class restore_override_test extends \restore_date_testcase {
         $DB->insert_record('hippotrack_overrides', $groupoverride1);
 
         $groupoverride2 = (object)[
-            'quiz' => $quiz->id,
+            'hippotrack' => $hippotrack->id,
             'groupid' => $group2->id,
             'timeopen' => $now,
             'timeclose' => $now + 40
         ];
         $DB->insert_record('hippotrack_overrides', $groupoverride2);
 
-        // Current quiz overrides.
-        $overrides = $DB->get_records('hippotrack_overrides', ['quiz' => $quiz->id]);
+        // Current hippotrack overrides.
+        $overrides = $DB->get_records('hippotrack_overrides', ['hippotrack' => $hippotrack->id]);
         $this->assertEquals(2, count($overrides));
 
         // User Override.
         $useroverride = (object)[
-            'quiz' => $quiz->id,
+            'hippotrack' => $hippotrack->id,
             'userid' => $USER->id,
             'sortorder' => 1,
             'timeopen' => 100,
@@ -77,23 +77,23 @@ class restore_override_test extends \restore_date_testcase {
         ];
         $DB->insert_record('hippotrack_overrides', $useroverride);
 
-        // Current quiz overrides.
-        $overrides = $DB->get_records('hippotrack_overrides', ['quiz' => $quiz->id]);
+        // Current hippotrack overrides.
+        $overrides = $DB->get_records('hippotrack_overrides', ['hippotrack' => $hippotrack->id]);
         $this->assertEquals(3, count($overrides));
 
         // Back up and restore including group info and user info.
         set_config('backup_general_groups', 1, 'backup');
         $newcourseid = $this->backup_and_restore($course);
-        $newquiz = $DB->get_record('quiz', ['course' => $newcourseid]);
-        $overrides = $DB->get_records('hippotrack_overrides', ['quiz' => $newquiz->id]);
+        $newhippotrack = $DB->get_record('hippotrack', ['course' => $newcourseid]);
+        $overrides = $DB->get_records('hippotrack_overrides', ['hippotrack' => $newhippotrack->id]);
         // 2 groups overrides and 1 user override.
         $this->assertEquals(3, count($overrides));
 
         // Back up and restore with user info and without group info.
         set_config('backup_general_groups', 0, 'backup');
         $newcourseid = $this->backup_and_restore($course);
-        $newquiz = $DB->get_record('quiz', ['course' => $newcourseid]);
-        $overrides = $DB->get_records('hippotrack_overrides', ['quiz' => $newquiz->id]);
+        $newhippotrack = $DB->get_record('hippotrack', ['course' => $newcourseid]);
+        $overrides = $DB->get_records('hippotrack_overrides', ['hippotrack' => $newhippotrack->id]);
         // 1 user override.
         $this->assertEquals(1, count($overrides));
     }

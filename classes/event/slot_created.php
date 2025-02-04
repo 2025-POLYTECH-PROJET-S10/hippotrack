@@ -30,8 +30,8 @@ namespace mod_hippotrack\event;
  * @property-read array $other {
  *      Extra information about event.
  *
- *      - int quizid: the id of the quiz.
- *      - int slotnumber: the slot number in quiz.
+ *      - int hippotrackid: the id of the hippotrack.
+ *      - int slotnumber: the slot number in hippotrack.
  *      - int page: page number.
  * }
  *
@@ -54,7 +54,7 @@ class slot_created extends \core\event\base {
         return "The user with id '$this->userid' created a new slot with id '{$this->objectid}' " .
             "and slot number '{$this->other['slotnumber']}' " .
             "on page '{$this->other['page']}' " .
-            "of the quiz with course module id '$this->contextinstanceid'.";
+            "of the hippotrack with course module id '$this->contextinstanceid'.";
     }
 
     public function get_url() {
@@ -74,8 +74,8 @@ class slot_created extends \core\event\base {
             throw new \coding_exception('The \'contextinstanceid\' value must be set.');
         }
 
-        if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+        if (!isset($this->other['hippotrackid'])) {
+            throw new \coding_exception('The \'hippotrackid\' value must be set in other.');
         }
 
         if (!isset($this->other['slotnumber'])) {
@@ -93,7 +93,7 @@ class slot_created extends \core\event\base {
 
     public static function get_other_mapping() {
         $othermapped = [];
-        $othermapped['quizid'] = ['db' => 'quiz', 'restore' => 'quiz'];
+        $othermapped['hippotrackid'] = ['db' => 'hippotrack', 'restore' => 'hippotrack'];
 
         return $othermapped;
     }

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the Moodle forum used to add random questions to the quiz.
+ * Defines the Moodle forum used to add random questions to the hippotrack.
  *
  * @package   mod_hippotrack
  * @copyright 2008 Olli Savolainen
@@ -74,7 +74,7 @@ class hippotrack_add_random_form extends moodleform {
 
         // TODO: in the past, the drop-down used to only show sensible choices for
         // number of questions to add. That is, if the currently selected filter
-        // only matched 9 questions (not already in the quiz), then the drop-down would
+        // only matched 9 questions (not already in the hippotrack), then the drop-down would
         // only offer choices 1..9. This nice UI hint got lost when the UI became Ajax-y.
         // We should add it back.
         $mform->addElement('select', 'numbertoadd', get_string('randomnumber', 'hippotrack'),

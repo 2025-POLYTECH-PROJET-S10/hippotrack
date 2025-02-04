@@ -23,7 +23,7 @@ use templatable;
 use url_select;
 
 /**
- * Render overrides action in the quiz secondary navigation
+ * Render overrides action in the hippotrack secondary navigation
  *
  * The user/group overrides are now handled in the secondary navigation.
  * This class provides the data for the templates to handle the data for
@@ -64,7 +64,7 @@ class overrides_actions implements renderable, templatable {
     /**
      * Create the add override button.
      *
-     * @param \renderer_base $output an instance of the quiz renderer.
+     * @param \renderer_base $output an instance of the hippotrack renderer.
      * @return \single_button the button, ready to reander.
      */
     public function create_add_button(\renderer_base $output): \single_button {
@@ -98,7 +98,7 @@ class overrides_actions implements renderable, templatable {
             $groupoverridesurl->out(false) => get_string('groupoverrides', 'hippotrack')
         ];
 
-        $overridesnav = new url_select($menu, $PAGE->url->out(false), null, 'quizoverrides');
+        $overridesnav = new url_select($menu, $PAGE->url->out(false), null, 'hippotrackoverrides');
         $templatecontext['overridesnav'] = $overridesnav->export_for_template($output);
 
         // Build the add button - but only if the user can edit.

@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This script renders the quiz statistics graph.
+ * This script renders the hippotrack statistics graph.
  *
  * It takes one parameter, the hippotrack_statistics.id. This is enough to identify the
- * quiz etc.
+ * hippotrack etc.
  *
  * It plots a bar graph showing certain question statistics plotted against
  * question number.

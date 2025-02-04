@@ -17,7 +17,7 @@
 /**
  * Plugin cache definitions.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $definitions = [
-    'quizsettings' => [
+    'hippotracksettings' => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,

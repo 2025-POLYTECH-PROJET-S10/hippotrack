@@ -1,5 +1,5 @@
 @mod @mod_hippotrack @javascript
-Feature: Adding questions to a quiz from the question bank
+Feature: Adding questions to a hippotrack from the question bank
   In order to re-use questions
   As a teacher
   I want to add questions from the question bank
@@ -16,7 +16,7 @@ Feature: Adding questions to a quiz from the question bank
       | teacher1 | C1 | editingteacher |
     And the following "activities" exist:
       | activity   | name   | intro                           | course | idnumber |
-      | quiz       | Quiz 1 | Quiz 1 for testing the Add menu | C1     | quiz1    |
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 for testing the Add menu | C1     | hippotrack1    |
     And the following "question categories" exist:
       | contextlevel | reference | name           |
       | Course       | C1        | Test questions |
@@ -34,8 +34,8 @@ Feature: Adding questions to a quiz from the question bank
     And I set the following fields to these values:
       | Tags | bar |
     And I press "id_submitbutton"
-    When I am on the "Quiz 1" "mod_hippotrack > Edit" page
-    And I open the "last" add to quiz menu
+    When I am on the "HippoTrack 1" "mod_hippotrack > Edit" page
+    And I open the "last" add to hippotrack menu
     And I follow "from question bank"
     Then I should see "foo" in the "question 01 name" "table_row"
     And I should see "bar" in the "question 02 name" "table_row"
@@ -69,8 +69,8 @@ Feature: Adding questions to a quiz from the question bank
       | Test questions   | essay     | question 21 name | teacher1 | Question 21 text |
       | Test questions   | essay     | question 22 name | teacher1 | Question 22 text |
     And I log in as "teacher1"
-    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
-    And I open the "last" add to quiz menu
+    And I am on the "HippoTrack 1" "mod_hippotrack > Edit" page
+    And I open the "last" add to hippotrack menu
     And I follow "from question bank"
     And I click on "2" "link" in the ".pagination" "css_element"
     Then I should see "question 21 name" in the "categoryquestions" "table"
@@ -84,39 +84,39 @@ Feature: Adding questions to a quiz from the question bank
     Given the following "questions" exist:
       | questioncategory | qtype | name             | questiontext     |
       | Test questions   | essay | question 03 name | question 03 text |
-    And quiz "Quiz 1" contains the following questions:
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question         | page |
       | question 01 name | 1    |
       | question 02 name | 2    |
-    And quiz "Quiz 1" contains the following sections:
+    And hippotrack "HippoTrack 1" contains the following sections:
       | heading   | firstslot | shuffle |
       | Section 1 | 1         | 0       |
       | Section 2 | 2         | 0       |
     And I log in as "teacher1"
-    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
-    When I open the "Page 1" add to quiz menu
+    And I am on the "HippoTrack 1" "mod_hippotrack > Edit" page
+    When I open the "Page 1" add to hippotrack menu
     And I follow "from question bank"
     And I set the field with xpath "//tr[contains(normalize-space(.), 'question 03 name')]//input[@type='checkbox']" to "1"
-    And I click on "Add selected questions to the quiz" "button"
-    Then I should see "question 03 name" on quiz page "1"
-    And I should see "question 01 name" before "question 03 name" on the edit quiz page
+    And I click on "Add selected questions to the hippotrack" "button"
+    Then I should see "question 03 name" on hippotrack page "1"
+    And I should see "question 01 name" before "question 03 name" on the edit hippotrack page
 
   Scenario: Add several selected questions from the question bank
-    Given I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
-    When I open the "last" add to quiz menu
+    Given I am on the "HippoTrack 1" "mod_hippotrack > Edit" page logged in as "teacher1"
+    When I open the "last" add to hippotrack menu
     And I follow "from question bank"
     And I set the field with xpath "//input[@type='checkbox' and @id='qbheadercheckbox']" to "1"
-    And I press "Add selected questions to the quiz"
-    Then I should see "question 01 name" on quiz page "1"
-    And I should see "question 02 name" on quiz page "2"
+    And I press "Add selected questions to the hippotrack"
+    Then I should see "question 01 name" on hippotrack page "1"
+    And I should see "question 02 name" on hippotrack page "2"
 
   @javascript
   Scenario: Validate the sorting while adding questions from question bank
     Given the following "questions" exist:
       | questioncategory | qtype       | name              | questiontext          |
       | Test questions   | multichoice | question 03 name  | question 03 name text |
-    And I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
-    When I open the "last" add to quiz menu
+    And I am on the "HippoTrack 1" "mod_hippotrack > Edit" page logged in as "teacher1"
+    When I open the "last" add to hippotrack menu
     And I follow "from question bank"
     And I click on "Sort by Question ascending" "link"
     Then "question 01 name" "text" should appear before "question 02 name" "text"
@@ -127,13 +127,13 @@ Feature: Adding questions to a quiz from the question bank
     And I follow "Sort by Question type descending"
     Then "question 03 name" "text" should appear before "question 01 name" "text"
 
-  Scenario: Shuffle option could be set before adding any question to the quiz
+  Scenario: Shuffle option could be set before adding any question to the hippotrack
     Given the following "questions" exist:
       | questioncategory | qtype | name             | questiontext     |
       | Test questions   | essay | question 03 name | question 03 text |
     And I log in as "teacher1"
-    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
+    And I am on the "HippoTrack 1" "mod_hippotrack > Edit" page
     When I set the field "Shuffle" to "1"
-    And I open the "last" add to quiz menu
+    And I open the "last" add to hippotrack menu
     And I follow "from question bank"
     Then I should see "question 01 name"

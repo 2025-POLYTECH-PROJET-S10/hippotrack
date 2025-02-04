@@ -17,17 +17,17 @@
 /**
  * Templates table.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_seb\local\table;
+namespace hippotrackaccess_seb\local\table;
 
-use quizaccess_seb\helper;
-use quizaccess_seb\template;
-use quizaccess_seb\template_controller;
+use hippotrackaccess_seb\helper;
+use hippotrackaccess_seb\template;
+use hippotrackaccess_seb\template_controller;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -55,7 +55,7 @@ class template_list extends \flexible_table {
         global $PAGE;
 
         $id = (is_null($id) ? self::$autoid++ : $id);
-        parent::__construct('quizaccess_seb' . $id);
+        parent::__construct('hippotrackaccess_seb' . $id);
 
         $this->define_baseurl($PAGE->url);
         $this->set_attribute('class', 'generaltable admintable');
@@ -70,10 +70,10 @@ class template_list extends \flexible_table {
         ]);
 
         $this->define_headers([
-            get_string('name', 'quizaccess_seb'),
-            get_string('description', 'quizaccess_seb'),
-            get_string('enabled', 'quizaccess_seb'),
-            get_string('used', 'quizaccess_seb'),
+            get_string('name', 'hippotrackaccess_seb'),
+            get_string('description', 'hippotrackaccess_seb'),
+            get_string('enabled', 'hippotrackaccess_seb'),
+            get_string('used', 'hippotrackaccess_seb'),
             get_string('actions'),
         ]);
 
@@ -83,7 +83,7 @@ class template_list extends \flexible_table {
     /**
      * Display name column.
      *
-     * @param \quizaccess_seb\template $data Template for this row.
+     * @param \hippotrackaccess_seb\template $data Template for this row.
      * @return string
      */
     protected function col_name(template $data) : string {
@@ -99,7 +99,7 @@ class template_list extends \flexible_table {
     /**
      * Display description column.
      *
-     * @param \quizaccess_seb\template $data Template for this row.
+     * @param \hippotrackaccess_seb\template $data Template for this row.
      * @return string
      */
     protected function col_description(template $data) : string {
@@ -109,7 +109,7 @@ class template_list extends \flexible_table {
     /**
      * Display enabled column.
      *
-     * @param \quizaccess_seb\template $data Template for this row.
+     * @param \hippotrackaccess_seb\template $data Template for this row.
      * @return string
      */
     protected function col_enabled(template $data): string {
@@ -119,7 +119,7 @@ class template_list extends \flexible_table {
     /**
      * Display if a template is being used.
      *
-     * @param \quizaccess_seb\template $data Template for this row.
+     * @param \hippotrackaccess_seb\template $data Template for this row.
      * @return string
      */
     protected function col_used(template $data): string {
@@ -129,7 +129,7 @@ class template_list extends \flexible_table {
     /**
      * Display actions column.
      *
-     * @param \quizaccess_seb\template $data Template for this row.
+     * @param \hippotrackaccess_seb\template $data Template for this row.
      * @return string
      */
     protected function col_actions(template $data) : string {
@@ -165,7 +165,7 @@ class template_list extends \flexible_table {
     /**
      * Sets the data of the table.
      *
-     * @param \quizaccess_seb\template[] $records An array with records.
+     * @param \hippotrackaccess_seb\template[] $records An array with records.
      */
     public function display(array $records) {
         foreach ($records as $record) {

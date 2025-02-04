@@ -14,9 +14,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Initialise the question bank modal on the quiz page.
+ * Initialise the question bank modal on the hippotrack page.
  *
- * @module    mod_hippotrack/quizquestionbank
+ * @module    mod_hippotrack/hippotrackquestionbank
  * @copyright 2018 Ryan Wyllie <ryan@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -27,7 +27,7 @@ define(
     ],
     function (
         AddQuestionModalLauncher,
-        ModalQuizQuestionBank
+        ModalHippoTrackQuestionBank
     ) {
 
         return {
@@ -38,7 +38,7 @@ define(
              */
             init: function (contextId) {
                 AddQuestionModalLauncher.init(
-                    ModalQuizQuestionBank.TYPE,
+                    ModalHippoTrackQuestionBank.TYPE,
                     '.menu [data-action="questionbank"]',
                     contextId
                 );

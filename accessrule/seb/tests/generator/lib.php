@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Data generator the quizaccess_seb plugin.
+ * Data generator the hippotrackaccess_seb plugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,20 +26,20 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Data generator the quizaccess_seb plugin.
+ * Data generator the hippotrackaccess_seb plugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quizaccess_seb_generator extends component_generator_base {
+class hippotrackaccess_seb_generator extends component_generator_base {
 
     /**
      * Create SEB template.
      *
      * @param array $data Template data.
-     * @return \quizaccess_seb\template
+     * @return \hippotrackaccess_seb\template
      */
     public function create_template(array $data) {
         global $CFG;
@@ -58,7 +58,7 @@ class quizaccess_seb_generator extends component_generator_base {
             $data['enabled'] = 1;
         }
 
-        $template = new \quizaccess_seb\template();
+        $template = new \hippotrackaccess_seb\template();
         $template->set('content', $data['content']);
         $template->set('name', $data['name']);
         $template->set('enabled', $data['enabled']);

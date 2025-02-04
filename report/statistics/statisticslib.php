@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Common functions for the quiz statistics report.
+ * Common functions for the hippotrack statistics report.
  *
  * @package    hippotrack_statistics
  * @copyright  2013 The Open University
@@ -28,23 +28,23 @@ defined('MOODLE_INTERNAL') || die;
 /**
  * SQL to fetch relevant 'hippotrack_attempts' records.
  *
- * @param int    $quizid        quiz id to get attempts for
+ * @param int    $hippotrackid        hippotrack id to get attempts for
  * @param \core\dml\sql_join $groupstudentsjoins Contains joins, wheres, params, empty if not using groups
  * @param string $whichattempts which attempts to use, represented internally as one of the constants as used in
- *                                   $quiz->grademethod ie.
- *                                   QUIZ_GRADEAVERAGE, QUIZ_GRADEHIGHEST, QUIZ_ATTEMPTLAST or QUIZ_ATTEMPTFIRST
+ *                                   $hippotrack->grademethod ie.
+ *                                   HIPPOTRACK_GRADEAVERAGE, HIPPOTRACK_GRADEHIGHEST, HIPPOTRACK_ATTEMPTLAST or HIPPOTRACK_ATTEMPTFIRST
  *                                   we calculate stats based on which attempts would affect the grade for each student.
  * @param bool   $includeungraded whether to fetch ungraded attempts too
  * @return array FROM and WHERE sql fragments and sql params
  */
-function hippotrack_statistics_attempts_sql($quizid, \core\dml\sql_join $groupstudentsjoins,
-        $whichattempts = QUIZ_GRADEAVERAGE, $includeungraded = false) {
-    $fromqa = "{hippotrack_attempts} quiza ";
-    $whereqa = 'quiza.quiz = :quizid AND quiza.preview = 0 AND quiza.state = :quizstatefinished';
-    $qaparams = array('quizid' => (int)$quizid, 'quizstatefinished' => hippotrack_attempt::FINISHED);
+function hippotrack_statistics_attempts_sql($hippotrackid, \core\dml\sql_join $groupstudentsjoins,
+        $whichattempts = HIPPOTRACK_GRADEAVERAGE, $includeungraded = false) {
+    $fromqa = "{hippotrack_attempts} hippotracka ";
+    $whereqa = 'hippotracka.hippotrack = :hippotrackid AND hippotracka.preview = 0 AND hippotracka.state = :hippotrackstatefinished';
+    $qaparams = array('hippotrackid' => (int)$hippotrackid, 'hippotrackstatefinished' => hippotrack_attempt::FINISHED);
 
     if (!empty($groupstudentsjoins->joins)) {
-        $fromqa .= "\nJOIN {user} u ON u.id = quiza.userid
+        $fromqa .= "\nJOIN {user} u ON u.id = hippotracka.userid
             {$groupstudentsjoins->joins} ";
         $whereqa .= " AND {$groupstudentsjoins->wheres}";
         $qaparams += $groupstudentsjoins->params;
@@ -56,7 +56,7 @@ function hippotrack_statistics_attempts_sql($quizid, \core\dml\sql_join $groupst
     }
 
     if (!$includeungraded) {
-        $whereqa .= ' AND quiza.sumgrades IS NOT NULL';
+        $whereqa .= ' AND hippotracka.sumgrades IS NOT NULL';
     }
 
     return array($fromqa, $whereqa, $qaparams);
@@ -65,20 +65,20 @@ function hippotrack_statistics_attempts_sql($quizid, \core\dml\sql_join $groupst
 /**
  * Return a {@link qubaid_condition} from the values returned by {@link hippotrack_statistics_attempts_sql}.
  *
- * @param int     $quizid
+ * @param int     $hippotrackid
  * @param \core\dml\sql_join $groupstudentsjoins Contains joins, wheres, params
  * @param string $whichattempts which attempts to use, represented internally as one of the constants as used in
- *                                   $quiz->grademethod ie.
- *                                   QUIZ_GRADEAVERAGE, QUIZ_GRADEHIGHEST, QUIZ_ATTEMPTLAST or QUIZ_ATTEMPTFIRST
+ *                                   $hippotrack->grademethod ie.
+ *                                   HIPPOTRACK_GRADEAVERAGE, HIPPOTRACK_GRADEHIGHEST, HIPPOTRACK_ATTEMPTLAST or HIPPOTRACK_ATTEMPTFIRST
  *                                   we calculate stats based on which attempts would affect the grade for each student.
  * @param bool    $includeungraded
  * @return        \qubaid_join
  */
-function hippotrack_statistics_qubaids_condition($quizid, \core\dml\sql_join $groupstudentsjoins,
-        $whichattempts = QUIZ_GRADEAVERAGE, $includeungraded = false) {
+function hippotrack_statistics_qubaids_condition($hippotrackid, \core\dml\sql_join $groupstudentsjoins,
+        $whichattempts = HIPPOTRACK_GRADEAVERAGE, $includeungraded = false) {
     list($fromqa, $whereqa, $qaparams) = hippotrack_statistics_attempts_sql(
-            $quizid, $groupstudentsjoins, $whichattempts, $includeungraded);
-    return new qubaid_join($fromqa, 'quiza.uniqueid', $whereqa, $qaparams);
+            $hippotrackid, $groupstudentsjoins, $whichattempts, $includeungraded);
+    return new qubaid_join($fromqa, 'hippotracka.uniqueid', $whereqa, $qaparams);
 }
 
 /**

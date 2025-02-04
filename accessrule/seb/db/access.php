@@ -17,7 +17,7 @@
 /**
  * Define capabilities for plugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,14 +26,14 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-    'quizaccess/seb:managetemplates' => array(
+    'hippotrackaccess/seb:managetemplates' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => array(
             'manager' => CAP_ALLOW,
         )
     ),
-    'quizaccess/seb:bypassseb' => array(
+    'hippotrackaccess/seb:bypassseb' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -41,7 +41,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_requiresafeexambrowser' => array(
+    'hippotrackaccess/seb:manage_seb_requiresafeexambrowser' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -49,7 +49,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_templateid' => array(
+    'hippotrackaccess/seb:manage_seb_templateid' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -57,7 +57,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_filemanager_sebconfigfile' => array(
+    'hippotrackaccess/seb:manage_filemanager_sebconfigfile' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -65,7 +65,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_showsebdownloadlink' => array(
+    'hippotrackaccess/seb:manage_seb_showsebdownloadlink' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -73,7 +73,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_allowedbrowserexamkeys' => array(
+    'hippotrackaccess/seb:manage_seb_allowedbrowserexamkeys' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -81,7 +81,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_linkquitseb' => array(
+    'hippotrackaccess/seb:manage_seb_linkquitseb' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -89,7 +89,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_userconfirmquit' => array(
+    'hippotrackaccess/seb:manage_seb_userconfirmquit' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -97,7 +97,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_allowuserquitseb' => array(
+    'hippotrackaccess/seb:manage_seb_allowuserquitseb' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -105,7 +105,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_quitpassword' => array(
+    'hippotrackaccess/seb:manage_seb_quitpassword' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -113,7 +113,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_allowreloadinexam' => array(
+    'hippotrackaccess/seb:manage_seb_allowreloadinexam' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -121,7 +121,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_showsebtaskbar' => array(
+    'hippotrackaccess/seb:manage_seb_showsebtaskbar' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -129,7 +129,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_showreloadbutton' => array(
+    'hippotrackaccess/seb:manage_seb_showreloadbutton' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -137,7 +137,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_showtime' => array(
+    'hippotrackaccess/seb:manage_seb_showtime' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -145,7 +145,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_showkeyboardlayout' => array(
+    'hippotrackaccess/seb:manage_seb_showkeyboardlayout' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -154,7 +154,7 @@ $capabilities = array(
         )
     ),
 
-    'quizaccess/seb:manage_seb_showwificontrol' => array(
+    'hippotrackaccess/seb:manage_seb_showwificontrol' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -162,7 +162,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_enableaudiocontrol' => array(
+    'hippotrackaccess/seb:manage_seb_enableaudiocontrol' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -170,7 +170,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_muteonstartup' => array(
+    'hippotrackaccess/seb:manage_seb_muteonstartup' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -178,7 +178,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_allowspellchecking' => array(
+    'hippotrackaccess/seb:manage_seb_allowspellchecking' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -186,7 +186,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_activateurlfiltering' => array(
+    'hippotrackaccess/seb:manage_seb_activateurlfiltering' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -194,7 +194,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_filterembeddedcontent' => array(
+    'hippotrackaccess/seb:manage_seb_filterembeddedcontent' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -202,7 +202,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_expressionsallowed' => array(
+    'hippotrackaccess/seb:manage_seb_expressionsallowed' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -210,7 +210,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_regexallowed' => array(
+    'hippotrackaccess/seb:manage_seb_regexallowed' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -218,7 +218,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_expressionsblocked' => array(
+    'hippotrackaccess/seb:manage_seb_expressionsblocked' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -226,7 +226,7 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW
         )
     ),
-    'quizaccess/seb:manage_seb_regexblocked' => array(
+    'hippotrackaccess/seb:manage_seb_regexblocked' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(

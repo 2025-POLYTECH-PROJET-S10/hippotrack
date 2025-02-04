@@ -30,10 +30,10 @@ class hippotrack_attempt_deleted {
     /**
      * Queue a recalculation.
      *
-     * @param int $quizid The quiz the attempt belongs to.
+     * @param int $hippotrackid The hippotrack the attempt belongs to.
      * @return void
      */
-    public static function callback(int $quizid): void {
-        recalculate::queue_future_run($quizid);
+    public static function callback(int $hippotrackid): void {
+        recalculate::queue_future_run($hippotrackid);
     }
 }

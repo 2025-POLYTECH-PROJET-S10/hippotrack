@@ -17,14 +17,14 @@
 /**
  * Entity model representing template settings for the seb plugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Nicholas Hoobin <nicholashoobin@catalyst-au.net>
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_seb;
+namespace hippotrackaccess_seb;
 
 use core\persistent;
 
@@ -39,7 +39,7 @@ defined('MOODLE_INTERNAL') || die();
 class template extends persistent {
 
     /** Table name for the persistent. */
-    const TABLE = 'quizaccess_seb_template';
+    const TABLE = 'hippotrackaccess_seb_template';
 
     /** @var property_list $plist The SEB config represented as a Property List object. */
     private $plist;
@@ -112,7 +112,7 @@ class template extends persistent {
         if (helper::is_valid_seb_config($content)) {
             return true;
         } else {
-            return new \lang_string('invalidtemplate', 'quizaccess_seb');
+            return new \lang_string('invalidtemplate', 'hippotrackaccess_seb');
         }
     }
 

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz statistics report version information.
+ * HippoTrack statistics report version information.
  *
  * @package   hippotrack_statistics
  * @copyright 2008 Jamie Pratt

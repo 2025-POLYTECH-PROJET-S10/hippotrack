@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Rest endpoint for ajax editing for paging operations on the quiz structure.
+ * Rest endpoint for ajax editing for paging operations on the hippotrack structure.
  *
  * @package   mod_hippotrack
  * @copyright 2014 The Open University
@@ -25,26 +25,26 @@
 require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
-$quizid = required_param('quizid', PARAM_INT);
+$hippotrackid = required_param('hippotrackid', PARAM_INT);
 $slotnumber = required_param('slot', PARAM_INT);
 $repagtype = required_param('repag', PARAM_INT);
 
 require_sesskey();
-$quizobj = quiz::create($quizid);
-require_login($quizobj->get_course(), false, $quizobj->get_cm());
-require_capability('mod/hippotrack:manage', $quizobj->get_context());
-if (hippotrack_has_attempts($quizid)) {
-    $reportlink = hippotrack_attempt_summary_link_to_reports($quizobj->get_quiz(),
-                    $quizobj->get_cm(), $quizobj->get_context());
-    throw new \moodle_exception('cannoteditafterattempts', 'quiz',
-            new moodle_url('/mod/hippotrack/edit.php', array('cmid' => $quizobj->get_cmid())), $reportlink);
+$hippotrackobj = hippotrack::create($hippotrackid);
+require_login($hippotrackobj->get_course(), false, $hippotrackobj->get_cm());
+require_capability('mod/hippotrack:manage', $hippotrackobj->get_context());
+if (hippotrack_has_attempts($hippotrackid)) {
+    $reportlink = hippotrack_attempt_summary_link_to_reports($hippotrackobj->get_hippotrack(),
+                    $hippotrackobj->get_cm(), $hippotrackobj->get_context());
+    throw new \moodle_exception('cannoteditafterattempts', 'hippotrack',
+            new moodle_url('/mod/hippotrack/edit.php', array('cmid' => $hippotrackobj->get_cmid())), $reportlink);
 }
 
 $slotnumber++;
-$repage = new \mod_hippotrack\repaginate($quizid);
+$repage = new \mod_hippotrack\repaginate($hippotrackid);
 $repage->repaginate_slots($slotnumber, $repagtype);
 
-$structure = $quizobj->get_structure();
+$structure = $hippotrackobj->get_structure();
 $slots = $structure->refresh_page_numbers_and_update_db();
 
-redirect(new moodle_url('edit.php', array('cmid' => $quizobj->get_cmid())));
+redirect(new moodle_url('edit.php', array('cmid' => $hippotrackobj->get_cmid())));

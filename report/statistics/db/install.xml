@@ -6,7 +6,7 @@
 >
   <TABLES>
     <TABLE NAME="hippotrack_statistics"
-      COMMENT="table to cache results from analysis done in statistics report for quizzes.">
+      COMMENT="table to cache results from analysis done in statistics report for hippotrackzes.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
         <FIELD NAME="hashcode" TYPE="char" LENGTH="40" NOTNULL="true" SEQUENCE="false"

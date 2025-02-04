@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quizaccess_seb\event;
+namespace hippotrackaccess_seb\event;
 
-use quiz;
+use hippotrack;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -25,13 +25,13 @@ require_once(__DIR__ . '/..//test_helper_trait.php');
 /**
  * PHPUnit tests for all plugin events.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class events_test extends \advanced_testcase {
-    use \quizaccess_seb_test_helper_trait;
+    use \hippotrackaccess_seb_test_helper_trait;
 
     /**
      * Called before every test.
@@ -46,15 +46,15 @@ class events_test extends \advanced_testcase {
     /**
      * Test creating the access_prevented event.
      *
-     * @covers \quizaccess_seb\event\access_prevented
+     * @covers \hippotrackaccess_seb\event\access_prevented
      */
     public function test_event_access_prevented() {
         $this->resetAfterTest();
 
         $this->setAdminUser();
-        $quiz = $this->create_test_quiz($this->course, \quizaccess_seb\settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $accessmanager = new \quizaccess_seb\access_manager(new quiz($quiz,
-            get_coursemodule_from_id('quiz', $quiz->cmid), $this->course));
+        $hippotrack = $this->create_test_hippotrack($this->course, \hippotrackaccess_seb\settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $accessmanager = new \hippotrackaccess_seb\access_manager(new hippotrack($hippotrack,
+            get_coursemodule_from_id('hippotrack', $hippotrack->cmid), $this->course));
 
         // Set up event with data.
         $user = $this->getDataGenerator()->create_user();
@@ -63,7 +63,7 @@ class events_test extends \advanced_testcase {
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_CONFIGKEYHASH'] = 'configkey';
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_REQUESTHASH'] = 'browserexamkey';
 
-        $event = \quizaccess_seb\event\access_prevented::create_strict($accessmanager, 'Because I said so.');
+        $event = \hippotrackaccess_seb\event\access_prevented::create_strict($accessmanager, 'Because I said so.');
 
         // Create an event sink, trigger event and retrieve event.
         $sink = $this->redirectEvents();
@@ -75,17 +75,17 @@ class events_test extends \advanced_testcase {
         $expectedconfigkey = $accessmanager->get_valid_config_key();
 
         // Test that the event data is as expected.
-        $this->assertInstanceOf('\quizaccess_seb\event\access_prevented', $event);
-        $this->assertEquals('Quiz access was prevented', $event->get_name());
+        $this->assertInstanceOf('\hippotrackaccess_seb\event\access_prevented', $event);
+        $this->assertEquals('HippoTrack access was prevented', $event->get_name());
         $this->assertEquals(
-            "The user with id '$user->id' has been prevented from accessing quiz with id '$quiz->id' by the "
+            "The user with id '$user->id' has been prevented from accessing hippotrack with id '$hippotrack->id' by the "
             . "Safe Exam Browser access plugin. The reason was 'Because I said so.'. "
             . "Expected config key: '$expectedconfigkey'. "
             . "Received config key: 'configkey'. Received browser exam key: 'browserexamkey'.",
             $event->get_description());
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(\context_module::instance($hippotrack->cmid), $event->get_context());
         $this->assertEquals($user->id, $event->userid);
-        $this->assertEquals($quiz->id, $event->objectid);
+        $this->assertEquals($hippotrack->id, $event->objectid);
         $this->assertEquals($this->course->id, $event->courseid);
         $this->assertEquals('Because I said so.', $event->other['reason']);
         $this->assertEquals($expectedconfigkey, $event->other['savedconfigkey']);
@@ -96,21 +96,21 @@ class events_test extends \advanced_testcase {
     /**
      * Test creating the access_prevented event with provided SEB keys.
      *
-     * @covers \quizaccess_seb\event\access_prevented
+     * @covers \hippotrackaccess_seb\event\access_prevented
      */
     public function test_event_access_prevented_with_keys() {
         $this->resetAfterTest();
 
         $this->setAdminUser();
-        $quiz = $this->create_test_quiz($this->course, \quizaccess_seb\settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $accessmanager = new \quizaccess_seb\access_manager(new quiz($quiz,
-            get_coursemodule_from_id('quiz', $quiz->cmid), $this->course));
+        $hippotrack = $this->create_test_hippotrack($this->course, \hippotrackaccess_seb\settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $accessmanager = new \hippotrackaccess_seb\access_manager(new hippotrack($hippotrack,
+            get_coursemodule_from_id('hippotrack', $hippotrack->cmid), $this->course));
 
         // Set up event with data.
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        $event = \quizaccess_seb\event\access_prevented::create_strict($accessmanager, 'Because I said so.',
+        $event = \hippotrackaccess_seb\event\access_prevented::create_strict($accessmanager, 'Because I said so.',
                 'configkey', 'browserexamkey');
 
         // Create an event sink, trigger event and retrieve event.
@@ -123,17 +123,17 @@ class events_test extends \advanced_testcase {
         $expectedconfigkey = $accessmanager->get_valid_config_key();
 
         // Test that the event data is as expected.
-        $this->assertInstanceOf('\quizaccess_seb\event\access_prevented', $event);
-        $this->assertEquals('Quiz access was prevented', $event->get_name());
+        $this->assertInstanceOf('\hippotrackaccess_seb\event\access_prevented', $event);
+        $this->assertEquals('HippoTrack access was prevented', $event->get_name());
         $this->assertEquals(
-            "The user with id '$user->id' has been prevented from accessing quiz with id '$quiz->id' by the "
+            "The user with id '$user->id' has been prevented from accessing hippotrack with id '$hippotrack->id' by the "
             . "Safe Exam Browser access plugin. The reason was 'Because I said so.'. "
             . "Expected config key: '$expectedconfigkey'. "
             . "Received config key: 'configkey'. Received browser exam key: 'browserexamkey'.",
             $event->get_description());
-        $this->assertEquals(\context_module::instance($quiz->cmid), $event->get_context());
+        $this->assertEquals(\context_module::instance($hippotrack->cmid), $event->get_context());
         $this->assertEquals($user->id, $event->userid);
-        $this->assertEquals($quiz->id, $event->objectid);
+        $this->assertEquals($hippotrack->id, $event->objectid);
         $this->assertEquals($this->course->id, $event->courseid);
         $this->assertEquals('Because I said so.', $event->other['reason']);
         $this->assertEquals($expectedconfigkey, $event->other['savedconfigkey']);
@@ -144,7 +144,7 @@ class events_test extends \advanced_testcase {
     /**
      * Test creating the template_created event.
      *
-     * @covers \quizaccess_seb\event\template_created
+     * @covers \hippotrackaccess_seb\event\template_created
      */
     public function test_event_create_template() {
         $this->resetAfterTest();
@@ -154,7 +154,7 @@ class events_test extends \advanced_testcase {
 
         $template = $this->create_template();
 
-        $event = \quizaccess_seb\event\template_created::create_strict(
+        $event = \hippotrackaccess_seb\event\template_created::create_strict(
             $template,
             \context_system::instance());
 
@@ -166,7 +166,7 @@ class events_test extends \advanced_testcase {
         $event = reset($events);
 
         // Test that the event data is as expected.
-        $this->assertInstanceOf('\quizaccess_seb\event\template_created', $event);
+        $this->assertInstanceOf('\hippotrackaccess_seb\event\template_created', $event);
         $this->assertEquals('SEB template was created', $event->get_name());
         $this->assertEquals(
             "The user with id '$user->id' has created a template with id '{$template->get('id')}'.",

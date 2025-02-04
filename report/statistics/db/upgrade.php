@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Post-install script for the quiz statistics report.
+ * Post-install script for the hippotrack statistics report.
  *
  * @package   hippotrack_statistics
  * @copyright 2008 Jamie Pratt
@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Quiz statistics report upgrade code.
+ * HippoTrack statistics report upgrade code.
  */
 function xmldb_hippotrack_statistics_upgrade($oldversion) {
     global $DB;

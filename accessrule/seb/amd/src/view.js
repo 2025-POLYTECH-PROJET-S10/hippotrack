@@ -14,9 +14,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Manage the quiz views.
+ * Manage the hippotrack views.
  *
- * @module     quizaccess_seb/view
+ * @module     hippotrackaccess_seb/view
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2021 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -35,7 +35,7 @@ const SELECTOR = {
 
 /** @var Template List of mustache templates. */
 const TEMPLATE = {
-    LOADING: 'quizaccess_seb/loading',
+    LOADING: 'hippotrackaccess_seb/loading',
 };
 
 /**
@@ -73,8 +73,8 @@ export const clearLoadingAlert = () => {
 export const showValidationFailedModal = () => {
     ModalFactory.create({
         type: ModalFactory.types.ALERT,
-        title: Str.get_string('sebkeysvalidationfailed', 'quizaccess_seb'),
-        body: Str.get_string('invalidkeys', 'quizaccess_seb'),
+        title: Str.get_string('sebkeysvalidationfailed', 'hippotrackaccess_seb'),
+        body: Str.get_string('invalidkeys', 'hippotrackaccess_seb'),
         large: false,
     }).then((modal) => {
         modal.show();

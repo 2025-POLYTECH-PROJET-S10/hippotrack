@@ -17,14 +17,14 @@
 /**
  * A test helper trait.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use quizaccess_seb\access_manager;
-use quizaccess_seb\settings_provider;
+use hippotrackaccess_seb\access_manager;
+use hippotrackaccess_seb\settings_provider;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -38,13 +38,13 @@ require_once($CFG->dirroot . "/mod/hippotrack/mod_form.php"); // Include plugin 
  * @copyright  2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-trait quizaccess_seb_test_helper_trait {
+trait hippotrackaccess_seb_test_helper_trait {
 
-    /** @var \stdClass $course Test course to contain quiz. */
+    /** @var \stdClass $course Test course to contain hippotrack. */
     protected $course;
 
-    /** @var \stdClass $quiz A test quiz. */
-    protected $quiz;
+    /** @var \stdClass $hippotrack A test hippotrack. */
+    protected $hippotrack;
 
     /** @var \stdClass $user A test logged-in user. */
     protected $user;
@@ -136,7 +136,7 @@ trait quizaccess_seb_test_helper_trait {
         $fs = get_file_storage();
         $filerecord = [
             'contextid' => \context_module::instance($cmid)->id,
-            'component' => 'quizaccess_seb',
+            'component' => 'hippotrackaccess_seb',
             'filearea' => 'filemanager_sebconfigfile',
             'itemid' => $itemid,
             'filepath' => '/',
@@ -147,57 +147,57 @@ trait quizaccess_seb_test_helper_trait {
     }
 
     /**
-     * Create a test quiz for the specified course.
+     * Create a test hippotrack for the specified course.
      *
      * @param \stdClass $course
-     * @param int $requiresafeexambrowser How to use SEB for this quiz?
+     * @param int $requiresafeexambrowser How to use SEB for this hippotrack?
      * @return  array
      */
-    protected function create_test_quiz($course, $requiresafeexambrowser = settings_provider::USE_SEB_NO) {
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+    protected function create_test_hippotrack($course, $requiresafeexambrowser = settings_provider::USE_SEB_NO) {
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
-        $quiz = $quizgenerator->create_instance([
+        $hippotrack = $hippotrackgenerator->create_instance([
             'course' => $course->id,
             'questionsperpage' => 0,
             'grade' => 100.0,
             'sumgrades' => 2,
             'seb_requiresafeexambrowser' => $requiresafeexambrowser,
         ]);
-        $quiz->seb_showsebdownloadlink = 1;
-        $quiz->coursemodule = $quiz->cmid;
+        $hippotrack->seb_showsebdownloadlink = 1;
+        $hippotrack->coursemodule = $hippotrack->cmid;
 
         // Create a couple of questions.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
 
         $saq = $questiongenerator->create_question('shortanswer', null, array('category' => $cat->id));
-        hippotrack_add_hippotrack_question($saq->id, $quiz);
+        hippotrack_add_hippotrack_question($saq->id, $hippotrack);
         $numq = $questiongenerator->create_question('numerical', null, array('category' => $cat->id));
-        hippotrack_add_hippotrack_question($numq->id, $quiz);
+        hippotrack_add_hippotrack_question($numq->id, $hippotrack);
 
-        return $quiz;
+        return $hippotrack;
     }
 
     /**
-     * Answer questions for a quiz + user.
+     * Answer questions for a hippotrack + user.
      *
-     * @param \stdClass $quiz Quiz to attempt.
-     * @param \stdClass $user A user to attempt the quiz.
+     * @param \stdClass $hippotrack HippoTrack to attempt.
+     * @param \stdClass $user A user to attempt the hippotrack.
      * @return  array
      */
-    protected function attempt_quiz($quiz, $user) {
+    protected function attempt_hippotrack($hippotrack, $user) {
         $this->setUser($user);
 
         $starttime = time();
-        $quizobj = \quiz::create($quiz->id, $user->id);
+        $hippotrackobj = \hippotrack::create($hippotrack->id, $user->id);
 
-        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
-        $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
+        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $hippotrackobj->get_context());
+        $quba->set_preferred_behaviour($hippotrackobj->get_hippotrack()->preferredbehaviour);
 
         // Start the attempt.
-        $attempt = hippotrack_create_attempt($quizobj, 1, false, $starttime, false, $user->id);
-        hippotrack_start_new_attempt($quizobj, $quba, $attempt, 1, $starttime);
-        hippotrack_attempt_save_started($quizobj, $quba, $attempt);
+        $attempt = hippotrack_create_attempt($hippotrackobj, 1, false, $starttime, false, $user->id);
+        hippotrack_start_new_attempt($hippotrackobj, $quba, $attempt, 1, $starttime);
+        hippotrack_attempt_save_started($hippotrackobj, $quba, $attempt);
 
         // Answer the questions.
         $attemptobj = \hippotrack_attempt::create($attempt->id);
@@ -215,14 +215,14 @@ trait quizaccess_seb_test_helper_trait {
 
         $this->setUser();
 
-        return [$quizobj, $quba, $attemptobj];
+        return [$hippotrackobj, $quba, $attemptobj];
     }
 
     /**
      * Create test template.
      *
      * @param string|null $xml Template content.
-     * @return \quizaccess_seb\template Just created template.
+     * @return \hippotrackaccess_seb\template Just created template.
      */
     public function create_template(string $xml = null) {
         $data = [];
@@ -231,44 +231,44 @@ trait quizaccess_seb_test_helper_trait {
             $data['content'] = $xml;
         }
 
-        return $this->getDataGenerator()->get_plugin_generator('quizaccess_seb')->create_template($data);
+        return $this->getDataGenerator()->get_plugin_generator('hippotrackaccess_seb')->create_template($data);
     }
 
     /**
      * Get access manager for testing.
      *
-     * @return \quizaccess_seb\access_manager
+     * @return \hippotrackaccess_seb\access_manager
      */
     protected function get_access_manager() {
-        return new access_manager(new \quiz($this->quiz,
-            get_coursemodule_from_id('quiz', $this->quiz->cmid), $this->course));
+        return new access_manager(new \hippotrack($this->hippotrack,
+            get_coursemodule_from_id('hippotrack', $this->hippotrack->cmid), $this->course));
     }
 
     /**
-     * A helper method to make the rule form the currently created quiz and  course.
+     * A helper method to make the rule form the currently created hippotrack and  course.
      *
      * @return \hippotrack_access_rule_base|null
      */
     protected function make_rule() {
-        return \quizaccess_seb::make(
-            new \quiz($this->quiz, get_coursemodule_from_id('quiz', $this->quiz->cmid), $this->course),
+        return \hippotrackaccess_seb::make(
+            new \hippotrack($this->hippotrack, get_coursemodule_from_id('hippotrack', $this->hippotrack->cmid), $this->course),
             0,
             true
         );
     }
 
     /**
-     * A helper method to set up quiz view page.
+     * A helper method to set up hippotrack view page.
      */
     protected function set_up_hippotrack_view_page() {
         global $PAGE;
 
         $page = new \moodle_page();
-        $page->set_context(\context_module::instance($this->quiz->cmid));
+        $page->set_context(\context_module::instance($this->hippotrack->cmid));
         $page->set_course($this->course);
         $page->set_pagelayout('standard');
-        $page->set_pagetype("mod-quiz-view");
-        $page->set_url('/mod/hippotrack/view.php?id=' . $this->quiz->cmid);
+        $page->set_pagetype("mod-hippotrack-view");
+        $page->set_url('/mod/hippotrack/view.php?id=' . $this->hippotrack->cmid);
 
         $PAGE = $page;
     }
@@ -280,7 +280,7 @@ trait quizaccess_seb_test_helper_trait {
      */
     protected function get_test_settings(array $settings = []) : \stdClass {
         return (object) array_merge([
-            'quizid' => 1,
+            'hippotrackid' => 1,
             'cmid' => 1,
             'requiresafeexambrowser' => '1',
             'showsebtaskbar' => '1',

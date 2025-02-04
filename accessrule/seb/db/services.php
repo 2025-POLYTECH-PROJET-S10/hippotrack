@@ -17,7 +17,7 @@
 /**
  * List web services and external functions for plugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2021 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,8 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $functions = [
-    'quizaccess_seb_validate_hippotrack_keys' => [
-        'classname' => 'quizaccess_seb\external\validate_hippotrack_keys',
+    'hippotrackaccess_seb_validate_hippotrack_keys' => [
+        'classname' => 'hippotrackaccess_seb\external\validate_hippotrack_keys',
         'methodname' => 'execute',
         'description' => 'Validate a Safe Exam Browser config key or a browser exam key.',
         'type' => 'read',

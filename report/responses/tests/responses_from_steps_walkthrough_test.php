@@ -20,7 +20,7 @@ use question_bank;
 use hippotrack_attempt;
 
 /**
- * Quiz attempt walk through using data from csv file.
+ * HippoTrack attempt walk through using data from csv file.
  *
  * @package    hippotrack_responses
  * @category   test
@@ -45,39 +45,39 @@ final class responses_from_steps_walkthrough_test extends \mod_hippotrack\tests\
     }
 
     /**
-     * Create a quiz add questions to it, walk through quiz attempts and then check results.
+     * Create a hippotrack add questions to it, walk through hippotrack attempts and then check results.
      *
-     * @param array $quizsettings settings to override default settings for quiz created by generator. Taken from quizzes.csv.
+     * @param array $hippotracksettings settings to override default settings for hippotrack created by generator. Taken from hippotrackzes.csv.
      * @param array $csvdata of data read from csv file "questionsXX.csv", "stepsXX.csv" and "responsesXX.csv".
      * @dataProvider get_data_for_walkthrough
      */
-    public function test_walkthrough_from_csv($quizsettings, $csvdata): void {
+    public function test_walkthrough_from_csv($hippotracksettings, $csvdata): void {
         $this->resetAfterTest(true);
         question_bank::get_qtype('random')->clear_caches_before_testing();
 
-        $this->create_quiz($quizsettings, $csvdata['questions']);
+        $this->create_hippotrack($hippotracksettings, $csvdata['questions']);
 
-        $quizattemptids = $this->walkthrough_attempts($csvdata['steps']);
+        $hippotrackattemptids = $this->walkthrough_attempts($csvdata['steps']);
 
         foreach ($csvdata['responses'] as $responsesfromcsv) {
             $responses = $this->explode_dot_separated_keys_to_make_subindexs($responsesfromcsv);
 
-            if (!isset($quizattemptids[$responses['quizattempt']])) {
-                throw new \coding_exception("There is no quizattempt {$responses['quizattempt']}!");
+            if (!isset($hippotrackattemptids[$responses['hippotrackattempt']])) {
+                throw new \coding_exception("There is no hippotrackattempt {$responses['hippotrackattempt']}!");
             }
-            $this->assert_response_test($quizattemptids[$responses['quizattempt']], $responses);
+            $this->assert_response_test($hippotrackattemptids[$responses['hippotrackattempt']], $responses);
         }
     }
 
     /**
      * Helper to assert a response.
      *
-     * @param mixed $quizattemptid
+     * @param mixed $hippotrackattemptid
      * @param mixed $responses
      * @throws \coding_exception
      */
-    protected function assert_response_test($quizattemptid, $responses): void {
-        $quizattempt = hippotrack_attempt::create($quizattemptid);
+    protected function assert_response_test($hippotrackattemptid, $responses): void {
+        $hippotrackattempt = hippotrack_attempt::create($hippotrackattemptid);
 
         foreach ($responses['slot'] as $slot => $tests) {
             $slothastests = false;
@@ -89,12 +89,12 @@ final class responses_from_steps_walkthrough_test extends \mod_hippotrack\tests\
             if (!$slothastests) {
                 continue;
             }
-            $qa = $quizattempt->get_question_attempt($slot);
+            $qa = $hippotrackattempt->get_question_attempt($slot);
             $stepswithsubmit = $qa->get_steps_with_submitted_response_iterator();
             $step = $stepswithsubmit[$responses['submittedstepno']];
             if (null === $step) {
                 throw new \coding_exception("There is no step no {$responses['submittedstepno']} ".
-                                           "for slot $slot in quizattempt {$responses['quizattempt']}!");
+                                           "for slot $slot in hippotrackattempt {$responses['hippotrackattempt']}!");
             }
             foreach (array('responsesummary', 'fraction', 'state') as $column) {
                 if (isset($tests[$column]) && $tests[$column] != '') {
@@ -122,7 +122,7 @@ final class responses_from_steps_walkthrough_test extends \mod_hippotrack\tests\
                             $actual = substr(get_class($state), strlen('question_state_'));
                     }
                     $expected = $tests[$column];
-                    $failuremessage = "Error in  quizattempt {$responses['quizattempt']} in $column, slot $slot, ".
+                    $failuremessage = "Error in  hippotrackattempt {$responses['hippotrackattempt']} in $column, slot $slot, ".
                     "submittedstepno {$responses['submittedstepno']}";
                     $this->assertEquals($expected, $actual, $failuremessage);
                 }

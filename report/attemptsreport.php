@@ -30,7 +30,7 @@ require_once($CFG->libdir.'/tablelib.php');
 
 
 /**
- * Base class for quiz reports that are basically a table with one row for each attempt.
+ * Base class for hippotrack reports that are basically a table with one row for each attempt.
  *
  * @copyright 2010 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -51,7 +51,7 @@ abstract class hippotrack_attempts_report extends hippotrack_default_report {
     /** @var string the mode this report is. */
     protected $mode;
 
-    /** @var context_module the quiz context. */
+    /** @var context_module the hippotrack context. */
     protected $context;
 
     /** @var mod_hippotrack_attempts_report_form The settings form to use. */
@@ -69,7 +69,7 @@ abstract class hippotrack_attempts_report extends hippotrack_default_report {
      *
      * @param string $mode
      * @param string $formclass
-     * @param object $quiz
+     * @param object $hippotrack
      * @param object $cm
      * @param object $course
      * @return array with four elements:
@@ -79,7 +79,7 @@ abstract class hippotrack_attempts_report extends hippotrack_default_report {
      *      3 => \core\dml\sql_join Contains joins, wheres, params for all the students to show in the report.
      *              Will be the same as either element 1 or 2.
      */
-    public function init($mode, $formclass, $quiz, $cm, $course) {
+    public function init($mode, $formclass, $hippotrack, $cm, $course) {
         $this->mode = $mode;
 
         $this->context = context_module::instance($cm->id);
@@ -87,10 +87,10 @@ abstract class hippotrack_attempts_report extends hippotrack_default_report {
         list($currentgroup, $studentsjoins, $groupstudentsjoins, $allowedjoins) = $this->get_students_joins(
                 $cm, $course);
 
-        $this->qmsubselect = hippotrack_report_qm_filter_select($quiz);
+        $this->qmsubselect = hippotrack_report_qm_filter_select($hippotrack);
 
         $this->form = new $formclass($this->get_base_url(),
-                array('quiz' => $quiz, 'currentgroup' => $currentgroup, 'context' => $this->context));
+                array('hippotrack' => $hippotrack, 'currentgroup' => $currentgroup, 'context' => $this->context));
 
         return array($currentgroup, $studentsjoins, $groupstudentsjoins, $allowedjoins);
     }
@@ -140,7 +140,7 @@ abstract class hippotrack_attempts_report extends hippotrack_default_report {
     }
 
     /**
-     * Outputs the things you commonly want at the top of a quiz report.
+     * Outputs the things you commonly want at the top of a hippotrack report.
      *
      * Calls through to {@link print_header_and_tabs()} and then
      * outputs the standard group selector, number of attempts summary,
@@ -148,17 +148,17 @@ abstract class hippotrack_attempts_report extends hippotrack_default_report {
      *
      * @param stdClass $cm the course_module information.
      * @param stdClass $course the course settings.
-     * @param stdClass $quiz the quiz settings.
+     * @param stdClass $hippotrack the hippotrack settings.
      * @param mod_hippotrack_attempts_report_options $options the current report settings.
      * @param int $currentgroup the current group.
-     * @param bool $hasquestions whether there are any questions in the quiz.
+     * @param bool $hasquestions whether there are any questions in the hippotrack.
      * @param bool $hasstudents whether there are any relevant students.
      */
-    protected function print_standard_header_and_messages($cm, $course, $quiz,
+    protected function print_standard_header_and_messages($cm, $course, $hippotrack,
             $options, $currentgroup, $hasquestions, $hasstudents) {
         global $OUTPUT;
 
-        $this->print_header_and_tabs($cm, $course, $quiz, $this->mode);
+        $this->print_header_and_tabs($cm, $course, $hippotrack, $this->mode);
 
         if (groups_get_activity_groupmode($cm)) {
             // Groups are being used, so output the group selector if we are not downloading.
@@ -166,12 +166,12 @@ abstract class hippotrack_attempts_report extends hippotrack_default_report {
         }
 
         // Print information on the number of existing attempts.
-        if ($strattemptnum = hippotrack_num_attempt_summary($quiz, $cm, true, $currentgroup)) {
-            echo '<div class="quizattemptcounts">' . $strattemptnum . '</div>';
+        if ($strattemptnum = hippotrack_num_attempt_summary($hippotrack, $cm, true, $currentgroup)) {
+            echo '<div class="hippotrackattemptcounts">' . $strattemptnum . '</div>';
         }
 
         if (!$hasquestions) {
-            echo hippotrack_no_questions_message($quiz, $cm, $this->context);
+            echo hippotrack_no_questions_message($hippotrack, $cm, $this->context);
         } else if ($currentgroup == self::NO_GROUPS_ALLOWED) {
             echo $OUTPUT->notification(get_string('notingroup'));
         } else if (!$hasstudents) {
@@ -258,20 +258,20 @@ abstract class hippotrack_attempts_report extends hippotrack_default_report {
     /**
      * Add all the grade and feedback columns, if applicable, to the $columns
      * and $headers arrays.
-     * @param object $quiz the quiz settings.
-     * @param bool $usercanseegrades whether the user is allowed to see grades for this quiz.
+     * @param object $hippotrack the hippotrack settings.
+     * @param bool $usercanseegrades whether the user is allowed to see grades for this hippotrack.
      * @param array $columns the list of columns. Added to.
      * @param array $headers the columns headings. Added to.
      * @param bool $includefeedback whether to include the feedbacktext columns
      */
-    protected function add_grade_columns($quiz, $usercanseegrades, &$columns, &$headers, $includefeedback = true) {
+    protected function add_grade_columns($hippotrack, $usercanseegrades, &$columns, &$headers, $includefeedback = true) {
         if ($usercanseegrades) {
             $columns[] = 'sumgrades';
             $headers[] = get_string('grade', 'hippotrack') . '/' .
-                    hippotrack_format_grade($quiz, $quiz->grade);
+                    hippotrack_format_grade($hippotrack, $hippotrack->grade);
         }
 
-        if ($includefeedback && hippotrack_has_feedback($quiz)) {
+        if ($includefeedback && hippotrack_has_feedback($hippotrack)) {
             $columns[] = 'feedbacktext';
             $headers[] = get_string('feedback', 'hippotrack');
         }
@@ -306,20 +306,20 @@ abstract class hippotrack_attempts_report extends hippotrack_default_report {
 
     /**
      * Process any submitted actions.
-     * @param object $quiz the quiz settings.
-     * @param object $cm the cm object for the quiz.
+     * @param object $hippotrack the hippotrack settings.
+     * @param object $cm the cm object for the hippotrack.
      * @param int $currentgroup the currently selected group.
      * @param \core\dml\sql_join $groupstudentsjoins (joins, wheres, params) the students in the current group.
      * @param \core\dml\sql_join $allowedjoins (joins, wheres, params) the users whose attempt this user is allowed to modify.
      * @param moodle_url $redirecturl where to redircet to after a successful action.
      */
-    protected function process_actions($quiz, $cm, $currentgroup, \core\dml\sql_join $groupstudentsjoins,
+    protected function process_actions($hippotrack, $cm, $currentgroup, \core\dml\sql_join $groupstudentsjoins,
             \core\dml\sql_join $allowedjoins, $redirecturl) {
         if (empty($currentgroup) || $this->hasgroupstudents) {
             if (optional_param('delete', 0, PARAM_BOOL) && confirm_sesskey()) {
                 if ($attemptids = optional_param_array('attemptid', array(), PARAM_INT)) {
                     require_capability('mod/hippotrack:deleteattempts', $this->context);
-                    $this->delete_selected_attempts($quiz, $cm, $attemptids, $allowedjoins);
+                    $this->delete_selected_attempts($hippotrack, $cm, $attemptids, $allowedjoins);
                     redirect($redirecturl);
                 }
             }
@@ -327,42 +327,42 @@ abstract class hippotrack_attempts_report extends hippotrack_default_report {
     }
 
     /**
-     * Delete the quiz attempts
-     * @param object $quiz the quiz settings. Attempts that don't belong to
-     * this quiz are not deleted.
+     * Delete the hippotrack attempts
+     * @param object $hippotrack the hippotrack settings. Attempts that don't belong to
+     * this hippotrack are not deleted.
      * @param object $cm the course_module object.
      * @param array $attemptids the list of attempt ids to delete.
      * @param \core\dml\sql_join $allowedjoins (joins, wheres, params) This list of userids that are visible in the report.
      *      Users can only delete attempts that they are allowed to see in the report.
      *      Empty means all users.
      */
-    protected function delete_selected_attempts($quiz, $cm, $attemptids, \core\dml\sql_join $allowedjoins) {
+    protected function delete_selected_attempts($hippotrack, $cm, $attemptids, \core\dml\sql_join $allowedjoins) {
         global $DB;
 
         foreach ($attemptids as $attemptid) {
             if (empty($allowedjoins->joins)) {
-                $sql = "SELECT quiza.*
-                          FROM {hippotrack_attempts} quiza
-                          JOIN {user} u ON u.id = quiza.userid
-                         WHERE quiza.id = :attemptid";
+                $sql = "SELECT hippotracka.*
+                          FROM {hippotrack_attempts} hippotracka
+                          JOIN {user} u ON u.id = hippotracka.userid
+                         WHERE hippotracka.id = :attemptid";
             } else {
-                $sql = "SELECT quiza.*
-                          FROM {hippotrack_attempts} quiza
-                          JOIN {user} u ON u.id = quiza.userid
+                $sql = "SELECT hippotracka.*
+                          FROM {hippotrack_attempts} hippotracka
+                          JOIN {user} u ON u.id = hippotracka.userid
                         {$allowedjoins->joins}
-                         WHERE {$allowedjoins->wheres} AND quiza.id = :attemptid";
+                         WHERE {$allowedjoins->wheres} AND hippotracka.id = :attemptid";
             }
             $params = $allowedjoins->params + array('attemptid' => $attemptid);
             $attempt = $DB->get_record_sql($sql, $params, IGNORE_MULTIPLE);
-            if (!$attempt || $attempt->quiz != $quiz->id || $attempt->preview != 0) {
-                // Ensure the attempt exists, belongs to this quiz and belongs to
+            if (!$attempt || $attempt->hippotrack != $hippotrack->id || $attempt->preview != 0) {
+                // Ensure the attempt exists, belongs to this hippotrack and belongs to
                 // a student included in the report. If not skip.
                 continue;
             }
 
             // Set the course module id before calling hippotrack_delete_attempt().
-            $quiz->cmid = $cm->id;
-            hippotrack_delete_attempt($attempt, $quiz);
+            $hippotrack->cmid = $cm->id;
+            hippotrack_delete_attempt($attempt, $hippotrack);
         }
     }
 

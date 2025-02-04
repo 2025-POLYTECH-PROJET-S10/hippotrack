@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Backup instructions for the seb (Safe Exam Browser) quiz access subplugin.
+ * Backup instructions for the seb (Safe Exam Browser) hippotrack access subplugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @category   backup
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2020 Catalyst IT
@@ -29,36 +29,36 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/hippotrack/backup/moodle2/backup_mod_hippotrack_access_subplugin.class.php');
 
 /**
- * Backup instructions for the seb (Safe Exam Browser) quiz access subplugin.
+ * Backup instructions for the seb (Safe Exam Browser) hippotrack access subplugin.
  *
  * @copyright  2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class backup_quizaccess_seb_subplugin extends backup_mod_hippotrack_access_subplugin {
+class backup_hippotrackaccess_seb_subplugin extends backup_mod_hippotrack_access_subplugin {
 
     /**
-     * Stores the data related to the Safe Exam Browser quiz settings and management for a particular quiz.
+     * Stores the data related to the Safe Exam Browser hippotrack settings and management for a particular hippotrack.
      *
      * @return backup_subplugin_element
      */
     protected function define_hippotrack_subplugin_structure() {
         parent::define_hippotrack_subplugin_structure();
-        $quizid = backup::VAR_ACTIVITYID;
+        $hippotrackid = backup::VAR_ACTIVITYID;
 
         $subplugin = $this->get_subplugin_element();
         $subpluginwrapper = new backup_nested_element($this->get_recommended_name());
 
-        $template = new \quizaccess_seb\template();
+        $template = new \hippotrackaccess_seb\template();
         $blanktemplatearray = (array) $template->to_record();
         unset($blanktemplatearray['usermodified']);
         unset($blanktemplatearray['timemodified']);
 
         $templatekeys = array_keys($blanktemplatearray);
 
-        $subplugintemplatesettings = new backup_nested_element('quizaccess_seb_template', null, $templatekeys);
+        $subplugintemplatesettings = new backup_nested_element('hippotrackaccess_seb_template', null, $templatekeys);
 
-        // Get quiz settings keys to save.
-        $settings = new \quizaccess_seb\hippotrack_settings();
+        // Get hippotrack settings keys to save.
+        $settings = new \hippotrackaccess_seb\hippotrack_settings();
         $blanksettingsarray = (array) $settings->to_record();
         unset($blanksettingsarray['id']); // We don't need to save reference to settings record in current instance.
         // We don't need to save the data about who last modified the settings as they will be overwritten on restore. Also
@@ -69,20 +69,20 @@ class backup_quizaccess_seb_subplugin extends backup_mod_hippotrack_access_subpl
         $settingskeys = array_keys($blanksettingsarray);
 
         // Save the settings.
-        $subpluginquizsettings = new backup_nested_element('quizaccess_seb_quizsettings', null, $settingskeys);
+        $subpluginhippotracksettings = new backup_nested_element('hippotrackaccess_seb_hippotracksettings', null, $settingskeys);
 
         // Connect XML elements into the tree.
         $subplugin->add_child($subpluginwrapper);
-        $subpluginwrapper->add_child($subpluginquizsettings);
-        $subpluginquizsettings->add_child($subplugintemplatesettings);
+        $subpluginwrapper->add_child($subpluginhippotracksettings);
+        $subpluginhippotracksettings->add_child($subplugintemplatesettings);
 
-        // Set source to populate the settings data by referencing the ID of quiz being backed up.
-        $subpluginquizsettings->set_source_table(quizaccess_seb\hippotrack_settings::TABLE, ['quizid' => $quizid]);
+        // Set source to populate the settings data by referencing the ID of hippotrack being backed up.
+        $subpluginhippotracksettings->set_source_table(hippotrackaccess_seb\hippotrack_settings::TABLE, ['hippotrackid' => $hippotrackid]);
 
-        $subpluginquizsettings->annotate_files('quizaccess_seb', 'filemanager_sebconfigfile', null);
+        $subpluginhippotracksettings->annotate_files('hippotrackaccess_seb', 'filemanager_sebconfigfile', null);
 
         $params = ['id' => '../templateid'];
-        $subplugintemplatesettings->set_source_table(\quizaccess_seb\template::TABLE, $params);
+        $subplugintemplatesettings->set_source_table(\hippotrackaccess_seb\template::TABLE, $params);
 
         return $subplugin;
     }

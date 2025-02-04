@@ -22,14 +22,14 @@ use context_module;
 use core_completion\activity_custom_completion;
 use grade_grade;
 use grade_item;
-use quiz;
+use hippotrack;
 use hippotrack_access_manager;
 
 /**
- * Activity custom completion subclass for the quiz activity.
+ * Activity custom completion subclass for the hippotrack activity.
  *
  * Class for defining mod_hippotrack's custom completion rules and fetching the completion statuses
- * of the custom completion rules for a given quiz instance and a user.
+ * of the custom completion rules for a given hippotrack instance and a user.
  *
  * @package   mod_hippotrack
  * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
@@ -59,7 +59,7 @@ class custom_completion extends activity_custom_completion {
         }
 
         // If a passing grade is required and exhausting all available attempts is not accepted for completion,
-        // then this quiz is not complete.
+        // then this hippotrack is not complete.
         if (empty($completionpassorattempts['completionattemptsexhausted'])) {
             return false;
         }
@@ -71,9 +71,9 @@ class custom_completion extends activity_custom_completion {
         }
         $lastfinishedattempt = end($attempts);
         $context = context_module::instance($this->cm->id);
-        $quizobj = quiz::create($this->cm->instance, $this->userid);
+        $hippotrackobj = hippotrack::create($this->cm->instance, $this->userid);
         $accessmanager = new hippotrack_access_manager(
-            $quizobj,
+            $hippotrackobj,
             time(),
             has_capability('mod/hippotrack:ignoretimelimits', $context, $this->userid, false)
         );

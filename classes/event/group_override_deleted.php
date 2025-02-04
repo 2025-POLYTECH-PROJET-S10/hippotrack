@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * @property-read array $other {
  *      Extra information about event.
  *
- *      - int quizid: the id of the quiz.
+ *      - int hippotrackid: the id of the hippotrack.
  *      - int groupid: the id of the group.
  * }
  *
@@ -66,7 +66,7 @@ class group_override_deleted extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' deleted the override with id '$this->objectid' for the quiz with " .
+        return "The user with id '$this->userid' deleted the override with id '$this->objectid' for the hippotrack with " .
             "course module id '$this->contextinstanceid' for the group with id '{$this->other['groupid']}'.";
     }
 
@@ -85,8 +85,8 @@ class group_override_deleted extends \core\event\base {
      * @return array
      */
     protected function get_legacy_logdata() {
-        return array($this->courseid, 'quiz', 'delete override', 'overrides.php?cmid=' . $this->contextinstanceid,
-            $this->other['quizid'], $this->contextinstanceid);
+        return array($this->courseid, 'hippotrack', 'delete override', 'overrides.php?cmid=' . $this->contextinstanceid,
+            $this->other['hippotrackid'], $this->contextinstanceid);
     }
 
     /**
@@ -98,8 +98,8 @@ class group_override_deleted extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
 
-        if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+        if (!isset($this->other['hippotrackid'])) {
+            throw new \coding_exception('The \'hippotrackid\' value must be set in other.');
         }
 
         if (!isset($this->other['groupid'])) {
@@ -113,7 +113,7 @@ class group_override_deleted extends \core\event\base {
 
     public static function get_other_mapping() {
         $othermapped = array();
-        $othermapped['quizid'] = array('db' => 'quiz', 'restore' => 'quiz');
+        $othermapped['hippotrackid'] = array('db' => 'hippotrack', 'restore' => 'hippotrack');
         $othermapped['groupid'] = array('db' => 'groups', 'restore' => 'group');
 
         return $othermapped;

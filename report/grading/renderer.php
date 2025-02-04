@@ -33,13 +33,13 @@ class hippotrack_grading_renderer extends plugin_renderer_base {
     /**
      * Render no question notification.
      *
-     * @param object $quiz The quiz settings.
-     * @param object $cm The course-module for this quiz.
-     * @param object $context The quiz context.
+     * @param object $hippotrack The hippotrack settings.
+     * @param object $cm The course-module for this hippotrack.
+     * @param object $context The hippotrack context.
      * @return string The HTML for the no questions message.
      */
-    public function render_hippotrack_no_question_notification($quiz, $cm, $context) {
-        return hippotrack_no_questions_message($quiz, $cm, $context);
+    public function render_hippotrack_no_question_notification($hippotrack, $cm, $context) {
+        return hippotrack_no_questions_message($hippotrack, $cm, $context);
     }
 
     /**

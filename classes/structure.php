@@ -28,11 +28,11 @@ use mod_hippotrack\question\bank\qbank_helper;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Quiz structure class.
+ * HippoTrack structure class.
  *
- * The structure of the quiz. That is, which questions it is built up
- * from. This is used on the Edit quiz page (edit.php) and also when
- * starting an attempt at the quiz (startattempt.php). Once an attempt
+ * The structure of the hippotrack. That is, which questions it is built up
+ * from. This is used on the Edit hippotrack page (edit.php) and also when
+ * starting an attempt at the hippotrack (startattempt.php). Once an attempt
  * has been started, then the attempt holds the specific set of questions
  * that that student should answer, and we no longer use this class.
  *
@@ -40,16 +40,16 @@ defined('MOODLE_INTERNAL') || die();
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class structure {
-    /** @var \quiz the quiz this is the structure of. */
-    protected $quizobj = null;
+    /** @var \hippotrack the hippotrack this is the structure of. */
+    protected $hippotrackobj = null;
 
     /**
-     * @var \stdClass[] the questions in this quiz. Contains the row from the questions
+     * @var \stdClass[] the questions in this hippotrack. Contains the row from the questions
      * table, with the data from the hippotrack_slots table added, and also question_categories.contextid.
      */
     protected $questions = array();
 
-    /** @var \stdClass[] hippotrack_slots.slot => the hippotrack_slots rows for this quiz, agumented by sectionid. */
+    /** @var \stdClass[] hippotrack_slots.slot => the hippotrack_slots rows for this hippotrack, agumented by sectionid. */
     protected $slotsinorder = array();
 
     /**
@@ -73,7 +73,7 @@ class structure {
     protected $slottags = array();
 
     /**
-     * Create an instance of this class representing an empty quiz.
+     * Create an instance of this class representing an empty hippotrack.
      * @return structure
      */
     public static function create() {
@@ -81,28 +81,28 @@ class structure {
     }
 
     /**
-     * Create an instance of this class representing the structure of a given quiz.
-     * @param \quiz $quizobj the quiz.
+     * Create an instance of this class representing the structure of a given hippotrack.
+     * @param \hippotrack $hippotrackobj the hippotrack.
      * @return structure
      */
-    public static function create_for_quiz($quizobj) {
+    public static function create_for_hippotrack($hippotrackobj) {
         $structure = self::create();
-        $structure->quizobj = $quizobj;
+        $structure->hippotrackobj = $hippotrackobj;
         $structure->populate_structure();
         return $structure;
     }
 
     /**
-     * Whether there are any questions in the quiz.
-     * @return bool true if there is at least one question in the quiz.
+     * Whether there are any questions in the hippotrack.
+     * @return bool true if there is at least one question in the hippotrack.
      */
     public function has_questions() {
         return !empty($this->questions);
     }
 
     /**
-     * Get the number of questions in the quiz.
-     * @return int the number of questions in the quiz.
+     * Get the number of questions in the hippotrack.
+     * @return int the number of questions in the hippotrack.
      */
     public function get_question_count() {
         return count($this->questions);
@@ -112,7 +112,7 @@ class structure {
      * Get the information about the question with this id.
      * @param int $questionid The question id.
      * @return \stdClass the data from the questions table, augmented with
-     * question_category.contextid, and the hippotrack_slots data for the question in this quiz.
+     * question_category.contextid, and the hippotrack_slots data for the question in this hippotrack.
      */
     public function get_question_by_id($questionid) {
         return $this->questions[$questionid];
@@ -122,7 +122,7 @@ class structure {
      * Get the information about the question in a given slot.
      * @param int $slotnumber the index of the slot in question.
      * @return \stdClass the data from the questions table, augmented with
-     * question_category.contextid, and the hippotrack_slots data for the question in this quiz.
+     * question_category.contextid, and the hippotrack_slots data for the question in this hippotrack.
      */
     public function get_question_in_slot($slotnumber) {
         return $this->questions[$this->slotsinorder[$slotnumber]->questionid];
@@ -187,12 +187,12 @@ class structure {
     /**
      * Whether it is possible for another question to depend on this one finishing.
      * Note that the answer is not exact, because of random questions, and sometimes
-     * questions cannot be depended upon because of quiz options.
+     * questions cannot be depended upon because of hippotrack options.
      * @param int $slotnumber the index of the slot in question.
      * @return bool can this question finish naturally during the attempt?
      */
     public function can_finish_during_the_attempt($slotnumber) {
-        if ($this->quizobj->get_navigation_method() == QUIZ_NAVMETHOD_SEQ) {
+        if ($this->hippotrackobj->get_navigation_method() == HIPPOTRACK_NAVMETHOD_SEQ) {
             return false;
         }
 
@@ -202,7 +202,7 @@ class structure {
 
         if (in_array($this->get_question_type_for_slot($slotnumber), array('random', 'missingtype'))) {
             return \question_engine::can_questions_finish_during_the_attempt(
-                    $this->quizobj->get_quiz()->preferredbehaviour);
+                    $this->hippotrackobj->get_hippotrack()->preferredbehaviour);
         }
 
         if (isset($this->slotsinorder[$slotnumber]->canfinish)) {
@@ -210,10 +210,10 @@ class structure {
         }
 
         try {
-            $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $this->quizobj->get_context());
+            $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $this->hippotrackobj->get_context());
             $tempslot = $quba->add_question(\question_bank::load_question(
                     $this->slotsinorder[$slotnumber]->questionid));
-            $quba->set_preferred_behaviour($this->quizobj->get_quiz()->preferredbehaviour);
+            $quba->set_preferred_behaviour($this->hippotrackobj->get_hippotrack()->preferredbehaviour);
             $quba->start_all_questions();
 
             $this->slotsinorder[$slotnumber]->canfinish = $quba->can_question_finish_during_attempt($tempslot);
@@ -264,84 +264,84 @@ class structure {
     }
 
     /**
-     * Get the course id that the quiz belongs to.
-     * @return int the course.id for the quiz.
+     * Get the course id that the hippotrack belongs to.
+     * @return int the course.id for the hippotrack.
      */
     public function get_courseid() {
-        return $this->quizobj->get_courseid();
+        return $this->hippotrackobj->get_courseid();
     }
 
     /**
-     * Get the course module id of the quiz.
-     * @return int the course_modules.id for the quiz.
+     * Get the course module id of the hippotrack.
+     * @return int the course_modules.id for the hippotrack.
      */
     public function get_cmid() {
-        return $this->quizobj->get_cmid();
+        return $this->hippotrackobj->get_cmid();
     }
 
     /**
-     * Get id of the quiz.
-     * @return int the quiz.id for the quiz.
+     * Get id of the hippotrack.
+     * @return int the hippotrack.id for the hippotrack.
      */
-    public function get_quizid() {
-        return $this->quizobj->get_quizid();
+    public function get_hippotrackid() {
+        return $this->hippotrackobj->get_hippotrackid();
     }
 
     /**
-     * Get the quiz object.
-     * @return \stdClass the quiz settings row from the database.
+     * Get the hippotrack object.
+     * @return \stdClass the hippotrack settings row from the database.
      */
-    public function get_quiz() {
-        return $this->quizobj->get_quiz();
+    public function get_hippotrack() {
+        return $this->hippotrackobj->get_hippotrack();
     }
 
     /**
-     * Quizzes can only be repaginated if they have not been attempted, the
+     * HippoTrackzes can only be repaginated if they have not been attempted, the
      * questions are not shuffled, and there are two or more questions.
-     * @return bool whether this quiz can be repaginated.
+     * @return bool whether this hippotrack can be repaginated.
      */
     public function can_be_repaginated() {
         return $this->can_be_edited() && $this->get_question_count() >= 2;
     }
 
     /**
-     * Quizzes can only be edited if they have not been attempted.
-     * @return bool whether the quiz can be edited.
+     * HippoTrackzes can only be edited if they have not been attempted.
+     * @return bool whether the hippotrack can be edited.
      */
     public function can_be_edited() {
         if ($this->canbeedited === null) {
-            $this->canbeedited = !hippotrack_has_attempts($this->quizobj->get_quizid());
+            $this->canbeedited = !hippotrack_has_attempts($this->hippotrackobj->get_hippotrackid());
         }
         return $this->canbeedited;
     }
 
     /**
-     * This quiz can only be edited if they have not been attempted.
+     * This hippotrack can only be edited if they have not been attempted.
      * Throw an exception if this is not the case.
      */
     public function check_can_be_edited() {
         if (!$this->can_be_edited()) {
-            $reportlink = hippotrack_attempt_summary_link_to_reports($this->get_quiz(),
-                    $this->quizobj->get_cm(), $this->quizobj->get_context());
-            throw new \moodle_exception('cannoteditafterattempts', 'quiz',
+            $reportlink = hippotrack_attempt_summary_link_to_reports($this->get_hippotrack(),
+                    $this->hippotrackobj->get_cm(), $this->hippotrackobj->get_context());
+            throw new \moodle_exception('cannoteditafterattempts', 'hippotrack',
                     new \moodle_url('/mod/hippotrack/edit.php', array('cmid' => $this->get_cmid())), $reportlink);
         }
     }
 
     /**
-     * How many questions are allowed per page in the quiz.
+     * How many questions are allowed per page in the hippotrack.
      * This setting controls how frequently extra page-breaks should be inserted
-     * automatically when questions are added to the quiz.
+     * automatically when questions are added to the hippotrack.
      * @return int the number of questions that should be on each page of the
-     * quiz by default.
+     * hippotrack by default.
      */
     public function get_questions_per_page() {
-        return $this->quizobj->get_quiz()->questionsperpage;
+        return $this->hippotrackobj->get_hippotrack()->questionsperpage;
     }
 
     /**
-     * Get quiz slots.
-     * @return \stdClass[] the slots in this quiz.
+     * Get hippotrack slots.
+     * @return \stdClass[] the slots in this hippotrack.
      */
     public function get_slots() {
         return array_column($this->slotsinorder, null, 'id');
@@ -391,28 +391,28 @@ class structure {
     }
 
     /**
-     * Is this slot the last one in the quiz?
+     * Is this slot the last one in the hippotrack?
      * @param int $slotnumber the index of the slot in question.
-     * @return bool whether this slot the last one in the quiz.
+     * @return bool whether this slot the last one in the hippotrack.
      */
-    public function is_last_slot_in_quiz($slotnumber) {
+    public function is_last_slot_in_hippotrack($slotnumber) {
         end($this->slotsinorder);
         return $slotnumber == key($this->slotsinorder);
     }
 
     /**
-     * Is this the first section in the quiz?
+     * Is this the first section in the hippotrack?
      * @param \stdClass $section the hippotrack_sections row.
-     * @return bool whether this is first section in the quiz.
+     * @return bool whether this is first section in the hippotrack.
      */
     public function is_first_section($section) {
         return $section->firstslot == 1;
     }
 
     /**
-     * Is this the last section in the quiz?
+     * Is this the last section in the hippotrack?
      * @param \stdClass $section the hippotrack_sections row.
-     * @return bool whether this is first section in the quiz.
+     * @return bool whether this is first section in the hippotrack.
      */
     public function is_last_section($section) {
         return $section->id == end($this->sections)->id;
@@ -428,8 +428,8 @@ class structure {
     }
 
     /**
-     * Get the final slot in the quiz.
-     * @return \stdClass the hippotrack_slots for for the final slot in the quiz.
+     * Get the final slot in the hippotrack.
+     * @return \stdClass the hippotrack_slots for for the final slot in the hippotrack.
      */
     public function get_last_slot() {
         return end($this->slotsinorder);
@@ -496,7 +496,7 @@ class structure {
     }
 
     /**
-     * Get all the slots in a section of the quiz.
+     * Get all the slots in a section of the hippotrack.
      * @param int $sectionid the section id.
      * @return int[] slot numbers.
      */
@@ -511,8 +511,8 @@ class structure {
     }
 
     /**
-     * Get all the sections of the quiz.
-     * @return \stdClass[] the sections in this quiz.
+     * Get all the sections of the hippotrack.
+     * @return \stdClass[] the sections in this hippotrack.
      */
     public function get_sections() {
         return $this->sections;
@@ -527,19 +527,19 @@ class structure {
     }
 
     /**
-     * Get the number of questions in the quiz.
-     * @return int the number of questions in the quiz.
+     * Get the number of questions in the hippotrack.
+     * @return int the number of questions in the hippotrack.
      */
     public function get_section_count() {
         return count($this->sections);
     }
 
     /**
-     * Get the overall quiz grade formatted for display.
-     * @return string the maximum grade for this quiz.
+     * Get the overall hippotrack grade formatted for display.
+     * @return string the maximum grade for this hippotrack.
      */
     public function formatted_hippotrack_grade() {
-        return hippotrack_format_grade($this->get_quiz(), $this->get_quiz()->grade);
+        return hippotrack_format_grade($this->get_hippotrack(), $this->get_hippotrack()->grade);
     }
 
     /**
@@ -548,15 +548,15 @@ class structure {
      * @return string the maximum mark for the question in this slot.
      */
     public function formatted_question_grade($slotnumber) {
-        return hippotrack_format_question_grade($this->get_quiz(), $this->slotsinorder[$slotnumber]->maxmark);
+        return hippotrack_format_question_grade($this->get_hippotrack(), $this->slotsinorder[$slotnumber]->maxmark);
     }
 
     /**
-     * Get the number of decimal places for displyaing overall quiz grades or marks.
+     * Get the number of decimal places for displyaing overall hippotrack grades or marks.
      * @return int the number of decimal places.
      */
     public function get_decimal_places_for_grades() {
-        return $this->get_quiz()->decimalpoints;
+        return $this->get_hippotrack()->decimalpoints;
     }
 
     /**
@@ -564,7 +564,7 @@ class structure {
      * @return int the number of decimal places.
      */
     public function get_decimal_places_for_question_marks() {
-        return hippotrack_get_grade_format($this->get_quiz());
+        return hippotrack_get_grade_format($this->get_hippotrack());
     }
 
     /**
@@ -574,38 +574,38 @@ class structure {
     public function get_edit_page_warnings() {
         $warnings = array();
 
-        if (hippotrack_has_attempts($this->quizobj->get_quizid())) {
-            $reviewlink = hippotrack_attempt_summary_link_to_reports($this->quizobj->get_quiz(),
-                    $this->quizobj->get_cm(), $this->quizobj->get_context());
-            $warnings[] = get_string('cannoteditafterattempts', 'quiz', $reviewlink);
+        if (hippotrack_has_attempts($this->hippotrackobj->get_hippotrackid())) {
+            $reviewlink = hippotrack_attempt_summary_link_to_reports($this->hippotrackobj->get_hippotrack(),
+                    $this->hippotrackobj->get_cm(), $this->hippotrackobj->get_context());
+            $warnings[] = get_string('cannoteditafterattempts', 'hippotrack', $reviewlink);
         }
 
         return $warnings;
     }
 
     /**
-     * Get the date information about the current state of the quiz.
+     * Get the date information about the current state of the hippotrack.
      * @return string[] array of two strings. First a short summary, then a longer
      * explanation of the current state, e.g. for a tool-tip.
      */
     public function get_dates_summary() {
         $timenow = time();
-        $quiz = $this->quizobj->get_quiz();
+        $hippotrack = $this->hippotrackobj->get_hippotrack();
 
         // Exact open and close dates for the tool-tip.
         $dates = array();
-        if ($quiz->timeopen > 0) {
-            if ($timenow > $quiz->timeopen) {
-                $dates[] = get_string('quizopenedon', 'quiz', userdate($quiz->timeopen));
+        if ($hippotrack->timeopen > 0) {
+            if ($timenow > $hippotrack->timeopen) {
+                $dates[] = get_string('hippotrackopenedon', 'hippotrack', userdate($hippotrack->timeopen));
             } else {
-                $dates[] = get_string('quizwillopen', 'quiz', userdate($quiz->timeopen));
+                $dates[] = get_string('hippotrackwillopen', 'hippotrack', userdate($hippotrack->timeopen));
             }
         }
-        if ($quiz->timeclose > 0) {
-            if ($timenow > $quiz->timeclose) {
-                $dates[] = get_string('quizclosed', 'quiz', userdate($quiz->timeclose));
+        if ($hippotrack->timeclose > 0) {
+            if ($timenow > $hippotrack->timeclose) {
+                $dates[] = get_string('hippotrackclosed', 'hippotrack', userdate($hippotrack->timeclose));
             } else {
-                $dates[] = get_string('quizcloseson', 'quiz', userdate($quiz->timeclose));
+                $dates[] = get_string('hippotrackcloseson', 'hippotrack', userdate($hippotrack->timeclose));
             }
         }
         if (empty($dates)) {
@@ -614,28 +614,28 @@ class structure {
         $explanation = implode(', ', $dates);
 
         // Brief summary on the page.
-        if ($timenow < $quiz->timeopen) {
-            $currentstatus = get_string('quizisclosedwillopen', 'quiz',
-                    userdate($quiz->timeopen, get_string('strftimedatetimeshort', 'langconfig')));
-        } else if ($quiz->timeclose && $timenow <= $quiz->timeclose) {
-            $currentstatus = get_string('quizisopenwillclose', 'quiz',
-                    userdate($quiz->timeclose, get_string('strftimedatetimeshort', 'langconfig')));
-        } else if ($quiz->timeclose && $timenow > $quiz->timeclose) {
-            $currentstatus = get_string('quizisclosed', 'hippotrack');
+        if ($timenow < $hippotrack->timeopen) {
+            $currentstatus = get_string('hippotrackisclosedwillopen', 'hippotrack',
+                    userdate($hippotrack->timeopen, get_string('strftimedatetimeshort', 'langconfig')));
+        } else if ($hippotrack->timeclose && $timenow <= $hippotrack->timeclose) {
+            $currentstatus = get_string('hippotrackisopenwillclose', 'hippotrack',
+                    userdate($hippotrack->timeclose, get_string('strftimedatetimeshort', 'langconfig')));
+        } else if ($hippotrack->timeclose && $timenow > $hippotrack->timeclose) {
+            $currentstatus = get_string('hippotrackisclosed', 'hippotrack');
         } else {
-            $currentstatus = get_string('quizisopen', 'hippotrack');
+            $currentstatus = get_string('hippotrackisopen', 'hippotrack');
         }
 
         return array($currentstatus, $explanation);
     }
 
     /**
-     * Set up this class with the structure for a given quiz.
+     * Set up this class with the structure for a given hippotrack.
      */
     protected function populate_structure() {
         global $DB;
 
-        $slots = qbank_helper::get_question_structure($this->quizobj->get_quizid(), $this->quizobj->get_context());
+        $slots = qbank_helper::get_question_structure($this->hippotrackobj->get_hippotrackid(), $this->hippotrackobj->get_context());
 
         $this->questions = [];
         $this->slotsinorder = [];
@@ -643,12 +643,12 @@ class structure {
             $this->questions[$slotdata->questionid] = $slotdata;
 
             $slot = clone($slotdata);
-            $slot->quizid = $this->quizobj->get_quizid();
+            $slot->hippotrackid = $this->hippotrackobj->get_hippotrackid();
             $this->slotsinorder[$slot->slot] = $slot;
         }
 
-        // Get quiz sections in ascending order of the firstslot.
-        $this->sections = $DB->get_records('hippotrack_sections', ['quizid' => $this->quizobj->get_quizid()], 'firstslot');
+        // Get hippotrack sections in ascending order of the firstslot.
+        $this->sections = $DB->get_records('hippotrack_sections', ['hippotrackid' => $this->hippotrackobj->get_hippotrackid()], 'firstslot');
         $this->populate_slots_with_sections();
         $this->populate_question_numbers();
     }
@@ -705,9 +705,9 @@ class structure {
             $version->selected = $version->version === $slot->requestedversion;
 
             if ($version->version === $latestversion->version) {
-                $version->versionvalue = get_string('questionversionlatest', 'quiz', $version->version);
+                $version->versionvalue = get_string('questionversionlatest', 'hippotrack', $version->version);
             } else {
-                $version->versionvalue = get_string('questionversion', 'quiz', $version->version);
+                $version->versionvalue = get_string('questionversion', 'hippotrack', $version->version);
             }
 
             $versionoptions[] = $version;
@@ -763,7 +763,7 @@ class structure {
 
         $followingslotnumber = $moveafterslotnumber + 1;
         // Prevent checking against non-existance slot when already at the last slot.
-        if ($followingslotnumber == $movingslotnumber && !$this->is_last_slot_in_quiz($followingslotnumber)) {
+        if ($followingslotnumber == $movingslotnumber && !$this->is_last_slot_in_hippotrack($followingslotnumber)) {
             $followingslotnumber += 1;
         }
 
@@ -774,7 +774,7 @@ class structure {
         if (($moveafterslotnumber > 0 && $page < $this->get_page_number_for_slot($moveafterslotnumber)) ||
                 $page < 1) {
             throw new \coding_exception('The target page number is too small.');
-        } else if (!$this->is_last_slot_in_quiz($moveafterslotnumber) &&
+        } else if (!$this->is_last_slot_in_hippotrack($moveafterslotnumber) &&
                 $page > $this->get_page_number_for_slot($followingslotnumber)) {
             throw new \coding_exception('The target page number is too large.');
         }
@@ -789,7 +789,7 @@ class structure {
             }
 
             $headingmoveafter = $movingslotnumber;
-            if ($this->is_last_slot_in_quiz($moveafterslotnumber) ||
+            if ($this->is_last_slot_in_hippotrack($moveafterslotnumber) ||
                     $page == $this->get_page_number_for_slot($moveafterslotnumber + 1)) {
                 // We are moving to the start of a section, so that heading needs
                 // to be included in the ones that move up.
@@ -839,7 +839,7 @@ class structure {
         // Slot has moved record new order.
         if ($slotreorder) {
             update_field_with_unique_index('hippotrack_slots', 'slot', $slotreorder,
-                    array('quizid' => $this->get_quizid()));
+                    array('hippotrackid' => $this->get_hippotrackid()));
         }
 
         // Page has changed. Record it.
@@ -849,36 +849,36 @@ class structure {
         }
 
         // Update section fist slots.
-        hippotrack_update_section_firstslots($this->get_quizid(), $headingmovedirection,
+        hippotrack_update_section_firstslots($this->get_hippotrackid(), $headingmovedirection,
                 $headingmoveafter, $headingmovebefore);
 
         // If any pages are now empty, remove them.
         $emptypages = $DB->get_fieldset_sql("
                 SELECT DISTINCT page - 1
                   FROM {hippotrack_slots} slot
-                 WHERE quizid = ?
+                 WHERE hippotrackid = ?
                    AND page > 1
-                   AND NOT EXISTS (SELECT 1 FROM {hippotrack_slots} WHERE quizid = ? AND page = slot.page - 1)
+                   AND NOT EXISTS (SELECT 1 FROM {hippotrack_slots} WHERE hippotrackid = ? AND page = slot.page - 1)
               ORDER BY page - 1 DESC
-                ", array($this->get_quizid(), $this->get_quizid()));
+                ", array($this->get_hippotrackid(), $this->get_hippotrackid()));
 
         foreach ($emptypages as $emptypage) {
             $DB->execute("
                     UPDATE {hippotrack_slots}
                        SET page = page - 1
-                     WHERE quizid = ?
+                     WHERE hippotrackid = ?
                        AND page > ?
-                    ", array($this->get_quizid(), $emptypage));
+                    ", array($this->get_hippotrackid(), $emptypage));
         }
 
         $trans->allow_commit();
 
         // Log slot moved event.
         $event = \mod_hippotrack\event\slot_moved::create([
-            'context' => $this->quizobj->get_context(),
+            'context' => $this->hippotrackobj->get_context(),
             'objectid' => $idmove,
             'other' => [
-                'quizid' => $this->quizobj->get_quizid(),
+                'hippotrackid' => $this->hippotrackobj->get_hippotrackid(),
                 'previousslotnumber' => $movingslotnumber,
                 'afterslotnumber' => $moveafterslotnumber,
                 'page' => $page
@@ -888,7 +888,7 @@ class structure {
     }
 
     /**
-     * Refresh page numbering of quiz slots.
+     * Refresh page numbering of hippotrack slots.
      * @param \stdClass[] $slots (optional) array of slot objects.
      * @return \stdClass[] array of slot objects.
      */
@@ -896,7 +896,7 @@ class structure {
         global $DB;
         // Get slots ordered by page then slot.
         if (!count($slots)) {
-            $slots = $DB->get_records('hippotrack_slots', array('quizid' => $this->get_quizid()), 'slot, page');
+            $slots = $DB->get_records('hippotrack_slots', array('hippotrackid' => $this->get_hippotrackid()), 'slot, page');
         }
 
         // Loop slots. Start Page number at 1 and increment as required.
@@ -918,8 +918,8 @@ class structure {
     }
 
     /**
-     * Refresh page numbering of quiz slots and save to the database.
-     * @param \stdClass $quiz the quiz object.
+     * Refresh page numbering of hippotrack slots and save to the database.
+     * @param \stdClass $hippotrack the hippotrack object.
      * @return \stdClass[] array of slot objects.
      */
     public function refresh_page_numbers_and_update_db() {
@@ -938,7 +938,7 @@ class structure {
     }
 
     /**
-     * Remove a slot from a quiz
+     * Remove a slot from a hippotrack
      *
      * @param int $slotnumber The number of the slot to be deleted.
      * @throws \coding_exception
@@ -952,11 +952,11 @@ class structure {
             throw new \coding_exception('You cannot remove the last slot in a section.');
         }
 
-        $slot = $DB->get_record('hippotrack_slots', array('quizid' => $this->get_quizid(), 'slot' => $slotnumber));
+        $slot = $DB->get_record('hippotrack_slots', array('hippotrackid' => $this->get_hippotrackid(), 'slot' => $slotnumber));
         if (!$slot) {
             return;
         }
-        $maxslot = $DB->get_field_sql('SELECT MAX(slot) FROM {hippotrack_slots} WHERE quizid = ?', array($this->get_quizid()));
+        $maxslot = $DB->get_field_sql('SELECT MAX(slot) FROM {hippotrack_slots} WHERE hippotrackid = ?', array($this->get_hippotrackid()));
 
         $trans = $DB->start_delegated_transaction();
         // Delete the reference if its a question.
@@ -975,13 +975,13 @@ class structure {
         $DB->delete_records('hippotrack_slots', array('id' => $slot->id));
         for ($i = $slot->slot + 1; $i <= $maxslot; $i++) {
             $DB->set_field('hippotrack_slots', 'slot', $i - 1,
-                    array('quizid' => $this->get_quizid(), 'slot' => $i));
+                    array('hippotrackid' => $this->get_hippotrackid(), 'slot' => $i));
             $this->slotsinorder[$i]->slot = $i - 1;
             $this->slotsinorder[$i - 1] = $this->slotsinorder[$i];
             unset($this->slotsinorder[$i]);
         }
 
-        hippotrack_update_section_firstslots($this->get_quizid(), -1, $slotnumber);
+        hippotrack_update_section_firstslots($this->get_hippotrackid(), -1, $slotnumber);
         foreach ($this->sections as $key => $section) {
             if ($section->firstslot > $slotnumber) {
                 $this->sections[$key]->firstslot--;
@@ -997,10 +997,10 @@ class structure {
 
         // Log slot deleted event.
         $event = \mod_hippotrack\event\slot_deleted::create([
-            'context' => $this->quizobj->get_context(),
+            'context' => $this->hippotrackobj->get_context(),
             'objectid' => $slot->id,
             'other' => [
-                'quizid' => $this->get_quizid(),
+                'hippotrackid' => $this->get_hippotrackid(),
                 'slotnumber' => $slotnumber,
             ]
         ]);
@@ -1025,7 +1025,7 @@ class structure {
      *
      * Saves changes to the question grades in the hippotrack_slots table and any
      * corresponding question_attempts.
-     * It does not update 'sumgrades' in the quiz table.
+     * It does not update 'sumgrades' in the hippotrack table.
      *
      * @param \stdClass $slot row from the hippotrack_slots table.
      * @param float $maxmark the new maxmark.
@@ -1043,17 +1043,17 @@ class structure {
         $previousmaxmark = $slot->maxmark;
         $slot->maxmark = $maxmark;
         $DB->update_record('hippotrack_slots', $slot);
-        \question_engine::set_max_mark_in_attempts(new \qubaids_for_quiz($slot->quizid),
+        \question_engine::set_max_mark_in_attempts(new \qubaids_for_hippotrack($slot->hippotrackid),
                 $slot->slot, $maxmark);
         $trans->allow_commit();
 
         // Log slot mark updated event.
         // We use $num + 0 as a trick to remove the useless 0 digits from decimals.
         $event = \mod_hippotrack\event\slot_mark_updated::create([
-            'context' => $this->quizobj->get_context(),
+            'context' => $this->hippotrackobj->get_context(),
             'objectid' => $slot->id,
             'other' => [
-                'quizid' => $this->get_quizid(),
+                'hippotrackid' => $this->get_hippotrackid(),
                 'previousmaxmark' => $previousmaxmark + 0,
                 'newmaxmark' => $maxmark + 0
             ]
@@ -1074,10 +1074,10 @@ class structure {
 
         // Log slot require previous event.
         $event = \mod_hippotrack\event\slot_requireprevious_updated::create([
-            'context' => $this->quizobj->get_context(),
+            'context' => $this->hippotrackobj->get_context(),
             'objectid' => $slotid,
             'other' => [
-                'quizid' => $this->get_quizid(),
+                'hippotrackid' => $this->get_hippotrackid(),
                 'requireprevious' => $requireprevious ? 1 : 0
             ]
         ]);
@@ -1099,30 +1099,30 @@ class structure {
 
         $this->check_can_be_edited();
 
-        $quizslots = $DB->get_records('hippotrack_slots', array('quizid' => $this->get_quizid()), 'slot');
-        $repaginate = new \mod_hippotrack\repaginate($this->get_quizid(), $quizslots);
-        $repaginate->repaginate_slots($quizslots[$slotid]->slot, $type);
+        $hippotrackslots = $DB->get_records('hippotrack_slots', array('hippotrackid' => $this->get_hippotrackid()), 'slot');
+        $repaginate = new \mod_hippotrack\repaginate($this->get_hippotrackid(), $hippotrackslots);
+        $repaginate->repaginate_slots($hippotrackslots[$slotid]->slot, $type);
         $slots = $this->refresh_page_numbers_and_update_db();
 
         if ($type == repaginate::LINK) {
             // Log page break created event.
             $event = \mod_hippotrack\event\page_break_deleted::create([
-                'context' => $this->quizobj->get_context(),
+                'context' => $this->hippotrackobj->get_context(),
                 'objectid' => $slotid,
                 'other' => [
-                    'quizid' => $this->get_quizid(),
-                    'slotnumber' => $quizslots[$slotid]->slot
+                    'hippotrackid' => $this->get_hippotrackid(),
+                    'slotnumber' => $hippotrackslots[$slotid]->slot
                 ]
             ]);
             $event->trigger();
         } else {
             // Log page deleted created event.
             $event = \mod_hippotrack\event\page_break_created::create([
-                'context' => $this->quizobj->get_context(),
+                'context' => $this->hippotrackobj->get_context(),
                 'objectid' => $slotid,
                 'other' => [
-                    'quizid' => $this->get_quizid(),
-                    'slotnumber' => $quizslots[$slotid]->slot
+                    'hippotrackid' => $this->get_hippotrackid(),
+                    'slotnumber' => $hippotrackslots[$slotid]->slot
                 ]
             ]);
             $event->trigger();
@@ -1144,8 +1144,8 @@ class structure {
         } else {
             $section->heading = get_string('newsectionheading', 'hippotrack');
         }
-        $section->quizid = $this->get_quizid();
-        $slotsonpage = $DB->get_records('hippotrack_slots', array('quizid' => $this->get_quizid(), 'page' => $pagenumber), 'slot DESC');
+        $section->hippotrackid = $this->get_hippotrackid();
+        $slotsonpage = $DB->get_records('hippotrack_slots', array('hippotrackid' => $this->get_hippotrackid(), 'page' => $pagenumber), 'slot DESC');
         $firstslot = end($slotsonpage);
         $section->firstslot = $firstslot->slot;
         $section->shufflequestions = 0;
@@ -1153,10 +1153,10 @@ class structure {
 
         // Log section break created event.
         $event = \mod_hippotrack\event\section_break_created::create([
-            'context' => $this->quizobj->get_context(),
+            'context' => $this->hippotrackobj->get_context(),
             'objectid' => $sectionid,
             'other' => [
-                'quizid' => $this->get_quizid(),
+                'hippotrackid' => $this->get_hippotrackid(),
                 'firstslotnumber' => $firstslot->slot,
                 'firstslotid' => $firstslot->id,
                 'title' => $section->heading,
@@ -1179,12 +1179,12 @@ class structure {
         $DB->update_record('hippotrack_sections', $section);
 
         // Log section title updated event.
-        $firstslot = $DB->get_record('hippotrack_slots', array('quizid' => $this->get_quizid(), 'slot' => $section->firstslot));
+        $firstslot = $DB->get_record('hippotrack_slots', array('hippotrackid' => $this->get_hippotrackid(), 'slot' => $section->firstslot));
         $event = \mod_hippotrack\event\section_title_updated::create([
-            'context' => $this->quizobj->get_context(),
+            'context' => $this->hippotrackobj->get_context(),
             'objectid' => $id,
             'other' => [
-                'quizid' => $this->get_quizid(),
+                'hippotrackid' => $this->get_hippotrackid(),
                 'firstslotid' => $firstslot ? $firstslot->id : null,
                 'firstslotnumber' => $firstslot ? $firstslot->slot : null,
                 'newtitle' => $newheading
@@ -1206,10 +1206,10 @@ class structure {
 
         // Log section shuffle updated event.
         $event = \mod_hippotrack\event\section_shuffle_updated::create([
-            'context' => $this->quizobj->get_context(),
+            'context' => $this->hippotrackobj->get_context(),
             'objectid' => $id,
             'other' => [
-                'quizid' => $this->get_quizid(),
+                'hippotrackid' => $this->get_hippotrackid(),
                 'firstslotnumber' => $section->firstslot,
                 'shuffle' => $shuffle
             ]
@@ -1225,17 +1225,17 @@ class structure {
         global $DB;
         $section = $DB->get_record('hippotrack_sections', array('id' => $sectionid), '*', MUST_EXIST);
         if ($section->firstslot == 1) {
-            throw new \coding_exception('Cannot remove the first section in a quiz.');
+            throw new \coding_exception('Cannot remove the first section in a hippotrack.');
         }
         $DB->delete_records('hippotrack_sections', array('id' => $sectionid));
 
         // Log page deleted created event.
-        $firstslot = $DB->get_record('hippotrack_slots', array('quizid' => $this->get_quizid(), 'slot' => $section->firstslot));
+        $firstslot = $DB->get_record('hippotrack_slots', array('hippotrackid' => $this->get_hippotrackid(), 'slot' => $section->firstslot));
         $event = \mod_hippotrack\event\section_break_deleted::create([
-            'context' => $this->quizobj->get_context(),
+            'context' => $this->hippotrackobj->get_context(),
             'objectid' => $sectionid,
             'other' => [
-                'quizid' => $this->get_quizid(),
+                'hippotrackid' => $this->get_hippotrackid(),
                 'firstslotid' => $firstslot->id,
                 'firstslotnumber' => $firstslot->slot
             ]
@@ -1244,7 +1244,7 @@ class structure {
     }
 
     /**
-     * Whether the current user can add random questions to the quiz or not.
+     * Whether the current user can add random questions to the hippotrack or not.
      * It is only possible to add a random question if the user has the moodle/question:useall capability
      * on at least one of the contexts related to the one where we are currently editing questions.
      *
@@ -1252,8 +1252,8 @@ class structure {
      */
     public function can_add_random_questions() {
         if ($this->canaddrandom === null) {
-            $quizcontext = $this->quizobj->get_context();
-            $relatedcontexts = new \core_question\local\bank\question_edit_contexts($quizcontext);
+            $hippotrackcontext = $this->hippotrackobj->get_context();
+            $relatedcontexts = new \core_question\local\bank\question_edit_contexts($hippotrackcontext);
             $usablecontexts = $relatedcontexts->having_cap('moodle/question:useall');
 
             $this->canaddrandom = !empty($usablecontexts);

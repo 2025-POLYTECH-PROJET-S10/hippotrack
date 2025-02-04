@@ -17,7 +17,7 @@
 namespace mod_hippotrack;
 
 /**
- * Quiz attempt walk through using data from csv file.
+ * HippoTrack attempt walk through using data from csv file.
  *
  * @package    mod_hippotrack
  * @category   test

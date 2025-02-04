@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Base class for rules that restrict the ability to attempt a quiz.
+ * Base class for rules that restrict the ability to attempt a hippotrack.
  *
  * @package   mod_hippotrack
  * @copyright 2011 The Open University
@@ -29,7 +29,7 @@ require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 
 /**
- * A base class that defines the interface for the various quiz access rules.
+ * A base class that defines the interface for the various hippotrack access rules.
  * Most of the methods are defined in a slightly unnatural way because we either
  * want to say that access is allowed, or explain the reason why it is block.
  * Therefore instead of is_access_allowed(...) we have prevent_access(...) that
@@ -42,39 +42,39 @@ require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
  * @since     Moodle 2.2
  */
 abstract class hippotrack_access_rule_base {
-    /** @var stdClass the quiz settings. */
-    protected $quiz;
-    /** @var quiz the quiz object. */
-    protected $quizobj;
+    /** @var stdClass the hippotrack settings. */
+    protected $hippotrack;
+    /** @var hippotrack the hippotrack object. */
+    protected $hippotrackobj;
     /** @var int the time to use as 'now'. */
     protected $timenow;
 
     /**
-     * Create an instance of this rule for a particular quiz.
-     * @param quiz $quizobj information about the quiz in question.
+     * Create an instance of this rule for a particular hippotrack.
+     * @param hippotrack $hippotrackobj information about the hippotrack in question.
      * @param int $timenow the time that should be considered as 'now'.
      */
-    public function __construct($quizobj, $timenow) {
-        $this->quizobj = $quizobj;
-        $this->quiz = $quizobj->get_quiz();
+    public function __construct($hippotrackobj, $timenow) {
+        $this->hippotrackobj = $hippotrackobj;
+        $this->hippotrack = $hippotrackobj->get_hippotrack();
         $this->timenow = $timenow;
     }
 
     /**
      * Return an appropriately configured instance of this rule, if it is applicable
-     * to the given quiz, otherwise return null.
-     * @param quiz $quizobj information about the quiz in question.
+     * to the given hippotrack, otherwise return null.
+     * @param hippotrack $hippotrackobj information about the hippotrack in question.
      * @param int $timenow the time that should be considered as 'now'.
      * @param bool $canignoretimelimits whether the current user is exempt from
      *      time limits by the mod/hippotrack:ignoretimelimits capability.
      * @return hippotrack_access_rule_base|null the rule, if applicable, else null.
      */
-    public static function make(quiz $quizobj, $timenow, $canignoretimelimits) {
+    public static function make(hippotrack $hippotrackobj, $timenow, $canignoretimelimits) {
         return null;
     }
 
     /**
-     * Whether or not a user should be allowed to start a new attempt at this quiz now.
+     * Whether or not a user should be allowed to start a new attempt at this hippotrack now.
      * @param int $numattempts the number of previous attempts this user has made.
      * @param object $lastattempt information about the user's last completed attempt.
      * @return string false if access should be allowed, a message explaining the
@@ -108,12 +108,12 @@ abstract class hippotrack_access_rule_base {
      * Add any field you want to pre-flight check form. You should only do
      * something here if {@link is_preflight_check_required()} returned true.
      *
-     * @param mod_hippotrack_preflight_check_form $quizform the form being built.
+     * @param mod_hippotrack_preflight_check_form $hippotrackform the form being built.
      * @param MoodleQuickForm $mform The wrapped MoodleQuickForm.
      * @param int|null $attemptid the id of the current attempt, if there is one,
      *      otherwise null.
      */
-    public function add_preflight_check_form_fields(mod_hippotrack_preflight_check_form $quizform,
+    public function add_preflight_check_form_fields(mod_hippotrack_preflight_check_form $hippotrackform,
             MoodleQuickForm $mform, $attemptid) {
         // Do nothing by default.
     }
@@ -146,7 +146,7 @@ abstract class hippotrack_access_rule_base {
     }
 
     /**
-     * This is called when the current attempt at the quiz is finished. This is
+     * This is called when the current attempt at the hippotrack is finished. This is
      * used, for example by the password rule, to clear the flag in the session.
      */
     public function current_attempt_finished() {
@@ -154,7 +154,7 @@ abstract class hippotrack_access_rule_base {
     }
 
     /**
-     * Information, such as might be shown on the quiz view page, relating to this restriction.
+     * Information, such as might be shown on the hippotrack view page, relating to this restriction.
      * There is no obligation to return anything. If it is not appropriate to tell students
      * about this rule, then just return ''.
      * @return mixed a message, or array of messages, explaining the restriction
@@ -166,13 +166,13 @@ abstract class hippotrack_access_rule_base {
 
     /**
      * If this rule can determine that this user will never be allowed another attempt at
-     * this quiz, then return true. This is used so we can know whether to display a
+     * this hippotrack, then return true. This is used so we can know whether to display a
      * final grade on the view page. This will only be called if there is not a currently
      * active attempt for this user.
      * @param int $numattempts the number of previous attempts this user has made.
      * @param object $lastattempt information about the user's last completed attempt.
      * @return bool true if this rule means that this user will never be allowed another
-     * attempt at this quiz.
+     * attempt at this hippotrack.
      */
     public function is_finished($numprevattempts, $lastattempt) {
         return false;
@@ -245,14 +245,14 @@ abstract class hippotrack_access_rule_base {
     }
 
     /**
-     * Add any fields that this rule requires to the quiz settings form. This
+     * Add any fields that this rule requires to the hippotrack settings form. This
      * method is called from {@link mod_hippotrack_mod_form::definition()}, while the
      * security seciton is being built.
-     * @param mod_hippotrack_mod_form $quizform the quiz settings form that is being built.
+     * @param mod_hippotrack_mod_form $hippotrackform the hippotrack settings form that is being built.
      * @param MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
     public static function add_settings_form_fields(
-            mod_hippotrack_mod_form $quizform, MoodleQuickForm $mform) {
+            mod_hippotrack_mod_form $hippotrackform, MoodleQuickForm $mform) {
         // By default do nothing.
     }
 
@@ -261,17 +261,17 @@ abstract class hippotrack_access_rule_base {
      * @param array $errors the errors found so far.
      * @param array $data the submitted form data.
      * @param array $files information about any uploaded files.
-     * @param mod_hippotrack_mod_form $quizform the quiz form object.
+     * @param mod_hippotrack_mod_form $hippotrackform the hippotrack form object.
      * @return array $errors the updated $errors array.
      */
     public static function validate_settings_form_fields(array $errors,
-            array $data, $files, mod_hippotrack_mod_form $quizform) {
+            array $data, $files, mod_hippotrack_mod_form $hippotrackform) {
 
         return $errors;
     }
 
     /**
-     * @return array key => lang string any choices to add to the quiz Browser
+     * @return array key => lang string any choices to add to the hippotrack Browser
      *      security settings menu.
      */
     public static function get_browser_security_choices() {
@@ -279,23 +279,23 @@ abstract class hippotrack_access_rule_base {
     }
 
     /**
-     * Save any submitted settings when the quiz settings form is submitted. This
+     * Save any submitted settings when the hippotrack settings form is submitted. This
      * is called from {@link hippotrack_after_add_or_update()} in lib.php.
-     * @param object $quiz the data from the quiz form, including $quiz->id
-     *      which is the id of the quiz being saved.
+     * @param object $hippotrack the data from the hippotrack form, including $hippotrack->id
+     *      which is the id of the hippotrack being saved.
      */
-    public static function save_settings($quiz) {
+    public static function save_settings($hippotrack) {
         // By default do nothing.
     }
 
     /**
-     * Delete any rule-specific settings when the quiz is deleted. This is called
+     * Delete any rule-specific settings when the hippotrack is deleted. This is called
      * from {@link hippotrack_delete_instance()} in lib.php.
-     * @param object $quiz the data from the database, including $quiz->id
-     *      which is the id of the quiz being deleted.
+     * @param object $hippotrack the data from the database, including $hippotrack->id
+     *      which is the id of the hippotrack being deleted.
      * @since Moodle 2.7.1, 2.6.4, 2.5.7
      */
-    public static function delete_settings($quiz) {
+    public static function delete_settings($hippotrack) {
         // By default do nothing.
     }
 
@@ -308,8 +308,8 @@ abstract class hippotrack_access_rule_base {
      * use the {@link get_extra_settings()} method instead, but that has
      * performance implications.
      *
-     * @param int $quizid the id of the quiz we are loading settings for. This
-     *     can also be accessed as quiz.id in the SQL. (quiz is a table alisas for {quiz}.)
+     * @param int $hippotrackid the id of the hippotrack we are loading settings for. This
+     *     can also be accessed as hippotrack.id in the SQL. (hippotrack is a table alisas for {hippotrack}.)
      * @return array with three elements:
      *     1. fields: any fields to add to the select list. These should be alised
      *        if neccessary so that the field name starts the name of the plugin.
@@ -319,18 +319,18 @@ abstract class hippotrack_access_rule_base {
      *        used named placeholders, and the placeholder names should start with the
      *        plugin name, to avoid collisions.
      */
-    public static function get_settings_sql($quizid) {
+    public static function get_settings_sql($hippotrackid) {
         return array('', '', array());
     }
 
     /**
      * You can use this method to load any extra settings your plugin has that
      * cannot be loaded efficiently with get_settings_sql().
-     * @param int $quizid the quiz id.
+     * @param int $hippotrackid the hippotrack id.
      * @return array setting value name => value. The value names should all
      *      start with the name of your plugin to avoid collisions.
      */
-    public static function get_extra_settings($quizid) {
+    public static function get_extra_settings($hippotrackid) {
         return array();
     }
 }

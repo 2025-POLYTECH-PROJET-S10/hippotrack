@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz external API
+ * HippoTrack external API
  *
  * @package    mod_hippotrack
  * @category   external
@@ -32,7 +32,7 @@ require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
- * Quiz external functions
+ * HippoTrack external functions
  *
  * @package    mod_hippotrack
  * @category   external
@@ -43,12 +43,12 @@ require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 class mod_hippotrack_external extends external_api {
 
     /**
-     * Describes the parameters for get_quizzes_by_courses.
+     * Describes the parameters for get_hippotrackzes_by_courses.
      *
      * @return external_function_parameters
      * @since Moodle 3.1
      */
-    public static function get_quizzes_by_courses_parameters() {
+    public static function get_hippotrackzes_by_courses_parameters() {
         return new external_function_parameters (
             array(
                 'courseids' => new external_multiple_structure(
@@ -59,23 +59,23 @@ class mod_hippotrack_external extends external_api {
     }
 
     /**
-     * Returns a list of quizzes in a provided list of courses,
-     * if no list is provided all quizzes that the user can view will be returned.
+     * Returns a list of hippotrackzes in a provided list of courses,
+     * if no list is provided all hippotrackzes that the user can view will be returned.
      *
      * @param array $courseids Array of course ids
-     * @return array of quizzes details
+     * @return array of hippotrackzes details
      * @since Moodle 3.1
      */
-    public static function get_quizzes_by_courses($courseids = array()) {
+    public static function get_hippotrackzes_by_courses($courseids = array()) {
         global $USER;
 
         $warnings = array();
-        $returnedquizzes = array();
+        $returnedhippotrackzes = array();
 
         $params = array(
             'courseids' => $courseids,
         );
-        $params = self::validate_parameters(self::get_quizzes_by_courses_parameters(), $params);
+        $params = self::validate_parameters(self::get_hippotrackzes_by_courses_parameters(), $params);
 
         $mycourses = array();
         if (empty($params['courseids'])) {
@@ -88,37 +88,37 @@ class mod_hippotrack_external extends external_api {
 
             list($courses, $warnings) = external_util::validate_courses($params['courseids'], $mycourses);
 
-            // Get the quizzes in this course, this function checks users visibility permissions.
+            // Get the hippotrackzes in this course, this function checks users visibility permissions.
             // We can avoid then additional validate_context calls.
-            $quizzes = get_all_instances_in_courses("quiz", $courses);
-            foreach ($quizzes as $quiz) {
-                $context = context_module::instance($quiz->coursemodule);
+            $hippotrackzes = get_all_instances_in_courses("hippotrack", $courses);
+            foreach ($hippotrackzes as $hippotrack) {
+                $context = context_module::instance($hippotrack->coursemodule);
 
-                // Update quiz with override information.
-                $quiz = hippotrack_update_effective_access($quiz, $USER->id);
+                // Update hippotrack with override information.
+                $hippotrack = hippotrack_update_effective_access($hippotrack, $USER->id);
 
                 // Entry to return.
-                $quizdetails = helper_for_get_mods_by_courses::standard_coursemodule_element_values(
-                        $quiz, 'mod_hippotrack', 'mod/hippotrack:view', 'mod/hippotrack:view');
+                $hippotrackdetails = helper_for_get_mods_by_courses::standard_coursemodule_element_values(
+                        $hippotrack, 'mod_hippotrack', 'mod/hippotrack:view', 'mod/hippotrack:view');
 
                 if (has_capability('mod/hippotrack:view', $context)) {
-                    $quizdetails['introfiles'] = external_util::get_area_files($context->id, 'mod_hippotrack', 'intro', false, false);
+                    $hippotrackdetails['introfiles'] = external_util::get_area_files($context->id, 'mod_hippotrack', 'intro', false, false);
                     $viewablefields = array('timeopen', 'timeclose', 'attempts', 'timelimit', 'grademethod', 'decimalpoints',
                                             'questiondecimalpoints', 'sumgrades', 'grade', 'preferredbehaviour');
 
                     // Sometimes this function returns just empty.
-                    $hasfeedback = hippotrack_has_feedback($quiz);
-                    $quizdetails['hasfeedback'] = (!empty($hasfeedback)) ? 1 : 0;
+                    $hasfeedback = hippotrack_has_feedback($hippotrack);
+                    $hippotrackdetails['hasfeedback'] = (!empty($hasfeedback)) ? 1 : 0;
 
                     $timenow = time();
-                    $quizobj = quiz::create($quiz->id, $USER->id);
-                    $accessmanager = new hippotrack_access_manager($quizobj, $timenow, has_capability('mod/hippotrack:ignoretimelimits',
+                    $hippotrackobj = hippotrack::create($hippotrack->id, $USER->id);
+                    $accessmanager = new hippotrack_access_manager($hippotrackobj, $timenow, has_capability('mod/hippotrack:ignoretimelimits',
                                                                 $context, null, false));
 
-                    // Fields the user could see if have access to the quiz.
+                    // Fields the user could see if have access to the hippotrack.
                     if (!$accessmanager->prevent_access()) {
-                        $quizdetails['hasquestions'] = (int) $quizobj->has_questions();
-                        $quizdetails['autosaveperiod'] = get_config('quiz', 'autosaveperiod');
+                        $hippotrackdetails['hasquestions'] = (int) $hippotrackobj->has_questions();
+                        $hippotrackdetails['autosaveperiod'] = get_config('hippotrack', 'autosaveperiod');
 
                         $additionalfields = array('attemptonlast', 'reviewattempt', 'reviewcorrectness', 'reviewmarks',
                                                     'reviewspecificfeedback', 'reviewgeneralfeedback', 'reviewrightanswer',
@@ -128,8 +128,8 @@ class mod_hippotrack_external extends external_api {
                                                     'graceperiod', 'canredoquestions', 'allowofflineattempts');
                         $viewablefields = array_merge($viewablefields, $additionalfields);
 
-                        // Any course module fields that previously existed in quiz.
-                        $quizdetails['completionpass'] = $quizobj->get_cm()->completionpassgrade;
+                        // Any course module fields that previously existed in hippotrack.
+                        $hippotrackdetails['completionpass'] = $hippotrackobj->get_cm()->completionpassgrade;
                     }
 
                     // Fields only for managers.
@@ -139,36 +139,36 @@ class mod_hippotrack_external extends external_api {
                     }
 
                     foreach ($viewablefields as $field) {
-                        $quizdetails[$field] = $quiz->{$field};
+                        $hippotrackdetails[$field] = $hippotrack->{$field};
                     }
                 }
-                $returnedquizzes[] = $quizdetails;
+                $returnedhippotrackzes[] = $hippotrackdetails;
             }
         }
         $result = array();
-        $result['quizzes'] = $returnedquizzes;
+        $result['hippotrackzes'] = $returnedhippotrackzes;
         $result['warnings'] = $warnings;
         return $result;
     }
 
     /**
-     * Describes the get_quizzes_by_courses return value.
+     * Describes the get_hippotrackzes_by_courses return value.
      *
      * @return external_single_structure
      * @since Moodle 3.1
      */
-    public static function get_quizzes_by_courses_returns() {
+    public static function get_hippotrackzes_by_courses_returns() {
         return new external_single_structure(
             array(
-                'quizzes' => new external_multiple_structure(
+                'hippotrackzes' => new external_multiple_structure(
                     new external_single_structure(array_merge(
                         helper_for_get_mods_by_courses::standard_coursemodule_elements_returns(true),
                         [
-                            'timeopen' => new external_value(PARAM_INT, 'The time when this quiz opens. (0 = no restriction.)',
+                            'timeopen' => new external_value(PARAM_INT, 'The time when this hippotrack opens. (0 = no restriction.)',
                                                                 VALUE_OPTIONAL),
-                            'timeclose' => new external_value(PARAM_INT, 'The time when this quiz closes. (0 = no restriction.)',
+                            'timeclose' => new external_value(PARAM_INT, 'The time when this hippotrack closes. (0 = no restriction.)',
                                                                 VALUE_OPTIONAL),
-                            'timelimit' => new external_value(PARAM_INT, 'The time limit for quiz attempts, in seconds.',
+                            'timelimit' => new external_value(PARAM_INT, 'The time limit for hippotrack attempts, in seconds.',
                                                                 VALUE_OPTIONAL),
                             'overduehandling' => new external_value(PARAM_ALPHA, 'The method used to handle overdue attempts.
                                                                     \'autosubmit\', \'graceperiod\' or \'autoabandon\'.',
@@ -179,60 +179,60 @@ class mod_hippotrack_external extends external_api {
                             'preferredbehaviour' => new external_value(PARAM_ALPHANUMEXT, 'The behaviour to ask questions to use.',
                                                                         VALUE_OPTIONAL),
                             'canredoquestions' => new external_value(PARAM_INT, 'Allows students to redo any completed question
-                                                                        within a quiz attempt.', VALUE_OPTIONAL),
+                                                                        within a hippotrack attempt.', VALUE_OPTIONAL),
                             'attempts' => new external_value(PARAM_INT, 'The maximum number of attempts a student is allowed.',
                                                                 VALUE_OPTIONAL),
                             'attemptonlast' => new external_value(PARAM_INT, 'Whether subsequent attempts start from the answer
                                                                     to the previous attempt (1) or start blank (0).',
                                                                     VALUE_OPTIONAL),
-                            'grademethod' => new external_value(PARAM_INT, 'One of the values QUIZ_GRADEHIGHEST, QUIZ_GRADEAVERAGE,
-                                                                    QUIZ_ATTEMPTFIRST or QUIZ_ATTEMPTLAST.', VALUE_OPTIONAL),
+                            'grademethod' => new external_value(PARAM_INT, 'One of the values HIPPOTRACK_GRADEHIGHEST, HIPPOTRACK_GRADEAVERAGE,
+                                                                    HIPPOTRACK_ATTEMPTFIRST or HIPPOTRACK_ATTEMPTLAST.', VALUE_OPTIONAL),
                             'decimalpoints' => new external_value(PARAM_INT, 'Number of decimal points to use when displaying
                                                                     grades.', VALUE_OPTIONAL),
                             'questiondecimalpoints' => new external_value(PARAM_INT, 'Number of decimal points to use when
                                                                             displaying question grades.
                                                                             (-1 means use decimalpoints.)', VALUE_OPTIONAL),
-                            'reviewattempt' => new external_value(PARAM_INT, 'Whether users are allowed to review their quiz
+                            'reviewattempt' => new external_value(PARAM_INT, 'Whether users are allowed to review their hippotrack
                                                                     attempts at various times. This is a bit field, decoded by the
                                                                     mod_hippotrack_display_options class. It is formed by ORing together
                                                                     the constants defined there.', VALUE_OPTIONAL),
-                            'reviewcorrectness' => new external_value(PARAM_INT, 'Whether users are allowed to review their quiz
+                            'reviewcorrectness' => new external_value(PARAM_INT, 'Whether users are allowed to review their hippotrack
                                                                         attempts at various times.
                                                                         A bit field, like reviewattempt.', VALUE_OPTIONAL),
-                            'reviewmarks' => new external_value(PARAM_INT, 'Whether users are allowed to review their quiz attempts
+                            'reviewmarks' => new external_value(PARAM_INT, 'Whether users are allowed to review their hippotrack attempts
                                                                 at various times. A bit field, like reviewattempt.',
                                                                 VALUE_OPTIONAL),
                             'reviewspecificfeedback' => new external_value(PARAM_INT, 'Whether users are allowed to review their
-                                                                            quiz attempts at various times. A bit field, like
+                                                                            hippotrack attempts at various times. A bit field, like
                                                                             reviewattempt.', VALUE_OPTIONAL),
                             'reviewgeneralfeedback' => new external_value(PARAM_INT, 'Whether users are allowed to review their
-                                                                            quiz attempts at various times. A bit field, like
+                                                                            hippotrack attempts at various times. A bit field, like
                                                                             reviewattempt.', VALUE_OPTIONAL),
-                            'reviewrightanswer' => new external_value(PARAM_INT, 'Whether users are allowed to review their quiz
+                            'reviewrightanswer' => new external_value(PARAM_INT, 'Whether users are allowed to review their hippotrack
                                                                         attempts at various times. A bit field, like
                                                                         reviewattempt.', VALUE_OPTIONAL),
-                            'reviewoverallfeedback' => new external_value(PARAM_INT, 'Whether users are allowed to review their quiz
+                            'reviewoverallfeedback' => new external_value(PARAM_INT, 'Whether users are allowed to review their hippotrack
                                                                             attempts at various times. A bit field, like
                                                                             reviewattempt.', VALUE_OPTIONAL),
                             'questionsperpage' => new external_value(PARAM_INT, 'How often to insert a page break when editing
-                                                                        the quiz, or when shuffling the question order.',
+                                                                        the hippotrack, or when shuffling the question order.',
                                                                         VALUE_OPTIONAL),
                             'navmethod' => new external_value(PARAM_ALPHA, 'Any constraints on how the user is allowed to navigate
-                                                                around the quiz. Currently recognised values are
+                                                                around the hippotrack. Currently recognised values are
                                                                 \'free\' and \'seq\'.', VALUE_OPTIONAL),
                             'shuffleanswers' => new external_value(PARAM_INT, 'Whether the parts of the question should be shuffled,
                                                                     in those question types that support it.', VALUE_OPTIONAL),
                             'sumgrades' => new external_value(PARAM_FLOAT, 'The total of all the question instance maxmarks.',
                                                                 VALUE_OPTIONAL),
-                            'grade' => new external_value(PARAM_FLOAT, 'The total that the quiz overall grade is scaled to be
+                            'grade' => new external_value(PARAM_FLOAT, 'The total that the hippotrack overall grade is scaled to be
                                                             out of.', VALUE_OPTIONAL),
-                            'timecreated' => new external_value(PARAM_INT, 'The time when the quiz was added to the course.',
+                            'timecreated' => new external_value(PARAM_INT, 'The time when the hippotrack was added to the course.',
                                                                 VALUE_OPTIONAL),
                             'timemodified' => new external_value(PARAM_INT, 'Last modified time.',
                                                                     VALUE_OPTIONAL),
                             'password' => new external_value(PARAM_RAW, 'A password that the student must enter before starting or
-                                                                continuing a quiz attempt.', VALUE_OPTIONAL),
-                            'subnet' => new external_value(PARAM_RAW, 'Used to restrict the IP addresses from which this quiz can
+                                                                continuing a hippotrack attempt.', VALUE_OPTIONAL),
+                            'subnet' => new external_value(PARAM_RAW, 'Used to restrict the IP addresses from which this hippotrack can
                                                             be attempted. The format is as requried by the address_in_subnet
                                                             function.', VALUE_OPTIONAL),
                             'browsersecurity' => new external_value(PARAM_ALPHANUMEXT, 'Restriciton on the browser the student must
@@ -245,16 +245,16 @@ class mod_hippotrack_external extends external_api {
                                                                     attempt and on the review page.', VALUE_OPTIONAL),
                             'showblocks' => new external_value(PARAM_INT, 'Whether blocks should be shown on the attempt.php and
                                                                 review.php pages.', VALUE_OPTIONAL),
-                            'completionattemptsexhausted' => new external_value(PARAM_INT, 'Mark quiz complete when the student has
+                            'completionattemptsexhausted' => new external_value(PARAM_INT, 'Mark hippotrack complete when the student has
                                                                                 exhausted the maximum number of attempts',
                                                                                 VALUE_OPTIONAL),
                             'completionpass' => new external_value(PARAM_INT, 'Whether to require passing grade', VALUE_OPTIONAL),
-                            'allowofflineattempts' => new external_value(PARAM_INT, 'Whether to allow the quiz to be attempted
+                            'allowofflineattempts' => new external_value(PARAM_INT, 'Whether to allow the hippotrack to be attempted
                                                                             offline in the mobile app', VALUE_OPTIONAL),
                             'autosaveperiod' => new external_value(PARAM_INT, 'Auto-save delay', VALUE_OPTIONAL),
-                            'hasfeedback' => new external_value(PARAM_INT, 'Whether the quiz has any non-blank feedback text',
+                            'hasfeedback' => new external_value(PARAM_INT, 'Whether the hippotrack has any non-blank feedback text',
                                                                 VALUE_OPTIONAL),
-                            'hasquestions' => new external_value(PARAM_INT, 'Whether the quiz has questions', VALUE_OPTIONAL),
+                            'hasquestions' => new external_value(PARAM_INT, 'Whether the hippotrack has questions', VALUE_OPTIONAL),
                         ]
                     ))
                 ),
@@ -265,27 +265,27 @@ class mod_hippotrack_external extends external_api {
 
 
     /**
-     * Utility function for validating a quiz.
+     * Utility function for validating a hippotrack.
      *
-     * @param int $quizid quiz instance id
-     * @return array array containing the quiz, course, context and course module objects
+     * @param int $hippotrackid hippotrack instance id
+     * @return array array containing the hippotrack, course, context and course module objects
      * @since  Moodle 3.1
      */
-    protected static function validate_quiz($quizid) {
+    protected static function validate_hippotrack($hippotrackid) {
         global $DB;
 
         // Request and permission validation.
-        $quiz = $DB->get_record('quiz', array('id' => $quizid), '*', MUST_EXIST);
-        list($course, $cm) = get_course_and_cm_from_instance($quiz, 'quiz');
+        $hippotrack = $DB->get_record('hippotrack', array('id' => $hippotrackid), '*', MUST_EXIST);
+        list($course, $cm) = get_course_and_cm_from_instance($hippotrack, 'hippotrack');
 
         $context = context_module::instance($cm->id);
         self::validate_context($context);
 
-        return array($quiz, $course, $cm, $context);
+        return array($hippotrack, $course, $cm, $context);
     }
 
     /**
-     * Describes the parameters for view_quiz.
+     * Describes the parameters for view_hippotrack.
      *
      * @return external_function_parameters
      * @since Moodle 3.1
@@ -293,7 +293,7 @@ class mod_hippotrack_external extends external_api {
     public static function view_hippotrack_parameters() {
         return new external_function_parameters (
             array(
-                'quizid' => new external_value(PARAM_INT, 'quiz instance id'),
+                'hippotrackid' => new external_value(PARAM_INT, 'hippotrack instance id'),
             )
         );
     }
@@ -301,21 +301,21 @@ class mod_hippotrack_external extends external_api {
     /**
      * Trigger the course module viewed event and update the module completion status.
      *
-     * @param int $quizid quiz instance id
+     * @param int $hippotrackid hippotrack instance id
      * @return array of warnings and status result
      * @since Moodle 3.1
      * @throws moodle_exception
      */
-    public static function view_quiz($quizid) {
+    public static function view_hippotrack($hippotrackid) {
         global $DB;
 
-        $params = self::validate_parameters(self::view_hippotrack_parameters(), array('quizid' => $quizid));
+        $params = self::validate_parameters(self::view_hippotrack_parameters(), array('hippotrackid' => $hippotrackid));
         $warnings = array();
 
-        list($quiz, $course, $cm, $context) = self::validate_quiz($params['quizid']);
+        list($hippotrack, $course, $cm, $context) = self::validate_hippotrack($params['hippotrackid']);
 
         // Trigger course_module_viewed event and completion.
-        hippotrack_view($quiz, $course, $cm, $context);
+        hippotrack_view($hippotrack, $course, $cm, $context);
 
         $result = array();
         $result['status'] = true;
@@ -324,7 +324,7 @@ class mod_hippotrack_external extends external_api {
     }
 
     /**
-     * Describes the view_quiz return value.
+     * Describes the view_hippotrack return value.
      *
      * @return external_single_structure
      * @since Moodle 3.1
@@ -347,9 +347,9 @@ class mod_hippotrack_external extends external_api {
     public static function get_user_attempts_parameters() {
         return new external_function_parameters (
             array(
-                'quizid' => new external_value(PARAM_INT, 'quiz instance id'),
+                'hippotrackid' => new external_value(PARAM_INT, 'hippotrack instance id'),
                 'userid' => new external_value(PARAM_INT, 'user id, empty for current user', VALUE_DEFAULT, 0),
-                'status' => new external_value(PARAM_ALPHA, 'quiz status: all, finished or unfinished', VALUE_DEFAULT, 'finished'),
+                'status' => new external_value(PARAM_ALPHA, 'hippotrack status: all, finished or unfinished', VALUE_DEFAULT, 'finished'),
                 'includepreviews' => new external_value(PARAM_BOOL, 'whether to include previews or not', VALUE_DEFAULT, false),
 
             )
@@ -357,30 +357,30 @@ class mod_hippotrack_external extends external_api {
     }
 
     /**
-     * Return a list of attempts for the given quiz and user.
+     * Return a list of attempts for the given hippotrack and user.
      *
-     * @param int $quizid quiz instance id
+     * @param int $hippotrackid hippotrack instance id
      * @param int $userid user id
-     * @param string $status quiz status: all, finished or unfinished
+     * @param string $status hippotrack status: all, finished or unfinished
      * @param bool $includepreviews whether to include previews or not
      * @return array of warnings and the list of attempts
      * @since Moodle 3.1
      * @throws invalid_parameter_exception
      */
-    public static function get_user_attempts($quizid, $userid = 0, $status = 'finished', $includepreviews = false) {
+    public static function get_user_attempts($hippotrackid, $userid = 0, $status = 'finished', $includepreviews = false) {
         global $DB, $USER;
 
         $warnings = array();
 
         $params = array(
-            'quizid' => $quizid,
+            'hippotrackid' => $hippotrackid,
             'userid' => $userid,
             'status' => $status,
             'includepreviews' => $includepreviews,
         );
         $params = self::validate_parameters(self::get_user_attempts_parameters(), $params);
 
-        list($quiz, $course, $cm, $context) = self::validate_quiz($params['quizid']);
+        list($hippotrack, $course, $cm, $context) = self::validate_hippotrack($params['hippotrackid']);
 
         if (!in_array($params['status'], array('all', 'finished', 'unfinished'))) {
             throw new invalid_parameter_exception('Invalid status value');
@@ -399,12 +399,12 @@ class mod_hippotrack_external extends external_api {
             require_capability('mod/hippotrack:viewreports', $context);
         }
 
-        // Update quiz with override information.
-        $quiz = hippotrack_update_effective_access($quiz, $params['userid']);
-        $attempts = hippotrack_get_user_attempts($quiz->id, $user->id, $params['status'], $params['includepreviews']);
+        // Update hippotrack with override information.
+        $hippotrack = hippotrack_update_effective_access($hippotrack, $params['userid']);
+        $attempts = hippotrack_get_user_attempts($hippotrack->id, $user->id, $params['status'], $params['includepreviews']);
         $attemptresponse = [];
         foreach ($attempts as $attempt) {
-            $reviewoptions = hippotrack_get_review_options($quiz, $attempt, $context);
+            $reviewoptions = hippotrack_get_review_options($hippotrack, $attempt, $context);
             if (!has_capability('mod/hippotrack:viewreports', $context) &&
                     ($reviewoptions->marks < question_display_options::MARK_AND_MAX || $attempt->state != hippotrack_attempt::FINISHED)) {
                 // Blank the mark if the teacher does not allow it.
@@ -427,14 +427,14 @@ class mod_hippotrack_external extends external_api {
         return new external_single_structure(
             array(
                 'id' => new external_value(PARAM_INT, 'Attempt id.', VALUE_OPTIONAL),
-                'quiz' => new external_value(PARAM_INT, 'Foreign key reference to the quiz that was attempted.',
+                'hippotrack' => new external_value(PARAM_INT, 'Foreign key reference to the hippotrack that was attempted.',
                                                 VALUE_OPTIONAL),
                 'userid' => new external_value(PARAM_INT, 'Foreign key reference to the user whose attempt this is.',
                                                 VALUE_OPTIONAL),
-                'attempt' => new external_value(PARAM_INT, 'Sequentially numbers this students attempts at this quiz.',
+                'attempt' => new external_value(PARAM_INT, 'Sequentially numbers this students attempts at this hippotrack.',
                                                 VALUE_OPTIONAL),
                 'uniqueid' => new external_value(PARAM_INT, 'Foreign key reference to the question_usage that holds the
-                                                    details of the the question_attempts that make up this quiz
+                                                    details of the the question_attempts that make up this hippotrack
                                                     attempt.', VALUE_OPTIONAL),
                 'layout' => new external_value(PARAM_RAW, 'Attempt layout.', VALUE_OPTIONAL),
                 'currentpage' => new external_value(PARAM_INT, 'Attempt current page.', VALUE_OPTIONAL),
@@ -446,7 +446,7 @@ class mod_hippotrack_external extends external_api {
                                                     0 if the attempt has not been submitted yet.', VALUE_OPTIONAL),
                 'timemodified' => new external_value(PARAM_INT, 'Last modified time.', VALUE_OPTIONAL),
                 'timemodifiedoffline' => new external_value(PARAM_INT, 'Last modified time via webservices.', VALUE_OPTIONAL),
-                'timecheckstate' => new external_value(PARAM_INT, 'Next time quiz cron should check attempt for
+                'timecheckstate' => new external_value(PARAM_INT, 'Next time hippotrack cron should check attempt for
                                                         state changes.  NULL means never check.', VALUE_OPTIONAL),
                 'sumgrades' => new external_value(PARAM_FLOAT, 'Total marks for this attempt.', VALUE_OPTIONAL),
                 'gradednotificationsenttime' => new external_value(PARAM_INT,
@@ -479,33 +479,33 @@ class mod_hippotrack_external extends external_api {
     public static function get_user_best_grade_parameters() {
         return new external_function_parameters (
             array(
-                'quizid' => new external_value(PARAM_INT, 'quiz instance id'),
+                'hippotrackid' => new external_value(PARAM_INT, 'hippotrack instance id'),
                 'userid' => new external_value(PARAM_INT, 'user id', VALUE_DEFAULT, 0),
             )
         );
     }
 
     /**
-     * Get the best current grade for the given user on a quiz.
+     * Get the best current grade for the given user on a hippotrack.
      *
-     * @param int $quizid quiz instance id
+     * @param int $hippotrackid hippotrack instance id
      * @param int $userid user id
      * @return array of warnings and the grade information
      * @since Moodle 3.1
      */
-    public static function get_user_best_grade($quizid, $userid = 0) {
+    public static function get_user_best_grade($hippotrackid, $userid = 0) {
         global $DB, $USER, $CFG;
         require_once($CFG->libdir . '/gradelib.php');
 
         $warnings = array();
 
         $params = array(
-            'quizid' => $quizid,
+            'hippotrackid' => $hippotrackid,
             'userid' => $userid,
         );
         $params = self::validate_parameters(self::get_user_best_grade_parameters(), $params);
 
-        list($quiz, $course, $cm, $context) = self::validate_quiz($params['quizid']);
+        list($hippotrack, $course, $cm, $context) = self::validate_hippotrack($params['hippotrackid']);
 
         // Default value for userid.
         if (empty($params['userid'])) {
@@ -524,7 +524,7 @@ class mod_hippotrack_external extends external_api {
 
         // This code was mostly copied from mod/hippotrack/view.php. We need to make the web service logic consistent.
         // Get this user's attempts.
-        $attempts = hippotrack_get_user_attempts($quiz->id, $user->id, 'all');
+        $attempts = hippotrack_get_user_attempts($hippotrack->id, $user->id, 'all');
         $canviewgrade = false;
         if ($attempts) {
             if ($USER->id != $user->id) {
@@ -532,12 +532,12 @@ class mod_hippotrack_external extends external_api {
                 $canviewgrade = true;
             } else {
                 // Work out which columns we need, taking account what data is available in each attempt.
-                [$notused, $alloptions] = hippotrack_get_combined_reviewoptions($quiz, $attempts);
+                [$notused, $alloptions] = hippotrack_get_combined_reviewoptions($hippotrack, $attempts);
                 $canviewgrade = $alloptions->marks >= question_display_options::MARK_AND_MAX;
             }
         }
 
-        $grade = $canviewgrade ? hippotrack_get_best_grade($quiz, $user->id) : null;
+        $grade = $canviewgrade ? hippotrack_get_best_grade($hippotrack, $user->id) : null;
 
         if ($grade === null) {
             $result['hasgrade'] = false;
@@ -547,7 +547,7 @@ class mod_hippotrack_external extends external_api {
         }
 
         // Inform user of the grade to pass if non-zero.
-        $gradinginfo = grade_get_grades($course->id, 'mod', 'quiz', $quiz->id, $user->id);
+        $gradinginfo = grade_get_grades($course->id, 'mod', 'hippotrack', $hippotrack->id, $user->id);
         if (!empty($gradinginfo->items)) {
             $item = $gradinginfo->items[0];
 
@@ -569,9 +569,9 @@ class mod_hippotrack_external extends external_api {
     public static function get_user_best_grade_returns() {
         return new external_single_structure(
             array(
-                'hasgrade' => new external_value(PARAM_BOOL, 'Whether the user has a grade on the given quiz.'),
+                'hasgrade' => new external_value(PARAM_BOOL, 'Whether the user has a grade on the given hippotrack.'),
                 'grade' => new external_value(PARAM_FLOAT, 'The grade (only if the user has a grade).', VALUE_OPTIONAL),
-                'gradetopass' => new external_value(PARAM_FLOAT, 'The grade to pass the quiz (only if set).', VALUE_OPTIONAL),
+                'gradetopass' => new external_value(PARAM_FLOAT, 'The grade to pass the hippotrack (only if set).', VALUE_OPTIONAL),
                 'warnings' => new external_warnings(),
             )
         );
@@ -586,7 +586,7 @@ class mod_hippotrack_external extends external_api {
     public static function get_combined_review_options_parameters() {
         return new external_function_parameters (
             array(
-                'quizid' => new external_value(PARAM_INT, 'quiz instance id'),
+                'hippotrackid' => new external_value(PARAM_INT, 'hippotrack instance id'),
                 'userid' => new external_value(PARAM_INT, 'user id (empty for current user)', VALUE_DEFAULT, 0),
 
             )
@@ -594,25 +594,25 @@ class mod_hippotrack_external extends external_api {
     }
 
     /**
-     * Combines the review options from a number of different quiz attempts.
+     * Combines the review options from a number of different hippotrack attempts.
      *
-     * @param int $quizid quiz instance id
+     * @param int $hippotrackid hippotrack instance id
      * @param int $userid user id (empty for current user)
      * @return array of warnings and the review options
      * @since Moodle 3.1
      */
-    public static function get_combined_review_options($quizid, $userid = 0) {
+    public static function get_combined_review_options($hippotrackid, $userid = 0) {
         global $DB, $USER;
 
         $warnings = array();
 
         $params = array(
-            'quizid' => $quizid,
+            'hippotrackid' => $hippotrackid,
             'userid' => $userid,
         );
         $params = self::validate_parameters(self::get_combined_review_options_parameters(), $params);
 
-        list($quiz, $course, $cm, $context) = self::validate_quiz($params['quizid']);
+        list($hippotrack, $course, $cm, $context) = self::validate_hippotrack($params['hippotrackid']);
 
         // Default value for userid.
         if (empty($params['userid'])) {
@@ -627,13 +627,13 @@ class mod_hippotrack_external extends external_api {
             require_capability('mod/hippotrack:viewreports', $context);
         }
 
-        $attempts = hippotrack_get_user_attempts($quiz->id, $user->id, 'all', true);
+        $attempts = hippotrack_get_user_attempts($hippotrack->id, $user->id, 'all', true);
 
         $result = array();
         $result['someoptions'] = [];
         $result['alloptions'] = [];
 
-        list($someoptions, $alloptions) = hippotrack_get_combined_reviewoptions($quiz, $attempts);
+        list($someoptions, $alloptions) = hippotrack_get_combined_reviewoptions($hippotrack, $attempts);
 
         foreach (array('someoptions', 'alloptions') as $typeofoption) {
             foreach ($$typeofoption as $key => $value) {
@@ -687,7 +687,7 @@ class mod_hippotrack_external extends external_api {
     public static function start_attempt_parameters() {
         return new external_function_parameters (
             array(
-                'quizid' => new external_value(PARAM_INT, 'quiz instance id'),
+                'hippotrackid' => new external_value(PARAM_INT, 'hippotrack instance id'),
                 'preflightdata' => new external_multiple_structure(
                     new external_single_structure(
                         array(
@@ -703,53 +703,53 @@ class mod_hippotrack_external extends external_api {
     }
 
     /**
-     * Starts a new attempt at a quiz.
+     * Starts a new attempt at a hippotrack.
      *
-     * @param int $quizid quiz instance id
+     * @param int $hippotrackid hippotrack instance id
      * @param array $preflightdata preflight required data (like passwords)
      * @param bool $forcenew Whether to force a new attempt or not.
      * @return array of warnings and the attempt basic data
      * @since Moodle 3.1
      * @throws moodle_hippotrack_exception
      */
-    public static function start_attempt($quizid, $preflightdata = array(), $forcenew = false) {
+    public static function start_attempt($hippotrackid, $preflightdata = array(), $forcenew = false) {
         global $DB, $USER;
 
         $warnings = array();
         $attempt = array();
 
         $params = array(
-            'quizid' => $quizid,
+            'hippotrackid' => $hippotrackid,
             'preflightdata' => $preflightdata,
             'forcenew' => $forcenew,
         );
         $params = self::validate_parameters(self::start_attempt_parameters(), $params);
         $forcenew = $params['forcenew'];
 
-        list($quiz, $course, $cm, $context) = self::validate_quiz($params['quizid']);
+        list($hippotrack, $course, $cm, $context) = self::validate_hippotrack($params['hippotrackid']);
 
-        $quizobj = quiz::create($cm->instance, $USER->id);
+        $hippotrackobj = hippotrack::create($cm->instance, $USER->id);
 
         // Check questions.
-        if (!$quizobj->has_questions()) {
-            throw new moodle_hippotrack_exception($quizobj, 'noquestionsfound');
+        if (!$hippotrackobj->has_questions()) {
+            throw new moodle_hippotrack_exception($hippotrackobj, 'noquestionsfound');
         }
 
         // Create an object to manage all the other (non-roles) access rules.
         $timenow = time();
-        $accessmanager = $quizobj->get_access_manager($timenow);
+        $accessmanager = $hippotrackobj->get_access_manager($timenow);
 
         // Validate permissions for creating a new attempt and start a new preview attempt if required.
         list($currentattemptid, $attemptnumber, $lastattempt, $messages, $page) =
-            hippotrack_validate_new_attempt($quizobj, $accessmanager, $forcenew, -1, false);
+            hippotrack_validate_new_attempt($hippotrackobj, $accessmanager, $forcenew, -1, false);
 
         // Check access.
-        if (!$quizobj->is_preview_user() && $messages) {
+        if (!$hippotrackobj->is_preview_user() && $messages) {
             // Create warnings with the exact messages.
             foreach ($messages as $message) {
                 $warnings[] = array(
-                    'item' => 'quiz',
-                    'itemid' => $quiz->id,
+                    'item' => 'hippotrack',
+                    'itemid' => $hippotrack->id,
                     'warningcode' => '1',
                     'message' => clean_text($message, PARAM_TEXT)
                 );
@@ -766,7 +766,7 @@ class mod_hippotrack_external extends external_api {
                 $errors = $accessmanager->validate_preflight_check($provideddata, [], $currentattemptid);
 
                 if (!empty($errors)) {
-                    throw new moodle_hippotrack_exception($quizobj, array_shift($errors));
+                    throw new moodle_hippotrack_exception($hippotrackobj, array_shift($errors));
                 }
 
                 // Pre-flight check passed.
@@ -775,13 +775,13 @@ class mod_hippotrack_external extends external_api {
 
             if ($currentattemptid) {
                 if ($lastattempt->state == hippotrack_attempt::OVERDUE) {
-                    throw new moodle_hippotrack_exception($quizobj, 'stateoverdue');
+                    throw new moodle_hippotrack_exception($hippotrackobj, 'stateoverdue');
                 } else {
-                    throw new moodle_hippotrack_exception($quizobj, 'attemptstillinprogress');
+                    throw new moodle_hippotrack_exception($hippotrackobj, 'attemptstillinprogress');
                 }
             }
             $offlineattempt = WS_SERVER ? true : false;
-            $attempt = hippotrack_prepare_and_start_new_attempt($quizobj, $attemptnumber, $lastattempt, $offlineattempt);
+            $attempt = hippotrack_prepare_and_start_new_attempt($hippotrackobj, $attemptnumber, $lastattempt, $offlineattempt);
         }
 
         $result = array();
@@ -809,7 +809,7 @@ class mod_hippotrack_external extends external_api {
      * Utility function for validating a given attempt
      *
      * @param  array $params array of parameters including the attemptid and preflight data
-     * @param  bool $checkaccessrules whether to check the quiz access rules or not
+     * @param  bool $checkaccessrules whether to check the hippotrack access rules or not
      * @param  bool $failifoverdue whether to return error if the attempt is overdue
      * @return  array containing the attempt object and access messages
      * @throws moodle_hippotrack_exception
@@ -825,7 +825,7 @@ class mod_hippotrack_external extends external_api {
 
         // Check that this attempt belongs to this user.
         if ($attemptobj->get_userid() != $USER->id) {
-            throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'notyourattempt');
+            throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'notyourattempt');
         }
 
         // General capabilities check.
@@ -843,18 +843,18 @@ class mod_hippotrack_external extends external_api {
 
             $messages = $accessmanager->prevent_access();
             if (!$ispreviewuser && $messages) {
-                throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'attempterror');
+                throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'attempterror');
             }
         }
 
         // Attempt closed?.
         if ($attemptobj->is_finished()) {
-            throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'attemptalreadyclosed');
+            throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'attemptalreadyclosed');
         } else if ($failifoverdue && $attemptobj->get_state() == hippotrack_attempt::OVERDUE) {
-            throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'stateoverdue');
+            throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'stateoverdue');
         }
 
-        // User submitted data (like the quiz password).
+        // User submitted data (like the hippotrack password).
         if ($accessmanager->is_preflight_check_required($attemptobj->get_attemptid())) {
             $provideddata = array();
             foreach ($params['preflightdata'] as $data) {
@@ -863,7 +863,7 @@ class mod_hippotrack_external extends external_api {
 
             $errors = $accessmanager->validate_preflight_check($provideddata, [], $params['attemptid']);
             if (!empty($errors)) {
-                throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), array_shift($errors));
+                throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), array_shift($errors));
             }
             // Pre-flight check passed.
             $accessmanager->notify_preflight_check_passed($params['attemptid']);
@@ -872,19 +872,19 @@ class mod_hippotrack_external extends external_api {
         if (isset($params['page'])) {
             // Check if the page is out of range.
             if ($params['page'] != $attemptobj->force_page_number_into_range($params['page'])) {
-                throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'Invalid page number');
+                throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'Invalid page number');
             }
 
             // Prevent out of sequence access.
             if (!$attemptobj->check_page_access($params['page'])) {
-                throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'Out of sequence access');
+                throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'Out of sequence access');
             }
 
             // Check slots.
             $slots = $attemptobj->get_slots($params['page']);
 
             if (empty($slots)) {
-                throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'noquestionsfound');
+                throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'noquestionsfound');
             }
         }
 
@@ -894,7 +894,7 @@ class mod_hippotrack_external extends external_api {
     /**
      * Describes a single question structure.
      *
-     * @return external_single_structure the question data. Some fields may not be returned depending on the quiz display settings.
+     * @return external_single_structure the question data. Some fields may not be returned depending on the hippotrack display settings.
      * @since  Moodle 3.1
      * @since Moodle 3.2 blockedbyprevious parameter added.
      */
@@ -903,7 +903,7 @@ class mod_hippotrack_external extends external_api {
             array(
                 'slot' => new external_value(PARAM_INT, 'slot number'),
                 'type' => new external_value(PARAM_ALPHANUMEXT, 'question type, i.e: multichoice'),
-                'page' => new external_value(PARAM_INT, 'page of the quiz this question appears on'),
+                'page' => new external_value(PARAM_INT, 'page of the hippotrack this question appears on'),
                 'html' => new external_value(PARAM_RAW, 'the question rendered'),
                 'responsefileareas' => new external_multiple_structure(
                     new external_single_structure(
@@ -919,9 +919,9 @@ class mod_hippotrack_external extends external_api {
                 'hasautosavedstep' => new external_value(PARAM_BOOL, 'whether this question attempt has autosaved data',
                                                             VALUE_OPTIONAL),
                 'flagged' => new external_value(PARAM_BOOL, 'whether the question is flagged or not'),
-                'number' => new external_value(PARAM_INT, 'question ordering number in the quiz', VALUE_OPTIONAL),
+                'number' => new external_value(PARAM_INT, 'question ordering number in the hippotrack', VALUE_OPTIONAL),
                 'state' => new external_value(PARAM_ALPHA, 'the state where the question is in.
-                    It will not be returned if the user cannot see it due to the quiz display correctness settings.',
+                    It will not be returned if the user cannot see it due to the hippotrack display correctness settings.',
                     VALUE_OPTIONAL),
                 'status' => new external_value(PARAM_RAW, 'current formatted state of the question', VALUE_OPTIONAL),
                 'blockedbyprevious' => new external_value(PARAM_BOOL, 'whether the question is blocked by the previous question',
@@ -932,14 +932,14 @@ class mod_hippotrack_external extends external_api {
                     It will be returned only if the user is allowed to see it.', VALUE_OPTIONAL),
                 'settings' => new external_value(PARAM_RAW, 'Question settings (JSON encoded).', VALUE_OPTIONAL),
             ),
-            'The question data. Some fields may not be returned depending on the quiz display settings.'
+            'The question data. Some fields may not be returned depending on the hippotrack display settings.'
         );
     }
 
     /**
      * Return questions information for a given attempt.
      *
-     * @param  hippotrack_attempt  $attemptobj  the quiz attempt object
+     * @param  hippotrack_attempt  $attemptobj  the hippotrack attempt object
      * @param  bool  $review  whether if we are in review mode or not
      * @param  mixed  $page  string 'all' or integer page number
      * @return array array of questions including data
@@ -948,10 +948,10 @@ class mod_hippotrack_external extends external_api {
         global $PAGE;
 
         $questions = array();
-        $contextid = $attemptobj->get_quizobj()->get_context()->id;
+        $contextid = $attemptobj->get_hippotrackobj()->get_context()->id;
         $displayoptions = $attemptobj->get_display_options($review);
         $renderer = $PAGE->get_renderer('mod_hippotrack');
-        $contextid = $attemptobj->get_quizobj()->get_context()->id;
+        $contextid = $attemptobj->get_hippotrackobj()->get_context()->id;
 
         foreach ($attemptobj->get_slots($page) as $slot) {
             $qtype = $attemptobj->get_question_type_name($slot);
@@ -1040,7 +1040,7 @@ class mod_hippotrack_external extends external_api {
     }
 
     /**
-     * Returns information for the given attempt page for a quiz attempt in progress.
+     * Returns information for the given attempt page for a hippotrack attempt in progress.
      *
      * @param int $attemptid attempt id
      * @param int $page page number
@@ -1127,7 +1127,7 @@ class mod_hippotrack_external extends external_api {
     }
 
     /**
-     * Returns a summary of a quiz attempt before it is submitted.
+     * Returns a summary of a hippotrack attempt before it is submitted.
      *
      * @param int $attemptid attempt id
      * @param int $preflightdata preflight required data (like passwords)
@@ -1199,7 +1199,7 @@ class mod_hippotrack_external extends external_api {
     }
 
     /**
-     * Processes save requests during the quiz. This function is intended for the quiz auto-save feature.
+     * Processes save requests during the hippotrack. This function is intended for the hippotrack auto-save feature.
      *
      * @param int $attemptid attempt id
      * @param array $data the data to be saved
@@ -1296,7 +1296,7 @@ class mod_hippotrack_external extends external_api {
     }
 
     /**
-     * Process responses during an attempt at a quiz and also deals with attempts finishing.
+     * Process responses during an attempt at a hippotrack and also deals with attempts finishing.
      *
      * @param int $attemptid attempt id
      * @param array $data the data to be saved
@@ -1322,7 +1322,7 @@ class mod_hippotrack_external extends external_api {
 
         // Do not check access manager rules and evaluate fail if overdue.
         $attemptobj = hippotrack_attempt::create($params['attemptid']);
-        $failifoverdue = !($attemptobj->get_quizobj()->get_quiz()->overduehandling == 'graceperiod');
+        $failifoverdue = !($attemptobj->get_hippotrackobj()->get_hippotrack()->overduehandling == 'graceperiod');
 
         list($attemptobj, $messages) = self::validate_attempt($params, false, $failifoverdue);
 
@@ -1382,13 +1382,13 @@ class mod_hippotrack_external extends external_api {
         $displayoptions = $attemptobj->get_display_options(true);
         if ($attemptobj->is_own_attempt()) {
             if (!$attemptobj->is_finished()) {
-                throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'attemptclosed');
+                throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'attemptclosed');
             } else if (!$displayoptions->attempt) {
-                throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'noreview', null, '',
+                throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'noreview', null, '',
                     $attemptobj->cannot_review_message());
             }
         } else if (!$attemptobj->is_review_allowed()) {
-            throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'noreviewattempt');
+            throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'noreviewattempt');
         }
         return array($attemptobj, $displayoptions);
     }
@@ -1450,13 +1450,13 @@ class mod_hippotrack_external extends external_api {
             // This text does not need formatting (no need for external_format_[string|text]).
             $result['additionaldata'][] = array(
                 'id' => $key,
-                'title' => $data['title'], $attemptobj->get_quizobj()->get_context()->id,
+                'title' => $data['title'], $attemptobj->get_hippotrackobj()->get_context()->id,
                 'content' => $data['content'],
             );
         }
 
         // Feedback if there is any, and the user is allowed to see it now.
-        $grade = hippotrack_rescale_grade($attemptobj->get_attempt()->sumgrades, $attemptobj->get_quiz(), false);
+        $grade = hippotrack_rescale_grade($attemptobj->get_attempt()->sumgrades, $attemptobj->get_hippotrack(), false);
 
         $feedback = $attemptobj->get_overall_feedback($grade);
         if ($displayoptions->overallfeedback && $feedback) {
@@ -1481,7 +1481,7 @@ class mod_hippotrack_external extends external_api {
     public static function get_attempt_review_returns() {
         return new external_single_structure(
             array(
-                'grade' => new external_value(PARAM_RAW, 'grade for the quiz (or empty or "notyetgraded")'),
+                'grade' => new external_value(PARAM_RAW, 'grade for the hippotrack (or empty or "notyetgraded")'),
                 'attempt' => self::attempt_structure(),
                 'additionaldata' => new external_multiple_structure(
                     new external_single_structure(
@@ -1547,7 +1547,7 @@ class mod_hippotrack_external extends external_api {
 
         // Update attempt page, throwing an exception if $page is not valid.
         if (!$attemptobj->set_currentpage($params['page'])) {
-            throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'Out of sequence access');
+            throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'Out of sequence access');
         }
 
         $result = array();
@@ -1692,7 +1692,7 @@ class mod_hippotrack_external extends external_api {
     }
 
     /**
-     * Describes the parameters for view_quiz.
+     * Describes the parameters for view_hippotrack.
      *
      * @return external_function_parameters
      * @since Moodle 3.1
@@ -1700,38 +1700,38 @@ class mod_hippotrack_external extends external_api {
     public static function get_hippotrack_feedback_for_grade_parameters() {
         return new external_function_parameters (
             array(
-                'quizid' => new external_value(PARAM_INT, 'quiz instance id'),
+                'hippotrackid' => new external_value(PARAM_INT, 'hippotrack instance id'),
                 'grade' => new external_value(PARAM_FLOAT, 'the grade to check'),
             )
         );
     }
 
     /**
-     * Get the feedback text that should be show to a student who got the given grade in the given quiz.
+     * Get the feedback text that should be show to a student who got the given grade in the given hippotrack.
      *
-     * @param int $quizid quiz instance id
+     * @param int $hippotrackid hippotrack instance id
      * @param float $grade the grade to check
      * @return array of warnings and status result
      * @since Moodle 3.1
      * @throws moodle_exception
      */
-    public static function get_hippotrack_feedback_for_grade($quizid, $grade) {
+    public static function get_hippotrack_feedback_for_grade($hippotrackid, $grade) {
         global $DB;
 
         $params = array(
-            'quizid' => $quizid,
+            'hippotrackid' => $hippotrackid,
             'grade' => $grade,
         );
         $params = self::validate_parameters(self::get_hippotrack_feedback_for_grade_parameters(), $params);
         $warnings = array();
 
-        list($quiz, $course, $cm, $context) = self::validate_quiz($params['quizid']);
+        list($hippotrack, $course, $cm, $context) = self::validate_hippotrack($params['hippotrackid']);
 
         $result = array();
         $result['feedbacktext'] = '';
         $result['feedbacktextformat'] = FORMAT_MOODLE;
 
-        $feedback = hippotrack_feedback_record_for_grade($params['grade'], $quiz);
+        $feedback = hippotrack_feedback_record_for_grade($params['grade'], $hippotrack);
         if (!empty($feedback->feedbacktext)) {
             list($text, $format) = external_format_text($feedback->feedbacktext, $feedback->feedbacktextformat, $context->id,
                                                         'mod_hippotrack', 'feedback', $feedback->id);
@@ -1773,30 +1773,30 @@ class mod_hippotrack_external extends external_api {
     public static function get_hippotrack_access_information_parameters() {
         return new external_function_parameters (
             array(
-                'quizid' => new external_value(PARAM_INT, 'quiz instance id')
+                'hippotrackid' => new external_value(PARAM_INT, 'hippotrack instance id')
             )
         );
     }
 
     /**
-     * Return access information for a given quiz.
+     * Return access information for a given hippotrack.
      *
-     * @param int $quizid quiz instance id
+     * @param int $hippotrackid hippotrack instance id
      * @return array of warnings and the access information
      * @since Moodle 3.1
      * @throws  moodle_hippotrack_exception
      */
-    public static function get_hippotrack_access_information($quizid) {
+    public static function get_hippotrack_access_information($hippotrackid) {
         global $DB, $USER;
 
         $warnings = array();
 
         $params = array(
-            'quizid' => $quizid
+            'hippotrackid' => $hippotrackid
         );
         $params = self::validate_parameters(self::get_hippotrack_access_information_parameters(), $params);
 
-        list($quiz, $course, $cm, $context) = self::validate_quiz($params['quizid']);
+        list($hippotrack, $course, $cm, $context) = self::validate_hippotrack($params['hippotrackid']);
 
         $result = array();
         // Capabilities first.
@@ -1807,10 +1807,10 @@ class mod_hippotrack_external extends external_api {
         $result['canviewreports'] = has_capability('mod/hippotrack:viewreports', $context);;
 
         // Access manager now.
-        $quizobj = quiz::create($cm->instance, $USER->id);
+        $hippotrackobj = hippotrack::create($cm->instance, $USER->id);
         $ignoretimelimits = has_capability('mod/hippotrack:ignoretimelimits', $context, null, false);
         $timenow = time();
-        $accessmanager = new hippotrack_access_manager($quizobj, $timenow, $ignoretimelimits);
+        $accessmanager = new hippotrack_access_manager($hippotrackobj, $timenow, $ignoretimelimits);
 
         $result['accessrules'] = $accessmanager->describe_rules();
         $result['activerulenames'] = $accessmanager->get_active_rule_names();
@@ -1829,12 +1829,12 @@ class mod_hippotrack_external extends external_api {
     public static function get_hippotrack_access_information_returns() {
         return new external_single_structure(
             array(
-                'canattempt' => new external_value(PARAM_BOOL, 'Whether the user can do the quiz or not.'),
-                'canmanage' => new external_value(PARAM_BOOL, 'Whether the user can edit the quiz settings or not.'),
-                'canpreview' => new external_value(PARAM_BOOL, 'Whether the user can preview the quiz or not.'),
+                'canattempt' => new external_value(PARAM_BOOL, 'Whether the user can do the hippotrack or not.'),
+                'canmanage' => new external_value(PARAM_BOOL, 'Whether the user can edit the hippotrack settings or not.'),
+                'canpreview' => new external_value(PARAM_BOOL, 'Whether the user can preview the hippotrack or not.'),
                 'canreviewmyattempts' => new external_value(PARAM_BOOL, 'Whether the users can review their previous attempts
                                                                 or not.'),
-                'canviewreports' => new external_value(PARAM_BOOL, 'Whether the user can view the quiz reports or not.'),
+                'canviewreports' => new external_value(PARAM_BOOL, 'Whether the user can view the hippotrack reports or not.'),
                 'accessrules' => new external_multiple_structure(
                                     new external_value(PARAM_TEXT, 'rule description'), 'list of rules'),
                 'activerulenames' => new external_multiple_structure(
@@ -1855,56 +1855,56 @@ class mod_hippotrack_external extends external_api {
     public static function get_attempt_access_information_parameters() {
         return new external_function_parameters (
             array(
-                'quizid' => new external_value(PARAM_INT, 'quiz instance id'),
+                'hippotrackid' => new external_value(PARAM_INT, 'hippotrack instance id'),
                 'attemptid' => new external_value(PARAM_INT, 'attempt id, 0 for the user last attempt if exists', VALUE_DEFAULT, 0),
             )
         );
     }
 
     /**
-     * Return access information for a given attempt in a quiz.
+     * Return access information for a given attempt in a hippotrack.
      *
-     * @param int $quizid quiz instance id
+     * @param int $hippotrackid hippotrack instance id
      * @param int $attemptid attempt id, 0 for the user last attempt if exists
      * @return array of warnings and the access information
      * @since Moodle 3.1
      * @throws  moodle_hippotrack_exception
      */
-    public static function get_attempt_access_information($quizid, $attemptid = 0) {
+    public static function get_attempt_access_information($hippotrackid, $attemptid = 0) {
         global $DB, $USER;
 
         $warnings = array();
 
         $params = array(
-            'quizid' => $quizid,
+            'hippotrackid' => $hippotrackid,
             'attemptid' => $attemptid,
         );
         $params = self::validate_parameters(self::get_attempt_access_information_parameters(), $params);
 
-        list($quiz, $course, $cm, $context) = self::validate_quiz($params['quizid']);
+        list($hippotrack, $course, $cm, $context) = self::validate_hippotrack($params['hippotrackid']);
 
         $attempttocheck = 0;
         if (!empty($params['attemptid'])) {
             $attemptobj = hippotrack_attempt::create($params['attemptid']);
             if ($attemptobj->get_userid() != $USER->id) {
-                throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'notyourattempt');
+                throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'notyourattempt');
             }
             $attempttocheck = $attemptobj->get_attempt();
         }
 
         // Access manager now.
-        $quizobj = quiz::create($cm->instance, $USER->id);
+        $hippotrackobj = hippotrack::create($cm->instance, $USER->id);
         $ignoretimelimits = has_capability('mod/hippotrack:ignoretimelimits', $context, null, false);
         $timenow = time();
-        $accessmanager = new hippotrack_access_manager($quizobj, $timenow, $ignoretimelimits);
+        $accessmanager = new hippotrack_access_manager($hippotrackobj, $timenow, $ignoretimelimits);
 
-        $attempts = hippotrack_get_user_attempts($quiz->id, $USER->id, 'finished', true);
+        $attempts = hippotrack_get_user_attempts($hippotrack->id, $USER->id, 'finished', true);
         $lastfinishedattempt = end($attempts);
-        if ($unfinishedattempt = hippotrack_get_user_attempt_unfinished($quiz->id, $USER->id)) {
+        if ($unfinishedattempt = hippotrack_get_user_attempt_unfinished($hippotrack->id, $USER->id)) {
             $attempts[] = $unfinishedattempt;
 
             // Check if the attempt is now overdue. In that case the state will change.
-            $quizobj->create_attempt_object($unfinishedattempt)->handle_if_time_expired(time(), false);
+            $hippotrackobj->create_attempt_object($unfinishedattempt)->handle_if_time_expired(time(), false);
 
             if ($unfinishedattempt->state != hippotrack_attempt::IN_PROGRESS and $unfinishedattempt->state != hippotrack_attempt::OVERDUE) {
                 $lastfinishedattempt = $unfinishedattempt;
@@ -1962,39 +1962,39 @@ class mod_hippotrack_external extends external_api {
     public static function get_hippotrack_required_qtypes_parameters() {
         return new external_function_parameters (
             array(
-                'quizid' => new external_value(PARAM_INT, 'quiz instance id')
+                'hippotrackid' => new external_value(PARAM_INT, 'hippotrack instance id')
             )
         );
     }
 
     /**
-     * Return the potential question types that would be required for a given quiz.
+     * Return the potential question types that would be required for a given hippotrack.
      * Please note that for random question types we return the potential question types in the category choosen.
      *
-     * @param int $quizid quiz instance id
+     * @param int $hippotrackid hippotrack instance id
      * @return array of warnings and the access information
      * @since Moodle 3.1
      * @throws  moodle_hippotrack_exception
      */
-    public static function get_hippotrack_required_qtypes($quizid) {
+    public static function get_hippotrack_required_qtypes($hippotrackid) {
         global $DB, $USER;
 
         $warnings = array();
 
         $params = array(
-            'quizid' => $quizid
+            'hippotrackid' => $hippotrackid
         );
         $params = self::validate_parameters(self::get_hippotrack_required_qtypes_parameters(), $params);
 
-        list($quiz, $course, $cm, $context) = self::validate_quiz($params['quizid']);
+        list($hippotrack, $course, $cm, $context) = self::validate_hippotrack($params['hippotrackid']);
 
-        $quizobj = quiz::create($cm->instance, $USER->id);
-        $quizobj->preload_questions();
-        $quizobj->load_questions();
+        $hippotrackobj = hippotrack::create($cm->instance, $USER->id);
+        $hippotrackobj->preload_questions();
+        $hippotrackobj->load_questions();
 
         // Question types used.
         $result = array();
-        $result['questiontypes'] = $quizobj->get_all_question_types_used(true);
+        $result['questiontypes'] = $hippotrackobj->get_all_question_types_used(true);
         $result['warnings'] = $warnings;
         return $result;
     }
@@ -2009,7 +2009,7 @@ class mod_hippotrack_external extends external_api {
         return new external_single_structure(
             array(
                 'questiontypes' => new external_multiple_structure(
-                                    new external_value(PARAM_PLUGIN, 'question type'), 'list of question types used in the quiz'),
+                                    new external_value(PARAM_PLUGIN, 'question type'), 'list of question types used in the hippotrack'),
                 'warnings' => new external_warnings(),
             )
         );

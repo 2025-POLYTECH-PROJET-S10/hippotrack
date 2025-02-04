@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Manage the access to the quiz.
+ * Manage the access to the hippotrack.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Tim Hunt
  * @author     Luca Bösch <luca.boesch@bfh.ch>
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
@@ -26,15 +26,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_seb;
+namespace hippotrackaccess_seb;
 
 use context_module;
-use quiz;
+use hippotrack;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Manage the access to the quiz.
+ * Manage the access to the hippotrack.
  *
  * @copyright  2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -47,13 +47,13 @@ class access_manager {
     /** Header sent by Safe Exam Browser containing the Browser Exam Key hash. */
     private const BROWSER_EXAM_KEY_HEADER = 'HTTP_X_SAFEEXAMBROWSER_REQUESTHASH';
 
-    /** @var quiz $quiz A quiz object containing all information pertaining to current quiz. */
-    private $quiz;
+    /** @var hippotrack $hippotrack A hippotrack object containing all information pertaining to current hippotrack. */
+    private $hippotrack;
 
-    /** @var hippotrack_settings $quizsettings A quiz settings persistent object containing plugin settings */
-    private $quizsettings;
+    /** @var hippotrack_settings $hippotracksettings A hippotrack settings persistent object containing plugin settings */
+    private $hippotracksettings;
 
-    /** @var context_module $context Context of this quiz activity. */
+    /** @var context_module $context Context of this hippotrack activity. */
     private $context;
 
     /** @var string|null $validconfigkey Expected valid SEB config key. */
@@ -62,13 +62,13 @@ class access_manager {
     /**
      * The access_manager constructor.
      *
-     * @param quiz $quiz The details of the quiz.
+     * @param hippotrack $hippotrack The details of the hippotrack.
      */
-    public function __construct(quiz $quiz) {
-        $this->quiz = $quiz;
-        $this->context = context_module::instance($quiz->get_cmid());
-        $this->quizsettings = hippotrack_settings::get_by_hippotrack_id($quiz->get_quizid());
-        $this->validconfigkey = hippotrack_settings::get_config_key_by_hippotrack_id($quiz->get_quizid());
+    public function __construct(hippotrack $hippotrack) {
+        $this->hippotrack = $hippotrack;
+        $this->context = context_module::instance($hippotrack->get_cmid());
+        $this->hippotracksettings = hippotrack_settings::get_by_hippotrack_id($hippotrack->get_hippotrackid());
+        $this->validconfigkey = hippotrack_settings::get_config_key_by_hippotrack_id($hippotrack->get_hippotrackid());
     }
 
     /**
@@ -93,7 +93,7 @@ class access_manager {
             $browserexamkey = $this->get_received_browser_exam_key();
         }
 
-        $validbrowserexamkeys = $this->quizsettings->get('allowedbrowserexamkeys');
+        $validbrowserexamkeys = $this->hippotracksettings->get('allowedbrowserexamkeys');
 
         // If the Browser Exam Key header isn't present, prevent access.
         if (is_null($browserexamkey)) {
@@ -141,13 +141,13 @@ class access_manager {
     }
 
     /**
-     * Check if Safe Exam Browser is required to access quiz.
-     * If quizsettings do not exist, then there is no requirement for using SEB.
+     * Check if Safe Exam Browser is required to access hippotrack.
+     * If hippotracksettings do not exist, then there is no requirement for using SEB.
      *
      * @return bool If required.
      */
     public function seb_required() : bool {
-        if (!$this->quizsettings) {
+        if (!$this->hippotracksettings) {
             return false;
         } else {
             return $this->get_seb_use_type() != settings_provider::USE_SEB_NO;
@@ -155,7 +155,7 @@ class access_manager {
     }
 
     /**
-     * This is the basic check for the Safe Exam Browser previously used in the quizaccess_safebrowser plugin that
+     * This is the basic check for the Safe Exam Browser previously used in the hippotrackaccess_safebrowser plugin that
      * managed basic Moodle interactions with SEB.
      *
      * @return bool
@@ -191,7 +191,7 @@ class access_manager {
      * @return bool True if user can bypass check.
      */
     public function can_bypass_seb(): bool {
-        return has_capability('quizaccess/seb:bypassseb', $this->context);
+        return has_capability('hippotrackaccess/seb:bypassseb', $this->context);
     }
 
     /**
@@ -217,21 +217,21 @@ class access_manager {
     }
 
     /**
-     * Getter for the quiz object.
+     * Getter for the hippotrack object.
      *
-     * @return quiz
+     * @return hippotrack
      */
-    public function get_quiz() : quiz {
-        return $this->quiz;
+    public function get_hippotrack() : hippotrack {
+        return $this->hippotrack;
     }
 
     /**
-     * Check that at least one browser exam key exists in the quiz settings.
+     * Check that at least one browser exam key exists in the hippotrack settings.
      *
-     * @return bool True if one or more keys are set in quiz settings.
+     * @return bool True if one or more keys are set in hippotrack settings.
      */
     private function is_allowed_browser_examkeys_configured(): bool {
-        return !empty($this->quizsettings->get('allowedbrowserexamkeys'));
+        return !empty($this->hippotracksettings->get('allowedbrowserexamkeys'));
     }
 
     /**
@@ -293,15 +293,15 @@ class access_manager {
     }
 
     /**
-     * Get type of SEB usage for the quiz.
+     * Get type of SEB usage for the hippotrack.
      *
      * @return int
      */
     public function get_seb_use_type(): int {
-        if (empty($this->quizsettings)) {
+        if (empty($this->hippotracksettings)) {
             return settings_provider::USE_SEB_NO;
         } else {
-            return $this->quizsettings->get('requiresafeexambrowser');
+            return $this->hippotracksettings->get('requiresafeexambrowser');
         }
     }
 
@@ -341,34 +341,34 @@ class access_manager {
     }
 
     /**
-     * Set session access for quiz.
+     * Set session access for hippotrack.
      *
      * @param bool $accessallowed
      */
     public function set_session_access(bool $accessallowed): void {
         global $SESSION;
-        if (!isset($SESSION->quizaccess_seb_access)) {
-            $SESSION->quizaccess_seb_access = [];
+        if (!isset($SESSION->hippotrackaccess_seb_access)) {
+            $SESSION->hippotrackaccess_seb_access = [];
         }
-        $SESSION->quizaccess_seb_access[$this->quiz->get_cmid()] = $accessallowed;
+        $SESSION->hippotrackaccess_seb_access[$this->hippotrack->get_cmid()] = $accessallowed;
     }
 
     /**
-     * Check session access for quiz if already set.
+     * Check session access for hippotrack if already set.
      *
      * @return bool
      */
     public function validate_session_access(): bool {
         global $SESSION;
-        return !empty($SESSION->quizaccess_seb_access[$this->quiz->get_cmid()]);
+        return !empty($SESSION->hippotrackaccess_seb_access[$this->hippotrack->get_cmid()]);
     }
 
     /**
-     * Unset the global session access variable for this quiz.
+     * Unset the global session access variable for this hippotrack.
      */
     public function clear_session_access(): void {
         global $SESSION;
-        unset($SESSION->quizaccess_seb_access[$this->quiz->get_cmid()]);
+        unset($SESSION->hippotrackaccess_seb_access[$this->hippotrack->get_cmid()]);
     }
 
     /**
@@ -377,7 +377,7 @@ class access_manager {
     public function redirect_to_seb_config_link(): void {
         global $PAGE;
 
-        $seblink = \quizaccess_seb\link_generator::get_link($this->quiz->get_cmid(), true, is_https());
+        $seblink = \hippotrackaccess_seb\link_generator::get_link($this->hippotrack->get_cmid(), true, is_https());
         $PAGE->requires->js_amd_inline("document.location.replace('" . $seblink . "')");
     }
 
@@ -392,7 +392,7 @@ class access_manager {
         $haskeyinheader = !is_null($this->get_received_config_key());
 
         return $this->is_using_seb()
-                && get_config('quizaccess_seb', 'autoreconfigureseb')
+                && get_config('hippotrackaccess_seb', 'autoreconfigureseb')
                 && $haskeyinheader;
     }
 }

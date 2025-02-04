@@ -1,5 +1,5 @@
 @mod @mod_hippotrack @javascript
-Feature: Adding random questions to a quiz based on category and tags
+Feature: Adding random questions to a hippotrack based on category and tags
   In order to have better assessment
   As a teacher
   I want to display questions that are randomly picked from the question bank
@@ -16,7 +16,7 @@ Feature: Adding random questions to a quiz based on category and tags
       | teacher1 | C1     | editingteacher |
     And the following "activities" exist:
       | activity   | name   | intro                                           | course | idnumber |
-      | quiz       | Quiz 1 | Quiz 1 for testing the Add random question form | C1     | quiz1    |
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 for testing the Add random question form | C1     | hippotrack1    |
     And the following "question categories" exist:
       | contextlevel | reference | name                 |
       | Course       | C1        | Questions Category 1 |
@@ -40,16 +40,16 @@ Feature: Adding random questions to a quiz based on category and tags
       | "listen" & "answer" | foo |
 
   Scenario: Available tags are shown in the autocomplete tag field
-    Given I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
-    When I open the "last" add to quiz menu
+    Given I am on the "HippoTrack 1" "mod_hippotrack > Edit" page logged in as "teacher1"
+    When I open the "last" add to hippotrack menu
     And I follow "a random question"
     And I open the autocomplete suggestions list
     Then "foo" "autocomplete_suggestions" should exist
     And "bar" "autocomplete_suggestions" should exist
 
   Scenario: Questions can be filtered by tags
-    Given I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
-    When I open the "last" add to quiz menu
+    Given I am on the "HippoTrack 1" "mod_hippotrack > Edit" page logged in as "teacher1"
+    When I open the "last" add to hippotrack menu
     And I follow "a random question"
     And I set the field "Category" to "Top for Course 1"
     And I wait until the page is ready
@@ -72,13 +72,13 @@ Feature: Adding random questions to a quiz based on category and tags
     And I should not see "question 2 name"
     And I should not see "question 4 name"
 
-  Scenario: A random question can be added to the quiz
-    Given I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
-    When I open the "last" add to quiz menu
+  Scenario: A random question can be added to the hippotrack
+    Given I am on the "HippoTrack 1" "mod_hippotrack > Edit" page logged in as "teacher1"
+    When I open the "last" add to hippotrack menu
     And I follow "a random question"
     And I set the field "Tags" to "foo"
     And I press "Add random question"
-    And I should see "Random (Questions Category 1, tags: foo)" on quiz page "1"
+    And I should see "Random (Questions Category 1, tags: foo)" on hippotrack page "1"
     And I click on "(See questions)" "link"
     Then I should see "Questions Category 1"
     And I should see "foo"
@@ -90,19 +90,19 @@ Feature: Adding random questions to a quiz based on category and tags
       | capability             | permission | role           | contextlevel | reference |
       | moodle/question:useall | Prevent    | editingteacher | Course       | C1        |
     And I log in as "teacher1"
-    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
-    When I open the "last" add to quiz menu
+    And I am on the "HippoTrack 1" "mod_hippotrack > Edit" page
+    When I open the "last" add to hippotrack menu
     Then I should not see "a random question"
 
-  Scenario: A random question can be added to the quiz by creating a new category
-    Given I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
-    When I open the "last" add to quiz menu
+  Scenario: A random question can be added to the hippotrack by creating a new category
+    Given I am on the "HippoTrack 1" "mod_hippotrack > Edit" page logged in as "teacher1"
+    When I open the "last" add to hippotrack menu
     And I follow "a random question"
     And I follow "New category"
     And I set the following fields to these values:
       | Name            | New Random category |
-      | Parent category |  Top for Quiz 1     |
+      | Parent category |  Top for HippoTrack 1     |
     And I press "Create category and add random question"
-    And I should see "Random (New Random category)" on quiz page "1"
+    And I should see "Random (New Random category)" on hippotrack page "1"
     And I click on "(See questions)" "link"
-    Then I should see "Top for Quiz 1"
+    Then I should see "Top for HippoTrack 1"

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file defines the setting form for the quiz responses report.
+ * This file defines the setting form for the hippotrack responses report.
  *
  * @package   hippotrack_responses
  * @copyright 2008 Jean-Michel Vedrine
@@ -29,7 +29,7 @@ require_once($CFG->dirroot . '/mod/hippotrack/report/attemptsreport_form.php');
 
 
 /**
- * Quiz responses report settings form.
+ * HippoTrack responses report settings form.
  *
  * @copyright 2008 Jean-Michel Vedrine
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -63,7 +63,7 @@ class hippotrack_responses_settings_form extends mod_hippotrack_attempts_report_
 
     protected function other_attempt_fields(MoodleQuickForm $mform) {
         parent::other_attempt_fields($mform);
-        if (hippotrack_allows_multiple_tries($this->_customdata['quiz'])) {
+        if (hippotrack_allows_multiple_tries($this->_customdata['hippotrack'])) {
             $mform->addElement('select', 'whichtries', get_string('whichtries', 'question'), array(
                                            question_attempt::FIRST_TRY    => get_string('firsttry', 'question'),
                                            question_attempt::LAST_TRY     => get_string('lasttry', 'question'),

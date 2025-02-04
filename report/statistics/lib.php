@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Standard plugin entry points of the quiz statistics report.
+ * Standard plugin entry points of the hippotrack statistics report.
  *
  * @package   hippotrack_statistics
  * @copyright 2011 The Open University
@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @package  hippotrack_statistics
  * @category files
- * @param context $previewcontext the quiz context
+ * @param context $previewcontext the hippotrack context
  * @param int $questionid the question id.
  * @param context $filecontext the file (question) context
  * @param string $filecomponent the component the file belongs to.
@@ -48,7 +48,7 @@ function hippotrack_statistics_question_preview_pluginfile($previewcontext, $que
 
     // Assume only trusted people can see this report. There is no real way to
     // validate questionid, becuase of the complexity of random quetsions.
-    require_capability('quiz/statistics:view', $context);
+    require_capability('hippotrack/statistics:view', $context);
 
     $fs = get_file_storage();
     $relativepath = implode('/', $args);

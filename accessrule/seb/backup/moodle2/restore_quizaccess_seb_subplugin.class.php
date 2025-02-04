@@ -15,88 +15,88 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Restore instructions for the seb (Safe Exam Browser) quiz access subplugin.
+ * Restore instructions for the seb (Safe Exam Browser) hippotrack access subplugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @category   backup
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use quizaccess_seb\hippotrack_settings;
+use hippotrackaccess_seb\hippotrack_settings;
 
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/hippotrack/backup/moodle2/restore_mod_hippotrack_access_subplugin.class.php');
 
 /**
- * Restore instructions for the seb (Safe Exam Browser) quiz access subplugin.
+ * Restore instructions for the seb (Safe Exam Browser) hippotrack access subplugin.
  *
  * @copyright  2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restore_quizaccess_seb_subplugin extends restore_mod_hippotrack_access_subplugin {
+class restore_hippotrackaccess_seb_subplugin extends restore_mod_hippotrack_access_subplugin {
 
     /**
-     * Provides path structure required to restore data for seb quiz access plugin.
+     * Provides path structure required to restore data for seb hippotrack access plugin.
      *
      * @return array
      */
     protected function define_hippotrack_subplugin_structure() {
         $paths = [];
 
-        // Quiz settings.
-        $path = $this->get_pathfor('/quizaccess_seb_quizsettings'); // Subplugin root path.
-        $paths[] = new restore_path_element('quizaccess_seb_quizsettings', $path);
+        // HippoTrack settings.
+        $path = $this->get_pathfor('/hippotrackaccess_seb_hippotracksettings'); // Subplugin root path.
+        $paths[] = new restore_path_element('hippotrackaccess_seb_hippotracksettings', $path);
 
         // Template settings.
-        $path = $this->get_pathfor('/quizaccess_seb_quizsettings/quizaccess_seb_template');
-        $paths[] = new restore_path_element('quizaccess_seb_template', $path);
+        $path = $this->get_pathfor('/hippotrackaccess_seb_hippotracksettings/hippotrackaccess_seb_template');
+        $paths[] = new restore_path_element('hippotrackaccess_seb_template', $path);
 
         return $paths;
     }
 
     /**
-     * Process the restored data for the quizaccess_seb_quizsettings table.
+     * Process the restored data for the hippotrackaccess_seb_hippotracksettings table.
      *
-     * @param stdClass $data Data for quizaccess_seb_quizsettings retrieved from backup xml.
+     * @param stdClass $data Data for hippotrackaccess_seb_hippotracksettings retrieved from backup xml.
      */
-    public function process_quizaccess_seb_quizsettings($data) {
+    public function process_hippotrackaccess_seb_hippotracksettings($data) {
         global $DB, $USER;
 
-        // Process quizsettings.
+        // Process hippotracksettings.
         $data = (object) $data;
-        $data->quizid = $this->get_new_parentid('quiz'); // Update quizid with new reference.
+        $data->hippotrackid = $this->get_new_parentid('hippotrack'); // Update hippotrackid with new reference.
         $data->cmid = $this->task->get_moduleid();
 
         unset($data->id);
         $data->timecreated = $data->timemodified = time();
         $data->usermodified = $USER->id;
-        $DB->insert_record(quizaccess_seb\hippotrack_settings::TABLE, $data);
+        $DB->insert_record(hippotrackaccess_seb\hippotrack_settings::TABLE, $data);
 
         // Process attached files.
-        $this->add_related_files('quizaccess_seb', 'filemanager_sebconfigfile', null);
+        $this->add_related_files('hippotrackaccess_seb', 'filemanager_sebconfigfile', null);
     }
 
     /**
-     * Process the restored data for the quizaccess_seb_template table.
+     * Process the restored data for the hippotrackaccess_seb_template table.
      *
-     * @param stdClass $data Data for quizaccess_seb_template retrieved from backup xml.
+     * @param stdClass $data Data for hippotrackaccess_seb_template retrieved from backup xml.
      */
-    public function process_quizaccess_seb_template($data) {
+    public function process_hippotrackaccess_seb_template($data) {
         global $DB;
 
         $data = (object) $data;
 
-        $quizid = $this->get_new_parentid('quiz');
+        $hippotrackid = $this->get_new_parentid('hippotrack');
 
         $template = null;
         if ($this->task->is_samesite()) {
-            $template = \quizaccess_seb\template::get_record(['id' => $data->id]);
+            $template = \hippotrackaccess_seb\template::get_record(['id' => $data->id]);
         } else {
             // In a different site, try to find existing template with the same name and content.
-            $candidates = \quizaccess_seb\template::get_records(['name' => $data->name]);
+            $candidates = \hippotrackaccess_seb\template::get_records(['name' => $data->name]);
             foreach ($candidates as $candidate) {
                 if ($candidate->get('content') == $data->content) {
                     $template = $candidate;
@@ -107,12 +107,12 @@ class restore_quizaccess_seb_subplugin extends restore_mod_hippotrack_access_sub
 
         if (empty($template)) {
             unset($data->id);
-            $template = new \quizaccess_seb\template(0, $data);
+            $template = new \hippotrackaccess_seb\template(0, $data);
             $template->save();
         }
 
-        // Update the restored quiz settings to use restored template.
-        $DB->set_field(\quizaccess_seb\hippotrack_settings::TABLE, 'templateid', $template->get('id'), ['quizid' => $quizid]);
+        // Update the restored hippotrack settings to use restored template.
+        $DB->set_field(\hippotrackaccess_seb\hippotrack_settings::TABLE, 'templateid', $template->get('id'), ['hippotrackid' => $hippotrackid]);
     }
 
 }

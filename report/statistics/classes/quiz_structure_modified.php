@@ -19,7 +19,7 @@ namespace hippotrack_statistics;
 use core\dml\sql_join;
 
 /**
- * Clear the statistics cache when the quiz structure is modified.
+ * Clear the statistics cache when the hippotrack structure is modified.
  *
  * @package   hippotrack_statistics
  * @copyright 2023 onwards Catalyst IT EU {@link https://catalyst-eu.net}
@@ -30,21 +30,21 @@ class hippotrack_structure_modified {
     /**
      * Clear the statistics cache.
      *
-     * @param int $quizid The quiz to clear the cache for.
+     * @param int $hippotrackid The hippotrack to clear the cache for.
      * @return void
      */
-    public static function callback(int $quizid): void {
+    public static function callback(int $hippotrackid): void {
         global $DB, $CFG;
         require_once($CFG->dirroot . '/mod/hippotrack/report/statistics/statisticslib.php');
         require_once($CFG->dirroot . '/mod/hippotrack/report/statistics/report.php');
-        $quiz = $DB->get_record('quiz', ['id' => $quizid]);
-        if (!$quiz) {
-            throw new \coding_exception('Could not find quiz with ID ' . $quizid . '.');
+        $hippotrack = $DB->get_record('hippotrack', ['id' => $hippotrackid]);
+        if (!$hippotrack) {
+            throw new \coding_exception('Could not find hippotrack with ID ' . $hippotrackid . '.');
         }
         $qubaids = hippotrack_statistics_qubaids_condition(
-            $quiz->id,
+            $hippotrack->id,
             new sql_join(),
-            $quiz->grademethod
+            $hippotrack->grademethod
         );
 
         $report = new \hippotrack_statistics_report();

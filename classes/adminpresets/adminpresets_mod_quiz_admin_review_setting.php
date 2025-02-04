@@ -20,7 +20,7 @@ use ReflectionMethod;
 use core_adminpresets\local\setting\adminpresets_setting;
 
 /**
- * Admin settings class for the quiz review options.
+ * Admin settings class for the hippotrack review options.
  *
  * @package          mod_hippotrack
  * @copyright        2021 Pimenko <support@pimenko.com><pimenko.com>

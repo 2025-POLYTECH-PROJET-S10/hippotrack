@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capability definitions for the quiz statistics report.
+ * Capability definitions for the hippotrack statistics report.
  *
  * @package   hippotrack_statistics
  * @copyright 2008 Jamie Pratt
@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-    'quiz/statistics:view' => array(
+    'hippotrack/statistics:view' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(

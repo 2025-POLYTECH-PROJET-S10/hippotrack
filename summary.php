@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page prints a summary of a quiz attempt before it is submitted.
+ * This page prints a summary of a hippotrack attempt before it is submitted.
  *
  * @package   mod_hippotrack
  * @copyright 2009 The Open University
@@ -30,7 +30,7 @@ $attemptid = required_param('attempt', PARAM_INT); // The attempt to summarise.
 $cmid = optional_param('cmid', null, PARAM_INT);
 
 $PAGE->set_url('/mod/hippotrack/summary.php', array('attempt' => $attemptid));
-// During quiz attempts, the browser back/forwards buttons should force a reload.
+// During hippotrack attempts, the browser back/forwards buttons should force a reload.
 $PAGE->set_cacheable(false);
 $PAGE->set_secondary_active_tab("modulepage");
 
@@ -44,7 +44,7 @@ if ($attemptobj->get_userid() != $USER->id) {
     if ($attemptobj->has_capability('mod/hippotrack:viewreports')) {
         redirect($attemptobj->review_url(null));
     } else {
-        throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'notyourattempt');
+        throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'notyourattempt');
     }
 }
 
@@ -63,7 +63,7 @@ $accessmanager->setup_attempt_page($PAGE);
 $output = $PAGE->get_renderer('mod_hippotrack');
 $messages = $accessmanager->prevent_access();
 if (!$attemptobj->is_preview_user() && $messages) {
-    throw new \moodle_exception('attempterror', 'quiz', $attemptobj->view_url(),
+    throw new \moodle_exception('attempterror', 'hippotrack', $attemptobj->view_url(),
             $output->access_messages($messages));
 }
 if ($accessmanager->is_preflight_check_required($attemptobj->get_attemptid())) {
@@ -80,10 +80,10 @@ if ($attemptobj->is_finished()) {
     redirect($attemptobj->review_url());
 }
 
-\core\session\manager::keepalive(); // Try to prevent sessions expiring during quiz attempts.
+\core\session\manager::keepalive(); // Try to prevent sessions expiring during hippotrack attempts.
 
 // Arrange for the navigation to be displayed.
-if (empty($attemptobj->get_quiz()->showblocks)) {
+if (empty($attemptobj->get_hippotrack()->showblocks)) {
     $PAGE->blocks->show_only_fake_blocks();
 }
 

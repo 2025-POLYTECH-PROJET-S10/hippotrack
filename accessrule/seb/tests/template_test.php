@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quizaccess_seb;
+namespace hippotrackaccess_seb;
 
 /**
  * PHPUnit tests for template class.
  *
- * @package   quizaccess_seb
+ * @package   hippotrackaccess_seb
  * @author    Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright 2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -83,9 +83,9 @@ class template_test extends \advanced_testcase {
     }
 
     /**
-     * Test that a template cannot be deleted when assigned to a quiz.
+     * Test that a template cannot be deleted when assigned to a hippotrack.
      */
-    public function test_cannot_delete_template_when_assigned_to_quiz() {
+    public function test_cannot_delete_template_when_assigned_to_hippotrack() {
         global $DB;
 
         $data = new \stdClass();
@@ -109,7 +109,7 @@ class template_test extends \advanced_testcase {
         $this->assertTrue($template->can_delete());
 
         $DB->insert_record(hippotrack_settings::TABLE, (object) [
-            'quizid' => 1,
+            'hippotrackid' => 1,
             'cmid' => 1,
             'templateid' => $template->get('id'),
             'requiresafeexambrowser' => '1',

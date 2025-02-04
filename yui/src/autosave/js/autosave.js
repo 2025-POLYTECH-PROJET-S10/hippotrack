@@ -15,13 +15,13 @@
 
 
 /**
- * Auto-save functionality for during quiz attempts.
+ * Auto-save functionality for during hippotrack attempts.
  *
  * @module moodle-mod_hippotrack-autosave
  */
 
 /**
- * Auto-save functionality for during quiz attempts.
+ * Auto-save functionality for during hippotrack attempts.
  *
  * @class M.mod_hippotrack.autosave
  */
@@ -88,7 +88,7 @@ M.mod_hippotrack.autosave = {
      * @static
      */
     SELECTORS: {
-        QUIZ_FORM: '#responseform',
+        HIPPOTRACK_FORM: '#responseform',
         VALUE_CHANGE_ELEMENTS: 'input, textarea, [contenteditable="true"]',
         CHANGE_ELEMENTS: 'input, select',
         HIDDEN_INPUTS: 'input[type=hidden]',
@@ -190,7 +190,7 @@ M.mod_hippotrack.autosave = {
      * a save happening.
      */
     init: function (delay) {
-        this.form = Y.one(this.SELECTORS.QUIZ_FORM);
+        this.form = Y.one(this.SELECTORS.HIPPOTRACK_FORM);
         if (!this.form) {
             Y.log('No response form found. Why did you try to set up autosave?', 'debug', 'moodle-mod_hippotrack-autosave');
             return;

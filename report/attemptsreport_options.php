@@ -39,13 +39,13 @@ class mod_hippotrack_attempts_report_options {
     /** @var string the report mode. */
     public $mode;
 
-    /** @var object the settings for the quiz being reported on. */
-    public $quiz;
+    /** @var object the settings for the hippotrack being reported on. */
+    public $hippotrack;
 
-    /** @var object the course module objects for the quiz being reported on. */
+    /** @var object the course module objects for the hippotrack being reported on. */
     public $cm;
 
-    /** @var object the course settings for the course the quiz is in. */
+    /** @var object the course settings for the course the hippotrack is in. */
     public $course;
 
     /**
@@ -95,17 +95,17 @@ class mod_hippotrack_attempts_report_options {
     /**
      * Constructor.
      * @param string $mode which report these options are for.
-     * @param object $quiz the settings for the quiz being reported on.
-     * @param object $cm the course module objects for the quiz being reported on.
-     * @param object $coures the course settings for the coures this quiz is in.
+     * @param object $hippotrack the settings for the hippotrack being reported on.
+     * @param object $cm the course module objects for the hippotrack being reported on.
+     * @param object $coures the course settings for the coures this hippotrack is in.
      */
-    public function __construct($mode, $quiz, $cm, $course) {
+    public function __construct($mode, $hippotrack, $cm, $course) {
         $this->mode   = $mode;
-        $this->quiz   = $quiz;
+        $this->hippotrack   = $hippotrack;
         $this->cm     = $cm;
         $this->course = $course;
 
-        $this->usercanseegrades = hippotrack_report_should_show_grades($quiz, context_module::instance($cm->id));
+        $this->usercanseegrades = hippotrack_report_should_show_grades($hippotrack, context_module::instance($cm->id));
     }
 
     /**
@@ -261,7 +261,7 @@ class mod_hippotrack_attempts_report_options {
             $this->states = null;
         }
 
-        if (!hippotrack_report_can_filter_only_graded($this->quiz)) {
+        if (!hippotrack_report_can_filter_only_graded($this->hippotrack)) {
             // A grading mode like 'average' has been selected, so we cannot do
             // the show the attempt that gave the final grade thing.
             $this->onlygraded = false;

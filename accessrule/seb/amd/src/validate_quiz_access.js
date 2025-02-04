@@ -16,7 +16,7 @@
 /**
  * Validate Safe Exam Browser access keys.
  *
- * @module     quizaccess_seb/validate_hippotrack_access
+ * @module     hippotrackaccess_seb/validate_hippotrack_access
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2021 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,7 +25,7 @@
 import Ajax from 'core/ajax';
 import Config from 'core/config';
 import Notification from "core/notification";
-import * as View from 'quizaccess_seb/view';
+import * as View from 'hippotrackaccess_seb/view';
 
 // SafeExamBrowser object will be automatically initialized if using the SafeExamBrowser application.
 window.SafeExamBrowser = window.SafeExamBrowser || null;
@@ -33,19 +33,19 @@ window.SafeExamBrowser = window.SafeExamBrowser || null;
 /**
  * Once the keys are fetched, action checking access.
  *
- * @param {init} cmid Value of course module id of the quiz.
- * @param {boolean} autoreconfigure Value of Moodle setting: quizaccess_seb/autoreconfigureseb.
+ * @param {init} cmid Value of course module id of the hippotrack.
+ * @param {boolean} autoreconfigure Value of Moodle setting: hippotrackaccess_seb/autoreconfigureseb.
  */
 const safeExamBrowserKeysUpdated = (cmid, autoreconfigure = false) => {
-    // Action opening up the quiz.
-    isQuizAccessValid(cmid).then((response) => {
+    // Action opening up the hippotrack.
+    isHippoTrackAccessValid(cmid).then((response) => {
         // Show the alert for an extra second to allow user to see it.
         setTimeout(View.clearLoadingAlert, 1000);
 
         if (response.configkey && response.browserexamkey) {
             View.allowAccess();
         } else {
-            // If autoreconfigureseb is enabled, attempt to reconfigure page with quiz settings.
+            // If autoreconfigureseb is enabled, attempt to reconfigure page with hippotrack settings.
             if (autoreconfigure === true && response.configkey === false) {
                 reconfigureSafeExamBrowser(cmid);
             }
@@ -61,12 +61,12 @@ const safeExamBrowserKeysUpdated = (cmid, autoreconfigure = false) => {
 /**
  * Validate keys in Moodle backend.
  *
- * @param {init} cmid Value of course module id of the quiz.
+ * @param {init} cmid Value of course module id of the hippotrack.
  * @return {Promise}
  */
-const isQuizAccessValid = (cmid) => {
+const isHippoTrackAccessValid = (cmid) => {
     const request = {
-        methodname: 'quizaccess_seb_validate_hippotrack_keys',
+        methodname: 'hippotrackaccess_seb_validate_hippotrack_keys',
         args: {
             cmid: cmid,
             url: window.location.href,
@@ -90,9 +90,9 @@ const isKeyEmpty = (key) => {
 };
 
 /**
- * Reload Safe Exam Browser with current quiz configuration.
+ * Reload Safe Exam Browser with current hippotrack configuration.
  *
- * @param {init} cmid Value of course module id of the quiz.
+ * @param {init} cmid Value of course module id of the hippotrack.
  */
 const reconfigureSafeExamBrowser = (cmid) => {
     const domain = Config.wwwroot.replace(/^http/i, 'seb');
@@ -103,8 +103,8 @@ const reconfigureSafeExamBrowser = (cmid) => {
 /**
  * Initialize the process of fetching the keys.
  *
- * @param {init} cmid Value of course module id of the quiz.
- * @param {boolean} autoreconfigure Value of Moodle setting: quizaccess_seb/autoreconfigureseb.
+ * @param {init} cmid Value of course module id of the hippotrack.
+ * @param {boolean} autoreconfigure Value of Moodle setting: hippotrackaccess_seb/autoreconfigureseb.
  */
 export const init = async (cmid, autoreconfigure = false) => {
     // If the SafeExamBrowser object is instantiated, try and use it to fetch the access keys.

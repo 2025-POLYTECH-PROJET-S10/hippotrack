@@ -1,12 +1,12 @@
 /**
- * The quizbase class to provide shared functionality to Modules within Moodle.
+ * The hippotrackbase class to provide shared functionality to Modules within Moodle.
  *
- * @module moodle-mod_hippotrack-quizbase
+ * @module moodle-mod_hippotrack-hippotrackbase
  */
-var QUIZBASENAME = 'mod_hippotrack-quizbase';
+var HIPPOTRACKBASENAME = 'mod_hippotrack-hippotrackbase';
 
-var QUIZBASE = function () {
-    QUIZBASE.superclass.constructor.apply(this, arguments);
+var HIPPOTRACKBASE = function () {
+    HIPPOTRACKBASE.superclass.constructor.apply(this, arguments);
 };
 
 /**
@@ -16,7 +16,7 @@ var QUIZBASE = function () {
  * @class M.course.coursebase
  * @constructor
  */
-Y.extend(QUIZBASE, Y.Base, {
+Y.extend(HIPPOTRACKBASE, Y.Base, {
     // Registered Modules
     registermodules: [],
 
@@ -52,13 +52,13 @@ Y.extend(QUIZBASE, Y.Base, {
         return this;
     }
 }, {
-    NAME: QUIZBASENAME,
+    NAME: HIPPOTRACKBASENAME,
     ATTRS: {}
 });
 
 // Ensure that M.course exists and that coursebase is initialised correctly
 M.mod_hippotrack = M.mod_hippotrack || {};
-M.mod_hippotrack.quizbase = M.mod_hippotrack.quizbase || new QUIZBASE();
+M.mod_hippotrack.hippotrackbase = M.mod_hippotrack.hippotrackbase || new HIPPOTRACKBASE();
 
 // Abstract functions that needs to be defined per format (course/format/somename/format.js)
 M.mod_hippotrack.edit = M.mod_hippotrack.edit || {};
@@ -73,7 +73,7 @@ M.mod_hippotrack.edit = M.mod_hippotrack.edit || {};
  */
 M.mod_hippotrack.edit.swap_sections = function (Y, node1, node2) {
     var CSS = {
-        COURSECONTENT: 'mod-quiz-edit-content',
+        COURSECONTENT: 'mod-hippotrack-edit-content',
         SECTIONADDMENUS: 'section_add_menus'
     };
 

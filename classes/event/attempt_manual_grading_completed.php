@@ -33,7 +33,7 @@ class attempt_manual_grading_completed extends \core\event\base {
 
     public function get_description() {
         return "The attempt with id '$this->objectid' for the user with id '$this->relateduserid' " .
-            "for the quiz with course module id '$this->contextinstanceid' is now fully graded. Sending notification.";
+            "for the hippotrack with course module id '$this->contextinstanceid' is now fully graded. Sending notification.";
     }
 
     public static function get_name() {
@@ -51,8 +51,8 @@ class attempt_manual_grading_completed extends \core\event\base {
             throw new \coding_exception('The \'relateduserid\' must be set.');
         }
 
-        if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+        if (!isset($this->other['hippotrackid'])) {
+            throw new \coding_exception('The \'hippotrackid\' value must be set in other.');
         }
     }
 
@@ -62,7 +62,7 @@ class attempt_manual_grading_completed extends \core\event\base {
 
     public static function get_other_mapping() {
         $othermapped = [];
-        $othermapped['quizid'] = ['db' => 'quiz', 'restore' => 'quiz'];
+        $othermapped['hippotrackid'] = ['db' => 'hippotrack', 'restore' => 'hippotrack'];
 
         return $othermapped;
     }

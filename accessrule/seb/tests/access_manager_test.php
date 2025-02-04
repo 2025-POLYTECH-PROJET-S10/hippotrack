@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quizaccess_seb;
+namespace hippotrackaccess_seb;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -23,14 +23,14 @@ require_once(__DIR__ . '/test_helper_trait.php');
 /**
  * PHPUnit tests for the access manager.
  *
- * @package   quizaccess_seb
+ * @package   hippotrackaccess_seb
  * @author    Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright 2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers \quizaccess_seb\access_manager
+ * @covers \hippotrackaccess_seb\access_manager
  */
 class access_manager_test extends \advanced_testcase {
-    use \quizaccess_seb_test_helper_trait;
+    use \hippotrackaccess_seb_test_helper_trait;
 
     /**
      * Called before every test.
@@ -44,17 +44,17 @@ class access_manager_test extends \advanced_testcase {
     }
 
     /**
-     * Test access_manager private property quizsettings is null.
+     * Test access_manager private property hippotracksettings is null.
      */
-    public function test_access_manager_quizsettings_null() {
-        $this->quiz = $this->create_test_quiz($this->course);
+    public function test_access_manager_hippotracksettings_null() {
+        $this->hippotrack = $this->create_test_hippotrack($this->course);
 
         $accessmanager = $this->get_access_manager();
 
         $this->assertFalse($accessmanager->seb_required());
 
-        $reflection = new \ReflectionClass('\quizaccess_seb\access_manager');
-        $property = $reflection->getProperty('quizsettings');
+        $reflection = new \ReflectionClass('\hippotrackaccess_seb\access_manager');
+        $property = $reflection->getProperty('hippotracksettings');
         $property->setAccessible(true);
 
         $this->assertFalse($property->getValue($accessmanager));
@@ -64,7 +64,7 @@ class access_manager_test extends \advanced_testcase {
      * Test that SEB is not required.
      */
     public function test_seb_required_false() {
-        $this->quiz = $this->create_test_quiz($this->course);
+        $this->hippotrack = $this->create_test_hippotrack($this->course);
 
         $accessmanager = $this->get_access_manager();
         $this->assertFalse($accessmanager->seb_required());
@@ -74,7 +74,7 @@ class access_manager_test extends \advanced_testcase {
      * Test that SEB is required.
      */
     public function test_seb_required_true() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         $accessmanager = $this->get_access_manager();
         $this->assertTrue($accessmanager->seb_required());
@@ -84,13 +84,13 @@ class access_manager_test extends \advanced_testcase {
      * Test that user has capability to bypass SEB check.
      */
     public function test_user_can_bypass_seb_check() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
         // Set the bypass SEB check capability to $USER.
-        $this->assign_user_capability('quizaccess/seb:bypassseb', \context_module::instance($this->quiz->cmid)->id);
+        $this->assign_user_capability('hippotrackaccess/seb:bypassseb', \context_module::instance($this->hippotrack->cmid)->id);
 
         $accessmanager = $this->get_access_manager();
         $this->assertTrue($accessmanager->can_bypass_seb());
@@ -100,7 +100,7 @@ class access_manager_test extends \advanced_testcase {
      * Test that user has capability to bypass SEB check.
      */
     public function test_admin_user_can_bypass_seb_check() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         // Test normal user cannot bypass check.
         $user = $this->getDataGenerator()->create_user();
@@ -118,7 +118,7 @@ class access_manager_test extends \advanced_testcase {
      * Test user does not have capability to bypass SEB check.
      */
     public function test_user_cannot_bypass_seb_check() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
@@ -131,7 +131,7 @@ class access_manager_test extends \advanced_testcase {
      * Test we can detect SEB usage.
      */
     public function test_is_using_seb() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         $accessmanager = $this->get_access_manager();
 
@@ -145,15 +145,15 @@ class access_manager_test extends \advanced_testcase {
     }
 
     /**
-     * Test that the quiz Config Key matches the incoming request header.
+     * Test that the hippotrack Config Key matches the incoming request header.
      */
     public function test_access_keys_validate_with_config_key() {
         global $FULLME;
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         $accessmanager = $this->get_access_manager();
 
-        $configkey = hippotrack_settings::get_record(['quizid' => $this->quiz->id])->get_config_key();
+        $configkey = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id])->get_config_key();
 
         // Set up dummy request.
         $FULLME = 'https://example.com/moodle/mod/hippotrack/attempt.php?attemptid=123&page=4';
@@ -164,24 +164,24 @@ class access_manager_test extends \advanced_testcase {
     }
 
     /**
-     * Test that the quiz Config Key matches a provided config key with no incoming request header.
+     * Test that the hippotrack Config Key matches a provided config key with no incoming request header.
      */
     public function test_access_keys_validate_with_provided_config_key() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
         $url = 'https://www.example.com/moodle';
         $accessmanager = $this->get_access_manager();
 
-        $configkey = hippotrack_settings::get_record(['quizid' => $this->quiz->id])->get_config_key();
+        $configkey = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id])->get_config_key();
         $fullconfigkey = hash('sha256', $url . $configkey);
 
         $this->assertTrue($accessmanager->validate_config_key($fullconfigkey, $url));
     }
 
     /**
-     * Test that the quiz Config Key does not match the incoming request header.
+     * Test that the hippotrack Config Key does not match the incoming request header.
      */
     public function test_access_keys_fail_to_validate_with_config_key() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
         $accessmanager = $this->get_access_manager();
 
         $this->assertFalse($accessmanager->validate_config_key());
@@ -191,18 +191,18 @@ class access_manager_test extends \advanced_testcase {
      * Test that config key is not checked when using client configuration with SEB.
      */
     public function test_config_key_not_checked_if_client_requirement_is_selected() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
         $accessmanager = $this->get_access_manager();
         $this->assertFalse($accessmanager->should_validate_config_key());
     }
 
     /**
-     * Test that if there are no browser exam keys for quiz, check is skipped.
+     * Test that if there are no browser exam keys for hippotrack, check is skipped.
      */
     public function test_no_browser_exam_keys_cause_check_to_be_successful() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
 
-        $settings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
+        $settings = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id]);
         $settings->set('allowedbrowserexamkeys', '');
         $settings->save();
         $accessmanager = $this->get_access_manager();
@@ -214,9 +214,9 @@ class access_manager_test extends \advanced_testcase {
      * Test that access fails if there is no hash in header.
      */
     public function test_access_keys_fail_if_browser_exam_key_header_does_not_exist() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
 
-        $settings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
+        $settings = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id]);
         $settings->set('allowedbrowserexamkeys', hash('sha256', 'one') . "\n" . hash('sha256', 'two'));
         $settings->save();
         $accessmanager = $this->get_access_manager();
@@ -227,9 +227,9 @@ class access_manager_test extends \advanced_testcase {
      * Test that access fails if browser exam key doesn't match hash in header.
      */
     public function test_access_keys_fail_if_browser_exam_key_header_does_not_match_provided_hash() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
 
-        $settings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
+        $settings = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id]);
         $settings->set('allowedbrowserexamkeys', hash('sha256', 'one') . "\n" . hash('sha256', 'two'));
         $settings->save();
         $accessmanager = $this->get_access_manager();
@@ -243,8 +243,8 @@ class access_manager_test extends \advanced_testcase {
     public function test_browser_exam_keys_match_header_hash() {
         global $FULLME;
 
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
-        $settings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
+        $settings = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id]);
         $browserexamkey = hash('sha256', 'browserexamkey');
         $settings->set('allowedbrowserexamkeys', $browserexamkey); // Add a hashed BEK.
         $settings->save();
@@ -261,9 +261,9 @@ class access_manager_test extends \advanced_testcase {
      * Test that browser exam key matches a provided browser exam key.
      */
     public function test_browser_exam_keys_match_provided_browser_exam_key() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
         $url = 'https://www.example.com/moodle';
-        $settings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
+        $settings = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id]);
         $browserexamkey = hash('sha256', 'browserexamkey');
         $fullbrowserexamkey = hash('sha256', $url . $browserexamkey);
         $settings->set('allowedbrowserexamkeys', $browserexamkey); // Add a hashed BEK.
@@ -277,7 +277,7 @@ class access_manager_test extends \advanced_testcase {
      * Test can get received config key.
      */
     public function test_get_received_config_key() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
         $accessmanager = $this->get_access_manager();
 
         $this->assertNull($accessmanager->get_received_config_key());
@@ -290,7 +290,7 @@ class access_manager_test extends \advanced_testcase {
      * Test can get received browser key.
      */
     public function get_received_browser_exam_key() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
         $accessmanager = $this->get_access_manager();
 
         $this->assertNull($accessmanager->get_received_browser_exam_key());
@@ -300,40 +300,40 @@ class access_manager_test extends \advanced_testcase {
     }
 
     /**
-     * Test can correctly get type of SEB usage for the quiz.
+     * Test can correctly get type of SEB usage for the hippotrack.
      */
     public function test_get_seb_use_type() {
         // No SEB.
-        $this->quiz = $this->create_test_quiz($this->course);
+        $this->hippotrack = $this->create_test_hippotrack($this->course);
         $accessmanager = $this->get_access_manager();
         $this->assertEquals(settings_provider::USE_SEB_NO, $accessmanager->get_seb_use_type());
 
         // Manually.
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
         $accessmanager = $this->get_access_manager();
         $this->assertEquals(settings_provider::USE_SEB_CONFIG_MANUALLY, $accessmanager->get_seb_use_type());
 
         // Use template.
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
-        $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_TEMPLATE);
-        $quizsettings->set('templateid', $this->create_template()->get('id'));
-        $quizsettings->save();
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $hippotracksettings = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id]);
+        $hippotracksettings->set('requiresafeexambrowser', settings_provider::USE_SEB_TEMPLATE);
+        $hippotracksettings->set('templateid', $this->create_template()->get('id'));
+        $hippotracksettings->save();
         $accessmanager = $this->get_access_manager();
         $this->assertEquals(settings_provider::USE_SEB_TEMPLATE, $accessmanager->get_seb_use_type());
 
         // Use uploaded config.
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
-        $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_UPLOAD_CONFIG); // Doesn't check basic header.
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $hippotracksettings = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id]);
+        $hippotracksettings->set('requiresafeexambrowser', settings_provider::USE_SEB_UPLOAD_CONFIG); // Doesn't check basic header.
         $xml = file_get_contents(__DIR__ . '/fixtures/unencrypted.seb');
-        $this->create_module_test_file($xml, $this->quiz->cmid);
-        $quizsettings->save();
+        $this->create_module_test_file($xml, $this->hippotrack->cmid);
+        $hippotracksettings->save();
         $accessmanager = $this->get_access_manager();
         $this->assertEquals(settings_provider::USE_SEB_UPLOAD_CONFIG, $accessmanager->get_seb_use_type());
 
         // Use client config.
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
         $accessmanager = $this->get_access_manager();
         $this->assertEquals(settings_provider::USE_SEB_CLIENT_CONFIG, $accessmanager->get_seb_use_type());
     }
@@ -443,7 +443,7 @@ class access_manager_test extends \advanced_testcase {
      */
     public function test_access_manager_uses_cached_config_key() {
         global $FULLME;
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
         $accessmanager = $this->get_access_manager();
 
@@ -457,14 +457,14 @@ class access_manager_test extends \advanced_testcase {
         $this->assertTrue($accessmanager->validate_config_key());
 
         // Change settings (but don't save) and check that still can validate config key.
-        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
-        $quizsettings->set('showsebtaskbar', 0);
-        $this->assertNotEquals($quizsettings->get_config_key(), $configkey);
+        $hippotracksettings = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id]);
+        $hippotracksettings->set('showsebtaskbar', 0);
+        $this->assertNotEquals($hippotracksettings->get_config_key(), $configkey);
         $this->assertTrue($accessmanager->validate_config_key());
 
         // Now save settings which should purge caches but access manager still has config key.
-        $quizsettings->save();
-        $this->assertNotEquals($quizsettings->get_config_key(), $configkey);
+        $hippotracksettings->save();
+        $this->assertNotEquals($hippotracksettings->get_config_key(), $configkey);
         $this->assertTrue($accessmanager->validate_config_key());
 
         // Initialise a new access manager. Now validation should fail.
@@ -473,13 +473,13 @@ class access_manager_test extends \advanced_testcase {
     }
 
     /**
-     * Check that valid SEB config key is null if quiz doesn't have SEB settings.
+     * Check that valid SEB config key is null if hippotrack doesn't have SEB settings.
      */
     public function test_valid_config_key_is_null_if_no_settings() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_NO);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_NO);
         $accessmanager = $this->get_access_manager();
 
-        $this->assertEmpty(hippotrack_settings::get_record(['quizid' => $this->quiz->id]));
+        $this->assertEmpty(hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id]));
         $this->assertNull($accessmanager->get_valid_config_key());
 
     }
@@ -488,7 +488,7 @@ class access_manager_test extends \advanced_testcase {
      * Test if config key should not be validated.
      */
     public function test_if_config_key_should_not_be_validated() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_NO);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_NO);
         $accessmanager = $this->get_access_manager();
 
         $this->assertTrue($accessmanager->validate_config_key());
@@ -498,7 +498,7 @@ class access_manager_test extends \advanced_testcase {
      * Test if browser exam key should not be validated.
      */
     public function test_if_browser_exam_key_should_not_be_validated() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
         $accessmanager = $this->get_access_manager();
 
         $this->assertTrue($accessmanager->validate_browser_exam_key());
@@ -510,14 +510,14 @@ class access_manager_test extends \advanced_testcase {
     public function test_set_session_access() {
         global $SESSION;
 
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
         $accessmanager = $this->get_access_manager();
 
-        $this->assertTrue(empty($SESSION->quizaccess_seb_access[$this->quiz->cmid]));
+        $this->assertTrue(empty($SESSION->hippotrackaccess_seb_access[$this->hippotrack->cmid]));
 
         $accessmanager->set_session_access(true);
 
-        $this->assertTrue($SESSION->quizaccess_seb_access[$this->quiz->cmid]);
+        $this->assertTrue($SESSION->hippotrackaccess_seb_access[$this->hippotrack->cmid]);
     }
 
     /**
@@ -526,15 +526,15 @@ class access_manager_test extends \advanced_testcase {
     public function test_session_access_set_for_specific_course_module() {
         global $SESSION;
 
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
-        $quiz2 = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
+        $hippotrack2 = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
         $accessmanager = $this->get_access_manager();
 
         $accessmanager->set_session_access(true);
 
-        $this->assertCount(1, $SESSION->quizaccess_seb_access);
-        $this->assertTrue($SESSION->quizaccess_seb_access[$this->quiz->cmid]);
-        $this->assertTrue(empty($SESSION->quizaccess_seb_access[$quiz2->cmid]));
+        $this->assertCount(1, $SESSION->hippotrackaccess_seb_access);
+        $this->assertTrue($SESSION->hippotrackaccess_seb_access[$this->hippotrack->cmid]);
+        $this->assertTrue(empty($SESSION->hippotrackaccess_seb_access[$hippotrack2->cmid]));
     }
 
     /**
@@ -543,12 +543,12 @@ class access_manager_test extends \advanced_testcase {
     public function test_validate_session_access() {
         global $SESSION;
 
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
         $accessmanager = $this->get_access_manager();
 
         $this->assertEmpty($accessmanager->validate_session_access());
 
-        $SESSION->quizaccess_seb_access[$this->quiz->cmid] = true;
+        $SESSION->hippotrackaccess_seb_access[$this->hippotrack->cmid] = true;
 
         $this->assertTrue($accessmanager->validate_session_access());
     }
@@ -559,28 +559,28 @@ class access_manager_test extends \advanced_testcase {
     public function test_clear_session_access() {
         global $SESSION;
 
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CLIENT_CONFIG);
         $accessmanager = $this->get_access_manager();
 
-        $SESSION->quizaccess_seb_access[$this->quiz->cmid] = true;
+        $SESSION->hippotrackaccess_seb_access[$this->hippotrack->cmid] = true;
 
         $accessmanager->clear_session_access();
 
-        $this->assertTrue(empty($SESSION->quizaccess_seb_access[$this->quiz->cmid]));
+        $this->assertTrue(empty($SESSION->hippotrackaccess_seb_access[$this->hippotrack->cmid]));
     }
 
     /**
      * Test we can decide if need to redirect to SEB config link.
      */
     public function test_should_redirect_to_seb_config_link() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
         $accessmanager = $this->get_access_manager();
 
-        set_config('autoreconfigureseb', '1', 'quizaccess_seb');
+        set_config('autoreconfigureseb', '1', 'hippotrackaccess_seb');
         $_SERVER['HTTP_USER_AGENT'] = 'SEB';
         $this->assertFalse($accessmanager->should_redirect_to_seb_config_link());
 
-        set_config('autoreconfigureseb', '1', 'quizaccess_seb');
+        set_config('autoreconfigureseb', '1', 'hippotrackaccess_seb');
         $_SERVER['HTTP_USER_AGENT'] = 'SEB';
         $_SERVER['HTTP_X_SAFEEXAMBROWSER_CONFIGKEYHASH'] = hash('sha256', 'configkey');
         $this->assertTrue($accessmanager->should_redirect_to_seb_config_link());

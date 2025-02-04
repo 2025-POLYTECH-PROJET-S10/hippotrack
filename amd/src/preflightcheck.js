@@ -17,7 +17,7 @@
  * This class manages the confirmation pop-up (also called the pre-flight check)
  * that is sometimes shown when a use clicks the start attempt button.
  *
- * This is also responsible for opening the pop-up window, if the quiz requires to be in one.
+ * This is also responsible for opening the pop-up window, if the hippotrack requires to be in one.
  *
  * @module    mod_hippotrack/preflightcheck
  * @copyright 2016 The Open University
@@ -38,7 +38,7 @@ define(['jquery', 'core/yui', 'core_form/changechecker'], function ($, Y, FormCh
          * @param {String} startButton the id of the start attempt button that we will be enhancing.
          * @param {String} confirmationTitle the title of the dialogue.
          * @param {String} confirmationForm selector for the confirmation form to show in the dialogue.
-         * @param {String} popupoptions If not null, the quiz should be launced in a pop-up.
+         * @param {String} popupoptions If not null, the hippotrack should be launced in a pop-up.
          */
         init: function (startButton, confirmationTitle, confirmationForm, popupoptions) {
             var finalStartButton = startButton;
@@ -63,7 +63,7 @@ define(['jquery', 'core/yui', 'core_form/changechecker'], function ($, Y, FormCh
                 }
 
                 if (popupoptions) {
-                    Y.one(finalStartButton).on('click', t.launchQuizPopup, t, popupoptions);
+                    Y.one(finalStartButton).on('click', t.launchHippoTrackPopup, t, popupoptions);
                 }
             });
         },
@@ -91,11 +91,11 @@ define(['jquery', 'core/yui', 'core_form/changechecker'], function ($, Y, FormCh
         },
 
         /**
-         * Event handler for the quiz start attempt button.
+         * Event handler for the hippotrack start attempt button.
          * @param {Event} e the event being responded to
          * @param {Object} popupoptions
          */
-        launchQuizPopup: function (e, popupoptions) {
+        launchHippoTrackPopup: function (e, popupoptions) {
             e.halt();
             Y.use('io-form', function () {
                 var form = e.target.ancestor('form');
@@ -103,7 +103,7 @@ define(['jquery', 'core/yui', 'core_form/changechecker'], function ($, Y, FormCh
                 FormChangeChecker.resetFormDirtyState(form.getDOMNode());
                 window.openpopup(e, {
                     url: form.get('action') + '?' + Y.IO.stringify(form).replace(/\bcancel=/, 'x='),
-                    windowname: 'quizpopup',
+                    windowname: 'hippotrackpopup',
                     options: popupoptions,
                     fullscreen: true,
                 });

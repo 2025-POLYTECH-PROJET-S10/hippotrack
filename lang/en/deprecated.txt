@@ -3,4 +3,4 @@ completionpassdesc,mod_hippotrack
 completionpass_help,mod_hippotrack
 completiondetail:passgrade,mod_hippotrack
 gradetopassnotset,mod_hippotrack
-basicideasofquiz,mod_hippotrack
+basicideasofhippotrack,mod_hippotrack

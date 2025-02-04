@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file defines the quiz responses table for showing first or all tries at a question.
+ * This file defines the hippotrack responses table for showing first or all tries at a question.
  *
  * @package   hippotrack_responses
  * @copyright 2014 The Open University
@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * This is a table subclass for displaying the quiz responses report, showing first or all tries.
+ * This is a table subclass for displaying the hippotrack responses report, showing first or all tries.
  *
  * @package   hippotrack_responses
  * @copyright 2014 The Open University
@@ -254,10 +254,10 @@ class hippotrack_first_or_all_responses_table extends hippotrack_last_responses_
      */
     public function col_sumgrades($tablerow) {
         if ($tablerow->try == 0) {
-            // We are showing a user without a quiz attempt.
+            // We are showing a user without a hippotrack attempt.
             return '-';
         } else if (!$tablerow->lasttryforallparts) {
-            // There are more rows to come for this quiz attempt, so we will show this later.
+            // There are more rows to come for this hippotrack attempt, so we will show this later.
             return '';
         } else {
             // Last row for this attempt. Now is the time to show attempt-related data.
@@ -267,10 +267,10 @@ class hippotrack_first_or_all_responses_table extends hippotrack_last_responses_
 
     public function col_state($tablerow) {
         if ($tablerow->try == 0) {
-            // We are showing a user without a quiz attempt.
+            // We are showing a user without a hippotrack attempt.
             return '-';
         } else if (!$tablerow->lasttryforallparts) {
-            // There are more rows to come for this quiz attempt, so we will show this later.
+            // There are more rows to come for this hippotrack attempt, so we will show this later.
             return '';
         } else {
             // Last row for this attempt. Now is the time to show attempt-related data.

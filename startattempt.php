@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This script deals with starting a new attempt at a quiz.
+ * This script deals with starting a new attempt at a hippotrack.
  *
  * Normally, it will end up redirecting to attempt.php - unless a password form is displayed.
  *
@@ -34,52 +34,52 @@ $id = required_param('cmid', PARAM_INT); // Course module id
 $forcenew = optional_param('forcenew', false, PARAM_BOOL); // Used to force a new preview
 $page = optional_param('page', -1, PARAM_INT); // Page to jump to in the attempt.
 
-if (!$cm = get_coursemodule_from_id('quiz', $id)) {
+if (!$cm = get_coursemodule_from_id('hippotrack', $id)) {
     throw new \moodle_exception('invalidcoursemodule');
 }
 if (!$course = $DB->get_record('course', array('id' => $cm->course))) {
     throw new \moodle_exception("coursemisconf");
 }
 
-$quizobj = quiz::create($cm->instance, $USER->id);
+$hippotrackobj = hippotrack::create($cm->instance, $USER->id);
 // This script should only ever be posted to, so set page URL to the view page.
-$PAGE->set_url($quizobj->view_url());
-// During quiz attempts, the browser back/forwards buttons should force a reload.
+$PAGE->set_url($hippotrackobj->view_url());
+// During hippotrack attempts, the browser back/forwards buttons should force a reload.
 $PAGE->set_cacheable(false);
 
 // Check login and sesskey.
-require_login($quizobj->get_course(), false, $quizobj->get_cm());
+require_login($hippotrackobj->get_course(), false, $hippotrackobj->get_cm());
 require_sesskey();
-$PAGE->set_heading($quizobj->get_course()->fullname);
+$PAGE->set_heading($hippotrackobj->get_course()->fullname);
 
 // If no questions have been set up yet redirect to edit.php or display an error.
-if (!$quizobj->has_questions()) {
-    if ($quizobj->has_capability('mod/hippotrack:manage')) {
-        redirect($quizobj->edit_url());
+if (!$hippotrackobj->has_questions()) {
+    if ($hippotrackobj->has_capability('mod/hippotrack:manage')) {
+        redirect($hippotrackobj->edit_url());
     } else {
-        throw new \moodle_exception('cannotstartnoquestions', 'quiz', $quizobj->view_url());
+        throw new \moodle_exception('cannotstartnoquestions', 'hippotrack', $hippotrackobj->view_url());
     }
 }
 
 // Create an object to manage all the other (non-roles) access rules.
 $timenow = time();
-$accessmanager = $quizobj->get_access_manager($timenow);
+$accessmanager = $hippotrackobj->get_access_manager($timenow);
 
 // Validate permissions for creating a new attempt and start a new preview attempt if required.
 list($currentattemptid, $attemptnumber, $lastattempt, $messages, $page) =
-    hippotrack_validate_new_attempt($quizobj, $accessmanager, $forcenew, $page, true);
+    hippotrack_validate_new_attempt($hippotrackobj, $accessmanager, $forcenew, $page, true);
 
 // Check access.
-if (!$quizobj->is_preview_user() && $messages) {
+if (!$hippotrackobj->is_preview_user() && $messages) {
     $output = $PAGE->get_renderer('mod_hippotrack');
-    throw new \moodle_exception('attempterror', 'quiz', $quizobj->view_url(),
+    throw new \moodle_exception('attempterror', 'hippotrack', $hippotrackobj->view_url(),
             $output->access_messages($messages));
 }
 
 if ($accessmanager->is_preflight_check_required($currentattemptid)) {
     // Need to do some checks before allowing the user to continue.
     $mform = $accessmanager->get_preflight_check_form(
-            $quizobj->start_attempt_url($page), $currentattemptid);
+            $hippotrackobj->start_attempt_url($page), $currentattemptid);
 
     if ($mform->is_cancelled()) {
         $accessmanager->back_to_view_page($PAGE->get_renderer('mod_hippotrack'));
@@ -87,15 +87,15 @@ if ($accessmanager->is_preflight_check_required($currentattemptid)) {
     } else if (!$mform->get_data()) {
 
         // Form not submitted successfully, re-display it and stop.
-        $PAGE->set_url($quizobj->start_attempt_url($page));
-        $PAGE->set_title($quizobj->get_hippotrack_name());
+        $PAGE->set_url($hippotrackobj->start_attempt_url($page));
+        $PAGE->set_title($hippotrackobj->get_hippotrack_name());
         $accessmanager->setup_attempt_page($PAGE);
         $output = $PAGE->get_renderer('mod_hippotrack');
-        if (empty($quizobj->get_quiz()->showblocks)) {
+        if (empty($hippotrackobj->get_hippotrack()->showblocks)) {
             $PAGE->blocks->show_only_fake_blocks();
         }
 
-        echo $output->start_attempt_page($quizobj, $mform);
+        echo $output->start_attempt_page($hippotrackobj, $mform);
         die();
     }
 
@@ -104,13 +104,13 @@ if ($accessmanager->is_preflight_check_required($currentattemptid)) {
 }
 if ($currentattemptid) {
     if ($lastattempt->state == hippotrack_attempt::OVERDUE) {
-        redirect($quizobj->summary_url($lastattempt->id));
+        redirect($hippotrackobj->summary_url($lastattempt->id));
     } else {
-        redirect($quizobj->attempt_url($currentattemptid, $page));
+        redirect($hippotrackobj->attempt_url($currentattemptid, $page));
     }
 }
 
-$attempt = hippotrack_prepare_and_start_new_attempt($quizobj, $attemptnumber, $lastattempt);
+$attempt = hippotrack_prepare_and_start_new_attempt($hippotrackobj, $attemptnumber, $lastattempt);
 
 // Redirect to the attempt page.
-redirect($quizobj->attempt_url($attempt->id, $page));
+redirect($hippotrackobj->attempt_url($attempt->id, $page));

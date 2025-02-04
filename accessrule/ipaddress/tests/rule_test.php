@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quizaccess_ipaddress;
+namespace hippotrackaccess_ipaddress;
 
-use quiz;
-use quizaccess_ipaddress;
+use hippotrack;
+use hippotrackaccess_ipaddress;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -26,26 +26,26 @@ require_once($CFG->dirroot . '/mod/hippotrack/accessrule/ipaddress/rule.php');
 
 
 /**
- * Unit tests for the quizaccess_ipaddress plugin.
+ * Unit tests for the hippotrackaccess_ipaddress plugin.
  *
- * @package    quizaccess_ipaddress
+ * @package    hippotrackaccess_ipaddress
  * @category   test
  * @copyright  2008 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class rule_test extends \basic_testcase {
     public function test_ipaddress_access_rule() {
-        $quiz = new \stdClass();
+        $hippotrack = new \stdClass();
         $attempt = new \stdClass();
         $cm = new \stdClass();
         $cm->id = 0;
 
         // Test the allowed case by getting the user's IP address. However, this
         // does not always work, for example using the mac install package on my laptop.
-        $quiz->subnet = getremoteaddr(null);
-        if (!empty($quiz->subnet)) {
-            $quizobj = new quiz($quiz, $cm, null);
-            $rule = new quizaccess_ipaddress($quizobj, 0);
+        $hippotrack->subnet = getremoteaddr(null);
+        if (!empty($hippotrack->subnet)) {
+            $hippotrackobj = new hippotrack($hippotrack, $cm, null);
+            $rule = new hippotrackaccess_ipaddress($hippotrackobj, 0);
 
             $this->assertFalse($rule->prevent_access());
             $this->assertFalse($rule->description());
@@ -55,9 +55,9 @@ class rule_test extends \basic_testcase {
             $this->assertFalse($rule->time_left_display($attempt, 0));
         }
 
-        $quiz->subnet = '0.0.0.0';
-        $quizobj = new quiz($quiz, $cm, null);
-        $rule = new quizaccess_ipaddress($quizobj, 0);
+        $hippotrack->subnet = '0.0.0.0';
+        $hippotrackobj = new hippotrack($hippotrack, $cm, null);
+        $rule = new hippotrackaccess_ipaddress($hippotrackobj, 0);
 
         $this->assertNotEmpty($rule->prevent_access());
         $this->assertEmpty($rule->description());

@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 /**
- * Drag and Drop for Quiz sections and slots.
+ * Drag and Drop for HippoTrack sections and slots.
  *
- * @module moodle-mod-quiz-dragdrop
+ * @module moodle-mod-hippotrack-dragdrop
  */
 
 var CSS = {
@@ -10,7 +10,7 @@ var CSS = {
     ACTIVITY: 'activity',
     ACTIVITYINSTANCE: 'activityinstance',
     CONTENT: 'content',
-    COURSECONTENT: 'mod-quiz-edit-content',
+    COURSECONTENT: 'mod-hippotrack-edit-content',
     EDITINGMOVE: 'editing_move',
     ICONCLASS: 'iconsmall',
     JUMPMENU: 'jumpmenu',
@@ -28,8 +28,8 @@ var CSS = {
     SUMMARY: 'summary',
     SECTIONDRAGGABLE: 'sectiondraggable'
 },
-// The CSS selectors we use.
-SELECTOR = {
-    PAGE: 'li.page',
-    SLOT: 'li.slot'
-};
+    // The CSS selectors we use.
+    SELECTOR = {
+        PAGE: 'li.page',
+        SLOT: 'li.slot'
+    };

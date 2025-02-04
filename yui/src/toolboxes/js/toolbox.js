@@ -118,7 +118,7 @@ Y.extend(TOOLBOX, Y.Base, {
 
         data.sesskey = M.cfg.sesskey;
         data.courseid = this.get('courseid');
-        data.quizid = this.get('quizid');
+        data.hippotrackid = this.get('hippotrackid');
 
         var uri = M.cfg.wwwroot + this.get('ajaxurl');
 
@@ -144,7 +144,7 @@ Y.extend(TOOLBOX, Y.Base, {
                     }
                     if (responsetext.hasOwnProperty('newnumquestions')) {
                         Y.one(SELECTOR.NUMQUESTIONS).setHTML(
-                            M.util.get_string('numquestionsx', 'quiz', responsetext.newnumquestions)
+                            M.util.get_string('numquestionsx', 'hippotrack', responsetext.newnumquestions)
                         );
                     }
                     if (success_callback) {
@@ -204,7 +204,7 @@ Y.extend(TOOLBOX, Y.Base, {
              * @default 'topics'
              * @type String
              */
-            quizid: {
+            hippotrackid: {
                 'value': 0
             },
             /**

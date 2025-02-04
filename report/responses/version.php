@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz responses report version information.
+ * HippoTrack responses report version information.
  *
  * @package   hippotrack_responses
  * @copyright 2011 Tim Hunt

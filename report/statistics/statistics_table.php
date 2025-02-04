@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz statistics report, table for showing statistics of each question in the quiz.
+ * HippoTrack statistics report, table for showing statistics of each question in the hippotrack.
  *
  * @package   hippotrack_statistics
  * @copyright 2008 Jamie Pratt
@@ -29,7 +29,7 @@ require_once($CFG->libdir.'/tablelib.php');
 use \core_question\statistics\questions\calculated_question_summary;
 
 /**
- * This table has one row for each question in the quiz, with sub-rows when
+ * This table has one row for each question in the hippotrack, with sub-rows when
  * random questions and variants appear.
  *
  * There are columns for the various item and position statistics.
@@ -38,30 +38,30 @@ use \core_question\statistics\questions\calculated_question_summary;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class hippotrack_statistics_table extends flexible_table {
-    /** @var object the quiz settings. */
-    protected $quiz;
+    /** @var object the hippotrack settings. */
+    protected $hippotrack;
 
-    /** @var integer the quiz course_module id. */
+    /** @var integer the hippotrack course_module id. */
     protected $cmid;
 
     /**
      * Constructor.
      */
     public function __construct() {
-        parent::__construct('mod-quiz-report-statistics-report');
+        parent::__construct('mod-hippotrack-report-statistics-report');
     }
 
     /**
      * Set up the columns and headers and other properties of the table and then
      * call flexible_table::setup() method.
      *
-     * @param object $quiz the quiz settings
-     * @param int $cmid the quiz course_module id
+     * @param object $hippotrack the hippotrack settings
+     * @param int $cmid the hippotrack course_module id
      * @param moodle_url $reporturl the URL to redisplay this report.
      * @param int $s number of attempts included in the statistics.
      */
-    public function statistics_setup($quiz, $cmid, $reporturl, $s) {
-        $this->quiz = $quiz;
+    public function statistics_setup($hippotrack, $cmid, $reporturl, $s) {
+        $this->hippotrack = $hippotrack;
         $this->cmid = $cmid;
 
         // Define the table columns.
@@ -204,7 +204,7 @@ class hippotrack_statistics_table extends flexible_table {
         } else if ($questionstat->question->qtype === 'missingtype') {
             return '';
         } else {
-            return hippotrack_question_action_icons($this->quiz, $this->cmid,
+            return hippotrack_question_action_icons($this->hippotrack, $this->cmid,
                     $questionstat->question, $this->baseurl, $questionstat->variant);
         }
     }
@@ -364,7 +364,7 @@ class hippotrack_statistics_table extends flexible_table {
 
     /**
      * The intended question weight. Maximum mark for the question as a percentage
-     * of maximum mark for the quiz. That is, the indended influence this question
+     * of maximum mark for the hippotrack. That is, the indended influence this question
      * on the student's overall mark.
      * @param \core_question\statistics\questions\calculated $questionstat stats for the question.
      * @return string contents of this table cell.
@@ -376,12 +376,12 @@ class hippotrack_statistics_table extends flexible_table {
             if (is_null($min) && is_null($max)) {
                 return '';
             } else {
-                $min = hippotrack_report_scale_summarks_as_percentage($min, $this->quiz);
-                $max = hippotrack_report_scale_summarks_as_percentage($max, $this->quiz);
+                $min = hippotrack_report_scale_summarks_as_percentage($min, $this->hippotrack);
+                $max = hippotrack_report_scale_summarks_as_percentage($max, $this->hippotrack);
                 return $this->format_range($min, $max);
             }
         } else {
-            return hippotrack_report_scale_summarks_as_percentage($questionstat->maxmark, $this->quiz);
+            return hippotrack_report_scale_summarks_as_percentage($questionstat->maxmark, $this->hippotrack);
         }
     }
 
@@ -427,7 +427,7 @@ class hippotrack_statistics_table extends flexible_table {
     /**
      * Discrimination index. This is the product moment correlation coefficient
      * between the fraction for this question, and the average fraction for the
-     * other questions in this quiz.
+     * other questions in this hippotrack.
      * @param \core_question\statistics\questions\calculated $questionstat stats for the question.
      * @return string contents of this table cell.
      */

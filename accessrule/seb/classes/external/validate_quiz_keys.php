@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quizaccess_seb\external;
+namespace hippotrackaccess_seb\external;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -25,9 +25,9 @@ use external_function_parameters;
 use external_single_structure;
 use external_value;
 use invalid_parameter_exception;
-use quiz;
-use quizaccess_seb\event\access_prevented;
-use quizaccess_seb\access_manager;
+use hippotrack;
+use hippotrackaccess_seb\event\access_prevented;
+use hippotrackaccess_seb\access_manager;
 
 require_once($CFG->dirroot . '/mod/hippotrack/accessmanager.php');
 require_once($CFG->dirroot . '/mod/hippotrack/attemptlib.php');
@@ -36,7 +36,7 @@ require_once($CFG->libdir . '/externallib.php');
 /**
  * Validate browser exam key and config key.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2021 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -87,28 +87,28 @@ class validate_hippotrack_keys extends external_api {
 
         // At least one SEB key must be provided.
         if (empty($configkey) && empty($browserexamkey)) {
-            throw new invalid_parameter_exception(get_string('error:ws:nokeyprovided', 'quizaccess_seb'));
+            throw new invalid_parameter_exception(get_string('error:ws:nokeyprovided', 'hippotrackaccess_seb'));
         }
 
-        // Check quiz exists corresponding to cmid.
-        if (($quizid = self::get_hippotrack_id($cmid)) === 0) {
-            throw new invalid_parameter_exception(get_string('error:ws:quiznotexists', 'quizaccess_seb', $cmid));
+        // Check hippotrack exists corresponding to cmid.
+        if (($hippotrackid = self::get_hippotrack_id($cmid)) === 0) {
+            throw new invalid_parameter_exception(get_string('error:ws:hippotracknotexists', 'hippotrackaccess_seb', $cmid));
         }
 
         $result = ['configkey' => true, 'browserexamkey' => true];
 
-        $accessmanager = new access_manager(quiz::create($quizid));
+        $accessmanager = new access_manager(hippotrack::create($hippotrackid));
 
         // Check if there is a valid config key.
         if (!$accessmanager->validate_config_key($configkey, $url)) {
-            access_prevented::create_strict($accessmanager, get_string('invalid_config_key', 'quizaccess_seb'),
+            access_prevented::create_strict($accessmanager, get_string('invalid_config_key', 'hippotrackaccess_seb'),
                     $configkey, $browserexamkey)->trigger();
             $result['configkey'] = false;
         }
 
         // Check if there is a valid browser exam key.
         if (!$accessmanager->validate_browser_exam_key($browserexamkey, $url)) {
-            access_prevented::create_strict($accessmanager, get_string('invalid_browser_key', 'quizaccess_seb'),
+            access_prevented::create_strict($accessmanager, get_string('invalid_browser_key', 'hippotrackaccess_seb'),
                     $configkey, $browserexamkey)->trigger();
             $result['browserexamkey'] = false;
         }
@@ -136,20 +136,20 @@ class validate_hippotrack_keys extends external_api {
     }
 
     /**
-     * Check if there is a valid quiz corresponding to a course module it.
+     * Check if there is a valid hippotrack corresponding to a course module it.
      *
      * @param string $cmid Course module ID.
-     * @return int Returns quiz id if cmid matches valid quiz, or 0 if there is no match.
+     * @return int Returns hippotrack id if cmid matches valid hippotrack, or 0 if there is no match.
      */
     private static function get_hippotrack_id(string $cmid): int {
-        $quizid = 0;
+        $hippotrackid = 0;
 
-        $coursemodule = get_coursemodule_from_id('quiz', $cmid);
+        $coursemodule = get_coursemodule_from_id('hippotrack', $cmid);
         if (!empty($coursemodule)) {
-            $quizid = $coursemodule->instance;
+            $hippotrackid = $coursemodule->instance;
         }
 
-        return $quizid;
+        return $hippotrackid;
     }
 }
 

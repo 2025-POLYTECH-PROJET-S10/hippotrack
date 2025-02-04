@@ -27,33 +27,33 @@ use hippotrack_statistics\task\recalculate;
  */
 trait statistics_test_trait {
     /**
-     * Return a user, and a quiz with 2 questions.
+     * Return a user, and a hippotrack with 2 questions.
      *
-     * @return array [$user, $quiz, $course]
+     * @return array [$user, $hippotrack, $course]
      */
     protected function create_test_data(): array {
         $this->resetAfterTest(true);
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $quiz = $this->create_test_quiz($course);
-        $this->add_two_regular_questions($generator->get_plugin_generator('core_question'), $quiz);
-        return [$user, $quiz, $course];
+        $hippotrack = $this->create_test_hippotrack($course);
+        $this->add_two_regular_questions($generator->get_plugin_generator('core_question'), $hippotrack);
+        return [$user, $hippotrack, $course];
     }
 
     /**
-     * Assert that a task is queued for a quiz.
+     * Assert that a task is queued for a hippotrack.
      *
-     * Check that the quizid stored in the task's custom data matches the provided quiz,
+     * Check that the hippotrackid stored in the task's custom data matches the provided hippotrack,
      * and that the run time is in one hour from when the test is being run (within a small margin of error).
      *
      * @param recalculate $task
-     * @param \stdClass $quiz
+     * @param \stdClass $hippotrack
      * @return void
      */
-    protected function assert_task_is_queued_for_quiz(recalculate $task, \stdClass $quiz): void {
+    protected function assert_task_is_queued_for_hippotrack(recalculate $task, \stdClass $hippotrack): void {
         $data = $task->get_custom_data();
-        $this->assertEquals($quiz->id, $data->quizid);
+        $this->assertEquals($hippotrack->id, $data->hippotrackid);
         $this->assertEqualsWithDelta(time() + HOURSECS, $task->get_next_run_time(), 1);
     }
 }

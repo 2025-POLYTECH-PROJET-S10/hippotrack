@@ -1,6 +1,6 @@
 {
     "plugintypes": {
-        "quiz": "mod\/hippotrack\/report",
-        "quizaccess": "mod\/hippotrack\/accessrule"
+        "hippotrack": "mod\/hippotrack\/report",
+        "hippotrackaccess": "mod\/hippotrack\/accessrule"
     }
 }

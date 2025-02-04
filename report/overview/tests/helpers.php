@@ -37,23 +37,23 @@ class testable_hippotrack_attempts_report extends hippotrack_attempts_report {
 
     /**
      * Override this function to displays the report.
-     * @param object $cm the course-module for this quiz.
+     * @param object $cm the course-module for this hippotrack.
      * @param object $course the course we are in.
-     * @param object $quiz this quiz.
+     * @param object $hippotrack this hippotrack.
      */
-    public function display($cm, $course, $quiz) {
+    public function display($cm, $course, $hippotrack) {
 
     }
 
     /**
      * Testable delete_selected_attempts function.
      *
-     * @param object $quiz
+     * @param object $hippotrack
      * @param object $cm
      * @param array $attemptids
      * @param \core\dml\sql_join $allowedjoins
      */
-    public function delete_selected_attempts($quiz, $cm, $attemptids, \core\dml\sql_join $allowedjoins) {
-        parent::delete_selected_attempts($quiz, $cm, $attemptids, $allowedjoins);
+    public function delete_selected_attempts($hippotrack, $cm, $attemptids, \core\dml\sql_join $allowedjoins) {
+        parent::delete_selected_attempts($hippotrack, $cm, $attemptids, $allowedjoins);
     }
 }

@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quizaccess_securewindow;
+namespace hippotrackaccess_securewindow;
 
-use quiz;
-use quizaccess_securewindow;
+use hippotrack;
+use hippotrackaccess_securewindow;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -26,24 +26,24 @@ require_once($CFG->dirroot . '/mod/hippotrack/accessrule/securewindow/rule.php')
 
 
 /**
- * Unit tests for the quizaccess_securewindow plugin.
+ * Unit tests for the hippotrackaccess_securewindow plugin.
  *
- * @package    quizaccess_securewindow
+ * @package    hippotrackaccess_securewindow
  * @copyright  2008 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
  * @covers \hippotrack_access_rule_base
- * @covers \quizaccess_securewindow
+ * @covers \hippotrackaccess_securewindow
  */
 class rule_test extends \basic_testcase {
     // Nothing very testable in this class, just test that it obeys the general access rule contact.
     public function test_securewindow_access_rule() {
-        $quiz = new \stdClass();
-        $quiz->browsersecurity = 'securewindow';
+        $hippotrack = new \stdClass();
+        $hippotrack->browsersecurity = 'securewindow';
         $cm = new \stdClass();
         $cm->id = 0;
-        $quizobj = new quiz($quiz, $cm, null);
-        $rule = new quizaccess_securewindow($quizobj, 0);
+        $hippotrackobj = new hippotrack($hippotrack, $cm, null);
+        $rule = new hippotrackaccess_securewindow($hippotrackobj, 0);
         $attempt = new \stdClass();
 
         $this->assertFalse($rule->prevent_access());

@@ -1,5 +1,5 @@
-@javascript @mod_hippotrack @quizaccess @quizaccess_seb
-Feature: Safe Exam Browser settings in quiz edit form
+@javascript @mod_hippotrack @hippotrackaccess @hippotrackaccess_seb
+Feature: Safe Exam Browser settings in hippotrack edit form
 
   Background:
     Given the following "courses" exist:
@@ -7,10 +7,10 @@ Feature: Safe Exam Browser settings in quiz edit form
       | Course 1 | C1        |
     And the following "activities" exist:
       | activity | course | section | name   |
-      | quiz     | C1     | 1       | Quiz 1 |
+      | hippotrack     | C1     | 1       | HippoTrack 1 |
 
-  Scenario: Quiz setting "Require the use of Safe Exam Browser" has all types, except "Use an existing template".
-    When I am on the "Quiz 1" "quiz activity editing" page logged in as admin
+  Scenario: HippoTrack setting "Require the use of Safe Exam Browser" has all types, except "Use an existing template".
+    When I am on the "HippoTrack 1" "hippotrack activity editing" page logged in as admin
     And I expand all fieldsets
     And the "Require the use of Safe Exam Browser" select box should contain "Yes – Configure manually"
     And the "Require the use of Safe Exam Browser" select box should not contain "Yes – Use an existing template"
@@ -18,11 +18,11 @@ Feature: Safe Exam Browser settings in quiz edit form
     And the "Require the use of Safe Exam Browser" select box should contain "Yes – Use SEB client config"
     And the field "Require the use of Safe Exam Browser" matches value "No"
 
-  Scenario: Quiz setting "Require the use of Safe Exam Browser" has all types if at least one template has been added.
-    Given the following "quizaccess_seb > seb templates" exist:
+  Scenario: HippoTrack setting "Require the use of Safe Exam Browser" has all types if at least one template has been added.
+    Given the following "hippotrackaccess_seb > seb templates" exist:
       | name       |
       | Template 1 |
-    When I am on the "Quiz 1" "quiz activity editing" page logged in as admin
+    When I am on the "HippoTrack 1" "hippotrack activity editing" page logged in as admin
     And I expand all fieldsets
     And the "Require the use of Safe Exam Browser" select box should contain "Yes – Configure manually"
     And the "Require the use of Safe Exam Browser" select box should contain "Yes – Use an existing template"
@@ -30,10 +30,10 @@ Feature: Safe Exam Browser settings in quiz edit form
     And the "Require the use of Safe Exam Browser" select box should contain "Yes – Use SEB client config"
     And the field "Require the use of Safe Exam Browser" matches value "No"
 
-  Scenario: Quiz can be edited without capability to select SEB template
+  Scenario: HippoTrack can be edited without capability to select SEB template
     Given the following "permission override" exists:
       | role         | editingteacher                       |
-      | capability   | quizaccess/seb:manage_seb_templateid |
+      | capability   | hippotrackaccess/seb:manage_seb_templateid |
       | permission   | Prevent                              |
       | contextlevel | System                               |
       | reference    |                                      |
@@ -47,22 +47,22 @@ Feature: Safe Exam Browser settings in quiz edit form
       | role         | editingteacher |
     And I log in as "teacher"
     And I am on "Course 1" course homepage with editing mode on
-    # Create the quiz.
-    When I add a "Quiz" to section "0" and I fill the form with:
-      | Name | My quiz |
-    Then I should not see "Adding a new Quiz"
-    # Edit the quiz.
-    And I open "My quiz" actions menu
-    And I click on "Edit settings" "link" in the "My quiz" activity
-    And I set the field "Name" to "My quiz edited"
+    # Create the hippotrack.
+    When I add a "HippoTrack" to section "0" and I fill the form with:
+      | Name | My hippotrack |
+    Then I should not see "Adding a new HippoTrack"
+    # Edit the hippotrack.
+    And I open "My hippotrack" actions menu
+    And I click on "Edit settings" "link" in the "My hippotrack" activity
+    And I set the field "Name" to "My hippotrack edited"
     And I press "Save and return to course"
-    And I should not see "Updating: Quiz"
+    And I should not see "Updating: HippoTrack"
 
   Scenario: SEB settings if using No SEB
-    Given the following "quizaccess_seb > seb templates" exist:
+    Given the following "hippotrackaccess_seb > seb templates" exist:
       | name       |
       | Template 1 |
-    And I am on the "Quiz 1" "quiz activity editing" page logged in as admin
+    And I am on the "HippoTrack 1" "hippotrack activity editing" page logged in as admin
     And I expand all fieldsets
     And I set the field "Require the use of Safe Exam Browser" to "No"
     Then I should not see "Upload Safe Exam Browser config file"
@@ -91,10 +91,10 @@ Feature: Safe Exam Browser settings in quiz edit form
     Then I should not see "Regex blocked"
 
   Scenario: SEB settings if using Use SEB client config
-    Given the following "quizaccess_seb > seb templates" exist:
+    Given the following "hippotrackaccess_seb > seb templates" exist:
       | name       |
       | Template 1 |
-    And I am on the "Quiz 1" "quiz activity editing" page logged in as admin
+    And I am on the "HippoTrack 1" "hippotrack activity editing" page logged in as admin
     And I expand all fieldsets
     And I set the field "Require the use of Safe Exam Browser" to "Yes – Use SEB client config"
     Then I should see "Show Safe Exam Browser download button"
@@ -123,10 +123,10 @@ Feature: Safe Exam Browser settings in quiz edit form
     Then I should not see "Regex blocked"
 
   Scenario: SEB settings if using Upload my own config
-    Given the following "quizaccess_seb > seb templates" exist:
+    Given the following "hippotrackaccess_seb > seb templates" exist:
       | name       |
       | Template 1 |
-    And I am on the "Quiz 1" "quiz activity editing" page logged in as admin
+    And I am on the "HippoTrack 1" "hippotrack activity editing" page logged in as admin
     And I expand all fieldsets
     And I set the field "Require the use of Safe Exam Browser" to "Yes – Upload my own config"
     Then I should see "Upload Safe Exam Browser config file"
@@ -155,10 +155,10 @@ Feature: Safe Exam Browser settings in quiz edit form
     Then I should not see "Template 1"
 
   Scenario: SEB settings if using Use an existing template
-    Given the following "quizaccess_seb > seb templates" exist:
+    Given the following "hippotrackaccess_seb > seb templates" exist:
       | name       |
       | Template 1 |
-    And I am on the "Quiz 1" "quiz activity editing" page logged in as admin
+    And I am on the "HippoTrack 1" "hippotrack activity editing" page logged in as admin
     And I expand all fieldsets
     And I set the field "Require the use of Safe Exam Browser" to "Yes – Use an existing template"
     Then I should see "Safe Exam Browser config template"
@@ -189,10 +189,10 @@ Feature: Safe Exam Browser settings in quiz edit form
     Then I should not see "Quit password"
 
   Scenario: SEB settings if using Configure manually
-    Given the following "quizaccess_seb > seb templates" exist:
+    Given the following "hippotrackaccess_seb > seb templates" exist:
       | name       |
       | Template 1 |
-    And I am on the "Quiz 1" "quiz activity editing" page logged in as admin
+    And I am on the "HippoTrack 1" "hippotrack activity editing" page logged in as admin
     And I expand all fieldsets
     And I set the field "Require the use of Safe Exam Browser" to "Yes – Configure manually"
     Then I should see "Show Safe Exam Browser download button"

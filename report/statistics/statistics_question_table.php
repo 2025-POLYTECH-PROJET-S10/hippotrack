@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz statistics report, table for showing response analysis for a particular question (or sub question).
+ * HippoTrack statistics report, table for showing response analysis for a particular question (or sub question).
  *
  * @package   hippotrack_statistics
  * @copyright 2014 Open University
@@ -53,7 +53,7 @@ class hippotrack_statistics_question_table extends flexible_table {
      * displayed.
      */
     public function __construct($qid) {
-        parent::__construct('mod-quiz-report-statistics-question-table' . $qid);
+        parent::__construct('mod-hippotrack-report-statistics-question-table' . $qid);
     }
 
     /**
@@ -70,7 +70,7 @@ class hippotrack_statistics_question_table extends flexible_table {
 
         $this->define_baseurl($reporturl->out());
         $this->collapsible(false);
-        $this->set_attribute('class', 'generaltable generalbox boxaligncenter quizresponseanalysis');
+        $this->set_attribute('class', 'generaltable generalbox boxaligncenter hippotrackresponseanalysis');
 
         // Define the table columns.
         $columns = array();

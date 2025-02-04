@@ -22,11 +22,11 @@ use question_finder;
 use hippotrack_statistics_report;
 
 /**
- * Quiz attempt walk through using data from csv file.
+ * HippoTrack attempt walk through using data from csv file.
  *
- * The quiz stats below and the question stats found in qstats00.csv were calculated independently in a spreadsheet which is
+ * The hippotrack stats below and the question stats found in qstats00.csv were calculated independently in a spreadsheet which is
  * available in open document or excel format here :
- * https://github.com/jamiepratt/moodle-quiz-tools/tree/master/statsspreadsheet
+ * https://github.com/jamiepratt/moodle-hippotrack-tools/tree/master/statsspreadsheet
  *
  * Similarly the question variant's stats in qstats00.csv are calculated in stats_for_variant_1.xls and stats_for_variant_8.xls
  * The calculations in the spreadsheets are the same as for the other question stats but applied just to the attempts where the
@@ -61,23 +61,23 @@ final class stats_from_steps_walkthrough_test extends \mod_hippotrack\tests\atte
     }
 
     /**
-     * Create a quiz add questions to it, walk through quiz attempts and then check results.
+     * Create a hippotrack add questions to it, walk through hippotrack attempts and then check results.
      *
      * @param array $csvdata data read from csv file "questionsXX.csv", "stepsXX.csv" and "resultsXX.csv".
      * @dataProvider get_data_for_walkthrough
      */
-    public function test_walkthrough_from_csv($quizsettings, $csvdata): void {
-        $this->create_hippotrack_simulate_attempts_and_check_results($quizsettings, $csvdata);
+    public function test_walkthrough_from_csv($hippotracksettings, $csvdata): void {
+        $this->create_hippotrack_simulate_attempts_and_check_results($hippotracksettings, $csvdata);
 
-        $whichattempts = QUIZ_GRADEAVERAGE; // All attempts.
+        $whichattempts = HIPPOTRACK_GRADEAVERAGE; // All attempts.
         $whichtries = question_attempt::ALL_TRIES;
         $groupstudentsjoins = new \core\dml\sql_join();
-        list($questions, $quizstats, $questionstats, $qubaids) =
+        list($questions, $hippotrackstats, $questionstats, $qubaids) =
                     $this->check_stats_calculations_and_response_analysis($csvdata,
                             $whichattempts, $whichtries, $groupstudentsjoins);
-        if ($quizsettings['testnumber'] === '00') {
+        if ($hippotracksettings['testnumber'] === '00') {
             $this->check_variants_count_for_hippotrack_00($questions, $questionstats, $whichtries, $qubaids);
-            $this->check_hippotrack_stats_for_hippotrack_00($quizstats);
+            $this->check_hippotrack_stats_for_hippotrack_00($hippotrackstats);
         }
     }
 
@@ -323,10 +323,10 @@ final class stats_from_steps_walkthrough_test extends \mod_hippotrack\tests\atte
     }
 
     /**
-     * @param $quizstats
+     * @param $hippotrackstats
      */
-    protected function check_hippotrack_stats_for_hippotrack_00($quizstats) {
-        $quizstatsexpected = array(
+    protected function check_hippotrack_stats_for_hippotrack_00($hippotrackstats) {
+        $hippotrackstatsexpected = array(
             'median'             => 4.5,
             'firstattemptsavg'   => 4.617333332,
             'allattemptsavg'     => 4.617333332,
@@ -340,8 +340,8 @@ final class stats_from_steps_walkthrough_test extends \mod_hippotrack\tests\atte
             'standarderror'      => 1.1106813066
         );
 
-        foreach ($quizstatsexpected as $statname => $statvalue) {
-            $this->assertEqualsWithDelta($statvalue, $quizstats->$statname, abs($statvalue) * 1.5e-5, $quizstats->$statname);
+        foreach ($hippotrackstatsexpected as $statname => $statvalue) {
+            $this->assertEqualsWithDelta($statvalue, $hippotrackstats->$statname, abs($statvalue) * 1.5e-5, $hippotrackstats->$statname);
         }
     }
 
@@ -352,26 +352,26 @@ final class stats_from_steps_walkthrough_test extends \mod_hippotrack\tests\atte
      * @param string $whichattempts
      * @param string $whichtries
      * @param \core\dml\sql_join $groupstudentsjoins
-     * @return array with contents 0 => $questions, 1 => $quizstats, 2=> $questionstats, 3=> $qubaids Might be needed for further
+     * @return array with contents 0 => $questions, 1 => $hippotrackstats, 2=> $questionstats, 3=> $qubaids Might be needed for further
      *               testing.
      */
     protected function check_stats_calculations_and_response_analysis($csvdata, $whichattempts, $whichtries,
             \core\dml\sql_join $groupstudentsjoins) {
         $this->report = new hippotrack_statistics_report();
-        $questions = $this->report->load_and_initialise_questions_for_calculations($this->quiz);
-        list($quizstats, $questionstats) = $this->report->get_all_stats_and_analysis($this->quiz,
+        $questions = $this->report->load_and_initialise_questions_for_calculations($this->hippotrack);
+        list($hippotrackstats, $questionstats) = $this->report->get_all_stats_and_analysis($this->hippotrack,
                                                                                      $whichattempts,
                                                                                      $whichtries,
                                                                                      $groupstudentsjoins,
                                                                                      $questions);
 
-        $qubaids = hippotrack_statistics_qubaids_condition($this->quiz->id, $groupstudentsjoins, $whichattempts);
+        $qubaids = hippotrack_statistics_qubaids_condition($this->hippotrack->id, $groupstudentsjoins, $whichattempts);
 
-        // We will create some quiz and question stat calculator instances and some response analyser instances, just in order
+        // We will create some hippotrack and question stat calculator instances and some response analyser instances, just in order
         // to check the last analysed time then returned.
-        $quizcalc = new calculator();
+        $hippotrackcalc = new calculator();
         // Should not be a delay of more than one second between the calculation of stats above and here.
-        $this->assertTimeCurrent($quizcalc->get_last_calculated_time($qubaids));
+        $this->assertTimeCurrent($hippotrackcalc->get_last_calculated_time($qubaids));
 
         $qcalc = new \core_question\statistics\questions\calculator($questions);
         $this->assertTimeCurrent($qcalc->get_last_calculated_time($qubaids));
@@ -381,9 +381,9 @@ final class stats_from_steps_walkthrough_test extends \mod_hippotrack\tests\atte
         }
         if (isset($csvdata['qstats'])) {
             $this->check_question_stats($csvdata['qstats'], $questionstats);
-            return array($questions, $quizstats, $questionstats, $qubaids);
+            return array($questions, $hippotrackstats, $questionstats, $qubaids);
         }
-        return array($questions, $quizstats, $questionstats, $qubaids);
+        return array($questions, $hippotrackstats, $questionstats, $qubaids);
     }
 
 }

@@ -80,7 +80,7 @@ class hippotrack_overview_options extends mod_hippotrack_attempts_report_options
     public function update_user_preferences() {
         parent::update_user_preferences();
 
-        if (hippotrack_has_grades($this->quiz)) {
+        if (hippotrack_has_grades($this->hippotrack)) {
             set_user_preference('hippotrack_overview_slotmarks', $this->slotmarks);
         }
     }

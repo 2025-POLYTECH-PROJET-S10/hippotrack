@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for the quizaccess_offlineattempts plugin.
+ * Version information for the hippotrackaccess_offlineattempts plugin.
  *
- * @package    quizaccess_offlineattempts
+ * @package    hippotrackaccess_offlineattempts
  * @copyright  2016 Juan Leyva
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,4 +26,4 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version   = 2022112800;
 $plugin->requires  = 2022111800;
-$plugin->component = 'quizaccess_offlineattempts';
+$plugin->component = 'hippotrackaccess_offlineattempts';

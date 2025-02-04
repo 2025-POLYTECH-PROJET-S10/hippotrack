@@ -28,7 +28,7 @@ use hippotrack_statistics\task\recalculate;
  */
 class attempt_submitted {
     /**
-     * Queue an ad-hoc task to recalculate statistics for the quiz.
+     * Queue an ad-hoc task to recalculate statistics for the hippotrack.
      *
      * This will defer running the task for 1 hour, to give other attempts in progress
      * a chance to submit.
@@ -38,6 +38,6 @@ class attempt_submitted {
      */
     public static function process(\mod_hippotrack\event\attempt_submitted $event): void {
         $data = $event->get_data();
-        recalculate::queue_future_run($data['other']['quizid']);
+        recalculate::queue_future_run($data['other']['hippotrackid']);
     }
 }

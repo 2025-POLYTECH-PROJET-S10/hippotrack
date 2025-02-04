@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for the quizaccess_openclosedate plugin.
+ * Strings for the hippotrackaccess_openclosedate plugin.
  *
- * @package    quizaccess
+ * @package    hippotrackaccess
  * @subpackage openclosedate
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,10 +27,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 
-$string['notavailable'] = 'This quiz is currently not available.';
+$string['notavailable'] = 'This hippotrack is currently not available.';
 $string['pluginname'] = 'Open and close date access rule';
-$string['privacy:metadata'] = 'The Open and close date quiz access rule plugin does not store any personal data.';
+$string['privacy:metadata'] = 'The Open and close date hippotrack access rule plugin does not store any personal data.';
 
 // Deprecated since Moodle 3.11.
-$string['quiznotavailable'] = 'The quiz will not be available until {$a}';
+$string['hippotracknotavailable'] = 'The hippotrack will not be available until {$a}';
 

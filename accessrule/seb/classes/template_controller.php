@@ -17,16 +17,16 @@
 /**
  * Class for manipulating with the template records.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_seb;
+namespace hippotrackaccess_seb;
 
 use core\notification;
-use quizaccess_seb\local\table\template_list;
+use hippotrackaccess_seb\local\table\template_list;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -121,7 +121,7 @@ class template_controller {
      * Set external page for the manager.
      */
     protected function set_external_page() {
-        admin_externalpage_setup('quizaccess_seb/template');
+        admin_externalpage_setup('hippotrackaccess_seb/template');
     }
 
     /**
@@ -130,7 +130,7 @@ class template_controller {
      * @param int $id
      * @param \stdClass|null $data
      *
-     * @return \quizaccess_seb\template
+     * @return \hippotrackaccess_seb\template
      */
     protected function get_instance($id = 0, \stdClass $data = null) {
         return new template($id, $data);
@@ -151,20 +151,20 @@ class template_controller {
      * @return string
      */
     protected function get_create_button_text() : string {
-        return get_string('addtemplate', 'quizaccess_seb');
+        return get_string('addtemplate', 'hippotrackaccess_seb');
     }
 
     /**
      * Returns form for the record.
      *
-     * @param \quizaccess_seb\template|null $instance
+     * @param \hippotrackaccess_seb\template|null $instance
      *
-     * @return \quizaccess_seb\local\form\template
+     * @return \hippotrackaccess_seb\local\form\template
      */
-    protected function get_form($instance) : \quizaccess_seb\local\form\template {
+    protected function get_form($instance) : \hippotrackaccess_seb\local\form\template {
         global $PAGE;
 
-        return new \quizaccess_seb\local\form\template($PAGE->url->out(false), ['persistent' => $instance]);
+        return new \hippotrackaccess_seb\local\form\template($PAGE->url->out(false), ['persistent' => $instance]);
     }
 
     /**
@@ -172,7 +172,7 @@ class template_controller {
      * @return string
      */
     protected function get_view_heading() : string {
-        return get_string('managetemplates', 'quizaccess_seb');
+        return get_string('managetemplates', 'hippotrackaccess_seb');
     }
 
     /**
@@ -180,7 +180,7 @@ class template_controller {
      * @return string
      */
     protected function get_new_heading() : string {
-        return get_string('newtemplate', 'quizaccess_seb');
+        return get_string('newtemplate', 'hippotrackaccess_seb');
     }
 
     /**
@@ -188,7 +188,7 @@ class template_controller {
      * @return string
      */
     protected function get_edit_heading() : string {
-        return get_string('edittemplate', 'quizaccess_seb');
+        return get_string('edittemplate', 'hippotrackaccess_seb');
     }
 
     /**
@@ -227,7 +227,7 @@ class template_controller {
                     $persistent = $this->get_instance(0, $data);
                     $persistent->create();
 
-                    \quizaccess_seb\event\template_created::create_strict(
+                    \hippotrackaccess_seb\event\template_created::create_strict(
                         $persistent,
                         \context_system::instance()
                     )->trigger();
@@ -236,7 +236,7 @@ class template_controller {
                     $instance->from_record($data);
                     $instance->update();
 
-                    \quizaccess_seb\event\template_updated::create_strict(
+                    \hippotrackaccess_seb\event\template_updated::create_strict(
                         $instance,
                         \context_system::instance()
                     )->trigger();
@@ -252,7 +252,7 @@ class template_controller {
                 $this->header($this->get_new_heading());
             } else {
                 if (!$instance->can_delete()) {
-                    notification::warning(get_string('cantedit', 'quizaccess_seb'));
+                    notification::warning(get_string('cantedit', 'hippotrackaccess_seb'));
                 }
                 $this->header($this->get_edit_heading());
             }
@@ -275,14 +275,14 @@ class template_controller {
             $instance->delete();
             notification::success(get_string('deleted'));
 
-            \quizaccess_seb\event\template_deleted::create_strict(
+            \hippotrackaccess_seb\event\template_deleted::create_strict(
                 $id,
                 \context_system::instance()
             )->trigger();
 
             redirect(new \moodle_url(static::get_base_url()));
         } else {
-            notification::warning(get_string('cantdelete', 'quizaccess_seb'));
+            notification::warning(get_string('cantdelete', 'hippotrackaccess_seb'));
             redirect(new \moodle_url(static::get_base_url()));
         }
     }
@@ -298,7 +298,7 @@ class template_controller {
         $this->display_all_records();
 
         // JS for Template management.
-        $PAGE->requires->js_call_amd('quizaccess_seb/managetemplates', 'setup');
+        $PAGE->requires->js_call_amd('hippotrackaccess_seb/managetemplates', 'setup');
 
         $this->footer();
     }
@@ -374,7 +374,7 @@ class template_controller {
     private function trigger_enabled_event(template $template) {
         $eventstring = ($template->get('enabled') == 0 ? 'disabled' : 'enabled');
 
-        $func = '\quizaccess_seb\event\template_' . $eventstring;
+        $func = '\hippotrackaccess_seb\event\template_' . $eventstring;
         $func::create_strict(
             $template,
             \context_system::instance()

@@ -25,7 +25,7 @@ YUI.add('moodle-mod_hippotrack-modform', function (Y, NAME) {
         initializer: function () {
             this.repaginateCheckbox = Y.one('#id_repaginatenow');
             if (!this.repaginateCheckbox) {
-                // The checkbox only appears when editing an existing quiz.
+                // The checkbox only appears when editing an existing hippotrack.
                 return;
             }
 

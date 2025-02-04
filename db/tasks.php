@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Definition of Quiz scheduled tasks.
+ * Definition of HippoTrack scheduled tasks.
  *
  * @package   mod_hippotrack
  * @category  task

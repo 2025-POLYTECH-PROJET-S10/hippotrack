@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem implementation for quizaccess_openclosedate.
+ * Privacy Subsystem implementation for hippotrackaccess_openclosedate.
  *
- * @package    quizaccess_openclosedate
+ * @package    hippotrackaccess_openclosedate
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_openclosedate\privacy;
+namespace hippotrackaccess_openclosedate\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Privacy Subsystem for quizaccess_openclosedate implementing null_provider.
+ * Privacy Subsystem for hippotrackaccess_openclosedate implementing null_provider.
  *
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

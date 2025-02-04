@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Initialise the add random question modal on the quiz page.
+ * Initialise the add random question modal on the hippotrack page.
  *
  * @module    mod_hippotrack/add_random_question
  * @copyright 2018 Ryan Wyllie <ryan@moodle.com>

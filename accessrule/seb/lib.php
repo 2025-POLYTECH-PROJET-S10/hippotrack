@@ -17,7 +17,7 @@
 /**
  * Main library of plugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright  2019 Catalyst IT
@@ -38,7 +38,7 @@ defined('MOODLE_INTERNAL') || die();
  * @param array $options additional options affecting the file serving
  * @return bool false if the file not found, just send the file otherwise and do not return anything
  */
-function quizaccess_seb_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+function hippotrackaccess_seb_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     if ($context->contextlevel != CONTEXT_MODULE) {
         return false;
     }
@@ -48,7 +48,7 @@ function quizaccess_seb_pluginfile($course, $cm, $context, $filearea, $args, $fo
     }
 
     require_login($course, true, $cm);
-    if (!has_capability('quizaccess/seb:manage_filemanager_sebconfigfile', $context)) {
+    if (!has_capability('hippotrackaccess/seb:manage_filemanager_sebconfigfile', $context)) {
         return false;
     }
 
@@ -62,7 +62,7 @@ function quizaccess_seb_pluginfile($course, $cm, $context, $filearea, $args, $fo
     }
 
     $fs = get_file_storage();
-    $file = $fs->get_file($context->id, 'quizaccess_seb', $filearea, $itemid, $filepath, $filename);
+    $file = $fs->get_file($context->id, 'hippotrackaccess_seb', $filearea, $itemid, $filepath, $filename);
     if (!$file) {
         return false;
     }

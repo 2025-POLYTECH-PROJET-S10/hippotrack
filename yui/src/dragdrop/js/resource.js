@@ -17,11 +17,11 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
 
         this.samenodelabel = {
             identifier: 'dragtoafter',
-            component: 'quiz'
+            component: 'hippotrack'
         };
         this.parentnodelabel = {
             identifier: 'dragtostart',
-            component: 'quiz'
+            component: 'hippotrack'
         };
 
         // Go through all sections
@@ -42,12 +42,12 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
             cloneNode: true
         });
         del.dd.plug(Y.Plugin.DDConstrained, {
-            // Keep it inside the .mod-quiz-edit-content
+            // Keep it inside the .mod-hippotrack-edit-content
             constrain: '#' + CSS.SLOTS
         });
         del.dd.plug(Y.Plugin.DDWinScroll);
 
-        M.mod_hippotrack.quizbase.register_module(this);
+        M.mod_hippotrack.hippotrackbase.register_module(this);
         M.mod_hippotrack.dragres = this;
     },
 
@@ -58,7 +58,7 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
      * @param {String} baseselector The CSS selector or node to limit scope to
      */
     setup_for_section: function () {
-        Y.Node.all('.mod-quiz-edit-content ul.slots ul.section').each(function (resources) {
+        Y.Node.all('.mod-hippotrack-edit-content ul.slots ul.section').each(function (resources) {
             resources.setAttribute('data-draggroups', this.groups.join(' '));
             // Define empty ul as droptarget, so that item could be moved to empty list
             new Y.DD.Drop({
@@ -125,7 +125,7 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
         // Prepare request parameters
         params.sesskey = M.cfg.sesskey;
         params.courseid = this.get('courseid');
-        params.quizid = this.get('quizid');
+        params.hippotrackid = this.get('hippotrackid');
         params['class'] = 'resource';
         params.field = 'move';
         params.id = Number(Y.Moodle.mod_hippotrack.util.slot.getId(dragnode));
@@ -155,7 +155,7 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
                 success: function (tid, response) {
                     var responsetext = Y.JSON.parse(response.responseText);
                     var params = { element: dragnode, visible: responsetext.visible };
-                    M.mod_hippotrack.quizbase.invoke_function('set_visibility_resource_ui', params);
+                    M.mod_hippotrack.hippotrackbase.invoke_function('set_visibility_resource_ui', params);
                     this.unlock_drag_handle(drag, CSS.EDITINGMOVE);
                     window.setTimeout(function () {
                         spinner.hide();
@@ -215,7 +215,7 @@ Y.extend(DRAGRESOURCE, M.core.dragdrop, {
         courseid: {
             value: null
         },
-        quizid: {
+        hippotrackid: {
             value: null
         },
         ajaxurl: {

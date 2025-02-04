@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Implementaton of the quizaccess_timelimit plugin.
+ * Implementaton of the hippotrackaccess_timelimit plugin.
  *
- * @package    quizaccess
+ * @package    hippotrackaccess
  * @subpackage timelimit
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -36,26 +36,26 @@ require_once($CFG->dirroot . '/mod/hippotrack/accessrule/accessrulebase.php');
  * @copyright  2009 Tim Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quizaccess_timelimit extends hippotrack_access_rule_base {
+class hippotrackaccess_timelimit extends hippotrack_access_rule_base {
 
-    public static function make(quiz $quizobj, $timenow, $canignoretimelimits) {
+    public static function make(hippotrack $hippotrackobj, $timenow, $canignoretimelimits) {
 
-        if (empty($quizobj->get_quiz()->timelimit) || $canignoretimelimits) {
+        if (empty($hippotrackobj->get_hippotrack()->timelimit) || $canignoretimelimits) {
             return null;
         }
 
-        return new self($quizobj, $timenow);
+        return new self($hippotrackobj, $timenow);
     }
 
     public function description() {
-        return get_string('quiztimelimit', 'quizaccess_timelimit',
-                format_time($this->quiz->timelimit));
+        return get_string('hippotracktimelimit', 'hippotrackaccess_timelimit',
+                format_time($this->hippotrack->timelimit));
     }
 
     public function end_time($attempt) {
-        $timedue = $attempt->timestart + $this->quiz->timelimit;
-        if ($this->quiz->timeclose) {
-            $timedue = min($timedue, $this->quiz->timeclose);
+        $timedue = $attempt->timestart + $this->hippotrack->timelimit;
+        if ($this->hippotrack->timeclose) {
+            $timedue = min($timedue, $this->hippotrack->timeclose);
         }
         return $timedue;
     }
@@ -74,11 +74,11 @@ class quizaccess_timelimit extends hippotrack_access_rule_base {
         return $attemptid === null;
     }
 
-    public function add_preflight_check_form_fields(mod_hippotrack_preflight_check_form $quizform,
+    public function add_preflight_check_form_fields(mod_hippotrack_preflight_check_form $hippotrackform,
             MoodleQuickForm $mform, $attemptid) {
         $mform->addElement('header', 'honestycheckheader',
-                get_string('confirmstartheader', 'quizaccess_timelimit'));
+                get_string('confirmstartheader', 'hippotrackaccess_timelimit'));
         $mform->addElement('static', 'honestycheckmessage', '',
-                get_string('confirmstart', 'quizaccess_timelimit', format_time($this->quiz->timelimit)));
+                get_string('confirmstart', 'hippotrackaccess_timelimit', format_time($this->hippotrack->timelimit)));
     }
 }

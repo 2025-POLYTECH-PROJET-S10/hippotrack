@@ -32,7 +32,7 @@ defined('MOODLE_INTERNAL') || die();
  * @property-read array $other {
  *      Extra information about event.
  *
- *      - int quizid: the id of the quiz.
+ *      - int hippotrackid: the id of the hippotrack.
  *      - string reportname: the name of the report.
  * }
  *
@@ -68,7 +68,7 @@ class report_viewed extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' viewed the report '" . s($this->other['reportname']) . "' for the quiz with " .
+        return "The user with id '$this->userid' viewed the report '" . s($this->other['reportname']) . "' for the hippotrack with " .
             "course module id '$this->contextinstanceid'.";
     }
 
@@ -88,8 +88,8 @@ class report_viewed extends \core\event\base {
      * @return array
      */
     protected function get_legacy_logdata() {
-        return array($this->courseid, 'quiz', 'report', 'report.php?id=' . $this->contextinstanceid . '&mode=' .
-            $this->other['reportname'], $this->other['quizid'], $this->contextinstanceid);
+        return array($this->courseid, 'hippotrack', 'report', 'report.php?id=' . $this->contextinstanceid . '&mode=' .
+            $this->other['reportname'], $this->other['hippotrackid'], $this->contextinstanceid);
     }
 
     /**
@@ -101,8 +101,8 @@ class report_viewed extends \core\event\base {
     protected function validate_data() {
         parent::validate_data();
 
-        if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+        if (!isset($this->other['hippotrackid'])) {
+            throw new \coding_exception('The \'hippotrackid\' value must be set in other.');
         }
 
         if (!isset($this->other['reportname'])) {
@@ -112,7 +112,7 @@ class report_viewed extends \core\event\base {
 
     public static function get_other_mapping() {
         $othermapped = array();
-        $othermapped['quizid'] = array('db' => 'quiz', 'restore' => 'quiz');
+        $othermapped['hippotrackid'] = array('db' => 'hippotrack', 'restore' => 'hippotrack');
 
         return $othermapped;
     }

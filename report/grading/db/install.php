@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Post-install script for the quiz manual grading report.
+ * Post-install script for the hippotrack manual grading report.
  * @package   hippotrack_grading
  * @copyright 2013 Tim Hunt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

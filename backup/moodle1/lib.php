@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Quiz conversion handler
+ * HippoTrack conversion handler
  */
 class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
 
@@ -52,7 +52,7 @@ class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
     public function get_paths() {
         return array(
             new convert_path(
-                'quiz', '/MOODLE_BACKUP/COURSE/MODULES/mod/hippotrack',
+                'hippotrack', '/MOODLE_BACKUP/COURSE/MODULES/mod/hippotrack',
                 array(
                     'newfields' => array(
                         'showuserpicture'       => 0,
@@ -90,7 +90,7 @@ class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
      * This is executed every time we have one /MOODLE_BACKUP/COURSE/MODULES/mod/hippotrack
      * data available
      */
-    public function process_quiz($data) {
+    public function process_hippotrack($data) {
         global $CFG;
 
         // Replay the upgrade step 2008081501.
@@ -124,12 +124,12 @@ class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
         $data['intro'] = moodle1_converter::migrate_referenced_files(
                 $data['intro'], $this->fileman);
 
-        // Start writing quiz.xml.
-        $this->open_xml_writer("activities/hippotrack_{$this->moduleid}/quiz.xml");
+        // Start writing hippotrack.xml.
+        $this->open_xml_writer("activities/hippotrack_{$this->moduleid}/hippotrack.xml");
         $this->xmlwriter->begin_tag('activity', array('id' => $instanceid,
-                'moduleid' => $this->moduleid, 'modulename' => 'quiz',
+                'moduleid' => $this->moduleid, 'modulename' => 'hippotrack',
                 'contextid' => $contextid));
-        $this->xmlwriter->begin_tag('quiz', array('id' => $instanceid));
+        $this->xmlwriter->begin_tag('hippotrack', array('id' => $instanceid));
 
         foreach ($data as $field => $value) {
             if ($field <> 'id') {
@@ -173,15 +173,15 @@ class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
     }
 
     /**
-     * This is executed when we reach the closing </MOD> tag of our 'quiz' path
+     * This is executed when we reach the closing </MOD> tag of our 'hippotrack' path
      */
     public function on_hippotrack_end() {
 
         // Append empty <overrides> subpath element.
         $this->write_xml('overrides', array());
 
-        // Finish writing quiz.xml.
-        $this->xmlwriter->end_tag('quiz');
+        // Finish writing hippotrack.xml.
+        $this->xmlwriter->end_tag('hippotrack');
         $this->xmlwriter->end_tag('activity');
         $this->close_xml_writer();
 

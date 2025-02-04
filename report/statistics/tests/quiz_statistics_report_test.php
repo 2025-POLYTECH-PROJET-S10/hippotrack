@@ -94,20 +94,20 @@ class hippotrack_statistics_report_test extends \advanced_testcase {
     }
 
     /**
-     * Return a generated quiz
+     * Return a generated hippotrack
      *
      * @return \stdClass
      */
-    protected function create_and_attempt_quiz(): \stdClass {
+    protected function create_and_attempt_hippotrack(): \stdClass {
         $course = $this->getDataGenerator()->create_course();
         $user = $this->getDataGenerator()->create_user();
-        $quiz = $this->create_test_quiz($course);
-        $quizcontext = \context_module::instance($quiz->cmid);
+        $hippotrack = $this->create_test_hippotrack($course);
+        $hippotrackcontext = \context_module::instance($hippotrack->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
-        $this->add_two_regular_questions($questiongenerator, $quiz, ['contextid' => $quizcontext->id]);
-        $this->attempt_quiz($quiz, $user);
+        $this->add_two_regular_questions($questiongenerator, $hippotrack, ['contextid' => $hippotrackcontext->id]);
+        $this->attempt_hippotrack($hippotrack, $user);
 
-        return $quiz;
+        return $hippotrack;
     }
 
     /**
@@ -122,14 +122,14 @@ class hippotrack_statistics_report_test extends \advanced_testcase {
      */
     public function test_get_all_stats_and_analysis_locking(): void {
         $this->resetAfterTest(true);
-        $quiz = $this->create_and_attempt_quiz();
-        $whichattempts = QUIZ_GRADEAVERAGE; // All attempts.
+        $hippotrack = $this->create_and_attempt_hippotrack();
+        $whichattempts = HIPPOTRACK_GRADEAVERAGE; // All attempts.
         $whichtries = \question_attempt::ALL_TRIES;
         $groupstudentsjoins = new \core\dml\sql_join();
-        $qubaids = hippotrack_statistics_qubaids_condition($quiz->id, $groupstudentsjoins, $whichattempts);
+        $qubaids = hippotrack_statistics_qubaids_condition($hippotrack->id, $groupstudentsjoins, $whichattempts);
 
         $report = new \hippotrack_statistics_report();
-        $questions = $report->load_and_initialise_questions_for_calculations($quiz);
+        $questions = $report->load_and_initialise_questions_for_calculations($hippotrack);
 
         $timeoutseconds = 20;
         set_config('getstatslocktimeout', $timeoutseconds, 'hippotrack_statistics');
@@ -141,7 +141,7 @@ class hippotrack_statistics_report_test extends \advanced_testcase {
         $timebefore = microtime(true);
         try {
             $result = $report->get_all_stats_and_analysis(
-                $quiz,
+                $hippotrack,
                 $whichattempts,
                 $whichtries,
                 $groupstudentsjoins,
@@ -153,7 +153,7 @@ class hippotrack_statistics_report_test extends \advanced_testcase {
             // Verify that we waited as long as the timeout.
             $this->assertEqualsWithDelta($timeoutseconds, $timeafter - $timebefore, 1);
             $this->assertDebuggingCalled('Could not get lock on ' .
-                    $qubaids->get_hash_code() . ' (Quiz ID ' . $quiz->id . ') after ' .
+                    $qubaids->get_hash_code() . ' (HippoTrack ID ' . $hippotrack->id . ') after ' .
                     $timeoutseconds . ' seconds');
             $this->assertEquals([null, null], $result);
         } finally {
@@ -162,7 +162,7 @@ class hippotrack_statistics_report_test extends \advanced_testcase {
 
         $this->resetDebugging();
         $result = $report->get_all_stats_and_analysis(
-            $quiz,
+            $hippotrack,
             $whichattempts,
             $whichtries,
             $groupstudentsjoins,
@@ -182,15 +182,15 @@ class hippotrack_statistics_report_test extends \advanced_testcase {
      */
     public function test_get_all_stats_and_analysis_locking_no_calculation(): void {
         $this->resetAfterTest(true);
-        $quiz = $this->create_and_attempt_quiz();
+        $hippotrack = $this->create_and_attempt_hippotrack();
 
-        $whichattempts = QUIZ_GRADEAVERAGE; // All attempts.
+        $whichattempts = HIPPOTRACK_GRADEAVERAGE; // All attempts.
         $whichtries = \question_attempt::ALL_TRIES;
         $groupstudentsjoins = new \core\dml\sql_join();
-        $qubaids = hippotrack_statistics_qubaids_condition($quiz->id, $groupstudentsjoins, $whichattempts);
+        $qubaids = hippotrack_statistics_qubaids_condition($hippotrack->id, $groupstudentsjoins, $whichattempts);
 
         $report = new \hippotrack_statistics_report();
-        $questions = $report->load_and_initialise_questions_for_calculations($quiz);
+        $questions = $report->load_and_initialise_questions_for_calculations($hippotrack);
 
         $timeoutseconds = 20;
         set_config('getstatslocktimeout', $timeoutseconds, 'hippotrack_statistics');
@@ -203,7 +203,7 @@ class hippotrack_statistics_report_test extends \advanced_testcase {
 
             $timebefore = microtime(true);
             $result = $report->get_all_stats_and_analysis(
-                $quiz,
+                $hippotrack,
                 $whichattempts,
                 $whichtries,
                 $groupstudentsjoins,

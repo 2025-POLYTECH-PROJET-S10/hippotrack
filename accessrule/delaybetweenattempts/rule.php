@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Implementaton of the quizaccess_delaybetweenattempts plugin.
+ * Implementaton of the hippotrackaccess_delaybetweenattempts plugin.
  *
- * @package    quizaccess
+ * @package    hippotrackaccess
  * @subpackage delaybetweenattempts
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -35,32 +35,32 @@ require_once($CFG->dirroot . '/mod/hippotrack/accessrule/accessrulebase.php');
  * @copyright  2009 Tim Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quizaccess_delaybetweenattempts extends hippotrack_access_rule_base {
+class hippotrackaccess_delaybetweenattempts extends hippotrack_access_rule_base {
 
-    public static function make(quiz $quizobj, $timenow, $canignoretimelimits) {
-        if (empty($quizobj->get_quiz()->delay1) && empty($quizobj->get_quiz()->delay2)) {
+    public static function make(hippotrack $hippotrackobj, $timenow, $canignoretimelimits) {
+        if (empty($hippotrackobj->get_hippotrack()->delay1) && empty($hippotrackobj->get_hippotrack()->delay2)) {
             return null;
         }
 
-        return new self($quizobj, $timenow);
+        return new self($hippotrackobj, $timenow);
     }
 
     public function prevent_new_attempt($numprevattempts, $lastattempt) {
-        if ($this->quiz->attempts > 0 && $numprevattempts >= $this->quiz->attempts) {
+        if ($this->hippotrack->attempts > 0 && $numprevattempts >= $this->hippotrack->attempts) {
             // No more attempts allowed anyway.
             return false;
         }
-        if ($this->quiz->timeclose != 0 && $this->timenow > $this->quiz->timeclose) {
+        if ($this->hippotrack->timeclose != 0 && $this->timenow > $this->hippotrack->timeclose) {
             // No more attempts allowed anyway.
             return false;
         }
         $nextstarttime = $this->compute_next_start_time($numprevattempts, $lastattempt);
         if ($this->timenow < $nextstarttime) {
-            if ($this->quiz->timeclose == 0 || $nextstarttime <= $this->quiz->timeclose) {
-                return get_string('youmustwait', 'quizaccess_delaybetweenattempts',
+            if ($this->hippotrack->timeclose == 0 || $nextstarttime <= $this->hippotrack->timeclose) {
+                return get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts',
                         userdate($nextstarttime));
             } else {
-                return get_string('youcannotwait', 'quizaccess_delaybetweenattempts');
+                return get_string('youcannotwait', 'hippotrackaccess_delaybetweenattempts');
             }
         }
         return false;
@@ -79,15 +79,15 @@ class quizaccess_delaybetweenattempts extends hippotrack_access_rule_base {
         }
 
         $lastattemptfinish = $lastattempt->timefinish;
-        if ($this->quiz->timelimit > 0) {
+        if ($this->hippotrack->timelimit > 0) {
             $lastattemptfinish = min($lastattemptfinish,
-                    $lastattempt->timestart + $this->quiz->timelimit);
+                    $lastattempt->timestart + $this->hippotrack->timelimit);
         }
 
-        if ($numprevattempts == 1 && $this->quiz->delay1) {
-            return $lastattemptfinish + $this->quiz->delay1;
-        } else if ($numprevattempts > 1 && $this->quiz->delay2) {
-            return $lastattemptfinish + $this->quiz->delay2;
+        if ($numprevattempts == 1 && $this->hippotrack->delay1) {
+            return $lastattemptfinish + $this->hippotrack->delay1;
+        } else if ($numprevattempts > 1 && $this->hippotrack->delay2) {
+            return $lastattemptfinish + $this->hippotrack->delay2;
         }
         return 0;
     }
@@ -95,6 +95,6 @@ class quizaccess_delaybetweenattempts extends hippotrack_access_rule_base {
     public function is_finished($numprevattempts, $lastattempt) {
         $nextstarttime = $this->compute_next_start_time($numprevattempts, $lastattempt);
         return $this->timenow <= $nextstarttime &&
-        $this->quiz->timeclose != 0 && $nextstarttime >= $this->quiz->timeclose;
+        $this->hippotrack->timeclose != 0 && $nextstarttime >= $this->hippotrack->timeclose;
     }
 }

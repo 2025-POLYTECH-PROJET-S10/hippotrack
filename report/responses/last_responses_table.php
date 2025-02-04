@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file defines the quiz responses table for showing last try at question.
+ * This file defines the hippotrack responses table for showing last try at question.
  *
  * @package   hippotrack_responses
  * @copyright 2008 Jean-Michel Vedrine
@@ -29,7 +29,7 @@ require_once($CFG->dirroot . '/mod/hippotrack/report/attemptsreport_table.php');
 
 
 /**
- * This is a table subclass for displaying the quiz responses report.
+ * This is a table subclass for displaying the hippotrack responses report.
  *
  * @copyright 2008 Jean-Michel Vedrine
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -38,7 +38,7 @@ class hippotrack_last_responses_table extends hippotrack_attempts_report_table {
 
     /**
      * Constructor
-     * @param object $quiz
+     * @param object $hippotrack
      * @param context $context
      * @param string $qmsubselect
      * @param hippotrack_responses_options $options
@@ -47,9 +47,9 @@ class hippotrack_last_responses_table extends hippotrack_attempts_report_table {
      * @param array $questions
      * @param moodle_url $reporturl
      */
-    public function __construct($quiz, $context, $qmsubselect, hippotrack_responses_options $options,
+    public function __construct($hippotrack, $context, $qmsubselect, hippotrack_responses_options $options,
             \core\dml\sql_join $groupstudentsjoins, \core\dml\sql_join $studentsjoins, $questions, $reporturl) {
-        parent::__construct('mod-quiz-report-responses-report', $quiz, $context,
+        parent::__construct('mod-hippotrack-report-responses-report', $hippotrack, $context,
                 $qmsubselect, $options, $groupstudentsjoins, $studentsjoins, $questions, $reporturl);
     }
 
@@ -67,12 +67,12 @@ class hippotrack_last_responses_table extends hippotrack_attempts_report_table {
             return '-';
         }
 
-        $grade = hippotrack_rescale_grade($attempt->sumgrades, $this->quiz);
+        $grade = hippotrack_rescale_grade($attempt->sumgrades, $this->hippotrack);
         if ($this->is_downloading()) {
             return $grade;
         }
 
-        $gradehtml = '<a href="review.php?q=' . $this->quiz->id . '&amp;attempt=' .
+        $gradehtml = '<a href="review.php?q=' . $this->hippotrack->id . '&amp;attempt=' .
                 $attempt->attempt . '">' . $grade . '</a>';
         return $gradehtml;
     }

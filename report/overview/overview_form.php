@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file defines the setting form for the quiz overview report.
+ * This file defines the setting form for the hippotrack overview report.
  *
  * @package   hippotrack_overview
  * @copyright 2008 Jamie Pratt
@@ -29,7 +29,7 @@ require_once($CFG->dirroot . '/mod/hippotrack/report/attemptsreport_form.php');
 
 
 /**
- * Quiz overview report settings form.
+ * HippoTrack overview report settings form.
  *
  * @copyright 2008 Jamie Pratt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -45,7 +45,7 @@ class hippotrack_overview_settings_form extends mod_hippotrack_attempts_report_f
     }
 
     protected function other_preference_fields(MoodleQuickForm $mform) {
-        if (hippotrack_has_grades($this->_customdata['quiz'])) {
+        if (hippotrack_has_grades($this->_customdata['hippotrack'])) {
             $mform->addElement('selectyesno', 'slotmarks',
                     get_string('showdetailedmarks', 'hippotrack_overview'));
         } else {

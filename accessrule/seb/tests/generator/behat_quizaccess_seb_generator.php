@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Behat data generator the quizaccess_seb plugin.
+ * Behat data generator the hippotrackaccess_seb plugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,12 +26,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Behat data generator for quizaccess_seb.
+ * Behat data generator for hippotrackaccess_seb.
  *
  * @copyright  2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class behat_quizaccess_seb_generator extends behat_generator_base {
+class behat_hippotrackaccess_seb_generator extends behat_generator_base {
 
     /**
      * Get a list of the entities that can be created.

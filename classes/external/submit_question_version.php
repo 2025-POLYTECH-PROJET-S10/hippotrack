@@ -31,7 +31,7 @@ use external_value;
 use stdClass;
 
 /**
- * External api for changing the question version in the quiz.
+ * External api for changing the question version in the hippotrack.
  *
  * @package    mod_hippotrack
  * @copyright  2021 Catalyst IT Australia Pty Ltd
@@ -75,7 +75,7 @@ class submit_question_version extends external_api {
         $slotdata = $DB->get_record('hippotrack_slots', ['id' => $slotid]);
 
         // Capability check.
-        list($course, $cm) = get_course_and_cm_from_instance($slotdata->quizid, 'quiz');
+        list($course, $cm) = get_course_and_cm_from_instance($slotdata->hippotrackid, 'hippotrack');
         $context = \context_module::instance($cm->id);
         self::validate_context($context);
         require_capability('mod/hippotrack:manage', $context);

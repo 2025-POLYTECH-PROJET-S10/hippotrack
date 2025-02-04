@@ -31,29 +31,29 @@ class generator_test extends \advanced_testcase {
 
         $this->resetAfterTest(true);
 
-        $this->assertEquals(0, $DB->count_records('quiz'));
+        $this->assertEquals(0, $DB->count_records('hippotrack'));
 
         /** @var \mod_hippotrack_generator $generator */
         $generator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
         $this->assertInstanceOf('mod_hippotrack_generator', $generator);
-        $this->assertEquals('quiz', $generator->get_modulename());
+        $this->assertEquals('hippotrack', $generator->get_modulename());
 
         $generator->create_instance(array('course'=>$SITE->id));
         $generator->create_instance(array('course'=>$SITE->id));
         $createtime = time();
-        $quiz = $generator->create_instance(array('course' => $SITE->id, 'timecreated' => 0));
-        $this->assertEquals(3, $DB->count_records('quiz'));
+        $hippotrack = $generator->create_instance(array('course' => $SITE->id, 'timecreated' => 0));
+        $this->assertEquals(3, $DB->count_records('hippotrack'));
 
-        $cm = get_coursemodule_from_instance('quiz', $quiz->id);
-        $this->assertEquals($quiz->id, $cm->instance);
-        $this->assertEquals('quiz', $cm->modname);
+        $cm = get_coursemodule_from_instance('hippotrack', $hippotrack->id);
+        $this->assertEquals($hippotrack->id, $cm->instance);
+        $this->assertEquals('hippotrack', $cm->modname);
         $this->assertEquals($SITE->id, $cm->course);
 
         $context = \context_module::instance($cm->id);
-        $this->assertEquals($quiz->cmid, $context->instanceid);
+        $this->assertEquals($hippotrack->cmid, $context->instanceid);
 
         $this->assertEqualsWithDelta($createtime,
-                $DB->get_field('quiz', 'timecreated', ['id' => $cm->instance]), 2);
+                $DB->get_field('hippotrack', 'timecreated', ['id' => $cm->instance]), 2);
     }
 
     public function test_generating_a_user_override() {
@@ -62,13 +62,13 @@ class generator_test extends \advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
         $user = $generator->create_user();
-        $quiz = $generator->create_module('quiz', ['course' => $course->id]);
+        $hippotrack = $generator->create_module('hippotrack', ['course' => $course->id]);
         $generator->enrol_user($user->id, $course->id, 'student');
 
-        /** @var \mod_hippotrack_generator $quizgenerator */
-        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
-        $quizgenerator->create_override([
-            'quiz' => $quiz->id,
+        /** @var \mod_hippotrack_generator $hippotrackgenerator */
+        $hippotrackgenerator = $generator->get_plugin_generator('mod_hippotrack');
+        $hippotrackgenerator->create_override([
+            'hippotrack' => $hippotrack->id,
             'userid' => $user->id,
             'timeclose' => strtotime('2022-10-20'),
         ]);
@@ -81,8 +81,8 @@ class generator_test extends \advanced_testcase {
         $this->assertEquals($user->id, $event->userid);
         $this->assertEquals(0, $event->groupid);
         $this->assertEquals(0, $event->courseid);
-        $this->assertEquals('quiz', $event->modulename);
-        $this->assertEquals($quiz->id, $event->instance);
+        $this->assertEquals('hippotrack', $event->modulename);
+        $this->assertEquals($hippotrack->id, $event->instance);
         $this->assertEquals('close', $event->eventtype);
         $this->assertEquals(strtotime('2022-10-20'), $event->timestart);
     }
@@ -92,13 +92,13 @@ class generator_test extends \advanced_testcase {
 
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
-        $quiz = $generator->create_module('quiz', ['course' => $course->id]);
+        $hippotrack = $generator->create_module('hippotrack', ['course' => $course->id]);
         $group = $generator->create_group(['courseid' => $course->id]);
 
-        /** @var \mod_hippotrack_generator $quizgenerator */
-        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
-        $quizgenerator->create_override([
-            'quiz' => $quiz->id,
+        /** @var \mod_hippotrack_generator $hippotrackgenerator */
+        $hippotrackgenerator = $generator->get_plugin_generator('mod_hippotrack');
+        $hippotrackgenerator->create_override([
+            'hippotrack' => $hippotrack->id,
             'groupid' => $group->id,
             'timeclose' => strtotime('2022-10-20'),
         ]);
@@ -111,8 +111,8 @@ class generator_test extends \advanced_testcase {
         $this->assertEquals(0, $event->userid);
         $this->assertEquals($group->id, $event->groupid);
         $this->assertEquals($course->id, $event->courseid);
-        $this->assertEquals('quiz', $event->modulename);
-        $this->assertEquals($quiz->id, $event->instance);
+        $this->assertEquals('hippotrack', $event->modulename);
+        $this->assertEquals($hippotrack->id, $event->instance);
         $this->assertEquals('close', $event->eventtype);
         $this->assertEquals(strtotime('2022-10-20'), $event->timestart);
     }

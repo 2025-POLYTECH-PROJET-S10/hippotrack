@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quizaccess_seb;
+namespace hippotrackaccess_seb;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -23,13 +23,13 @@ require_once(__DIR__ . '/test_helper_trait.php');
 /**
  * PHPUnit tests for backup and restore functionality.
  *
- * @package   quizaccess_seb
+ * @package   hippotrackaccess_seb
  * @author    Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright 2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_restore_test extends \advanced_testcase {
-    use \quizaccess_seb_test_helper_trait;
+    use \hippotrackaccess_seb_test_helper_trait;
 
 
     /** @var template $template A test template. */
@@ -52,35 +52,35 @@ class backup_restore_test extends \advanced_testcase {
     }
 
     /**
-     * A helper method to create a quiz with template usage of SEB.
+     * A helper method to create a hippotrack with template usage of SEB.
      *
      * @return hippotrack_settings
      */
     protected function create_hippotrack_with_template() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
-        $quizsettings = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
-        $quizsettings->set('requiresafeexambrowser', settings_provider::USE_SEB_TEMPLATE);
-        $quizsettings->set('templateid', $this->template->get('id'));
-        $quizsettings->save();
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $hippotracksettings = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id]);
+        $hippotracksettings->set('requiresafeexambrowser', settings_provider::USE_SEB_TEMPLATE);
+        $hippotracksettings->set('templateid', $this->template->get('id'));
+        $hippotracksettings->save();
 
-        return $quizsettings;
+        return $hippotracksettings;
     }
 
     /**
-     * A helper method to emulate backup and restore of the quiz.
+     * A helper method to emulate backup and restore of the hippotrack.
      *
      * @return \cm_info|null
      */
-    protected function backup_and_restore_quiz() {
-        return duplicate_module($this->course, get_fast_modinfo($this->course)->get_cm($this->quiz->cmid));
+    protected function backup_and_restore_hippotrack() {
+        return duplicate_module($this->course, get_fast_modinfo($this->course)->get_cm($this->hippotrack->cmid));
     }
 
     /**
-     * A helper method to backup test quiz.
+     * A helper method to backup test hippotrack.
      *
      * @return mixed A backup ID ready to be restored.
      */
-    protected function backup_quiz() {
+    protected function backup_hippotrack() {
         global $CFG;
 
         // Get the necessary files to perform backup and restore.
@@ -89,7 +89,7 @@ class backup_restore_test extends \advanced_testcase {
 
         $backupid = 'test-seb-backup-restore';
 
-        $bc = new \backup_controller(\backup::TYPE_1ACTIVITY, $this->quiz->coursemodule, \backup::FORMAT_MOODLE,
+        $bc = new \backup_controller(\backup::TYPE_1ACTIVITY, $this->hippotrack->coursemodule, \backup::FORMAT_MOODLE,
             \backup::INTERACTIVE_NO, \backup::MODE_GENERAL, $this->user->id);
         $bc->execute_plan();
 
@@ -108,7 +108,7 @@ class backup_restore_test extends \advanced_testcase {
      *
      * @param string $backupid Backup ID to restore.
      */
-    protected function restore_quiz($backupid) {
+    protected function restore_hippotrack($backupid) {
         $rc = new \restore_controller($backupid, $this->course->id,
             \backup::INTERACTIVE_NO, \backup::MODE_GENERAL, $this->user->id, \backup::TARGET_CURRENT_ADDING);
         $this->assertTrue($rc->execute_precheck());
@@ -130,9 +130,9 @@ class backup_restore_test extends \advanced_testcase {
      */
     protected function validate_backup_restore(\cm_info $newcm) {
         $this->assertEquals(2, hippotrack_settings::count_records());
-        $actual = hippotrack_settings::get_record(['quizid' => $newcm->instance]);
+        $actual = hippotrack_settings::get_record(['hippotrackid' => $newcm->instance]);
 
-        $expected = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
+        $expected = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id]);
         $this->assertEquals($expected->get('templateid'), $actual->get('templateid'));
         $this->assertEquals($expected->get('requiresafeexambrowser'), $actual->get('requiresafeexambrowser'));
         $this->assertEquals($expected->get('showsebdownloadlink'), $actual->get('showsebdownloadlink'));
@@ -151,10 +151,10 @@ class backup_restore_test extends \advanced_testcase {
      * Test backup and restore when no seb.
      */
     public function test_backup_restore_no_seb() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_NO);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_NO);
         $this->assertEquals(0, hippotrack_settings::count_records());
 
-        $this->backup_and_restore_quiz();
+        $this->backup_and_restore_hippotrack();
         $this->assertEquals(0, hippotrack_settings::count_records());
     }
 
@@ -162,16 +162,16 @@ class backup_restore_test extends \advanced_testcase {
      * Test backup and restore when manually configured.
      */
     public function test_backup_restore_manual_config() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
-        $expected = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
+        $expected = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id]);
         $expected->set('showsebdownloadlink', 0);
         $expected->set('quitpassword', '123');
         $expected->save();
 
         $this->assertEquals(1, hippotrack_settings::count_records());
 
-        $newcm = $this->backup_and_restore_quiz();
+        $newcm = $this->backup_and_restore_hippotrack();
         $this->validate_backup_restore($newcm);
     }
 
@@ -179,9 +179,9 @@ class backup_restore_test extends \advanced_testcase {
      * Test backup and restore when using template.
      */
     public function test_backup_restore_template_config() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
-        $expected = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
+        $expected = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id]);
         $template = $this->create_template();
         $expected->set('requiresafeexambrowser', settings_provider::USE_SEB_TEMPLATE);
         $expected->set('templateid', $template->get('id'));
@@ -189,7 +189,7 @@ class backup_restore_test extends \advanced_testcase {
 
         $this->assertEquals(1, hippotrack_settings::count_records());
 
-        $newcm = $this->backup_and_restore_quiz();
+        $newcm = $this->backup_and_restore_hippotrack();
         $this->validate_backup_restore($newcm);
     }
 
@@ -197,20 +197,20 @@ class backup_restore_test extends \advanced_testcase {
      * Test backup and restore when using uploaded file.
      */
     public function test_backup_restore_uploaded_config() {
-        $this->quiz = $this->create_test_quiz($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
+        $this->hippotrack = $this->create_test_hippotrack($this->course, settings_provider::USE_SEB_CONFIG_MANUALLY);
 
-        $expected = hippotrack_settings::get_record(['quizid' => $this->quiz->id]);
+        $expected = hippotrack_settings::get_record(['hippotrackid' => $this->hippotrack->id]);
         $expected->set('requiresafeexambrowser', settings_provider::USE_SEB_UPLOAD_CONFIG);
         $xml = file_get_contents(__DIR__ . '/fixtures/unencrypted.seb');
-        $this->create_module_test_file($xml, $this->quiz->cmid);
+        $this->create_module_test_file($xml, $this->hippotrack->cmid);
         $expected->save();
 
         $this->assertEquals(1, hippotrack_settings::count_records());
 
-        $newcm = $this->backup_and_restore_quiz();
+        $newcm = $this->backup_and_restore_hippotrack();
         $this->validate_backup_restore($newcm);
 
-        $expectedfile = settings_provider::get_module_context_sebconfig_file($this->quiz->cmid);
+        $expectedfile = settings_provider::get_module_context_sebconfig_file($this->hippotrack->cmid);
         $actualfile = settings_provider::get_module_context_sebconfig_file($newcm->id);
 
         $this->assertEquals($expectedfile->get_content(), $actualfile->get_content());
@@ -222,13 +222,13 @@ class backup_restore_test extends \advanced_testcase {
      */
     public function test_restore_template_to_a_different_site_when_the_same_template_exists() {
         $this->create_hippotrack_with_template();
-        $backupid = $this->backup_quiz();
+        $backupid = $this->backup_hippotrack();
 
         $this->assertEquals(1, hippotrack_settings::count_records());
         $this->assertEquals(1, template::count_records());
 
         $this->change_site();
-        $this->restore_quiz($backupid);
+        $this->restore_hippotrack($backupid);
 
         // Should see additional setting record, but no new template record.
         $this->assertEquals(2, hippotrack_settings::count_records());
@@ -241,7 +241,7 @@ class backup_restore_test extends \advanced_testcase {
      */
     public function test_restore_template_to_a_different_site_when_the_same_content_but_different_name() {
         $this->create_hippotrack_with_template();
-        $backupid = $this->backup_quiz();
+        $backupid = $this->backup_hippotrack();
 
         $this->assertEquals(1, hippotrack_settings::count_records());
         $this->assertEquals(1, template::count_records());
@@ -250,7 +250,7 @@ class backup_restore_test extends \advanced_testcase {
         $this->template->save();
 
         $this->change_site();
-        $this->restore_quiz($backupid);
+        $this->restore_hippotrack($backupid);
 
         // Should see additional setting record, and new template record.
         $this->assertEquals(2, hippotrack_settings::count_records());
@@ -265,7 +265,7 @@ class backup_restore_test extends \advanced_testcase {
         global $CFG;
 
         $this->create_hippotrack_with_template();
-        $backupid = $this->backup_quiz();
+        $backupid = $this->backup_hippotrack();
 
         $this->assertEquals(1, hippotrack_settings::count_records());
         $this->assertEquals(1, template::count_records());
@@ -275,7 +275,7 @@ class backup_restore_test extends \advanced_testcase {
         $this->template->save();
 
         $this->change_site();
-        $this->restore_quiz($backupid);
+        $this->restore_hippotrack($backupid);
 
         // Should see additional setting record, and new template record.
         $this->assertEquals(2, hippotrack_settings::count_records());

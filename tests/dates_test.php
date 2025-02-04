@@ -107,12 +107,12 @@ class dates_test extends advanced_testcase {
      * Test for get_dates_for_module().
      *
      * @dataProvider get_dates_for_module_provider
-     * @param int|null $timeopen Time of opening the quiz.
-     * @param int|null $timeclose Time of closing the quiz.
-     * @param int|null $usertimeopen The user override for opening the quiz.
-     * @param int|null $usertimeclose The user override for closing the quiz.
-     * @param int|null $grouptimeopen The group override for opening the quiz.
-     * @param int|null $grouptimeclose The group override for closing the quiz.
+     * @param int|null $timeopen Time of opening the hippotrack.
+     * @param int|null $timeclose Time of closing the hippotrack.
+     * @param int|null $usertimeopen The user override for opening the hippotrack.
+     * @param int|null $usertimeclose The user override for closing the hippotrack.
+     * @param int|null $grouptimeopen The group override for opening the hippotrack.
+     * @param int|null $grouptimeclose The group override for closing the hippotrack.
      * @param array $expected The expected value of calling get_dates_for_module()
      */
     public function test_get_dates_for_module(?int $timeopen, ?int $timeclose,
@@ -122,8 +122,8 @@ class dates_test extends advanced_testcase {
 
         $this->resetAfterTest();
         $generator = $this->getDataGenerator();
-        /** @var \mod_hippotrack_generator $quizgenerator */
-        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
+        /** @var \mod_hippotrack_generator $hippotrackgenerator */
+        $hippotrackgenerator = $generator->get_plugin_generator('mod_hippotrack');
 
         $course = $generator->create_course();
         $user = $generator->create_user();
@@ -136,7 +136,7 @@ class dates_test extends advanced_testcase {
         if ($timeclose) {
             $data['timeclose'] = $timeclose;
         }
-        $quiz = $quizgenerator->create_instance($data);
+        $hippotrack = $hippotrackgenerator->create_instance($data);
 
         if ($usertimeopen || $usertimeclose || $grouptimeopen || $grouptimeclose) {
             $generator->enrol_user($user->id, $course->id);
@@ -144,8 +144,8 @@ class dates_test extends advanced_testcase {
             $generator->create_group_member(['groupid' => $group->id, 'userid' => $user->id]);
 
             if ($usertimeopen || $usertimeclose) {
-                $quizgenerator->create_override([
-                    'quiz' => $quiz->id,
+                $hippotrackgenerator->create_override([
+                    'hippotrack' => $hippotrack->id,
                     'userid' => $user->id,
                     'timeopen' => $usertimeopen,
                     'timeclose' => $usertimeclose,
@@ -153,8 +153,8 @@ class dates_test extends advanced_testcase {
             }
 
             if ($grouptimeopen || $grouptimeclose) {
-                $quizgenerator->create_override([
-                    'quiz' => $quiz->id,
+                $hippotrackgenerator->create_override([
+                    'hippotrack' => $hippotrack->id,
                     'groupid' => $group->id,
                     'timeopen' => $grouptimeopen,
                     'timeclose' => $grouptimeclose,
@@ -164,7 +164,7 @@ class dates_test extends advanced_testcase {
 
         $this->setUser($user);
 
-        $cm = get_coursemodule_from_instance('quiz', $quiz->id);
+        $cm = get_coursemodule_from_instance('hippotrack', $hippotrack->id);
         // Make sure we're using a cm_info object.
         $cm = cm_info::create($cm);
 

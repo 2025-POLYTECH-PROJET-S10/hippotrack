@@ -15,15 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Entity model representing quiz settings for the seb plugin.
+ * Entity model representing hippotrack settings for the seb plugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_seb;
+namespace hippotrackaccess_seb;
 
 use CFPropertyList\CFArray;
 use CFPropertyList\CFBoolean;
@@ -38,7 +38,7 @@ use moodle_url;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Entity model representing quiz settings for the seb plugin.
+ * Entity model representing hippotrack settings for the seb plugin.
  *
  * @copyright  2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -46,7 +46,7 @@ defined('MOODLE_INTERNAL') || die();
 class hippotrack_settings extends persistent {
 
     /** Table name for the persistent. */
-    const TABLE = 'quizaccess_seb_quizsettings';
+    const TABLE = 'hippotrackaccess_seb_hippotracksettings';
 
     /** @var property_list $plist The SEB config represented as a Property List object. */
     private $plist;
@@ -65,7 +65,7 @@ class hippotrack_settings extends persistent {
      */
     protected static function define_properties() : array {
         return [
-            'quizid' => [
+            'hippotrackid' => [
                 'type' => PARAM_INT,
             ],
             'cmid' => [
@@ -188,60 +188,60 @@ class hippotrack_settings extends persistent {
     }
 
     /**
-     * Return an instance by quiz id.
+     * Return an instance by hippotrack id.
      *
      * This method gets data from cache before doing any DB calls.
      *
-     * @param int $quizid Quiz id.
-     * @return false|\quizaccess_seb\hippotrack_settings
+     * @param int $hippotrackid HippoTrack id.
+     * @return false|\hippotrackaccess_seb\hippotrack_settings
      */
-    public static function get_by_hippotrack_id(int $quizid) {
-        if ($data = self::get_hippotrack_settings_cache()->get($quizid)) {
+    public static function get_by_hippotrack_id(int $hippotrackid) {
+        if ($data = self::get_hippotrack_settings_cache()->get($hippotrackid)) {
             return new static(0, $data);
         }
 
-        return self::get_record(['quizid' => $quizid]);
+        return self::get_record(['hippotrackid' => $hippotrackid]);
     }
 
     /**
-     * Return cached SEB config represented as a string by quiz ID.
+     * Return cached SEB config represented as a string by hippotrack ID.
      *
-     * @param int $quizid Quiz id.
+     * @param int $hippotrackid HippoTrack id.
      * @return string|null
      */
-    public static function get_config_by_hippotrack_id(int $quizid) : ?string {
-        $config = self::get_config_cache()->get($quizid);
+    public static function get_config_by_hippotrack_id(int $hippotrackid) : ?string {
+        $config = self::get_config_cache()->get($hippotrackid);
 
         if ($config !== false) {
             return $config;
         }
 
         $config = null;
-        if ($settings = self::get_by_hippotrack_id($quizid)) {
+        if ($settings = self::get_by_hippotrack_id($hippotrackid)) {
             $config = $settings->get_config();
-            self::get_config_cache()->set($quizid, $config);
+            self::get_config_cache()->set($hippotrackid, $config);
         }
 
         return $config;
     }
 
     /**
-     * Return cached SEB config key by quiz ID.
+     * Return cached SEB config key by hippotrack ID.
      *
-     * @param int $quizid Quiz id.
+     * @param int $hippotrackid HippoTrack id.
      * @return string|null
      */
-    public static function get_config_key_by_hippotrack_id(int $quizid) : ?string {
-        $configkey = self::get_config_key_cache()->get($quizid);
+    public static function get_config_key_by_hippotrack_id(int $hippotrackid) : ?string {
+        $configkey = self::get_config_key_cache()->get($hippotrackid);
 
         if ($configkey !== false) {
             return $configkey;
         }
 
         $configkey = null;
-        if ($settings = self::get_by_hippotrack_id($quizid)) {
+        if ($settings = self::get_by_hippotrack_id($hippotrackid)) {
             $configkey = $settings->get_config_key();
-            self::get_config_key_cache()->set($quizid, $configkey);
+            self::get_config_key_cache()->set($hippotrackid, $configkey);
         }
 
         return $configkey;
@@ -253,7 +253,7 @@ class hippotrack_settings extends persistent {
      * @return \cache_application
      */
     private static function get_config_key_cache() : \cache_application {
-        return \cache::make('quizaccess_seb', 'configkey');
+        return \cache::make('hippotrackaccess_seb', 'configkey');
     }
 
     /**
@@ -262,16 +262,16 @@ class hippotrack_settings extends persistent {
      * @return \cache_application
      */
     private static function get_config_cache() : \cache_application {
-        return \cache::make('quizaccess_seb', 'config');
+        return \cache::make('hippotrackaccess_seb', 'config');
     }
 
     /**
-     * Return quiz settings cache object,
+     * Return hippotrack settings cache object,
      *
      * @return \cache_application
      */
     private static function get_hippotrack_settings_cache() : \cache_application {
-        return \cache::make('quizaccess_seb', 'quizsettings');
+        return \cache::make('hippotrackaccess_seb', 'hippotracksettings');
     }
 
     /**
@@ -294,16 +294,16 @@ class hippotrack_settings extends persistent {
      * Helper method to execute common stuff after create and update.
      */
     private function after_save() {
-        self::get_hippotrack_settings_cache()->set($this->get('quizid'), $this->to_record());
-        self::get_config_cache()->set($this->get('quizid'), $this->config);
-        self::get_config_key_cache()->set($this->get('quizid'), $this->configkey);
+        self::get_hippotrack_settings_cache()->set($this->get('hippotrackid'), $this->to_record());
+        self::get_config_cache()->set($this->get('hippotrackid'), $this->config);
+        self::get_config_key_cache()->set($this->get('hippotrackid'), $this->configkey);
     }
 
     /**
      * Removes unnecessary stuff from db.
      */
     protected function before_delete() {
-        $key = $this->get('quizid');
+        $key = $this->get('hippotrackid');
         self::get_hippotrack_settings_cache()->delete($key);
         self::get_config_cache()->delete($key);
         self::get_config_key_cache()->delete($key);
@@ -319,11 +319,11 @@ class hippotrack_settings extends persistent {
         $keys = $this->split_keys($keys);
         foreach ($keys as $i => $key) {
             if (!preg_match('~^[a-f0-9]{64}$~', $key)) {
-                return new lang_string('allowedbrowserkeyssyntax', 'quizaccess_seb');
+                return new lang_string('allowedbrowserkeyssyntax', 'hippotrackaccess_seb');
             }
         }
         if (count($keys) != count(array_unique($keys))) {
-            return new lang_string('allowedbrowserkeysdistinct', 'quizaccess_seb');
+            return new lang_string('allowedbrowserkeysdistinct', 'hippotrackaccess_seb');
         }
         return true;
     }
@@ -383,7 +383,7 @@ class hippotrack_settings extends persistent {
     }
 
     /**
-     * Create or update the config string based on the current quiz settings.
+     * Create or update the config string based on the current hippotrack settings.
      */
     private function process_configs() {
         switch ($this->get('requiresafeexambrowser')) {
@@ -481,7 +481,7 @@ class hippotrack_settings extends persistent {
     }
 
     /**
-     * Case for USE_SEB_UPLOAD_CONFIG. This creates a plist from an uploaded configuration file, then applies the quiz
+     * Case for USE_SEB_UPLOAD_CONFIG. This creates a plist from an uploaded configuration file, then applies the hippotrack
      * password settings and some defaults.
      */
     private function process_seb_upload_config() {
@@ -489,7 +489,7 @@ class hippotrack_settings extends persistent {
 
         // If there was no file, create an empty plist so the rest of this wont explode.
         if (empty($file)) {
-            throw new moodle_exception('noconfigfilefound', 'quizaccess_seb', '', $this->get('cmid'));
+            throw new moodle_exception('noconfigfilefound', 'hippotrackaccess_seb', '', $this->get('cmid'));
         } else {
             $this->plist = new property_list($file->get_content());
         }
@@ -513,8 +513,8 @@ class hippotrack_settings extends persistent {
     private function process_required_enforced_settings() {
         global $CFG;
 
-        $quizurl = new moodle_url($CFG->wwwroot . "/mod/hippotrack/view.php", ['id' => $this->get('cmid')]);
-        $this->plist->set_or_update_value('startURL', new CFString($quizurl->out(true)));
+        $hippotrackurl = new moodle_url($CFG->wwwroot . "/mod/hippotrack/view.php", ['id' => $this->get('cmid')]);
+        $this->plist->set_or_update_value('startURL', new CFString($hippotrackurl->out(true)));
         $this->plist->set_or_update_value('sendBrowserExamKey', new CFBoolean(true));
 
         // Use the modern WebView and JS API if the SEB version supports it.

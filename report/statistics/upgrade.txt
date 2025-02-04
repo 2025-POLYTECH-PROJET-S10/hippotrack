@@ -4,7 +4,7 @@ information provided here is intended especially for developers.
 === 4.1.4 ===
 
 * The methods hippotrack_statistics_report::calculate_questions_stats_for_question_bank and get_all_stats_and_analysis
-  (which are really private to the quiz, and not part of any API you should be using) now have a new
+  (which are really private to the hippotrack, and not part of any API you should be using) now have a new
   optional argument $calculateifrequired.
 
 * In the past, the methods \hippotrack_statistics\calculator::get_last_calculated_time() and calculator::get_cached()

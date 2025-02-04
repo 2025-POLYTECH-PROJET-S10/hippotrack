@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz statistics report class.
+ * HippoTrack statistics report class.
  *
  * @package   hippotrack_statistics
  * @copyright 2014 Open University
@@ -36,8 +36,8 @@ require_once($CFG->dirroot . '/mod/hippotrack/report/statistics/statistics_quest
 require_once($CFG->dirroot . '/mod/hippotrack/report/statistics/statisticslib.php');
 
 /**
- * The quiz statistics report provides summary information about each question in
- * a quiz, compared to the whole quiz. It also provides a drill-down to more
+ * The hippotrack statistics report provides summary information about each question in
+ * a hippotrack, compared to the whole hippotrack. It also provides a drill-down to more
  * detailed information about each question.
  *
  * @copyright 2008 Jamie Pratt
@@ -45,7 +45,7 @@ require_once($CFG->dirroot . '/mod/hippotrack/report/statistics/statisticslib.ph
  */
 class hippotrack_statistics_report extends hippotrack_default_report {
 
-    /** @var context_module context of this quiz.*/
+    /** @var context_module context of this hippotrack.*/
     protected $context;
 
     /** @var hippotrack_statistics_table instance of table class used for main questions stats table. */
@@ -57,16 +57,16 @@ class hippotrack_statistics_report extends hippotrack_default_report {
     /**
      * Display the report.
      */
-    public function display($quiz, $cm, $course) {
+    public function display($hippotrack, $cm, $course) {
         global $OUTPUT, $DB;
 
         raise_memory_limit(MEMORY_HUGE);
 
         $this->context = context_module::instance($cm->id);
 
-        if (!hippotrack_has_questions($quiz->id)) {
-            $this->print_header_and_tabs($cm, $course, $quiz, 'statistics');
-            echo hippotrack_no_questions_message($quiz, $cm, $this->context);
+        if (!hippotrack_has_questions($hippotrack->id)) {
+            $this->print_header_and_tabs($cm, $course, $hippotrack, 'statistics');
+            echo hippotrack_no_questions_message($hippotrack, $cm, $this->context);
             return true;
         }
 
@@ -78,7 +78,7 @@ class hippotrack_statistics_report extends hippotrack_default_report {
         $qid = optional_param('qid', 0, PARAM_INT);
         $slot = optional_param('slot', 0, PARAM_INT);
         $variantno = optional_param('variant', null, PARAM_INT);
-        $whichattempts = optional_param('whichattempts', $quiz->grademethod, PARAM_INT);
+        $whichattempts = optional_param('whichattempts', $hippotrack->grademethod, PARAM_INT);
         $whichtries = optional_param('whichtries', question_attempt::LAST_TRY, PARAM_ALPHA);
 
         $pageoptions = array();
@@ -87,11 +87,11 @@ class hippotrack_statistics_report extends hippotrack_default_report {
 
         $reporturl = new moodle_url('/mod/hippotrack/report.php', $pageoptions);
 
-        $mform = new hippotrack_statistics_settings_form($reporturl, compact('quiz'));
+        $mform = new hippotrack_statistics_settings_form($reporturl, compact('hippotrack'));
 
         $mform->set_data(array('whichattempts' => $whichattempts, 'whichtries' => $whichtries));
 
-        if ($whichattempts != $quiz->grademethod) {
+        if ($whichattempts != $hippotrack->grademethod) {
             $reporturl->param('whichattempts', $whichattempts);
         }
 
@@ -111,7 +111,7 @@ class hippotrack_statistics_report extends hippotrack_default_report {
             $nostudentsingroup = true;
 
         } else {
-            // All users who can attempt quizzes and who are in the currently selected group.
+            // All users who can attempt hippotrackzes and who are in the currently selected group.
             $groupstudentsjoins = get_enrolled_with_capabilities_join($this->context, '',
                     array('mod/hippotrack:reviewmyattempts', 'mod/hippotrack:attempt'), $currentgroup);
             if (!empty($groupstudentsjoins->joins)) {
@@ -125,7 +125,7 @@ class hippotrack_statistics_report extends hippotrack_default_report {
             }
         }
 
-        $qubaids = hippotrack_statistics_qubaids_condition($quiz->id, $groupstudentsjoins, $whichattempts);
+        $qubaids = hippotrack_statistics_qubaids_condition($hippotrack->id, $groupstudentsjoins, $whichattempts);
 
         // If recalculate was requested, handle that.
         if ($recalculate && confirm_sesskey()) {
@@ -142,33 +142,33 @@ class hippotrack_statistics_report extends hippotrack_default_report {
         }
         $courseshortname = format_string($course->shortname, true,
                 array('context' => context_course::instance($course->id)));
-        $filename = hippotrack_report_download_filename($report, $courseshortname, $quiz->name);
+        $filename = hippotrack_report_download_filename($report, $courseshortname, $hippotrack->name);
         $this->table->is_downloading($download, $filename,
-                get_string('quizstructureanalysis', 'hippotrack_statistics'));
-        $questions = $this->load_and_initialise_questions_for_calculations($quiz);
+                get_string('hippotrackstructureanalysis', 'hippotrack_statistics'));
+        $questions = $this->load_and_initialise_questions_for_calculations($hippotrack);
 
         // Print the page header stuff (if not downloading.
         if (!$this->table->is_downloading()) {
-            $this->print_header_and_tabs($cm, $course, $quiz, 'statistics');
+            $this->print_header_and_tabs($cm, $course, $hippotrack, 'statistics');
         }
 
         if (!$nostudentsingroup) {
             // Get the data to be displayed.
             $progress = $this->get_progress_trace_instance();
-            list($quizstats, $questionstats) =
-                $this->get_all_stats_and_analysis($quiz, $whichattempts, $whichtries, $groupstudentsjoins, $questions, $progress);
-            if (is_null($quizstats)) {
+            list($hippotrackstats, $questionstats) =
+                $this->get_all_stats_and_analysis($hippotrack, $whichattempts, $whichtries, $groupstudentsjoins, $questions, $progress);
+            if (is_null($hippotrackstats)) {
                 echo $OUTPUT->notification(get_string('nostats', 'hippotrack_statistics'), 'error');
                 return true;
             }
         } else {
             // Or create empty stats containers.
-            $quizstats = new \hippotrack_statistics\calculated($whichattempts);
+            $hippotrackstats = new \hippotrack_statistics\calculated($whichattempts);
             $questionstats = new \core_question\statistics\questions\all_calculated_for_qubaid_condition();
         }
 
         // Set up the table.
-        $this->table->statistics_setup($quiz, $cm->id, $reporturl, $quizstats->s());
+        $this->table->statistics_setup($hippotrack, $cm->id, $reporturl, $hippotrackstats->s());
 
         // Print the rest of the page header stuff (if not downloading.
         if (!$this->table->is_downloading()) {
@@ -180,7 +180,7 @@ class hippotrack_statistics_report extends hippotrack_default_report {
                 }
             }
 
-            if (!$this->table->is_downloading() && $quizstats->s() == 0) {
+            if (!$this->table->is_downloading() && $hippotrackstats->s() == 0) {
                 echo $OUTPUT->notification(get_string('nogradedattempts', 'hippotrack_statistics'));
             }
 
@@ -194,14 +194,14 @@ class hippotrack_statistics_report extends hippotrack_default_report {
 
         if ($everything) { // Implies is downloading.
             // Overall report, then the analysis of each question.
-            $quizinfo = $quizstats->get_formatted_hippotrack_info_data($course, $cm, $quiz);
-            $this->download_hippotrack_info_table($quizinfo);
+            $hippotrackinfo = $hippotrackstats->get_formatted_hippotrack_info_data($course, $cm, $hippotrack);
+            $this->download_hippotrack_info_table($hippotrackinfo);
 
-            if ($quizstats->s()) {
+            if ($hippotrackstats->s()) {
                 $this->output_hippotrack_structure_analysis_table($questionstats);
 
-                if ($this->table->is_downloading() == 'html' && $quizstats->s() != 0) {
-                    $this->output_statistics_graph($quiz->id, $qubaids);
+                if ($this->table->is_downloading() == 'html' && $hippotrackstats->s() != 0) {
+                    $this->output_statistics_graph($hippotrack->id, $qubaids);
                 }
 
                 $this->output_all_question_response_analysis($qubaids, $questions, $questionstats, $reporturl, $whichtries);
@@ -215,7 +215,7 @@ class hippotrack_statistics_report extends hippotrack_default_report {
                 throw new \moodle_exception('questiondoesnotexist', 'question');
             }
 
-            $this->output_individual_question_data($quiz, $questionstats->for_subq($qid, $variantno));
+            $this->output_individual_question_data($hippotrack, $questionstats->for_subq($qid, $variantno));
             $this->output_individual_question_response_analysis($questionstats->for_subq($qid, $variantno)->question,
                                                                 $variantno,
                                                                 $questionstats->for_subq($qid, $variantno)->s,
@@ -224,7 +224,7 @@ class hippotrack_statistics_report extends hippotrack_default_report {
                                                                 $whichtries);
             // Back to overview link.
             echo $OUTPUT->box('<a href="' . $reporturl->out() . '">' .
-                              get_string('backtoquizreport', 'hippotrack_statistics') . '</a>',
+                              get_string('backtohippotrackreport', 'hippotrack_statistics') . '</a>',
                               'boxaligncenter generalbox boxwidthnormal mdl-align');
         } else if ($slot) {
             // Report on an individual question indexed by position.
@@ -242,7 +242,7 @@ class hippotrack_statistics_report extends hippotrack_default_report {
                 $this->table->define_baseurl(new moodle_url($reporturl, array('slot' => $slot)));
                 $this->table->format_and_add_array_of_rows($questionstats->structure_analysis_for_one_slot($slot));
             } else {
-                $this->output_individual_question_data($quiz, $questionstats->for_slot($slot, $variantno));
+                $this->output_individual_question_data($hippotrack, $questionstats->for_slot($slot, $variantno));
                 $this->output_individual_question_response_analysis($questions[$slot],
                                                                     $variantno,
                                                                     $questionstats->for_slot($slot, $variantno)->s,
@@ -253,7 +253,7 @@ class hippotrack_statistics_report extends hippotrack_default_report {
             if (!$this->table->is_downloading()) {
                 // Back to overview link.
                 echo $OUTPUT->box('<a href="' . $reporturl->out() . '">' .
-                        get_string('backtoquizreport', 'hippotrack_statistics') . '</a>',
+                        get_string('backtohippotrackreport', 'hippotrack_statistics') . '</a>',
                         'backtomainstats boxaligncenter generalbox boxwidthnormal mdl-align');
             } else {
                 $this->table->finish_output();
@@ -261,24 +261,24 @@ class hippotrack_statistics_report extends hippotrack_default_report {
 
         } else if ($this->table->is_downloading()) {
             // Downloading overview report.
-            $quizinfo = $quizstats->get_formatted_hippotrack_info_data($course, $cm, $quiz);
-            $this->download_hippotrack_info_table($quizinfo);
-            if ($quizstats->s()) {
+            $hippotrackinfo = $hippotrackstats->get_formatted_hippotrack_info_data($course, $cm, $hippotrack);
+            $this->download_hippotrack_info_table($hippotrackinfo);
+            if ($hippotrackstats->s()) {
                 $this->output_hippotrack_structure_analysis_table($questionstats);
             }
             $this->table->export_class_instance()->finish_document();
 
         } else {
             // On-screen display of overview report.
-            echo $OUTPUT->heading(get_string('quizinformation', 'hippotrack_statistics'), 3);
-            echo $this->output_caching_info($quizstats->timemodified, $quiz->id, $groupstudentsjoins, $whichattempts, $reporturl);
+            echo $OUTPUT->heading(get_string('hippotrackinformation', 'hippotrack_statistics'), 3);
+            echo $this->output_caching_info($hippotrackstats->timemodified, $hippotrack->id, $groupstudentsjoins, $whichattempts, $reporturl);
             echo $this->everything_download_options($reporturl);
-            $quizinfo = $quizstats->get_formatted_hippotrack_info_data($course, $cm, $quiz);
-            echo $this->output_hippotrack_info_table($quizinfo);
-            if ($quizstats->s()) {
-                echo $OUTPUT->heading(get_string('quizstructureanalysis', 'hippotrack_statistics'), 3);
+            $hippotrackinfo = $hippotrackstats->get_formatted_hippotrack_info_data($course, $cm, $hippotrack);
+            echo $this->output_hippotrack_info_table($hippotrackinfo);
+            if ($hippotrackstats->s()) {
+                echo $OUTPUT->heading(get_string('hippotrackstructureanalysis', 'hippotrack_statistics'), 3);
                 $this->output_hippotrack_structure_analysis_table($questionstats);
-                $this->output_statistics_graph($quiz, $qubaids);
+                $this->output_statistics_graph($hippotrack, $qubaids);
             }
         }
 
@@ -289,13 +289,13 @@ class hippotrack_statistics_report extends hippotrack_default_report {
      * Display the statistical and introductory information about a question.
      * Only called when not downloading.
      *
-     * @param object                                         $quiz         the quiz settings.
+     * @param object                                         $hippotrack         the hippotrack settings.
      * @param \core_question\statistics\questions\calculated $questionstat the question to report on.
      */
-    protected function output_individual_question_data($quiz, $questionstat) {
+    protected function output_individual_question_data($hippotrack, $questionstat) {
         global $OUTPUT;
 
-        // On-screen display. Show a summary of the question's place in the quiz,
+        // On-screen display. Show a summary of the question's place in the hippotrack,
         // and the question statistics.
         $datumfromtable = $this->table->format_row($questionstat);
 
@@ -306,7 +306,7 @@ class hippotrack_statistics_report extends hippotrack_default_report {
         $questioninfotable->attributes['class'] = 'generaltable titlesleft';
 
         $questioninfotable->data = array();
-        $questioninfotable->data[] = array(get_string('modulename', 'hippotrack'), $quiz->name);
+        $questioninfotable->data[] = array(get_string('modulename', 'hippotrack'), $hippotrack->name);
         $questioninfotable->data[] = array(get_string('questionname', 'hippotrack_statistics'),
                 $questionstat->question->name.'&nbsp;'.$datumfromtable['actions']);
 
@@ -452,10 +452,10 @@ class hippotrack_statistics_report extends hippotrack_default_report {
     }
 
     /**
-     * Output the table that lists all the questions in the quiz with their statistics.
+     * Output the table that lists all the questions in the hippotrack with their statistics.
      *
      * @param \core_question\statistics\questions\all_calculated_for_qubaid_condition $questionstats the stats for all questions in
-     *                                                                                               the quiz including subqs and
+     *                                                                                               the hippotrack including subqs and
      *                                                                                               variants.
      */
     protected function output_hippotrack_structure_analysis_table($questionstats) {
@@ -488,52 +488,52 @@ class hippotrack_statistics_report extends hippotrack_default_report {
     }
 
     /**
-     * Return HTML for table of overall quiz statistics.
+     * Return HTML for table of overall hippotrack statistics.
      *
-     * @param array $quizinfo as returned by {@link get_formatted_hippotrack_info_data()}.
+     * @param array $hippotrackinfo as returned by {@link get_formatted_hippotrack_info_data()}.
      * @return string the HTML.
      */
-    protected function output_hippotrack_info_table($quizinfo) {
+    protected function output_hippotrack_info_table($hippotrackinfo) {
 
-        $quizinfotable = new html_table();
-        $quizinfotable->align = array('center', 'center');
-        $quizinfotable->width = '60%';
-        $quizinfotable->attributes['class'] = 'generaltable titlesleft';
-        $quizinfotable->data = array();
+        $hippotrackinfotable = new html_table();
+        $hippotrackinfotable->align = array('center', 'center');
+        $hippotrackinfotable->width = '60%';
+        $hippotrackinfotable->attributes['class'] = 'generaltable titlesleft';
+        $hippotrackinfotable->data = array();
 
-        foreach ($quizinfo as $heading => $value) {
-             $quizinfotable->data[] = array($heading, $value);
+        foreach ($hippotrackinfo as $heading => $value) {
+             $hippotrackinfotable->data[] = array($heading, $value);
         }
 
-        return html_writer::table($quizinfotable);
+        return html_writer::table($hippotrackinfotable);
     }
 
     /**
-     * Download the table of overall quiz statistics.
+     * Download the table of overall hippotrack statistics.
      *
-     * @param array $quizinfo as returned by {@link get_formatted_hippotrack_info_data()}.
+     * @param array $hippotrackinfo as returned by {@link get_formatted_hippotrack_info_data()}.
      */
-    protected function download_hippotrack_info_table($quizinfo) {
+    protected function download_hippotrack_info_table($hippotrackinfo) {
         global $OUTPUT;
 
         // HTML download is a special case.
         if ($this->table->is_downloading() == 'html') {
-            echo $OUTPUT->heading(get_string('quizinformation', 'hippotrack_statistics'), 3);
-            echo $this->output_hippotrack_info_table($quizinfo);
+            echo $OUTPUT->heading(get_string('hippotrackinformation', 'hippotrack_statistics'), 3);
+            echo $this->output_hippotrack_info_table($hippotrackinfo);
             return;
         }
 
         // Reformat the data ready for output.
         $headers = array();
         $row = array();
-        foreach ($quizinfo as $heading => $value) {
+        foreach ($hippotrackinfo as $heading => $value) {
             $headers[] = $heading;
             $row[] = $value;
         }
 
         // Do the output.
         $exportclass = $this->table->export_class_instance();
-        $exportclass->start_table(get_string('quizinformation', 'hippotrack_statistics'));
+        $exportclass->start_table(get_string('hippotrackinformation', 'hippotrack_statistics'));
         $exportclass->output_headers($headers);
         $exportclass->add_data($row);
         $exportclass->finish_table();
@@ -542,20 +542,20 @@ class hippotrack_statistics_report extends hippotrack_default_report {
     /**
      * Output the HTML needed to show the statistics graph.
      *
-     * @param int|object $quizorid The quiz, or its ID.
+     * @param int|object $hippotrackorid The hippotrack, or its ID.
      * @param qubaid_condition $qubaids the question usages whose responses to analyse.
      * @param string $whichattempts Which attempts constant.
      */
-    protected function output_statistics_graph($quizorid, $qubaids) {
+    protected function output_statistics_graph($hippotrackorid, $qubaids) {
         global $DB, $PAGE;
 
-        $quiz = $quizorid;
-        if (!is_object($quiz)) {
-            $quiz = $DB->get_record('quiz', array('id' => $quizorid), '*', MUST_EXIST);
+        $hippotrack = $hippotrackorid;
+        if (!is_object($hippotrack)) {
+            $hippotrack = $DB->get_record('hippotrack', array('id' => $hippotrackorid), '*', MUST_EXIST);
         }
 
         // Load the rest of the required data.
-        $questions = hippotrack_report_get_significant_questions($quiz);
+        $questions = hippotrack_report_get_significant_questions($hippotrack);
 
         // Only load main question not sub questions.
         $questionstatistics = $DB->get_records_select('question_statistics',
@@ -619,13 +619,13 @@ class hippotrack_statistics_report extends hippotrack_default_report {
     }
 
     /**
-     * Get the quiz and question statistics, either by loading the cached results,
+     * Get the hippotrack and question statistics, either by loading the cached results,
      * or by recomputing them.
      *
-     * @param object $quiz               the quiz settings.
+     * @param object $hippotrack               the hippotrack settings.
      * @param string $whichattempts      which attempts to use, represented internally as one of the constants as used in
-     *                                   $quiz->grademethod ie.
-     *                                   QUIZ_GRADEAVERAGE, QUIZ_GRADEHIGHEST, QUIZ_ATTEMPTLAST or QUIZ_ATTEMPTFIRST
+     *                                   $hippotrack->grademethod ie.
+     *                                   HIPPOTRACK_GRADEAVERAGE, HIPPOTRACK_GRADEHIGHEST, HIPPOTRACK_ATTEMPTLAST or HIPPOTRACK_ATTEMPTFIRST
      *                                   we calculate stats based on which attempts would affect the grade for each student.
      * @param string $whichtries         which tries to analyse for response analysis. Will be one of
      *                                   question_attempt::FIRST_TRY, LAST_TRY or ALL_TRIES.
@@ -636,28 +636,28 @@ class hippotrack_statistics_report extends hippotrack_default_report {
      *                                   If false, [null, null] will be returned if the stats are not already available.
      * @param bool $performanalysis      if true (the default) and there are calculated stats, analysis will be performed
      *                                   for each question.
-     * @return array with 2 elements:    - $quizstats The statistics for overall attempt scores.
+     * @return array with 2 elements:    - $hippotrackstats The statistics for overall attempt scores.
      *                                   - $questionstats \core_question\statistics\questions\all_calculated_for_qubaid_condition
      *                                   Both may be null, if $calculateifrequired is false.
      */
     public function get_all_stats_and_analysis(
-            $quiz, $whichattempts, $whichtries, \core\dml\sql_join $groupstudentsjoins,
+            $hippotrack, $whichattempts, $whichtries, \core\dml\sql_join $groupstudentsjoins,
             $questions, $progress = null, bool $calculateifrequired = true, bool $performanalysis = true) {
 
         if ($progress === null) {
             $progress = new \core\progress\none();
         }
 
-        $qubaids = hippotrack_statistics_qubaids_condition($quiz->id, $groupstudentsjoins, $whichattempts);
+        $qubaids = hippotrack_statistics_qubaids_condition($hippotrack->id, $groupstudentsjoins, $whichattempts);
 
         $qcalc = new \core_question\statistics\questions\calculator($questions, $progress);
 
-        $quizcalc = new \hippotrack_statistics\calculator($progress);
+        $hippotrackcalc = new \hippotrack_statistics\calculator($progress);
 
         $progress->start_progress('', 4);
 
         // Get a lock on this set of qubaids before performing calculations. This prevents the same calculation running
-        // concurrently and causing database deadlocks. We use a long timeout here as a big quiz with lots of attempts may
+        // concurrently and causing database deadlocks. We use a long timeout here as a big hippotrack with lots of attempts may
         // take a long time to process.
         $lockfactory = \core\lock\lock_config::get_lock_factory('hippotrack_statistics_get_stats');
         $lock = $lockfactory->get_lock($qubaids->get_hash_code(), 0);
@@ -681,14 +681,14 @@ class hippotrack_statistics_report extends hippotrack_default_report {
                 $progress->progress(4);
                 $progress->end_progress();
                 debugging('Could not get lock on ' .
-                        $qubaids->get_hash_code() . ' (Quiz ID ' . $quiz->id . ') after ' .
+                        $qubaids->get_hash_code() . ' (HippoTrack ID ' . $hippotrack->id . ') after ' .
                         $locktimeout . ' seconds');
                 return [null, null];
             }
         }
 
         try {
-            if ($quizcalc->get_last_calculated_time($qubaids) === false) {
+            if ($hippotrackcalc->get_last_calculated_time($qubaids) === false) {
                 if (!$calculateifrequired) {
                     $progress->progress(4);
                     $progress->end_progress();
@@ -700,8 +700,8 @@ class hippotrack_statistics_report extends hippotrack_default_report {
                 $questionstats = $qcalc->calculate($qubaids);
                 $progress->progress(2);
 
-                $quizstats = $quizcalc->calculate(
-                    $quiz->id,
+                $hippotrackstats = $hippotrackcalc->calculate(
+                    $hippotrack->id,
                     $whichattempts,
                     $groupstudentsjoins,
                     count($questions),
@@ -709,13 +709,13 @@ class hippotrack_statistics_report extends hippotrack_default_report {
                 );
                 $progress->progress(3);
             } else {
-                $quizstats = $quizcalc->get_cached($qubaids);
+                $hippotrackstats = $hippotrackcalc->get_cached($qubaids);
                 $progress->progress(2);
                 $questionstats = $qcalc->get_cached($qubaids);
                 $progress->progress(3);
             }
 
-            if ($quizstats->s() && $performanalysis) {
+            if ($hippotrackstats->s() && $performanalysis) {
                 $subquestions = $questionstats->get_sub_questions();
                 $this->analyse_responses_for_all_questions_and_subquestions(
                     $questions,
@@ -731,7 +731,7 @@ class hippotrack_statistics_report extends hippotrack_default_report {
             $lock->release();
         }
 
-        return array($quizstats, $questionstats);
+        return array($hippotrackstats, $questionstats);
     }
 
     /**
@@ -752,7 +752,7 @@ class hippotrack_statistics_report extends hippotrack_default_report {
     }
 
     /**
-     * Analyse responses for all questions and sub questions in this quiz.
+     * Analyse responses for all questions and sub questions in this hippotrack.
      *
      * @param object[] $questions as returned by self::load_and_initialise_questions_for_calculations
      * @param object[] $subquestions full question objects.
@@ -809,7 +809,7 @@ class hippotrack_statistics_report extends hippotrack_default_report {
     }
 
     /**
-     * Return a little form for the user to request to download the full report, including quiz stats and response analysis for
+     * Return a little form for the user to request to download the full report, including hippotrack stats and response analysis for
      * all questions and sub-questions.
      *
      * @param moodle_url $reporturl the base URL of the report.
@@ -825,16 +825,16 @@ class hippotrack_statistics_report extends hippotrack_default_report {
      * Return HTML for a message that says when the stats were last calculated and a 'recalculate now' button.
      *
      * @param int    $lastcachetime  the time the stats were last cached.
-     * @param int    $quizid         the quiz id.
+     * @param int    $hippotrackid         the hippotrack id.
      * @param array  $groupstudentsjoins (joins, wheres, params) for students in the group or empty array if groups not used.
      * @param string $whichattempts which attempts to use, represented internally as one of the constants as used in
-     *                                   $quiz->grademethod ie.
-     *                                   QUIZ_GRADEAVERAGE, QUIZ_GRADEHIGHEST, QUIZ_ATTEMPTLAST or QUIZ_ATTEMPTFIRST
+     *                                   $hippotrack->grademethod ie.
+     *                                   HIPPOTRACK_GRADEAVERAGE, HIPPOTRACK_GRADEHIGHEST, HIPPOTRACK_ATTEMPTLAST or HIPPOTRACK_ATTEMPTFIRST
      *                                   we calculate stats based on which attempts would affect the grade for each student.
      * @param moodle_url $reporturl url for this report
      * @return string HTML.
      */
-    protected function output_caching_info($lastcachetime, $quizid, $groupstudentsjoins, $whichattempts, $reporturl) {
+    protected function output_caching_info($lastcachetime, $hippotrackid, $groupstudentsjoins, $whichattempts, $reporturl) {
         global $DB, $OUTPUT;
 
         if (empty($lastcachetime)) {
@@ -842,12 +842,12 @@ class hippotrack_statistics_report extends hippotrack_default_report {
         }
 
         // Find the number of attempts since the cached statistics were computed.
-        list($fromqa, $whereqa, $qaparams) = hippotrack_statistics_attempts_sql($quizid, $groupstudentsjoins, $whichattempts, true);
+        list($fromqa, $whereqa, $qaparams) = hippotrack_statistics_attempts_sql($hippotrackid, $groupstudentsjoins, $whichattempts, true);
         $count = $DB->count_records_sql("
                 SELECT COUNT(1)
                 FROM $fromqa
                 WHERE $whereqa
-                AND quiza.timefinish > {$lastcachetime}", $qaparams);
+                AND hippotracka.timefinish > {$lastcachetime}", $qaparams);
 
         if (!$count) {
             $count = 0;
@@ -885,14 +885,14 @@ class hippotrack_statistics_report extends hippotrack_default_report {
     }
 
     /**
-     * Load the questions in this quiz and add some properties to the objects needed in the reports.
+     * Load the questions in this hippotrack and add some properties to the objects needed in the reports.
      *
-     * @param object $quiz the quiz.
-     * @return array of questions for this quiz.
+     * @param object $hippotrack the hippotrack.
+     * @return array of questions for this hippotrack.
      */
-    public function load_and_initialise_questions_for_calculations($quiz) {
+    public function load_and_initialise_questions_for_calculations($hippotrack) {
         // Load the questions.
-        $questions = hippotrack_report_get_significant_questions($quiz);
+        $questions = hippotrack_report_get_significant_questions($hippotrack);
         $questiondata = [];
         foreach ($questions as $qs => $question) {
             if ($question->qtype === 'random') {
@@ -982,9 +982,9 @@ class hippotrack_statistics_report extends hippotrack_default_report {
     }
 
     /**
-     * Load question stats for a quiz
+     * Load question stats for a hippotrack
      *
-     * @param int $quizid question usage
+     * @param int $hippotrackid question usage
      * @param bool $calculateifrequired if true (the default) the stats will be calculated if not already stored.
      *     If false, null will be returned if the stats are not already available.
      * @param bool $performanalysis if true (the default) and there are calculated stats, analysis will be performed
@@ -992,16 +992,16 @@ class hippotrack_statistics_report extends hippotrack_default_report {
      * @return ?all_calculated_for_qubaid_condition question stats
      */
     public function calculate_questions_stats_for_question_bank(
-            int $quizid,
+            int $hippotrackid,
             bool $calculateifrequired = true,
             bool $performanalysis = true
         ): ?all_calculated_for_qubaid_condition {
         global $DB;
-        $quiz = $DB->get_record('quiz', ['id' => $quizid], '*', MUST_EXIST);
-        $questions = $this->load_and_initialise_questions_for_calculations($quiz);
+        $hippotrack = $DB->get_record('hippotrack', ['id' => $hippotrackid], '*', MUST_EXIST);
+        $questions = $this->load_and_initialise_questions_for_calculations($hippotrack);
 
-        [, $questionstats] = $this->get_all_stats_and_analysis($quiz,
-            $quiz->grademethod, question_attempt::ALL_TRIES, new \core\dml\sql_join(),
+        [, $questionstats] = $this->get_all_stats_and_analysis($hippotrack,
+            $hippotrack->grademethod, question_attempt::ALL_TRIES, new \core\dml\sql_join(),
             $questions, null, $calculateifrequired, $performanalysis);
 
         return $questionstats;

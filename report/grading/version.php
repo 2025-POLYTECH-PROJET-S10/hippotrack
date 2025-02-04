@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz grading report version information.
+ * HippoTrack grading report version information.
  *
  * @package   hippotrack_grading
  * @copyright 2010 The Open University

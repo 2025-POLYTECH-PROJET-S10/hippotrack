@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Helper functions for the quiz reports.
+ * Helper functions for the hippotrack reports.
  *
  * @package   mod_hippotrack
  * @copyright 2008 Jamie Pratt
@@ -80,23 +80,23 @@ function hippotrack_report_unindex($datum) {
 }
 
 /**
- * Are there any questions in this quiz?
- * @param int $quizid the quiz id.
+ * Are there any questions in this hippotrack?
+ * @param int $hippotrackid the hippotrack id.
  */
-function hippotrack_has_questions($quizid) {
+function hippotrack_has_questions($hippotrackid) {
     global $DB;
-    return $DB->record_exists('hippotrack_slots', array('quizid' => $quizid));
+    return $DB->record_exists('hippotrack_slots', array('hippotrackid' => $hippotrackid));
 }
 
 /**
- * Get the slots of real questions (not descriptions) in this quiz, in order.
- * @param object $quiz the quiz.
+ * Get the slots of real questions (not descriptions) in this hippotrack, in order.
+ * @param object $hippotrack the hippotrack.
  * @return array of slot => objects with fields
  *      ->slot, ->id, ->qtype, ->length, ->number, ->maxmark, ->category (for random questions).
  */
-function hippotrack_report_get_significant_questions($quiz) {
-    $quizobj = \quiz::create($quiz->id);
-    $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
+function hippotrack_report_get_significant_questions($hippotrack) {
+    $hippotrackobj = \hippotrack::create($hippotrack->id);
+    $structure = \mod_hippotrack\structure::create_for_hippotrack($hippotrackobj);
     $slots = $structure->get_slots();
 
     $qsbyslot = [];
@@ -124,82 +124,82 @@ function hippotrack_report_get_significant_questions($quiz) {
 }
 
 /**
- * @param object $quiz the quiz settings.
- * @return bool whether, for this quiz, it is possible to filter attempts to show
+ * @param object $hippotrack the hippotrack settings.
+ * @return bool whether, for this hippotrack, it is possible to filter attempts to show
  *      only those that gave the final grade.
  */
-function hippotrack_report_can_filter_only_graded($quiz) {
-    return $quiz->attempts != 1 && $quiz->grademethod != QUIZ_GRADEAVERAGE;
+function hippotrack_report_can_filter_only_graded($hippotrack) {
+    return $hippotrack->attempts != 1 && $hippotrack->grademethod != HIPPOTRACK_GRADEAVERAGE;
 }
 
 /**
- * This is a wrapper for {@link hippotrack_report_grade_method_sql} that takes the whole quiz object instead of just the grading method
+ * This is a wrapper for {@link hippotrack_report_grade_method_sql} that takes the whole hippotrack object instead of just the grading method
  * as a param. See definition for {@link hippotrack_report_grade_method_sql} below.
  *
- * @param object $quiz
- * @param string $quizattemptsalias sql alias for 'hippotrack_attempts' table
+ * @param object $hippotrack
+ * @param string $hippotrackattemptsalias sql alias for 'hippotrack_attempts' table
  * @return string sql to test if this is an attempt that will contribute towards the grade of the user
  */
-function hippotrack_report_qm_filter_select($quiz, $quizattemptsalias = 'quiza') {
-    if ($quiz->attempts == 1) {
-        // This quiz only allows one attempt.
+function hippotrack_report_qm_filter_select($hippotrack, $hippotrackattemptsalias = 'hippotracka') {
+    if ($hippotrack->attempts == 1) {
+        // This hippotrack only allows one attempt.
         return '';
     }
-    return hippotrack_report_grade_method_sql($quiz->grademethod, $quizattemptsalias);
+    return hippotrack_report_grade_method_sql($hippotrack->grademethod, $hippotrackattemptsalias);
 }
 
 /**
- * Given a quiz grading method return sql to test if this is an
+ * Given a hippotrack grading method return sql to test if this is an
  * attempt that will be contribute towards the grade of the user. Or return an
- * empty string if the grading method is QUIZ_GRADEAVERAGE and thus all attempts
+ * empty string if the grading method is HIPPOTRACK_GRADEAVERAGE and thus all attempts
  * contribute to final grade.
  *
- * @param string $grademethod quiz grading method.
- * @param string $quizattemptsalias sql alias for 'hippotrack_attempts' table
+ * @param string $grademethod hippotrack grading method.
+ * @param string $hippotrackattemptsalias sql alias for 'hippotrack_attempts' table
  * @return string sql to test if this is an attempt that will contribute towards the graded of the user
  */
-function hippotrack_report_grade_method_sql($grademethod, $quizattemptsalias = 'quiza') {
+function hippotrack_report_grade_method_sql($grademethod, $hippotrackattemptsalias = 'hippotracka') {
     switch ($grademethod) {
-        case QUIZ_GRADEHIGHEST :
-            return "($quizattemptsalias.state = 'finished' AND NOT EXISTS (
+        case HIPPOTRACK_GRADEHIGHEST :
+            return "($hippotrackattemptsalias.state = 'finished' AND NOT EXISTS (
                            SELECT 1 FROM {hippotrack_attempts} qa2
-                            WHERE qa2.quiz = $quizattemptsalias.quiz AND
-                                qa2.userid = $quizattemptsalias.userid AND
+                            WHERE qa2.hippotrack = $hippotrackattemptsalias.hippotrack AND
+                                qa2.userid = $hippotrackattemptsalias.userid AND
                                  qa2.state = 'finished' AND (
-                COALESCE(qa2.sumgrades, 0) > COALESCE($quizattemptsalias.sumgrades, 0) OR
-               (COALESCE(qa2.sumgrades, 0) = COALESCE($quizattemptsalias.sumgrades, 0) AND qa2.attempt < $quizattemptsalias.attempt)
+                COALESCE(qa2.sumgrades, 0) > COALESCE($hippotrackattemptsalias.sumgrades, 0) OR
+               (COALESCE(qa2.sumgrades, 0) = COALESCE($hippotrackattemptsalias.sumgrades, 0) AND qa2.attempt < $hippotrackattemptsalias.attempt)
                                 )))";
 
-        case QUIZ_GRADEAVERAGE :
+        case HIPPOTRACK_GRADEAVERAGE :
             return '';
 
-        case QUIZ_ATTEMPTFIRST :
-            return "($quizattemptsalias.state = 'finished' AND NOT EXISTS (
+        case HIPPOTRACK_ATTEMPTFIRST :
+            return "($hippotrackattemptsalias.state = 'finished' AND NOT EXISTS (
                            SELECT 1 FROM {hippotrack_attempts} qa2
-                            WHERE qa2.quiz = $quizattemptsalias.quiz AND
-                                qa2.userid = $quizattemptsalias.userid AND
+                            WHERE qa2.hippotrack = $hippotrackattemptsalias.hippotrack AND
+                                qa2.userid = $hippotrackattemptsalias.userid AND
                                  qa2.state = 'finished' AND
-                               qa2.attempt < $quizattemptsalias.attempt))";
+                               qa2.attempt < $hippotrackattemptsalias.attempt))";
 
-        case QUIZ_ATTEMPTLAST :
-            return "($quizattemptsalias.state = 'finished' AND NOT EXISTS (
+        case HIPPOTRACK_ATTEMPTLAST :
+            return "($hippotrackattemptsalias.state = 'finished' AND NOT EXISTS (
                            SELECT 1 FROM {hippotrack_attempts} qa2
-                            WHERE qa2.quiz = $quizattemptsalias.quiz AND
-                                qa2.userid = $quizattemptsalias.userid AND
+                            WHERE qa2.hippotrack = $hippotrackattemptsalias.hippotrack AND
+                                qa2.userid = $hippotrackattemptsalias.userid AND
                                  qa2.state = 'finished' AND
-                               qa2.attempt > $quizattemptsalias.attempt))";
+                               qa2.attempt > $hippotrackattemptsalias.attempt))";
     }
 }
 
 /**
- * Get the number of students whose score was in a particular band for this quiz.
+ * Get the number of students whose score was in a particular band for this hippotrack.
  * @param number $bandwidth the width of each band.
  * @param int $bands the number of bands
- * @param int $quizid the quiz id.
+ * @param int $hippotrackid the hippotrack id.
  * @param \core\dml\sql_join $usersjoins (joins, wheres, params) to get enrolled users
  * @return array band number => number of users with scores in that band.
  */
-function hippotrack_report_grade_bands($bandwidth, $bands, $quizid, \core\dml\sql_join $usersjoins = null) {
+function hippotrack_report_grade_bands($bandwidth, $bands, $hippotrackid, \core\dml\sql_join $usersjoins = null) {
     global $DB;
     if (!is_int($bands)) {
         debugging('$bands passed to hippotrack_report_grade_bands must be an integer. (' .
@@ -224,7 +224,7 @@ FROM (
     SELECT FLOOR(qg.grade / :bandwidth) AS band
       FROM {hippotrack_grades} qg
     $userjoin
-    WHERE $usertest AND qg.quiz = :quizid
+    WHERE $usertest AND qg.hippotrack = :hippotrackid
 ) subquery
 
 GROUP BY
@@ -233,7 +233,7 @@ GROUP BY
 ORDER BY
     band";
 
-    $params['quizid'] = $quizid;
+    $params['hippotrackid'] = $hippotrackid;
     $params['bandwidth'] = $bandwidth;
 
     $data = $DB->get_records_sql_menu($sql, $params);
@@ -248,7 +248,7 @@ ORDER BY
     $data[$bands - 1] += $data[$bands];
     unset($data[$bands]);
 
-    // See MDL-60632. When a quiz participant achieves an overall negative grade the chart fails to render.
+    // See MDL-60632. When a hippotrack participant achieves an overall negative grade the chart fails to render.
     foreach ($data as $databand => $datanum) {
         if ($databand < 0) {
             $data["0"] += $datanum; // Add to band 0.
@@ -259,8 +259,8 @@ ORDER BY
     return $data;
 }
 
-function hippotrack_report_highlighting_grading_method($quiz, $qmsubselect, $qmfilter) {
-    if ($quiz->attempts == 1) {
+function hippotrack_report_highlighting_grading_method($hippotrack, $qmsubselect, $qmfilter) {
+    if ($hippotrack->attempts == 1) {
         return '<p>' . get_string('onlyoneattemptallowed', 'hippotrack_overview') . '</p>';
 
     } else if (!$qmsubselect) {
@@ -271,33 +271,33 @@ function hippotrack_report_highlighting_grading_method($quiz, $qmsubselect, $qmf
 
     } else {
         return '<p>' . get_string('showinggradedandungraded', 'hippotrack_overview',
-                '<span class="gradedattempt">' . hippotrack_get_grading_option_name($quiz->grademethod) .
+                '<span class="gradedattempt">' . hippotrack_get_grading_option_name($hippotrack->grademethod) .
                 '</span>') . '</p>';
     }
 }
 
 /**
- * Get the feedback text for a grade on this quiz. The feedback is
+ * Get the feedback text for a grade on this hippotrack. The feedback is
  * processed ready for display.
  *
- * @param float $grade a grade on this quiz.
- * @param int $quizid the id of the quiz object.
+ * @param float $grade a grade on this hippotrack.
+ * @param int $hippotrackid the id of the hippotrack object.
  * @return string the comment that corresponds to this grade (empty string if there is not one.
  */
-function hippotrack_report_feedback_for_grade($grade, $quizid, $context) {
+function hippotrack_report_feedback_for_grade($grade, $hippotrackid, $context) {
     global $DB;
 
     static $feedbackcache = array();
 
-    if (!isset($feedbackcache[$quizid])) {
-        $feedbackcache[$quizid] = $DB->get_records('hippotrack_feedback', array('quizid' => $quizid));
+    if (!isset($feedbackcache[$hippotrackid])) {
+        $feedbackcache[$hippotrackid] = $DB->get_records('hippotrack_feedback', array('hippotrackid' => $hippotrackid));
     }
 
     // With CBM etc, it is possible to get -ve grades, which would then not match
     // any feedback. Therefore, we replace -ve grades with 0.
     $grade = max($grade, 0);
 
-    $feedbacks = $feedbackcache[$quizid];
+    $feedbacks = $feedbackcache[$hippotrackid];
     $feedbackid = 0;
     $feedbacktext = '';
     $feedbacktextformat = FORMAT_MOODLE;
@@ -321,22 +321,22 @@ function hippotrack_report_feedback_for_grade($grade, $quizid, $context) {
 }
 
 /**
- * Format a number as a percentage out of $quiz->sumgrades
+ * Format a number as a percentage out of $hippotrack->sumgrades
  * @param number $rawgrade the mark to format.
- * @param object $quiz the quiz settings
- * @param bool $round whether to round the results ot $quiz->decimalpoints.
+ * @param object $hippotrack the hippotrack settings
+ * @param bool $round whether to round the results ot $hippotrack->decimalpoints.
  */
-function hippotrack_report_scale_summarks_as_percentage($rawmark, $quiz, $round = true) {
-    if ($quiz->sumgrades == 0) {
+function hippotrack_report_scale_summarks_as_percentage($rawmark, $hippotrack, $round = true) {
+    if ($hippotrack->sumgrades == 0) {
         return '';
     }
     if (!is_numeric($rawmark)) {
         return $rawmark;
     }
 
-    $mark = $rawmark * 100 / $quiz->sumgrades;
+    $mark = $rawmark * 100 / $hippotrack->sumgrades;
     if ($round) {
-        $mark = hippotrack_format_grade($quiz, $mark);
+        $mark = hippotrack_format_grade($hippotrack, $mark);
     }
 
     return get_string('percents', 'moodle', $mark);
@@ -354,7 +354,7 @@ function hippotrack_report_list($context) {
     }
 
     $reports = $DB->get_records('hippotrack_reports', null, 'displayorder DESC', 'name, capability');
-    $reportdirs = core_component::get_plugin_list('quiz');
+    $reportdirs = core_component::get_plugin_list('hippotrack');
 
     // Order the reports tab in descending order of displayorder.
     $reportcaps = array();
@@ -383,21 +383,21 @@ function hippotrack_report_list($context) {
 }
 
 /**
- * Create a filename for use when downloading data from a quiz report. It is
+ * Create a filename for use when downloading data from a hippotrack report. It is
  * expected that this will be passed to flexible_table::is_downloading, which
  * cleans the filename of bad characters and adds the file extension.
  * @param string $report the type of report.
  * @param string $courseshortname the course shortname.
- * @param string $quizname the quiz name.
+ * @param string $hippotrackname the hippotrack name.
  * @return string the filename.
  */
-function hippotrack_report_download_filename($report, $courseshortname, $quizname) {
-    return $courseshortname . '-' . format_string($quizname, true) . '-' . $report;
+function hippotrack_report_download_filename($report, $courseshortname, $hippotrackname) {
+    return $courseshortname . '-' . format_string($hippotrackname, true) . '-' . $report;
 }
 
 /**
  * Get the default report for the current user.
- * @param object $context the quiz context.
+ * @param object $context the hippotrack context.
  */
 function hippotrack_report_default_report($context) {
     $reports = hippotrack_report_list($context);
@@ -405,42 +405,42 @@ function hippotrack_report_default_report($context) {
 }
 
 /**
- * Generate a message saying that this quiz has no questions, with a button to
+ * Generate a message saying that this hippotrack has no questions, with a button to
  * go to the edit page, if the user has the right capability.
- * @param object $quiz the quiz settings.
+ * @param object $hippotrack the hippotrack settings.
  * @param object $cm the course_module object.
- * @param object $context the quiz context.
+ * @param object $context the hippotrack context.
  * @return string HTML to output.
  */
-function hippotrack_no_questions_message($quiz, $cm, $context) {
+function hippotrack_no_questions_message($hippotrack, $cm, $context) {
     global $OUTPUT;
 
     $output = '';
     $output .= $OUTPUT->notification(get_string('noquestions', 'hippotrack'));
     if (has_capability('mod/hippotrack:manage', $context)) {
         $output .= $OUTPUT->single_button(new moodle_url('/mod/hippotrack/edit.php',
-        array('cmid' => $cm->id)), get_string('editquiz', 'hippotrack'), 'get');
+        array('cmid' => $cm->id)), get_string('edithippotrack', 'hippotrack'), 'get');
     }
 
     return $output;
 }
 
 /**
- * Should the grades be displayed in this report. That depends on the quiz
- * display options, and whether the quiz is graded.
- * @param object $quiz the quiz settings.
- * @param context $context the quiz context.
+ * Should the grades be displayed in this report. That depends on the hippotrack
+ * display options, and whether the hippotrack is graded.
+ * @param object $hippotrack the hippotrack settings.
+ * @param context $context the hippotrack context.
  * @return bool
  */
-function hippotrack_report_should_show_grades($quiz, context $context) {
-    if ($quiz->timeclose && time() > $quiz->timeclose) {
+function hippotrack_report_should_show_grades($hippotrack, context $context) {
+    if ($hippotrack->timeclose && time() > $hippotrack->timeclose) {
         $when = mod_hippotrack_display_options::AFTER_CLOSE;
     } else {
         $when = mod_hippotrack_display_options::LATER_WHILE_OPEN;
     }
-    $reviewoptions = mod_hippotrack_display_options::make_from_quiz($quiz, $when);
+    $reviewoptions = mod_hippotrack_display_options::make_from_hippotrack($hippotrack, $when);
 
-    return hippotrack_has_grades($quiz) &&
+    return hippotrack_has_grades($hippotrack) &&
             ($reviewoptions->marks >= question_display_options::MARK_AND_MAX ||
             has_capability('moodle/grade:viewhidden', $context));
 }

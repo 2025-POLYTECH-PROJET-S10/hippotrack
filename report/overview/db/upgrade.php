@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz overview report upgrade script.
+ * HippoTrack overview report upgrade script.
  *
  * @package   hippotrack_overview
  * @copyright 2008 Jamie Pratt
@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Quiz overview report upgrade function.
+ * HippoTrack overview report upgrade function.
  * @param number $oldversion
  */
 function xmldb_hippotrack_overview_upgrade($oldversion) {

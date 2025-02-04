@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Unit tests for the privacy legacy polyfill for quiz access rules.
+ * Unit tests for the privacy legacy polyfill for hippotrack access rules.
  *
  * @copyright   2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -23,7 +23,7 @@
 
 namespace mod_hippotrack;
 
-use quiz;
+use hippotrack;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -31,130 +31,130 @@ global $CFG;
 require_once($CFG->dirroot . '/mod/hippotrack/attemptlib.php');
 
 /**
- * Unit tests for the privacy legacy polyfill for quiz access rules.
+ * Unit tests for the privacy legacy polyfill for hippotrack access rules.
  *
  * @copyright   2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class privacy_legacy_quizaccess_polyfill_test extends \advanced_testcase {
+class privacy_legacy_hippotrackaccess_polyfill_test extends \advanced_testcase {
     /**
-     * Test that the core_quizaccess\privacy\legacy_polyfill works and that the static _export_quizaccess_user_data can
+     * Test that the core_hippotrackaccess\privacy\legacy_polyfill works and that the static _export_hippotrackaccess_user_data can
      * be called.
      */
-    public function test_export_quizaccess_user_data() {
-        $quiz = $this->createMock(quiz::class);
+    public function test_export_hippotrackaccess_user_data() {
+        $hippotrack = $this->createMock(hippotrack::class);
         $user = (object) [];
         $returnvalue = (object) [];
 
-        $mock = $this->createMock(test_privacy_legacy_quizaccess_polyfill_mock_wrapper::class);
+        $mock = $this->createMock(test_privacy_legacy_hippotrackaccess_polyfill_mock_wrapper::class);
         $mock->expects($this->once())
             ->method('get_return_value')
-            ->with('_export_quizaccess_user_data', [$quiz, $user])
+            ->with('_export_hippotrackaccess_user_data', [$hippotrack, $user])
             ->willReturn($returnvalue);
 
-        test_privacy_legacy_quizaccess_polyfill_provider::$mock = $mock;
-        $result = test_privacy_legacy_quizaccess_polyfill_provider::export_quizaccess_user_data($quiz, $user);
+        test_privacy_legacy_hippotrackaccess_polyfill_provider::$mock = $mock;
+        $result = test_privacy_legacy_hippotrackaccess_polyfill_provider::export_hippotrackaccess_user_data($hippotrack, $user);
         $this->assertSame($returnvalue, $result);
     }
 
     /**
-     * Test the _delete_quizaccess_for_context shim.
+     * Test the _delete_hippotrackaccess_for_context shim.
      */
-    public function test_delete_quizaccess_for_context() {
+    public function test_delete_hippotrackaccess_for_context() {
         $context = \context_system::instance();
 
-        $quiz = $this->createMock(quiz::class);
+        $hippotrack = $this->createMock(hippotrack::class);
 
-        $mock = $this->createMock(test_privacy_legacy_quizaccess_polyfill_mock_wrapper::class);
+        $mock = $this->createMock(test_privacy_legacy_hippotrackaccess_polyfill_mock_wrapper::class);
         $mock->expects($this->once())
             ->method('get_return_value')
-            ->with('_delete_quizaccess_data_for_all_users_in_context', [$quiz]);
+            ->with('_delete_hippotrackaccess_data_for_all_users_in_context', [$hippotrack]);
 
-        test_privacy_legacy_quizaccess_polyfill_provider::$mock = $mock;
-        test_privacy_legacy_quizaccess_polyfill_provider::delete_quizaccess_data_for_all_users_in_context($quiz);
+        test_privacy_legacy_hippotrackaccess_polyfill_provider::$mock = $mock;
+        test_privacy_legacy_hippotrackaccess_polyfill_provider::delete_hippotrackaccess_data_for_all_users_in_context($hippotrack);
     }
 
     /**
-     * Test the _delete_quizaccess_for_user shim.
+     * Test the _delete_hippotrackaccess_for_user shim.
      */
-    public function test_delete_quizaccess_for_user() {
+    public function test_delete_hippotrackaccess_for_user() {
         $context = \context_system::instance();
 
-        $quiz = $this->createMock(quiz::class);
+        $hippotrack = $this->createMock(hippotrack::class);
         $user = (object) [];
 
-        $mock = $this->createMock(test_privacy_legacy_quizaccess_polyfill_mock_wrapper::class);
+        $mock = $this->createMock(test_privacy_legacy_hippotrackaccess_polyfill_mock_wrapper::class);
         $mock->expects($this->once())
             ->method('get_return_value')
-            ->with('_delete_quizaccess_data_for_user', [$quiz, $user]);
+            ->with('_delete_hippotrackaccess_data_for_user', [$hippotrack, $user]);
 
-        test_privacy_legacy_quizaccess_polyfill_provider::$mock = $mock;
-        test_privacy_legacy_quizaccess_polyfill_provider::delete_quizaccess_data_for_user($quiz, $user);
+        test_privacy_legacy_hippotrackaccess_polyfill_provider::$mock = $mock;
+        test_privacy_legacy_hippotrackaccess_polyfill_provider::delete_hippotrackaccess_data_for_user($hippotrack, $user);
     }
 
     /**
-     * Test the _delete_quizaccess_for_users shim.
+     * Test the _delete_hippotrackaccess_for_users shim.
      */
-    public function test_delete_quizaccess_for_users() {
+    public function test_delete_hippotrackaccess_for_users() {
         $context = $this->createMock(\context_module::class);
         $user = (object) [];
         $approveduserlist = new \core_privacy\local\request\approved_userlist($context, 'mod_hippotrack', [$user]);
 
-        $mock = $this->createMock(test_privacy_legacy_quizaccess_polyfill_mock_wrapper::class);
+        $mock = $this->createMock(test_privacy_legacy_hippotrackaccess_polyfill_mock_wrapper::class);
         $mock->expects($this->once())
             ->method('get_return_value')
-            ->with('_delete_quizaccess_data_for_users', [$approveduserlist]);
+            ->with('_delete_hippotrackaccess_data_for_users', [$approveduserlist]);
 
-        test_privacy_legacy_quizaccess_polyfill_provider::$mock = $mock;
-        test_privacy_legacy_quizaccess_polyfill_provider::delete_quizaccess_data_for_users($approveduserlist);
+        test_privacy_legacy_hippotrackaccess_polyfill_provider::$mock = $mock;
+        test_privacy_legacy_hippotrackaccess_polyfill_provider::delete_hippotrackaccess_data_for_users($approveduserlist);
     }
 }
 
 /**
- * Legacy polyfill test class for the quizaccess_provider.
+ * Legacy polyfill test class for the hippotrackaccess_provider.
  *
  * @copyright   2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class test_privacy_legacy_quizaccess_polyfill_provider implements
+class test_privacy_legacy_hippotrackaccess_polyfill_provider implements
         \core_privacy\local\metadata\provider,
-        \mod_hippotrack\privacy\quizaccess_provider,
-        \mod_hippotrack\privacy\quizaccess_user_provider {
+        \mod_hippotrack\privacy\hippotrackaccess_provider,
+        \mod_hippotrack\privacy\hippotrackaccess_user_provider {
 
-    use \mod_hippotrack\privacy\legacy_quizaccess_polyfill;
+    use \mod_hippotrack\privacy\legacy_hippotrackaccess_polyfill;
     use \core_privacy\local\legacy_polyfill;
 
     /**
-     * @var test_privacy_legacy_quizaccess_polyfill_provider $mock.
+     * @var test_privacy_legacy_hippotrackaccess_polyfill_provider $mock.
      */
     public static $mock = null;
 
     /**
-     * Export all user data for the quizaccess plugin.
+     * Export all user data for the hippotrackaccess plugin.
      *
-     * @param \quiz $quiz
+     * @param \hippotrack $hippotrack
      * @param \stdClass $user
      */
-    protected static function _export_quizaccess_user_data($quiz, $user) {
+    protected static function _export_hippotrackaccess_user_data($hippotrack, $user) {
         return static::$mock->get_return_value(__FUNCTION__, func_get_args());
     }
 
     /**
      * Deletes all user data for the given context.
      *
-     * @param \quiz $quiz
+     * @param \hippotrack $hippotrack
      */
-    protected static function _delete_quizaccess_data_for_all_users_in_context($quiz) {
+    protected static function _delete_hippotrackaccess_data_for_all_users_in_context($hippotrack) {
         static::$mock->get_return_value(__FUNCTION__, func_get_args());
     }
 
     /**
      * Delete personal data for the given user and context.
      *
-     * @param   \quiz           $quiz The quiz being deleted
+     * @param   \hippotrack           $hippotrack The hippotrack being deleted
      * @param   \stdClass       $user The user to export data for
      */
-    protected static function _delete_quizaccess_data_for_user($quiz, $user) {
+    protected static function _delete_hippotrackaccess_data_for_user($hippotrack, $user) {
         static::$mock->get_return_value(__FUNCTION__, func_get_args());
     }
 
@@ -163,7 +163,7 @@ class test_privacy_legacy_quizaccess_polyfill_provider implements
      *
      * @param   \core_privacy\local\request\approved_userlist   $userlist
      */
-    protected static function _delete_quizaccess_data_for_users($userlist) {
+    protected static function _delete_hippotrackaccess_data_for_users($userlist) {
         static::$mock->get_return_value(__FUNCTION__, func_get_args());
     }
 
@@ -184,7 +184,7 @@ class test_privacy_legacy_quizaccess_polyfill_provider implements
  * @copyright   2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class test_privacy_legacy_quizaccess_polyfill_mock_wrapper {
+class test_privacy_legacy_hippotrackaccess_polyfill_mock_wrapper {
     /**
      * Get the return value for the specified item.
      */

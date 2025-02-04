@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem implementation for quizaccess_offlineattempts.
+ * Privacy Subsystem implementation for hippotrackaccess_offlineattempts.
  *
- * @package    quizaccess_offlineattempts
+ * @package    hippotrackaccess_offlineattempts
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_offlineattempts\privacy;
+namespace hippotrackaccess_offlineattempts\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Privacy Subsystem for quizaccess_offlineattempts implementing null_provider.
+ * Privacy Subsystem for hippotrackaccess_offlineattempts implementing null_provider.
  *
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

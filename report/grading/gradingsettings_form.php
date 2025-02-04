@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file defines the setting form for the quiz grading report.
+ * This file defines the setting form for the hippotrack grading report.
  *
  * @package   hippotrack_grading
  * @copyright 2010 Tim Hunt
@@ -29,7 +29,7 @@ require_once($CFG->libdir . '/formslib.php');
 
 
 /**
- * Quiz grading report settings form.
+ * HippoTrack grading report settings form.
  *
  * @copyright 2010 Tim Hunt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -43,7 +43,7 @@ class hippotrack_grading_settings_form extends moodleform {
     /** @var bool $showcustomfields whether custom field values should be shown. */
     protected $showcustomfields;
 
-    /** @var stdClass $context the quiz context. */
+    /** @var stdClass $context the hippotrack context. */
     protected $context;
 
     /**

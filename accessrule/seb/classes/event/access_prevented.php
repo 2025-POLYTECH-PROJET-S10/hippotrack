@@ -15,23 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Event for when access to a quiz is prevented by this subplugin.
+ * Event for when access to a hippotrack is prevented by this subplugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_seb\event;
+namespace hippotrackaccess_seb\event;
 
 use core\event\base;
-use quizaccess_seb\access_manager;
+use hippotrackaccess_seb\access_manager;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Event for when access to a quiz is prevented by this subplugin.
+ * Event for when access to a hippotrack is prevented by this subplugin.
  *
  * @copyright  2020 Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -63,9 +63,9 @@ class access_prevented extends base {
 
         return self::create([
             'userid' => $USER->id,
-            'objectid' => $accessmanager->get_quiz()->get_quizid(),
-            'courseid' => $accessmanager->get_quiz()->get_courseid(),
-            'context' => $accessmanager->get_quiz()->get_context(),
+            'objectid' => $accessmanager->get_hippotrack()->get_hippotrackid(),
+            'courseid' => $accessmanager->get_hippotrack()->get_courseid(),
+            'context' => $accessmanager->get_hippotrack()->get_context(),
             'other' => $other,
         ]);
     }
@@ -74,7 +74,7 @@ class access_prevented extends base {
      * Initialize the event data.
      */
     protected function init() {
-        $this->data['objecttable'] = 'quiz';
+        $this->data['objecttable'] = 'hippotrack';
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
     }
@@ -85,7 +85,7 @@ class access_prevented extends base {
      * @return string Name of event.
      */
     public static function get_name() {
-        return get_string('event:accessprevented', 'quizaccess_seb');
+        return get_string('event:accessprevented', 'hippotrackaccess_seb');
     }
 
     /**
@@ -94,7 +94,7 @@ class access_prevented extends base {
      * @return string Description.
      */
     public function get_description() {
-        $description = "The user with id '$this->userid' has been prevented from accessing quiz with id '$this->objectid' by the "
+        $description = "The user with id '$this->userid' has been prevented from accessing hippotrack with id '$this->objectid' by the "
                 . "Safe Exam Browser access plugin. The reason was '{$this->other['reason']}'. "
             . "Expected config key: '{$this->other['savedconfigkey']}'. "
             . "Received config key: '{$this->other['receivedconfigkey']}'. "
@@ -110,7 +110,7 @@ class access_prevented extends base {
      * @return array Mapping of object id.
      */
     public static function get_objectid_mapping() : array {
-        return array('db' => 'quiz', 'restore' => 'quiz');
+        return array('db' => 'hippotrack', 'restore' => 'hippotrack');
     }
 
     /**

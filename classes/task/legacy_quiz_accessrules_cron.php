@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Legacy Cron Quiz Access Rules Task
+ * Legacy Cron HippoTrack Access Rules Task
  *
  * @package    mod_hippotrack
  * @copyright  2017 Michael Hughes
@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
- * Legacy Cron Quiz Access Rules Task
+ * Legacy Cron HippoTrack Access Rules Task
  *
  * @package    mod_hippotrack
  * @copyright  2017 Michael Hughes
@@ -40,13 +40,13 @@ require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 class legacy_hippotrack_accessrules_cron extends \core\task\scheduled_task {
 
     public function get_name() {
-        return get_string('legacyquizaccessrulescron', 'mod_hippotrack');
+        return get_string('legacyhippotrackaccessrulescron', 'mod_hippotrack');
     }
 
     /**
-     * Execute all quizaccess subplugins legacy cron tasks.
+     * Execute all hippotrackaccess subplugins legacy cron tasks.
      */
     public function execute() {
-        cron_execute_plugin_type('quizaccess', 'quiz access rules');
+        cron_execute_plugin_type('hippotrackaccess', 'hippotrack access rules');
     }
 }

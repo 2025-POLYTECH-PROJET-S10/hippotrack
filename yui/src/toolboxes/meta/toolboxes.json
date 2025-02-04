@@ -6,7 +6,7 @@
             "event",
             "event-key",
             "io",
-            "moodle-mod_hippotrack-quizbase",
+            "moodle-mod_hippotrack-hippotrackbase",
             "moodle-mod_hippotrack-util-slot",
             "moodle-core-notification-ajaxexception"
         ]

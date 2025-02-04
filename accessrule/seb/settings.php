@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Global configuration settings for the quizaccess_seb plugin.
+ * Global configuration settings for the hippotrackaccess_seb plugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright  2019 Catalyst IT
@@ -31,53 +31,53 @@ global $ADMIN;
 if ($hassiteconfig) {
 
     $settings->add(new admin_setting_heading(
-        'quizaccess_seb/supportedversions',
+        'hippotrackaccess_seb/supportedversions',
         '',
-        $OUTPUT->notification(get_string('setting:supportedversions', 'quizaccess_seb'), 'warning')));
+        $OUTPUT->notification(get_string('setting:supportedversions', 'hippotrackaccess_seb'), 'warning')));
 
-    $settings->add(new admin_setting_configcheckbox('quizaccess_seb/autoreconfigureseb',
-        get_string('setting:autoreconfigureseb', 'quizaccess_seb'),
-        get_string('setting:autoreconfigureseb_desc', 'quizaccess_seb'),
+    $settings->add(new admin_setting_configcheckbox('hippotrackaccess_seb/autoreconfigureseb',
+        get_string('setting:autoreconfigureseb', 'hippotrackaccess_seb'),
+        get_string('setting:autoreconfigureseb_desc', 'hippotrackaccess_seb'),
         '1'));
 
     $links = [
-        'seb' => get_string('setting:showseblink', 'quizaccess_seb'),
-        'http' => get_string('setting:showhttplink', 'quizaccess_seb')
+        'seb' => get_string('setting:showseblink', 'hippotrackaccess_seb'),
+        'http' => get_string('setting:showhttplink', 'hippotrackaccess_seb')
     ];
-    $settings->add(new admin_setting_configmulticheckbox('quizaccess_seb/showseblinks',
-        get_string('setting:showseblinks', 'quizaccess_seb'),
-        get_string('setting:showseblinks_desc', 'quizaccess_seb'),
+    $settings->add(new admin_setting_configmulticheckbox('hippotrackaccess_seb/showseblinks',
+        get_string('setting:showseblinks', 'hippotrackaccess_seb'),
+        get_string('setting:showseblinks_desc', 'hippotrackaccess_seb'),
         $links, $links));
 
-    $settings->add(new admin_setting_configtext('quizaccess_seb/downloadlink',
-        get_string('setting:downloadlink', 'quizaccess_seb'),
-        get_string('setting:downloadlink_desc', 'quizaccess_seb'),
+    $settings->add(new admin_setting_configtext('hippotrackaccess_seb/downloadlink',
+        get_string('setting:downloadlink', 'hippotrackaccess_seb'),
+        get_string('setting:downloadlink_desc', 'hippotrackaccess_seb'),
         'https://safeexambrowser.org/download_en.html',
         PARAM_URL));
 
-    $settings->add(new admin_setting_configcheckbox('quizaccess_seb/quizpasswordrequired',
-        get_string('setting:quizpasswordrequired', 'quizaccess_seb'),
-        get_string('setting:quizpasswordrequired_desc', 'quizaccess_seb'),
+    $settings->add(new admin_setting_configcheckbox('hippotrackaccess_seb/hippotrackpasswordrequired',
+        get_string('setting:hippotrackpasswordrequired', 'hippotrackaccess_seb'),
+        get_string('setting:hippotrackpasswordrequired_desc', 'hippotrackaccess_seb'),
         '0'));
 
-    $settings->add(new admin_setting_configcheckbox('quizaccess_seb/displayblocksbeforestart',
-        get_string('setting:displayblocksbeforestart', 'quizaccess_seb'),
-        get_string('setting:displayblocksbeforestart_desc', 'quizaccess_seb'),
+    $settings->add(new admin_setting_configcheckbox('hippotrackaccess_seb/displayblocksbeforestart',
+        get_string('setting:displayblocksbeforestart', 'hippotrackaccess_seb'),
+        get_string('setting:displayblocksbeforestart_desc', 'hippotrackaccess_seb'),
         '0'));
 
-    $settings->add(new admin_setting_configcheckbox('quizaccess_seb/displayblockswhenfinished',
-        get_string('setting:displayblockswhenfinished', 'quizaccess_seb'),
-        get_string('setting:displayblockswhenfinished_desc', 'quizaccess_seb'),
+    $settings->add(new admin_setting_configcheckbox('hippotrackaccess_seb/displayblockswhenfinished',
+        get_string('setting:displayblockswhenfinished', 'hippotrackaccess_seb'),
+        get_string('setting:displayblockswhenfinished_desc', 'hippotrackaccess_seb'),
         '1'));
 }
 
-if (has_capability('quizaccess/seb:managetemplates', context_system::instance())) {
-    $ADMIN->add('modsettingsquizcat',
+if (has_capability('hippotrackaccess/seb:managetemplates', context_system::instance())) {
+    $ADMIN->add('modsettingshippotrackcat',
         new admin_externalpage(
-            'quizaccess_seb/template',
-            get_string('manage_templates', 'quizaccess_seb'),
+            'hippotrackaccess_seb/template',
+            get_string('manage_templates', 'hippotrackaccess_seb'),
             new moodle_url('/mod/hippotrack/accessrule/seb/template.php'),
-            'quizaccess/seb:managetemplates'
+            'hippotrackaccess/seb:managetemplates'
         )
     );
 }

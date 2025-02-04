@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page deals with processing responses during an attempt at a quiz.
+ * This page deals with processing responses during an attempt at a hippotrack.
  *
  * People will normally arrive here from a form submission on attempt.php or
  * summary.php, and once the responses are processed, they will be redirected to
@@ -71,7 +71,7 @@ require_sesskey();
 
 // Check that this attempt belongs to this user.
 if ($attemptobj->get_userid() != $USER->id) {
-    throw new moodle_hippotrack_exception($attemptobj->get_quizobj(), 'notyourattempt');
+    throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'notyourattempt');
 }
 
 // Check capabilities.
@@ -81,7 +81,7 @@ if (!$attemptobj->is_preview_user()) {
 
 // If the attempt is already closed, send them to the review page.
 if ($attemptobj->is_finished()) {
-    throw new moodle_hippotrack_exception($attemptobj->get_quizobj(),
+    throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(),
             'attemptalreadyclosed', null, $attemptobj->review_url());
 }
 

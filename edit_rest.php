@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Rest endpoint for ajax editing of quiz structure.
+ * Rest endpoint for ajax editing of hippotrack structure.
  *
  * @package   mod_hippotrack
  * @copyright 1999 Martin Dougiamas  http://dougiamas.com
@@ -30,7 +30,7 @@ require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 // Initialise ALL the incoming parameters here, up front.
-$quizid     = required_param('quizid', PARAM_INT);
+$hippotrackid     = required_param('hippotrackid', PARAM_INT);
 $class      = required_param('class', PARAM_ALPHA);
 $field      = optional_param('field', '', PARAM_ALPHA);
 $instanceid = optional_param('instanceId', 0, PARAM_INT);
@@ -49,16 +49,16 @@ $shuffle    = optional_param('newshuffle', 0, PARAM_INT);
 $page       = optional_param('page', '', PARAM_INT);
 $ids        = optional_param('ids', '', PARAM_SEQUENCE);
 $PAGE->set_url('/mod/hippotrack/edit-rest.php',
-        array('quizid' => $quizid, 'class' => $class));
+        array('hippotrackid' => $hippotrackid, 'class' => $class));
 
 require_sesskey();
-$quiz = $DB->get_record('quiz', array('id' => $quizid), '*', MUST_EXIST);
-$cm = get_coursemodule_from_instance('quiz', $quiz->id, $quiz->course);
-$course = $DB->get_record('course', array('id' => $quiz->course), '*', MUST_EXIST);
+$hippotrack = $DB->get_record('hippotrack', array('id' => $hippotrackid), '*', MUST_EXIST);
+$cm = get_coursemodule_from_instance('hippotrack', $hippotrack->id, $hippotrack->course);
+$course = $DB->get_record('course', array('id' => $hippotrack->course), '*', MUST_EXIST);
 require_login($course, false, $cm);
 
-$quizobj = new quiz($quiz, $cm, $course);
-$structure = $quizobj->get_structure();
+$hippotrackobj = new hippotrack($hippotrack, $cm, $course);
+$structure = $hippotrackobj->get_structure();
 $modcontext = context_module::instance($cm->id);
 
 echo $OUTPUT->header(); // Send headers.
@@ -113,14 +113,14 @@ switch($requestmethod) {
                             }
                         }
                         $structure->move_slot($id, $previousid, $page);
-                        hippotrack_delete_previews($quiz);
+                        hippotrack_delete_previews($hippotrack);
                         $result = array('visible' => true);
                         break;
 
                     case 'getmaxmark':
                         require_capability('mod/hippotrack:manage', $modcontext);
                         $slot = $DB->get_record('hippotrack_slots', array('id' => $id), '*', MUST_EXIST);
-                        $result = array('instancemaxmark' => hippotrack_format_question_grade($quiz, $slot->maxmark));
+                        $result = array('instancemaxmark' => hippotrack_format_question_grade($hippotrack, $slot->maxmark));
                         break;
 
                     case 'updatemaxmark':
@@ -128,14 +128,14 @@ switch($requestmethod) {
                         $slot = $structure->get_slot_by_id($id);
                         if ($structure->update_slot_maxmark($slot, $maxmark)) {
                             // Grade has really changed.
-                            hippotrack_delete_previews($quiz);
-                            hippotrack_update_sumgrades($quiz);
-                            hippotrack_update_all_attempt_sumgrades($quiz);
-                            hippotrack_update_all_final_grades($quiz);
-                            hippotrack_update_grades($quiz, 0, true);
+                            hippotrack_delete_previews($hippotrack);
+                            hippotrack_update_sumgrades($hippotrack);
+                            hippotrack_update_all_attempt_sumgrades($hippotrack);
+                            hippotrack_update_all_final_grades($hippotrack);
+                            hippotrack_update_grades($hippotrack, 0, true);
                         }
-                        $result = array('instancemaxmark' => hippotrack_format_question_grade($quiz, $maxmark),
-                                'newsummarks' => hippotrack_format_grade($quiz, $quiz->sumgrades));
+                        $result = array('instancemaxmark' => hippotrack_format_question_grade($hippotrack, $maxmark),
+                                'newsummarks' => hippotrack_format_grade($hippotrack, $hippotrack->sumgrades));
                         break;
 
                     case 'updatepagebreak':
@@ -154,16 +154,16 @@ switch($requestmethod) {
 
                         $ids = explode(',', $ids);
                         foreach ($ids as $id) {
-                            $slot = $DB->get_record('hippotrack_slots', array('quizid' => $quiz->id, 'id' => $id),
+                            $slot = $DB->get_record('hippotrack_slots', array('hippotrackid' => $hippotrack->id, 'id' => $id),
                                     '*', MUST_EXIST);
                             if ($structure->has_use_capability($slot->slot)) {
                                 $structure->remove_slot($slot->slot);
                             }
                         }
-                        hippotrack_delete_previews($quiz);
-                        hippotrack_update_sumgrades($quiz);
+                        hippotrack_delete_previews($hippotrack);
+                        hippotrack_update_sumgrades($hippotrack);
 
-                        $result = array('newsummarks' => hippotrack_format_grade($quiz, $quiz->sumgrades),
+                        $result = array('newsummarks' => hippotrack_format_grade($hippotrack, $hippotrack->sumgrades),
                                 'deleted' => true, 'newnumquestions' => $structure->get_question_count());
                         break;
 
@@ -189,7 +189,7 @@ switch($requestmethod) {
 
             case 'resource':
                 require_capability('mod/hippotrack:manage', $modcontext);
-                if (!$slot = $DB->get_record('hippotrack_slots', array('quizid' => $quiz->id, 'id' => $id))) {
+                if (!$slot = $DB->get_record('hippotrack_slots', array('hippotrackid' => $hippotrack->id, 'id' => $id))) {
                     throw new moodle_exception('AJAX commands.php: Bad slot ID '.$id);
                 }
 
@@ -200,9 +200,9 @@ switch($requestmethod) {
                         'moodle/question:useall', 'nopermissions', '');
                 }
                 $structure->remove_slot($slot->slot);
-                hippotrack_delete_previews($quiz);
-                hippotrack_update_sumgrades($quiz);
-                $result = array('newsummarks' => hippotrack_format_grade($quiz, $quiz->sumgrades),
+                hippotrack_delete_previews($hippotrack);
+                hippotrack_update_sumgrades($hippotrack);
+                $result = array('newsummarks' => hippotrack_format_grade($hippotrack, $hippotrack->sumgrades),
                             'deleted' => true, 'newnumquestions' => $structure->get_question_count());
                 break;
         }

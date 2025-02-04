@@ -17,13 +17,13 @@
 /**
  * Wrapper for CFPropertyList to handle low level iteration.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_seb;
+namespace hippotrackaccess_seb;
 
 use CFPropertyList\CFArray;
 use CFPropertyList\CFBoolean;

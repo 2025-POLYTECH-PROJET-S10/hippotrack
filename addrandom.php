@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/question/editlib.php');
 
 use qbank_managecategories\question_category_object;
 
-list($thispageurl, $contexts, $cmid, $cm, $quiz, $pagevars) =
+list($thispageurl, $contexts, $cmid, $cm, $hippotrack, $pagevars) =
         question_edit_setup('editq', '/mod/hippotrack/addrandom.php', true);
 
 // These params are only passed from page request to request while we stay on
@@ -42,7 +42,7 @@ $category = optional_param('category', 0, PARAM_INT);
 $scrollpos = optional_param('scrollpos', 0, PARAM_INT);
 
 // Get the course object and related bits.
-if (!$course = $DB->get_record('course', array('id' => $quiz->course))) {
+if (!$course = $DB->get_record('course', array('id' => $hippotrack->course))) {
     throw new \moodle_exception('invalidcourseid');
 }
 // You need mod/hippotrack:manage in addition to question capabilities to access this page.
@@ -111,9 +111,9 @@ if ($data = $mform->get_data()) {
         return (int)explode(',', $tagstrings)[0];
     }, $data->fromtags);
 
-    hippotrack_add_random_questions($quiz, $addonpage, $categoryid, $data->numbertoadd, $includesubcategories, $tagids);
-    hippotrack_delete_previews($quiz);
-    hippotrack_update_sumgrades($quiz);
+    hippotrack_add_random_questions($hippotrack, $addonpage, $categoryid, $data->numbertoadd, $includesubcategories, $tagids);
+    hippotrack_delete_previews($hippotrack);
+    hippotrack_update_sumgrades($hippotrack);
     redirect($returnurl);
 }
 
@@ -125,17 +125,17 @@ $mform->set_data(array(
 ));
 
 // Setup $PAGE.
-$streditingquiz = get_string('editinga', 'moodle', get_string('modulename', 'hippotrack'));
-$PAGE->navbar->add($streditingquiz);
-$PAGE->set_title($streditingquiz);
+$streditinghippotrack = get_string('editinga', 'moodle', get_string('modulename', 'hippotrack'));
+$PAGE->navbar->add($streditinghippotrack);
+$PAGE->set_title($streditinghippotrack);
 $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 
-if (!$quizname = $DB->get_field($cm->modname, 'name', array('id' => $cm->instance))) {
+if (!$hippotrackname = $DB->get_field($cm->modname, 'name', array('id' => $cm->instance))) {
             throw new \moodle_exception('invalidcoursemodule');
 }
 
-echo $OUTPUT->heading(get_string('addrandomquestiontoquiz', 'quiz', $quizname), 2);
+echo $OUTPUT->heading(get_string('addrandomquestiontohippotrack', 'hippotrack', $hippotrackname), 2);
 $mform->display();
 echo $OUTPUT->footer();
 

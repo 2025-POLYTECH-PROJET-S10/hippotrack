@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quizaccess_numattempts;
+namespace hippotrackaccess_numattempts;
 
-use quiz;
-use quizaccess_numattempts;
+use hippotrack;
+use hippotrackaccess_numattempts;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -26,25 +26,25 @@ require_once($CFG->dirroot . '/mod/hippotrack/accessrule/numattempts/rule.php');
 
 
 /**
- * Unit tests for the quizaccess_numattempts plugin.
+ * Unit tests for the hippotrackaccess_numattempts plugin.
  *
- * @package    quizaccess_numattempts
+ * @package    hippotrackaccess_numattempts
  * @category   test
  * @copyright  2008 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class rule_test extends \basic_testcase {
     public function test_num_attempts_access_rule() {
-        $quiz = new \stdClass();
-        $quiz->attempts = 3;
+        $hippotrack = new \stdClass();
+        $hippotrack->attempts = 3;
         $cm = new \stdClass();
         $cm->id = 0;
-        $quizobj = new quiz($quiz, $cm, null);
-        $rule = new quizaccess_numattempts($quizobj, 0);
+        $hippotrackobj = new hippotrack($hippotrack, $cm, null);
+        $rule = new hippotrackaccess_numattempts($hippotrackobj, 0);
         $attempt = new \stdClass();
 
         $this->assertEquals($rule->description(),
-            get_string('attemptsallowedn', 'quizaccess_numattempts', 3));
+            get_string('attemptsallowedn', 'hippotrackaccess_numattempts', 3));
 
         $this->assertFalse($rule->prevent_new_attempt(0, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(2, $attempt));

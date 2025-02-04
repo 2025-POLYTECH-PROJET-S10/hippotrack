@@ -37,10 +37,10 @@ class hippotrack_structure_modified_test extends \advanced_testcase {
     use \hippotrack_question_helper_test_trait;
 
     /**
-     * Clear the statistics cache for a quiz when it structure is modified.
+     * Clear the statistics cache for a hippotrack when it structure is modified.
      *
      * When recompute_hippotrack_sumgrades() is called, it should trigger this plugin's hippotrack_structure_modified callback
-     * which clears the statistics cache for the quiz.
+     * which clears the statistics cache for the hippotrack.
      *
      * @return void
      */
@@ -48,38 +48,38 @@ class hippotrack_structure_modified_test extends \advanced_testcase {
         global $DB;
         $this->resetAfterTest(true);
 
-        // Create and attempt a quiz.
+        // Create and attempt a hippotrack.
         $generator = $this->getDataGenerator();
         $user = $generator->create_user();
         $course = $generator->create_course();
-        $quiz = $this->create_test_quiz($course);
+        $hippotrack = $this->create_test_hippotrack($course);
         $questiongenerator = $generator->get_plugin_generator('core_question');
         $category = $questiongenerator->create_question_category();
         $question = $questiongenerator->create_question('match', null, ['category' => $category->id]);
         $questiongenerator->update_question($question);
-        hippotrack_add_hippotrack_question($question->id, $quiz);
-        $this->attempt_quiz($quiz, $user);
+        hippotrack_add_hippotrack_question($question->id, $hippotrack);
+        $this->attempt_hippotrack($hippotrack, $user);
 
         // Run the statistics calculation to prime the cache.
         $report = new \hippotrack_statistics_report();
-        $questions = $report->load_and_initialise_questions_for_calculations($quiz);
+        $questions = $report->load_and_initialise_questions_for_calculations($hippotrack);
         $report->get_all_stats_and_analysis(
-            $quiz,
-            $quiz->grademethod,
+            $hippotrack,
+            $hippotrack->grademethod,
             \question_attempt::ALL_TRIES,
             new \core\dml\sql_join(),
             $questions,
             new none(),
         );
 
-        $hashcode = hippotrack_statistics_qubaids_condition($quiz->id, new \core\dml\sql_join(), $quiz->grademethod)->get_hash_code();
+        $hashcode = hippotrack_statistics_qubaids_condition($hippotrack->id, new \core\dml\sql_join(), $hippotrack->grademethod)->get_hash_code();
 
         $this->assertTrue($DB->record_exists('hippotrack_statistics', ['hashcode' => $hashcode]));
         $this->assertTrue($DB->record_exists('question_statistics', ['hashcode' => $hashcode]));
         $this->assertTrue($DB->record_exists('question_response_analysis', ['hashcode' => $hashcode]));
 
         // Recompute sumgrades, which triggers the hippotrack_structure_modified callback.
-        hippotrack_update_sumgrades($quiz);
+        hippotrack_update_sumgrades($hippotrack);
 
         $this->assertFalse($DB->record_exists('hippotrack_statistics', ['hashcode' => $hashcode]));
         $this->assertFalse($DB->record_exists('question_statistics', ['hashcode' => $hashcode]));

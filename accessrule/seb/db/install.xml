@@ -5,16 +5,16 @@
   xsi:noNamespaceSchemaLocation="../../../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="quizaccess_seb_quizsettings"
-      COMMENT="Stores the quiz level Safe Exam Browser configuration.">
+    <TABLE NAME="hippotrackaccess_seb_hippotracksettings"
+      COMMENT="Stores the hippotrack level Safe Exam Browser configuration.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
-        <FIELD NAME="quizid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"
-          COMMENT="Foreign key to quiz id." />
+        <FIELD NAME="hippotrackid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"
+          COMMENT="Foreign key to hippotrack id." />
         <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"
           COMMENT="Foreign key to course module id." />
         <FIELD NAME="templateid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"
-          COMMENT="Foreign key to quizaccess_seb_template.id." />
+          COMMENT="Foreign key to hippotrackaccess_seb_template.id." />
         <FIELD NAME="requiresafeexambrowser" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false"
           COMMENT="Bool whether to require SEB." />
         <FIELD NAME="showsebtaskbar" TYPE="int" LENGTH="1" NOTNULL="false" SEQUENCE="false"
@@ -67,15 +67,18 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id" />
-        <KEY NAME="quizid" TYPE="foreign-unique" FIELDS="quizid" REFTABLE="quiz" REFFIELDS="id" />
+        <KEY NAME="hippotrackid" TYPE="foreign-unique" FIELDS="hippotrackid" REFTABLE="hippotrack"
+          REFFIELDS="id" />
         <KEY NAME="cmid" TYPE="foreign-unique" FIELDS="cmid" REFTABLE="course_modules"
           REFFIELDS="id" />
-        <KEY NAME="templateid" TYPE="foreign" FIELDS="templateid" REFTABLE="quizaccess_seb_template"
+        <KEY NAME="templateid" TYPE="foreign" FIELDS="templateid"
+          REFTABLE="hippotrackaccess_seb_template"
           REFFIELDS="id" />
         <KEY NAME="usermodified" TYPE="foreign" FIELDS="usermodified" REFTABLE="user" REFFIELDS="id" />
       </KEYS>
     </TABLE>
-    <TABLE NAME="quizaccess_seb_template" COMMENT="Templates for Safe Exam Browser configuration.">
+    <TABLE NAME="hippotrackaccess_seb_template"
+      COMMENT="Templates for Safe Exam Browser configuration.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" />
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"

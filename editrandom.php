@@ -29,17 +29,17 @@ require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 $slotid = required_param('slotid', PARAM_INT);
 $returnurl = optional_param('returnurl', '', PARAM_LOCALURL);
 
-// Get the quiz slot.
+// Get the hippotrack slot.
 $slot = $DB->get_record('hippotrack_slots', ['id' => $slotid]);
 if (!$slot) {
     new moodle_exception('invalidrandomslot', 'mod_hippotrack');
 }
 
-if (!$quiz = $DB->get_record('quiz', ['id' => $slot->quizid])) {
-    new moodle_exception('invalidquizid', 'quiz');
+if (!$hippotrack = $DB->get_record('hippotrack', ['id' => $slot->hippotrackid])) {
+    new moodle_exception('invalidhippotrackid', 'hippotrack');
 }
 
-$cm = get_coursemodule_from_instance('quiz', $slot->quizid, $quiz->course);
+$cm = get_coursemodule_from_instance('hippotrack', $slot->hippotrackid, $hippotrack->course);
 
 require_login($cm->course, false, $cm);
 

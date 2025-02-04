@@ -85,12 +85,12 @@ abstract class mod_hippotrack_attempts_report_form extends moodleform {
         $mform->disabledIf('statefinished',   'attempts', 'eq', hippotrack_attempts_report::ENROLLED_WITHOUT);
         $mform->disabledIf('stateabandoned',  'attempts', 'eq', hippotrack_attempts_report::ENROLLED_WITHOUT);
 
-        if (hippotrack_report_can_filter_only_graded($this->_customdata['quiz'])) {
+        if (hippotrack_report_can_filter_only_graded($this->_customdata['hippotrack'])) {
             $gm = html_writer::tag('span',
-                    hippotrack_get_grading_option_name($this->_customdata['quiz']->grademethod),
+                    hippotrack_get_grading_option_name($this->_customdata['hippotrack']->grademethod),
                     array('class' => 'highlight'));
             $mform->addElement('advcheckbox', 'onlygraded', '',
-                    get_string('reportshowonlyfinished', 'quiz', $gm));
+                    get_string('reportshowonlyfinished', 'hippotrack', $gm));
             $mform->disabledIf('onlygraded', 'attempts', 'eq', hippotrack_attempts_report::ENROLLED_WITHOUT);
             $mform->disabledIf('onlygraded', 'statefinished', 'notchecked');
         }

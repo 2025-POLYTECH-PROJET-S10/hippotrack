@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Structure step to restore one quiz activity
+ * Structure step to restore one hippotrack activity
  *
  * @package    mod_hippotrack
  * @subpackage backup-moodle2
@@ -25,18 +25,18 @@
 class restore_hippotrack_activity_structure_step extends restore_questions_activity_structure_step {
 
     /**
-     * @var bool tracks whether the quiz contains at least one section. Before
-     * Moodle 2.9 quiz sections did not exist, so if the file being restored
+     * @var bool tracks whether the hippotrack contains at least one section. Before
+     * Moodle 2.9 hippotrack sections did not exist, so if the file being restored
      * did not contain any, we need to create one in {@link after_execute()}.
      */
     protected $sectioncreated = false;
 
-    /** @var stdClass|null $currentquizattempt Track the current quiz attempt being restored. */
-    protected $currentquizattempt = null;
+    /** @var stdClass|null $currenthippotrackattempt Track the current hippotrack attempt being restored. */
+    protected $currenthippotrackattempt = null;
 
     /**
-     * @var bool when restoring old quizzes (2.8 or before) this records the
-     * shufflequestionsoption quiz option which has moved to the hippotrack_sections table.
+     * @var bool when restoring old hippotrackzes (2.8 or before) this records the
+     * shufflequestionsoption hippotrack option which has moved to the hippotrack_sections table.
      */
     protected $legacyshufflequestionsoption = false;
 
@@ -50,50 +50,50 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
         $paths = array();
         $userinfo = $this->get_setting_value('userinfo');
 
-        $quiz = new restore_path_element('quiz', '/activity/quiz');
-        $paths[] = $quiz;
+        $hippotrack = new restore_path_element('hippotrack', '/activity/hippotrack');
+        $paths[] = $hippotrack;
 
-        // A chance for access subplugings to set up their quiz data.
-        $this->add_subplugin_structure('quizaccess', $quiz);
+        // A chance for access subplugings to set up their hippotrack data.
+        $this->add_subplugin_structure('hippotrackaccess', $hippotrack);
 
-        $quizquestioninstance = new restore_path_element('hippotrack_question_instance',
-            '/activity/quiz/question_instances/question_instance');
-        $paths[] = $quizquestioninstance;
+        $hippotrackquestioninstance = new restore_path_element('hippotrack_question_instance',
+            '/activity/hippotrack/question_instances/question_instance');
+        $paths[] = $hippotrackquestioninstance;
         if ($this->task->get_old_moduleversion() < 2021091700) {
             $paths[] = new restore_path_element('hippotrack_slot_tags',
-                '/activity/quiz/question_instances/question_instance/tags/tag');
+                '/activity/hippotrack/question_instances/question_instance/tags/tag');
         } else {
-            $this->add_question_references($quizquestioninstance, $paths);
-            $this->add_question_set_references($quizquestioninstance, $paths);
+            $this->add_question_references($hippotrackquestioninstance, $paths);
+            $this->add_question_set_references($hippotrackquestioninstance, $paths);
         }
-        $paths[] = new restore_path_element('hippotrack_section', '/activity/quiz/sections/section');
-        $paths[] = new restore_path_element('hippotrack_feedback', '/activity/quiz/feedbacks/feedback');
-        $paths[] = new restore_path_element('hippotrack_override', '/activity/quiz/overrides/override');
+        $paths[] = new restore_path_element('hippotrack_section', '/activity/hippotrack/sections/section');
+        $paths[] = new restore_path_element('hippotrack_feedback', '/activity/hippotrack/feedbacks/feedback');
+        $paths[] = new restore_path_element('hippotrack_override', '/activity/hippotrack/overrides/override');
 
         if ($userinfo) {
-            $paths[] = new restore_path_element('hippotrack_grade', '/activity/quiz/grades/grade');
+            $paths[] = new restore_path_element('hippotrack_grade', '/activity/hippotrack/grades/grade');
 
             if ($this->task->get_old_moduleversion() > 2011010100) {
                 // Restoring from a version 2.1 dev or later.
                 // Process the new-style attempt data.
-                $quizattempt = new restore_path_element('hippotrack_attempt',
-                        '/activity/quiz/attempts/attempt');
-                $paths[] = $quizattempt;
+                $hippotrackattempt = new restore_path_element('hippotrack_attempt',
+                        '/activity/hippotrack/attempts/attempt');
+                $paths[] = $hippotrackattempt;
 
                 // Add states and sessions.
-                $this->add_question_usages($quizattempt, $paths);
+                $this->add_question_usages($hippotrackattempt, $paths);
 
                 // A chance for access subplugings to set up their attempt data.
-                $this->add_subplugin_structure('quizaccess', $quizattempt);
+                $this->add_subplugin_structure('hippotrackaccess', $hippotrackattempt);
 
             } else {
                 // Restoring from a version 2.0.x+ or earlier.
                 // Upgrade the legacy attempt data.
-                $quizattempt = new restore_path_element('hippotrack_attempt_legacy',
-                        '/activity/quiz/attempts/attempt',
+                $hippotrackattempt = new restore_path_element('hippotrack_attempt_legacy',
+                        '/activity/hippotrack/attempts/attempt',
                         true);
-                $paths[] = $quizattempt;
-                $this->add_legacy_question_attempt_data($quizattempt, $paths);
+                $paths[] = $hippotrackattempt;
+                $this->add_legacy_question_attempt_data($hippotrackattempt, $paths);
             }
         }
 
@@ -102,11 +102,11 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
     }
 
     /**
-     * Process the quiz data.
+     * Process the hippotrack data.
      *
      * @param stdClass|array $data
      */
-    protected function process_quiz($data) {
+    protected function process_hippotrack($data) {
         global $CFG, $DB, $USER;
 
         $data = (object)$data;
@@ -121,10 +121,10 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
 
         if (property_exists($data, 'questions')) {
             // Needed by {@link process_hippotrack_attempt_legacy}, in which case it will be present.
-            $this->oldquizlayout = $data->questions;
+            $this->oldhippotracklayout = $data->questions;
         }
 
-        // The setting quiz->attempts can come both in data->attempts and
+        // The setting hippotrack->attempts can come both in data->attempts and
         // data->attempts_number, handle both. MDL-26229.
         if (isset($data->attempts_number)) {
             $data->attempts = $data->attempts_number;
@@ -150,86 +150,86 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
         if (isset($data->review)) {
             require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
-            if (!defined('QUIZ_OLD_IMMEDIATELY')) {
-                define('QUIZ_OLD_IMMEDIATELY', 0x3c003f);
-                define('QUIZ_OLD_OPEN',        0x3c00fc0);
-                define('QUIZ_OLD_CLOSED',      0x3c03f000);
+            if (!defined('HIPPOTRACK_OLD_IMMEDIATELY')) {
+                define('HIPPOTRACK_OLD_IMMEDIATELY', 0x3c003f);
+                define('HIPPOTRACK_OLD_OPEN',        0x3c00fc0);
+                define('HIPPOTRACK_OLD_CLOSED',      0x3c03f000);
 
-                define('QUIZ_OLD_RESPONSES',        1*0x1041);
-                define('QUIZ_OLD_SCORES',           2*0x1041);
-                define('QUIZ_OLD_FEEDBACK',         4*0x1041);
-                define('QUIZ_OLD_ANSWERS',          8*0x1041);
-                define('QUIZ_OLD_SOLUTIONS',       16*0x1041);
-                define('QUIZ_OLD_GENERALFEEDBACK', 32*0x1041);
-                define('QUIZ_OLD_OVERALLFEEDBACK',  1*0x4440000);
+                define('HIPPOTRACK_OLD_RESPONSES',        1*0x1041);
+                define('HIPPOTRACK_OLD_SCORES',           2*0x1041);
+                define('HIPPOTRACK_OLD_FEEDBACK',         4*0x1041);
+                define('HIPPOTRACK_OLD_ANSWERS',          8*0x1041);
+                define('HIPPOTRACK_OLD_SOLUTIONS',       16*0x1041);
+                define('HIPPOTRACK_OLD_GENERALFEEDBACK', 32*0x1041);
+                define('HIPPOTRACK_OLD_OVERALLFEEDBACK',  1*0x4440000);
             }
 
             $oldreview = $data->review;
 
             $data->reviewattempt =
                     mod_hippotrack_display_options::DURING |
-                    ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_RESPONSES ?
+                    ($oldreview & HIPPOTRACK_OLD_IMMEDIATELY & HIPPOTRACK_OLD_RESPONSES ?
                             mod_hippotrack_display_options::IMMEDIATELY_AFTER : 0) |
-                    ($oldreview & QUIZ_OLD_OPEN & QUIZ_OLD_RESPONSES ?
+                    ($oldreview & HIPPOTRACK_OLD_OPEN & HIPPOTRACK_OLD_RESPONSES ?
                             mod_hippotrack_display_options::LATER_WHILE_OPEN : 0) |
-                    ($oldreview & QUIZ_OLD_CLOSED & QUIZ_OLD_RESPONSES ?
+                    ($oldreview & HIPPOTRACK_OLD_CLOSED & HIPPOTRACK_OLD_RESPONSES ?
                             mod_hippotrack_display_options::AFTER_CLOSE : 0);
 
             $data->reviewcorrectness =
                     mod_hippotrack_display_options::DURING |
-                    ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_SCORES ?
+                    ($oldreview & HIPPOTRACK_OLD_IMMEDIATELY & HIPPOTRACK_OLD_SCORES ?
                             mod_hippotrack_display_options::IMMEDIATELY_AFTER : 0) |
-                    ($oldreview & QUIZ_OLD_OPEN & QUIZ_OLD_SCORES ?
+                    ($oldreview & HIPPOTRACK_OLD_OPEN & HIPPOTRACK_OLD_SCORES ?
                             mod_hippotrack_display_options::LATER_WHILE_OPEN : 0) |
-                    ($oldreview & QUIZ_OLD_CLOSED & QUIZ_OLD_SCORES ?
+                    ($oldreview & HIPPOTRACK_OLD_CLOSED & HIPPOTRACK_OLD_SCORES ?
                             mod_hippotrack_display_options::AFTER_CLOSE : 0);
 
             $data->reviewmarks =
                     mod_hippotrack_display_options::DURING |
-                    ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_SCORES ?
+                    ($oldreview & HIPPOTRACK_OLD_IMMEDIATELY & HIPPOTRACK_OLD_SCORES ?
                             mod_hippotrack_display_options::IMMEDIATELY_AFTER : 0) |
-                    ($oldreview & QUIZ_OLD_OPEN & QUIZ_OLD_SCORES ?
+                    ($oldreview & HIPPOTRACK_OLD_OPEN & HIPPOTRACK_OLD_SCORES ?
                             mod_hippotrack_display_options::LATER_WHILE_OPEN : 0) |
-                    ($oldreview & QUIZ_OLD_CLOSED & QUIZ_OLD_SCORES ?
+                    ($oldreview & HIPPOTRACK_OLD_CLOSED & HIPPOTRACK_OLD_SCORES ?
                             mod_hippotrack_display_options::AFTER_CLOSE : 0);
 
             $data->reviewspecificfeedback =
-                    ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_FEEDBACK ?
+                    ($oldreview & HIPPOTRACK_OLD_IMMEDIATELY & HIPPOTRACK_OLD_FEEDBACK ?
                             mod_hippotrack_display_options::DURING : 0) |
-                    ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_FEEDBACK ?
+                    ($oldreview & HIPPOTRACK_OLD_IMMEDIATELY & HIPPOTRACK_OLD_FEEDBACK ?
                             mod_hippotrack_display_options::IMMEDIATELY_AFTER : 0) |
-                    ($oldreview & QUIZ_OLD_OPEN & QUIZ_OLD_FEEDBACK ?
+                    ($oldreview & HIPPOTRACK_OLD_OPEN & HIPPOTRACK_OLD_FEEDBACK ?
                             mod_hippotrack_display_options::LATER_WHILE_OPEN : 0) |
-                    ($oldreview & QUIZ_OLD_CLOSED & QUIZ_OLD_FEEDBACK ?
+                    ($oldreview & HIPPOTRACK_OLD_CLOSED & HIPPOTRACK_OLD_FEEDBACK ?
                             mod_hippotrack_display_options::AFTER_CLOSE : 0);
 
             $data->reviewgeneralfeedback =
-                    ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_GENERALFEEDBACK ?
+                    ($oldreview & HIPPOTRACK_OLD_IMMEDIATELY & HIPPOTRACK_OLD_GENERALFEEDBACK ?
                             mod_hippotrack_display_options::DURING : 0) |
-                    ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_GENERALFEEDBACK ?
+                    ($oldreview & HIPPOTRACK_OLD_IMMEDIATELY & HIPPOTRACK_OLD_GENERALFEEDBACK ?
                             mod_hippotrack_display_options::IMMEDIATELY_AFTER : 0) |
-                    ($oldreview & QUIZ_OLD_OPEN & QUIZ_OLD_GENERALFEEDBACK ?
+                    ($oldreview & HIPPOTRACK_OLD_OPEN & HIPPOTRACK_OLD_GENERALFEEDBACK ?
                             mod_hippotrack_display_options::LATER_WHILE_OPEN : 0) |
-                    ($oldreview & QUIZ_OLD_CLOSED & QUIZ_OLD_GENERALFEEDBACK ?
+                    ($oldreview & HIPPOTRACK_OLD_CLOSED & HIPPOTRACK_OLD_GENERALFEEDBACK ?
                             mod_hippotrack_display_options::AFTER_CLOSE : 0);
 
             $data->reviewrightanswer =
-                    ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_ANSWERS ?
+                    ($oldreview & HIPPOTRACK_OLD_IMMEDIATELY & HIPPOTRACK_OLD_ANSWERS ?
                             mod_hippotrack_display_options::DURING : 0) |
-                    ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_ANSWERS ?
+                    ($oldreview & HIPPOTRACK_OLD_IMMEDIATELY & HIPPOTRACK_OLD_ANSWERS ?
                             mod_hippotrack_display_options::IMMEDIATELY_AFTER : 0) |
-                    ($oldreview & QUIZ_OLD_OPEN & QUIZ_OLD_ANSWERS ?
+                    ($oldreview & HIPPOTRACK_OLD_OPEN & HIPPOTRACK_OLD_ANSWERS ?
                             mod_hippotrack_display_options::LATER_WHILE_OPEN : 0) |
-                    ($oldreview & QUIZ_OLD_CLOSED & QUIZ_OLD_ANSWERS ?
+                    ($oldreview & HIPPOTRACK_OLD_CLOSED & HIPPOTRACK_OLD_ANSWERS ?
                             mod_hippotrack_display_options::AFTER_CLOSE : 0);
 
             $data->reviewoverallfeedback =
                     0 |
-                    ($oldreview & QUIZ_OLD_IMMEDIATELY & QUIZ_OLD_OVERALLFEEDBACK ?
+                    ($oldreview & HIPPOTRACK_OLD_IMMEDIATELY & HIPPOTRACK_OLD_OVERALLFEEDBACK ?
                             mod_hippotrack_display_options::IMMEDIATELY_AFTER : 0) |
-                    ($oldreview & QUIZ_OLD_OPEN & QUIZ_OLD_OVERALLFEEDBACK ?
+                    ($oldreview & HIPPOTRACK_OLD_OPEN & HIPPOTRACK_OLD_OVERALLFEEDBACK ?
                             mod_hippotrack_display_options::LATER_WHILE_OPEN : 0) |
-                    ($oldreview & QUIZ_OLD_CLOSED & QUIZ_OLD_OVERALLFEEDBACK ?
+                    ($oldreview & HIPPOTRACK_OLD_CLOSED & HIPPOTRACK_OLD_OVERALLFEEDBACK ?
                             mod_hippotrack_display_options::AFTER_CLOSE : 0);
         }
 
@@ -241,7 +241,7 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
             } else if ($data->popup == 1) {
                 $data->browsersecurity = 'securewindow';
             } else if ($data->popup == 2) {
-                // Since 3.9 quizaccess_safebrowser replaced with a new quizaccess_seb.
+                // Since 3.9 hippotrackaccess_safebrowser replaced with a new hippotrackaccess_seb.
                 $data->browsersecurity = '-';
                 $addsebrule = true;
             } else {
@@ -249,21 +249,21 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
             }
             unset($data->popup);
         } else if ($data->browsersecurity == 'safebrowser') {
-            // Since 3.9 quizaccess_safebrowser replaced with a new quizaccess_seb.
+            // Since 3.9 hippotrackaccess_safebrowser replaced with a new hippotrackaccess_seb.
             $data->browsersecurity = '-';
             $addsebrule = true;
         }
 
         if (!isset($data->overduehandling)) {
-            $data->overduehandling = get_config('quiz', 'overduehandling');
+            $data->overduehandling = get_config('hippotrack', 'overduehandling');
         }
 
-        // Old shufflequestions setting is now stored in quiz sections,
+        // Old shufflequestions setting is now stored in hippotrack sections,
         // so save it here if necessary so it is available when we need it.
         $this->legacyshufflequestionsoption = !empty($data->shufflequestions);
 
-        // Insert the quiz record.
-        $newitemid = $DB->insert_record('quiz', $data);
+        // Insert the hippotrack record.
+        $newitemid = $DB->insert_record('hippotrack', $data);
         // Immediately after inserting "activity" record, call this.
         $this->apply_activity_instance($newitemid);
 
@@ -271,10 +271,10 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
         if (!empty($addsebrule)) {
             $sebsettings = new stdClass();
 
-            $sebsettings->quizid = $newitemid;
+            $sebsettings->hippotrackid = $newitemid;
             $sebsettings->cmid = $this->task->get_moduleid();
             $sebsettings->templateid = 0;
-            $sebsettings->requiresafeexambrowser = \quizaccess_seb\settings_provider::USE_SEB_CLIENT_CONFIG;
+            $sebsettings->requiresafeexambrowser = \hippotrackaccess_seb\settings_provider::USE_SEB_CLIENT_CONFIG;
             $sebsettings->showsebtaskbar = null;
             $sebsettings->showwificontrol = null;
             $sebsettings->showreloadbutton = null;
@@ -300,7 +300,7 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
             $sebsettings->timecreated = time();
             $sebsettings->timemodified = time();
 
-            $DB->insert_record('quizaccess_seb_quizsettings', $sebsettings);
+            $DB->insert_record('hippotrackaccess_seb_hippotracksettings', $sebsettings);
         }
 
         // If we are dealing with a backup from < 4.0 then we need to move completionpass to core.
@@ -311,7 +311,7 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
     }
 
     /**
-     * Process the data for pre 4.0 quiz data where the question_references and question_set_references table introduced.
+     * Process the data for pre 4.0 hippotrack data where the question_references and question_set_references table introduced.
      *
      * @param stdClass|array $data
      */
@@ -331,13 +331,13 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
                   JOIN {question_categories} qc ON qc.id = qbe.questioncategoryid
                  WHERE q.id = ?';
         $question = $DB->get_record_sql($sql, [$questionid]);
-        $module = $DB->get_record('quiz', ['id' => $data->quizid]);
+        $module = $DB->get_record('hippotrack', ['id' => $data->hippotrackid]);
 
         if ($question->qtype === 'random') {
             // Set reference data.
             $questionsetreference = new \stdClass();
             $questionsetreference->usingcontextid = context_module::instance(get_coursemodule_from_instance(
-                "quiz", $module->id, $module->course)->id)->id;
+                "hippotrack", $module->id, $module->course)->id)->id;
             $questionsetreference->component = 'mod_hippotrack';
             $questionsetreference->questionarea = 'slot';
             $questionsetreference->itemid = $data->id;
@@ -352,7 +352,7 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
             // Reference data.
             $questionreference = new \stdClass();
             $questionreference->usingcontextid = context_module::instance(get_coursemodule_from_instance(
-                "quiz", $module->id, $module->course)->id)->id;
+                "hippotrack", $module->id, $module->course)->id)->id;
             $questionreference->component = 'mod_hippotrack';
             $questionreference->questionarea = 'slot';
             $questionreference->itemid = $data->id;
@@ -363,7 +363,7 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
     }
 
     /**
-     * Process quiz slots.
+     * Process hippotrack slots.
      *
      * @param stdClass|array $data
      */
@@ -384,7 +384,7 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
         if (!property_exists($data, 'slot')) {
             $page = 1;
             $slot = 1;
-            foreach (explode(',', $this->oldquizlayout) as $item) {
+            foreach (explode(',', $this->oldhippotracklayout) as $item) {
                 if ($item == 0) {
                     $page += 1;
                     continue;
@@ -400,14 +400,14 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
 
         if (!property_exists($data, 'slot')) {
             // There was a question_instance in the backup file for a question
-            // that was not actually in the quiz. Drop it.
-            $this->log('question ' . $data->questionid . ' was associated with quiz ' .
-                    $this->get_new_parentid('quiz') . ' but not actually used. ' .
+            // that was not actually in the hippotrack. Drop it.
+            $this->log('question ' . $data->questionid . ' was associated with hippotrack ' .
+                    $this->get_new_parentid('hippotrack') . ' but not actually used. ' .
                     'The instance has been ignored.', backup::LOG_INFO);
             return;
         }
 
-        $data->quizid = $this->get_new_parentid('quiz');
+        $data->hippotrackid = $this->get_new_parentid('hippotrack');
 
         $newitemid = $DB->insert_record('hippotrack_slots', $data);
         // Add mapping, restore of slot tags (for random questions) need it.
@@ -452,7 +452,7 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
         global $DB;
 
         $data = (object) $data;
-        $data->quizid = $this->get_new_parentid('quiz');
+        $data->hippotrackid = $this->get_new_parentid('hippotrack');
         $oldid = $data->id;
         $newitemid = $DB->insert_record('hippotrack_sections', $data);
         $this->sectioncreated = true;
@@ -465,7 +465,7 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
         $data = (object)$data;
         $oldid = $data->id;
 
-        $data->quizid = $this->get_new_parentid('quiz');
+        $data->hippotrackid = $this->get_new_parentid('hippotrack');
 
         $newitemid = $DB->insert_record('hippotrack_feedback', $data);
         $this->set_mapping('hippotrack_feedback', $oldid, $newitemid, true); // Has related files.
@@ -485,7 +485,7 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
             return;
         }
 
-        $data->quiz = $this->get_new_parentid('quiz');
+        $data->hippotrack = $this->get_new_parentid('hippotrack');
 
         if ($data->userid !== null) {
             $data->userid = $this->get_mappingid('user', $data->userid);
@@ -515,7 +515,7 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
         $data = (object)$data;
         $oldid = $data->id;
 
-        $data->quiz = $this->get_new_parentid('quiz');
+        $data->hippotrack = $this->get_new_parentid('hippotrack');
 
         $data->userid = $this->get_mappingid('user', $data->userid);
         $data->grade = $data->gradeval;
@@ -526,17 +526,17 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
     protected function process_hippotrack_attempt($data) {
         $data = (object)$data;
 
-        $data->quiz = $this->get_new_parentid('quiz');
+        $data->hippotrack = $this->get_new_parentid('hippotrack');
         $data->attempt = $data->attemptnum;
 
-        // Get user mapping, return early if no mapping found for the quiz attempt.
+        // Get user mapping, return early if no mapping found for the hippotrack attempt.
         $olduserid = $data->userid;
         $data->userid = $this->get_mappingid('user', $olduserid, 0);
         if ($data->userid === 0) {
-            $this->log('Mapped user ID not found for user ' . $olduserid . ', quiz ' . $this->get_new_parentid('quiz') .
-                ', attempt ' . $data->attempt . '. Skipping quiz attempt', backup::LOG_INFO);
+            $this->log('Mapped user ID not found for user ' . $olduserid . ', hippotrack ' . $this->get_new_parentid('hippotrack') .
+                ', attempt ' . $data->attempt . '. Skipping hippotrack attempt', backup::LOG_INFO);
 
-            $this->currentquizattempt = null;
+            $this->currenthippotrackattempt = null;
             return;
         }
 
@@ -562,7 +562,7 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
         }
 
         // The data is actually inserted into the database later in inform_new_usage_id.
-        $this->currentquizattempt = clone($data);
+        $this->currenthippotrackattempt = clone($data);
     }
 
     protected function process_hippotrack_attempt_legacy($data) {
@@ -570,15 +570,15 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
 
         $this->process_hippotrack_attempt($data);
 
-        $quiz = $DB->get_record('quiz', array('id' => $this->get_new_parentid('quiz')));
-        $quiz->oldquestions = $this->oldquizlayout;
-        $this->process_legacy_hippotrack_attempt_data($data, $quiz);
+        $hippotrack = $DB->get_record('hippotrack', array('id' => $this->get_new_parentid('hippotrack')));
+        $hippotrack->oldquestions = $this->oldhippotracklayout;
+        $this->process_legacy_hippotrack_attempt_data($data, $hippotrack);
     }
 
     protected function inform_new_usage_id($newusageid) {
         global $DB;
 
-        $data = $this->currentquizattempt;
+        $data = $this->currenthippotrackattempt;
         if ($data === null) {
             return;
         }
@@ -596,14 +596,14 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
         global $DB;
 
         parent::after_execute();
-        // Add quiz related files, no need to match by itemname (just internally handled context).
+        // Add hippotrack related files, no need to match by itemname (just internally handled context).
         $this->add_related_files('mod_hippotrack', 'intro', null);
         // Add feedback related files, matching by itemname = 'hippotrack_feedback'.
         $this->add_related_files('mod_hippotrack', 'feedback', 'hippotrack_feedback');
 
         if (!$this->sectioncreated) {
             $DB->insert_record('hippotrack_sections', array(
-                    'quizid' => $this->get_new_parentid('quiz'),
+                    'hippotrackid' => $this->get_new_parentid('hippotrack'),
                     'firstslot' => 1, 'heading' => '',
                     'shufflequestions' => $this->legacyshufflequestionsoption));
         }

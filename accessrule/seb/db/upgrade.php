@@ -17,7 +17,7 @@
 /**
  * Upgrade script for plugin.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,12 +28,12 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot  . '/mod/hippotrack/accessrule/seb/lib.php');
 
 /**
- * Function to upgrade quizaccess_seb plugin.
+ * Function to upgrade hippotrackaccess_seb plugin.
  *
  * @param int $oldversion The version we are upgrading from.
  * @return bool Result.
  */
-function xmldb_quizaccess_seb_upgrade($oldversion) {
+function xmldb_hippotrackaccess_seb_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
 

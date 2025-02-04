@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  *      Extra information about event.
  *
  *      - int submitterid: id of submitter (null when trigged by CLI script).
- *      - int quizid: (optional) id of the quiz.
+ *      - int hippotrackid: (optional) id of the hippotrack.
  * }
  *
  * @package    mod_hippotrack
@@ -57,7 +57,7 @@ class attempt_abandoned extends \core\event\base {
      */
     public function get_description() {
         return "The user with id '$this->relateduserid' has had their attempt with id '$this->objectid' marked as abandoned " .
-            "for the quiz with course module id '$this->contextinstanceid'.";
+            "for the hippotrack with course module id '$this->contextinstanceid'.";
     }
 
     /**
@@ -66,7 +66,7 @@ class attempt_abandoned extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('eventquizattemptabandoned', 'mod_hippotrack');
+        return get_string('eventhippotrackattemptabandoned', 'mod_hippotrack');
     }
 
     /**
@@ -100,7 +100,7 @@ class attempt_abandoned extends \core\event\base {
         $legacyeventdata->attemptid = $this->objectid;
         $legacyeventdata->timestamp = $attempt->timemodified;
         $legacyeventdata->userid = $this->relateduserid;
-        $legacyeventdata->quizid = $attempt->quiz;
+        $legacyeventdata->hippotrackid = $attempt->hippotrack;
         $legacyeventdata->cmid = $this->contextinstanceid;
         $legacyeventdata->courseid = $this->courseid;
         $legacyeventdata->submitterid = $this->other['submitterid'];
@@ -134,7 +134,7 @@ class attempt_abandoned extends \core\event\base {
     public static function get_other_mapping() {
         $othermapped = array();
         $othermapped['submitterid'] = array('db' => 'user', 'restore' => 'user');
-        $othermapped['quizid'] = array('db' => 'quiz', 'restore' => 'quiz');
+        $othermapped['hippotrackid'] = array('db' => 'hippotrack', 'restore' => 'hippotrack');
 
         return $othermapped;
     }

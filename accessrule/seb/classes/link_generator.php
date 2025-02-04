@@ -17,13 +17,13 @@
 /**
  * Generate the links to open/download the Safe Exam Browser with correct settings.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Andrew Madden <andrewmadden@catalyst-au.net>
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_seb;
+namespace hippotrackaccess_seb;
 
 use moodle_url;
 
@@ -47,7 +47,7 @@ class link_generator {
      */
     public static function get_link(string $cmid, bool $seb = false, bool $secure = true) : string {
         // Check if course module exists.
-        get_coursemodule_from_id('quiz', $cmid, 0, false, MUST_EXIST);
+        get_coursemodule_from_id('hippotrack', $cmid, 0, false, MUST_EXIST);
 
         $url = new moodle_url('/mod/hippotrack/accessrule/seb/config.php?cmid=' . $cmid);
         if ($seb) {

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_hippotrack quiz re-paginated event.
+ * The mod_hippotrack hippotrack re-paginated event.
  *
  * @package    mod_hippotrack
  * @copyright  2021 The Open University
@@ -25,7 +25,7 @@
 namespace mod_hippotrack\event;
 
 /**
- * The mod_hippotrack quiz re-paginated event class.
+ * The mod_hippotrack hippotrack re-paginated event class.
  *
  * @property-read array $other {
  *      Extra information about event.
@@ -39,17 +39,17 @@ namespace mod_hippotrack\event;
  */
 class hippotrack_repaginated extends \core\event\base {
     protected function init() {
-        $this->data['objecttable'] = 'quiz';
+        $this->data['objecttable'] = 'hippotrack';
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
     }
 
     public static function get_name() {
-        return get_string('eventquizrepaginated', 'mod_hippotrack');
+        return get_string('eventhippotrackrepaginated', 'mod_hippotrack');
     }
 
     public function get_description() {
-        return "The user with id '$this->userid' re-paginated the quiz with course module id '$this->contextinstanceid' " .
+        return "The user with id '$this->userid' re-paginated the hippotrack with course module id '$this->contextinstanceid' " .
             " with the new option '{$this->other['slotsperpage']}' slot(s) per page.";
     }
 
@@ -76,7 +76,7 @@ class hippotrack_repaginated extends \core\event\base {
     }
 
     public static function get_objectid_mapping() {
-        return ['db' => 'quiz', 'restore' => 'quiz'];
+        return ['db' => 'hippotrack', 'restore' => 'hippotrack'];
     }
 
     public static function get_other_mapping() {

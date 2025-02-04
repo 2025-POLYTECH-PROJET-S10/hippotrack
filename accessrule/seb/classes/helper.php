@@ -17,13 +17,13 @@
 /**
  * Helper class.
  *
- * @package    quizaccess_seb
+ * @package    hippotrackaccess_seb
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright  2020 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_seb;
+namespace hippotrackaccess_seb;
 
 
 use CFPropertyList\CFPropertyList;
@@ -108,22 +108,22 @@ class helper {
     }
 
     /**
-     * Get seb config content for a particular quiz. This method checks caps.
+     * Get seb config content for a particular hippotrack. This method checks caps.
      *
-     * @param string $cmid The course module ID for a quiz with config.
+     * @param string $cmid The course module ID for a hippotrack with config.
      * @return string SEB config string.
      */
     public static function get_seb_config_content(string $cmid) : string {
         // Try and get the course module.
-        $cm = get_coursemodule_from_id('quiz', $cmid, 0, false, MUST_EXIST);
+        $cm = get_coursemodule_from_id('hippotrack', $cmid, 0, false, MUST_EXIST);
 
         // Make sure the user is logged in and has access to the module.
         require_login($cm->course, false, $cm);
 
-        // Retrieve the config for quiz.
+        // Retrieve the config for hippotrack.
         $config = hippotrack_settings::get_config_by_hippotrack_id($cm->instance);
         if (empty($config)) {
-            throw new \moodle_exception('noconfigfound', 'quizaccess_seb', '', $cm->id);
+            throw new \moodle_exception('noconfigfound', 'hippotrackaccess_seb', '', $cm->id);
         }
         return $config;
     }

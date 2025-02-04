@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file renders the quiz overview graph.
+ * This file renders the hippotrack overview graph.
  *
  * @package   hippotrack_overview
  * @copyright 2008 Jamie Pratt
