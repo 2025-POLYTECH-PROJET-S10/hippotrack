@@ -22,8 +22,8 @@ use qubaid_condition;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/accessmanager.php');
-require_once($CFG->dirroot . '/mod/quiz/attemptlib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/accessmanager.php');
+require_once($CFG->dirroot . '/mod/hippotrack/attemptlib.php');
 
 /**
  * Helper class for question bank and its associated data.
@@ -65,7 +65,7 @@ class qbank_helper {
     }
 
     /**
-     * Get the information about which questions should be used to create a quiz attempt.
+     * Get the information about which questions should be used to create a hippotrack attempt.
      *
      * Each element in the returned array is indexed by slot.slot (slot number) an each object hass:
      * - All the field of the slot table.
@@ -76,22 +76,22 @@ class qbank_helper {
      * - For random questions, filtercondition, which is also unpacked into category, randomrecurse,
      *   randomtags, and note that these also have a ->name set and ->qtype set to 'random'.
      *
-     * @param int $quizid the id of the quiz to load the data for.
-     * @param \context_module $quizcontext the context of this quiz.
-     * @param int|null $slotid optional, if passed only load the data for this one slot (if it is in this quiz).
+     * @param int $hippotrackid the id of the hippotrack to load the data for.
+     * @param \context_module $hippotrackcontext the context of this hippotrack.
+     * @param int|null $slotid optional, if passed only load the data for this one slot (if it is in this hippotrack).
      * @return array indexed by slot, with information about the content of each slot.
      */
-    public static function get_question_structure(int $quizid, \context_module $quizcontext,
+    public static function get_question_structure(int $hippotrackid, \context_module $hippotrackcontext,
             int $slotid = null): array {
         global $DB;
 
         $params = [
             'draft' => question_version_status::QUESTION_STATUS_DRAFT,
-            'quizcontextid' => $quizcontext->id,
-            'quizcontextid2' => $quizcontext->id,
-            'quizcontextid3' => $quizcontext->id,
-            'quizid' => $quizid,
-            'quizid2' => $quizid,
+            'hippotrackcontextid' => $hippotrackcontext->id,
+            'hippotrackcontextid2' => $hippotrackcontext->id,
+            'hippotrackcontextid3' => $hippotrackcontext->id,
+            'hippotrackid' => $hippotrackid,
+            'hippotrackid2' => $hippotrackid,
         ];
         $slotidtest = '';
         $slotidtest2 = '';
@@ -120,10 +120,10 @@ class qbank_helper {
                        qc.id AS category,
                        COALESCE(qc.contextid, qsr.questionscontextid) AS contextid
 
-                  FROM {quiz_slots} slot
+                  FROM {hippotrack_slots} slot
 
-             -- case where a particular question has been added to the quiz.
-             LEFT JOIN {question_references} qr ON qr.usingcontextid = :quizcontextid AND qr.component = 'mod_hippotrack'
+             -- case where a particular question has been added to the hippotrack.
+             LEFT JOIN {question_references} qr ON qr.usingcontextid = :hippotrackcontextid AND qr.component = 'mod_hippotrack'
                                         AND qr.questionarea = 'slot' AND qr.itemid = slot.id
              LEFT JOIN {question_bank_entries} qbe ON qbe.id = qr.questionbankentryid
 
@@ -137,11 +137,11 @@ class qbank_helper {
                    SELECT lv.questionbankentryid,
                           MAX(CASE WHEN lv.status <> :draft THEN lv.version END) AS usableversion,
                           MAX(lv.version) AS anyversion
-                     FROM {quiz_slots} lslot
-                     JOIN {question_references} lqr ON lqr.usingcontextid = :quizcontextid2 AND lqr.component = 'mod_hippotrack'
+                     FROM {hippotrack_slots} lslot
+                     JOIN {question_references} lqr ON lqr.usingcontextid = :hippotrackcontextid2 AND lqr.component = 'mod_hippotrack'
                                         AND lqr.questionarea = 'slot' AND lqr.itemid = lslot.id
                      JOIN {question_versions} lv ON lv.questionbankentryid = lqr.questionbankentryid
-                    WHERE lslot.quizid = :quizid2
+                    WHERE lslot.hippotrackid = :hippotrackid2
                           $slotidtest2
                       AND lqr.version IS NULL
                  GROUP BY lv.questionbankentryid
@@ -156,10 +156,10 @@ class qbank_helper {
              LEFT JOIN {question} q ON q.id = qv.questionid
 
              -- Case where a random question has been added.
-             LEFT JOIN {question_set_references} qsr ON qsr.usingcontextid = :quizcontextid3 AND qsr.component = 'mod_hippotrack'
+             LEFT JOIN {question_set_references} qsr ON qsr.usingcontextid = :hippotrackcontextid3 AND qsr.component = 'mod_hippotrack'
                                         AND qsr.questionarea = 'slot' AND qsr.itemid = slot.id
 
-                 WHERE slot.quizid = :quizid
+                 WHERE slot.hippotrackid = :hippotrackid
                        $slotidtest
 
               ORDER BY slot.slot
@@ -178,14 +178,14 @@ class qbank_helper {
                 $slot->randomrecurse = (bool) $filtercondition->includingsubcategories;
                 $slot->randomtags = isset($filtercondition->tags) ? (array) $filtercondition->tags : [];
                 $slot->qtype = 'random';
-                $slot->name = get_string('random', 'quiz');
+                $slot->name = get_string('random', 'hippotrack');
                 $slot->length = 1;
             } else if ($slot->qtype === null) {
                 // This question must have gone missing. Put in a placeholder.
                 $slot->questionid = 's' . $slot->id; // Sometimes this is used as an array key, so needs to be unique.
                 $slot->category = 0;
                 $slot->qtype = 'missingtype';
-                $slot->name = get_string('missingquestion', 'quiz');
+                $slot->name = get_string('missingquestion', 'hippotrack');
                 $slot->questiontext = ' ';
                 $slot->questiontextformat = FORMAT_HTML;
                 $slot->length = 1;
@@ -231,15 +231,15 @@ class qbank_helper {
     /**
      * Choose question for redo in a particular slot.
      *
-     * @param int $quizid the id of the quiz to load the data for.
-     * @param \context_module $quizcontext the context of this quiz.
-     * @param int $slotid optional, if passed only load the data for this one slot (if it is in this quiz).
+     * @param int $hippotrackid the id of the hippotrack to load the data for.
+     * @param \context_module $hippotrackcontext the context of this hippotrack.
+     * @param int $slotid optional, if passed only load the data for this one slot (if it is in this hippotrack).
      * @param qubaid_condition $qubaids attempts to consider when avoiding picking repeats of random questions.
      * @return int the id of the question to use.
      */
-    public static function choose_question_for_redo(int $quizid, \context_module $quizcontext,
+    public static function choose_question_for_redo(int $hippotrackid, \context_module $hippotrackcontext,
             int $slotid, qubaid_condition $qubaids): int {
-        $slotdata = self::get_question_structure($quizid, $quizcontext, $slotid);
+        $slotdata = self::get_question_structure($hippotrackid, $hippotrackcontext, $slotid);
         $slotdata = reset($slotdata);
 
         // Non-random question.
@@ -253,7 +253,7 @@ class qbank_helper {
                 $slotdata->randomrecurse, self::get_tag_ids_for_slot($slotdata));
 
         if ($newqusetionid === null) {
-            throw new \moodle_exception('notenoughrandomquestions', 'quiz');
+            throw new \moodle_exception('notenoughrandomquestions', 'hippotrack');
         }
         return $newqusetionid;
     }

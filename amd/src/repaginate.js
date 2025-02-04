@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Initialise the repaginate dialogue on quiz editing page.
+ * Initialise the repaginate dialogue on hippotrack editing page.
  *
  * @module    mod_hippotrack/repaginate
  * @copyright 2019 The Open University

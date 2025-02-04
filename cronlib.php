@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Library code used by quiz cron.
+ * Library code used by hippotrack cron.
  *
  * @package   mod_hippotrack
  * @copyright 2012 the Open University
@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 
 /**
@@ -41,7 +41,7 @@ class mod_hippotrack_overdue_attempt_updater {
      * Do the processing required.
      * @param int $timenow the time to consider as 'now' during the processing.
      * @param int $processto only process attempt with timecheckstate longer ago than this.
-     * @return array with two elements, the number of attempt considered, and how many different quizzes that was.
+     * @return array with two elements, the number of attempt considered, and how many different hippotrackzes that was.
      */
     public function update_overdue_attempts($timenow, $processto) {
         global $DB;
@@ -49,39 +49,39 @@ class mod_hippotrack_overdue_attempt_updater {
         $attemptstoprocess = $this->get_list_of_overdue_attempts($processto);
 
         $course = null;
-        $quiz = null;
+        $hippotrack = null;
         $cm = null;
 
         $count = 0;
-        $quizcount = 0;
+        $hippotrackcount = 0;
         foreach ($attemptstoprocess as $attempt) {
             try {
 
-                // If we have moved on to a different quiz, fetch the new data.
-                if (!$quiz || $attempt->quiz != $quiz->id) {
-                    $quiz = $DB->get_record('quiz', array('id' => $attempt->quiz), '*', MUST_EXIST);
-                    $cm = get_coursemodule_from_instance('quiz', $attempt->quiz);
-                    $quizcount += 1;
+                // If we have moved on to a different hippotrack, fetch the new data.
+                if (!$hippotrack || $attempt->hippotrack != $hippotrack->id) {
+                    $hippotrack = $DB->get_record('hippotrack', array('id' => $attempt->hippotrack), '*', MUST_EXIST);
+                    $cm = get_coursemodule_from_instance('hippotrack', $attempt->hippotrack);
+                    $hippotrackcount += 1;
                 }
 
                 // If we have moved on to a different course, fetch the new data.
-                if (!$course || $course->id != $quiz->course) {
-                    $course = $DB->get_record('course', array('id' => $quiz->course), '*', MUST_EXIST);
+                if (!$course || $course->id != $hippotrack->course) {
+                    $course = $DB->get_record('course', array('id' => $hippotrack->course), '*', MUST_EXIST);
                 }
 
-                // Make a specialised version of the quiz settings, with the relevant overrides.
-                $quizforuser = clone($quiz);
-                $quizforuser->timeclose = $attempt->usertimeclose;
-                $quizforuser->timelimit = $attempt->usertimelimit;
+                // Make a specialised version of the hippotrack settings, with the relevant overrides.
+                $hippotrackforuser = clone($hippotrack);
+                $hippotrackforuser->timeclose = $attempt->usertimeclose;
+                $hippotrackforuser->timelimit = $attempt->usertimelimit;
 
                 // Trigger any transitions that are required.
-                $attemptobj = new quiz_attempt($attempt, $quizforuser, $cm, $course);
+                $attemptobj = new hippotrack_attempt($attempt, $hippotrackforuser, $cm, $course);
                 $attemptobj->handle_if_time_expired($timenow, false);
                 $count += 1;
 
             } catch (moodle_exception $e) {
                 // If an error occurs while processing one attempt, don't let that kill cron.
-                mtrace("Error while processing attempt {$attempt->id} at {$attempt->quiz} quiz:");
+                mtrace("Error while processing attempt {$attempt->id} at {$attempt->hippotrack} hippotrack:");
                 mtrace($e->getMessage());
                 mtrace($e->getTraceAsString());
                 // Close down any currently open transactions, otherwise one error
@@ -91,34 +91,34 @@ class mod_hippotrack_overdue_attempt_updater {
         }
 
         $attemptstoprocess->close();
-        return array($count, $quizcount);
+        return array($count, $hippotrackcount);
     }
 
     /**
-     * @return moodle_recordset of quiz_attempts that need to be processed because time has
-     *     passed. The array is sorted by courseid then quizid.
+     * @return moodle_recordset of hippotrack_attempts that need to be processed because time has
+     *     passed. The array is sorted by courseid then hippotrackid.
      */
     public function get_list_of_overdue_attempts($processto) {
         global $DB;
 
 
         // SQL to compute timeclose and timelimit for each attempt:
-        $quizausersql = quiz_get_attempt_usertime_sql(
-                "iquiza.state IN ('inprogress', 'overdue') AND iquiza.timecheckstate <= :iprocessto");
+        $hippotrackausersql = hippotrack_get_attempt_usertime_sql(
+                "ihippotracka.state IN ('inprogress', 'overdue') AND ihippotracka.timecheckstate <= :iprocessto");
 
-        // This query should have all the quiz_attempts columns.
+        // This query should have all the hippotrack_attempts columns.
         return $DB->get_recordset_sql("
-         SELECT quiza.*,
-                quizauser.usertimeclose,
-                quizauser.usertimelimit
+         SELECT hippotracka.*,
+                hippotrackauser.usertimeclose,
+                hippotrackauser.usertimelimit
 
-           FROM {quiz_attempts} quiza
-           JOIN {quiz} quiz ON quiz.id = quiza.quiz
-           JOIN ( $quizausersql ) quizauser ON quizauser.id = quiza.id
+           FROM {hippotrack_attempts} hippotracka
+           JOIN {hippotrack} hippotrack ON hippotrack.id = hippotracka.hippotrack
+           JOIN ( $hippotrackausersql ) hippotrackauser ON hippotrackauser.id = hippotracka.id
 
-          WHERE quiza.state IN ('inprogress', 'overdue')
-            AND quiza.timecheckstate <= :processto
-       ORDER BY quiz.course, quiza.quiz",
+          WHERE hippotracka.state IN ('inprogress', 'overdue')
+            AND hippotracka.timecheckstate <= :processto
+       ORDER BY hippotrack.course, hippotracka.hippotrack",
 
                 array('processto' => $processto, 'iprocessto' => $processto));
     }

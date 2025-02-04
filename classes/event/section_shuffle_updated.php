@@ -30,7 +30,7 @@ namespace mod_hippotrack\event;
  * @property-read array $other {
  *      Extra information about event.
  *
- *      - int quizid: the id of the quiz.
+ *      - int hippotrackid: the id of the hippotrack.
  *      - bool shuffle: shuffle option value.
  *      - int firstslotnumber: slot number of the slot which is right after the section break.
  * }
@@ -41,7 +41,7 @@ namespace mod_hippotrack\event;
  */
 class section_shuffle_updated extends \core\event\base {
     protected function init() {
-        $this->data['objecttable'] = 'quiz_sections';
+        $this->data['objecttable'] = 'hippotrack_sections';
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
     }
@@ -53,12 +53,12 @@ class section_shuffle_updated extends \core\event\base {
     public function get_description() {
         return "The user with id '$this->userid' updated the section with id '{$this->objectid}' " .
             "before the slot number '{$this->other['firstslotnumber']}' " .
-            "belonging to the quiz with course module id '$this->contextinstanceid'. " .
+            "belonging to the hippotrack with course module id '$this->contextinstanceid'. " .
             "Its shuffle option was set to '{$this->other['shuffle']}'.";
     }
 
     public function get_url() {
-        return new \moodle_url('/mod/quiz/edit.php', [
+        return new \moodle_url('/mod/hippotrack/edit.php', [
             'cmid' => $this->contextinstanceid
         ]);
     }
@@ -74,8 +74,8 @@ class section_shuffle_updated extends \core\event\base {
             throw new \coding_exception('The \'contextinstanceid\' value must be set.');
         }
 
-        if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+        if (!isset($this->other['hippotrackid'])) {
+            throw new \coding_exception('The \'hippotrackid\' value must be set in other.');
         }
 
         if (!isset($this->other['firstslotnumber'])) {
@@ -89,12 +89,12 @@ class section_shuffle_updated extends \core\event\base {
     }
 
     public static function get_objectid_mapping() {
-        return ['db' => 'quiz_sections', 'restore' => 'quiz_section'];
+        return ['db' => 'hippotrack_sections', 'restore' => 'hippotrack_section'];
     }
 
     public static function get_other_mapping() {
         $othermapped = [];
-        $othermapped['quizid'] = ['db' => 'quiz', 'restore' => 'quiz'];
+        $othermapped['hippotrackid'] = ['db' => 'hippotrack', 'restore' => 'hippotrack'];
 
         return $othermapped;
     }

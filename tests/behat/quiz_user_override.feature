@@ -1,6 +1,6 @@
 @mod @mod_hippotrack
-Feature: Quiz user override
-  In order to grant a student special access to a quiz
+Feature: HippoTrack user override
+  In order to grant a student special access to a hippotrack
   As a teacher
   I need to create an override for that user.
 
@@ -30,8 +30,8 @@ Feature: Quiz user override
   Scenario: Add, modify then delete a user override
     Given the following "activities" exist:
       | activity   | name      | course | idnumber |
-      | quiz       | Test quiz | C1     | quiz1    |
-    And I am on the "Test quiz" "mod_hippotrack > View" page logged in as "teacher"
+      | hippotrack       | Test hippotrack | C1     | hippotrack1    |
+    And I am on the "Test hippotrack" "mod_hippotrack > View" page logged in as "teacher"
     And I change window size to "large"
     And I navigate to "Overrides" in current page administration
     And I press "Add user override"
@@ -60,11 +60,11 @@ Feature: Quiz user override
     And I should not see "Student One"
 
   @javascript
-  Scenario: Can add a user override when the quiz is not available to the student
+  Scenario: Can add a user override when the hippotrack is not available to the student
     Given the following "activities" exist:
       | activity   | name      | course | idnumber | visible |
-      | quiz       | Test quiz | C1     | quiz1    | 0       |
-    When I am on the "Test quiz" "mod_hippotrack > User overrides" page logged in as "teacher"
+      | hippotrack       | Test hippotrack | C1     | hippotrack1    | 0       |
+    When I am on the "Test hippotrack" "mod_hippotrack > User overrides" page logged in as "teacher"
     And I press "Add user override"
     And I set the following fields to these values:
       | Override user    | Student One (student1@example.com) |
@@ -86,8 +86,8 @@ Feature: Quiz user override
       | moodle/site:viewuseridentity | Prevent    | editingteacher | Course       | C1        |
     And the following "activities" exist:
       | activity   | name      | course | idnumber | visible |
-      | quiz       | Test quiz | C1     | quiz1    | 0       |
-    When I am on the "Test quiz" "mod_hippotrack > User overrides" page logged in as "teacher"
+      | hippotrack       | Test hippotrack | C1     | hippotrack1    | 0       |
+    When I am on the "Test hippotrack" "mod_hippotrack > User overrides" page logged in as "teacher"
     And I press "Add user override"
     And I set the following fields to these values:
       | Override user    | Student One |
@@ -115,8 +115,8 @@ Feature: Quiz user override
       | moodle/site:accessallgroups | Prevent    | editingteacher | Course       | C1        |
     And the following "activities" exist:
       | activity | name      | course | idnumber | groupmode |
-      | quiz     | Test quiz | C1     | quiz1    | 1         |
-    When I am on the "Test quiz" "mod_hippotrack > User overrides" page logged in as "teacher"
+      | hippotrack     | Test hippotrack | C1     | hippotrack1    | 1         |
+    When I am on the "Test hippotrack" "mod_hippotrack > User overrides" page logged in as "teacher"
     And I press "Add user override"
     Then the "Override user" select box should contain "Student One (student1@example.com)"
     And the "Override user" select box should not contain "Student Two (student2@example.com)"
@@ -133,20 +133,20 @@ Feature: Quiz user override
       | moodle/site:accessallgroups | Prevent    | editingteacher | Course       | C1        |
     And the following "activities" exist:
       | activity | name      | course | idnumber | groupmode |
-      | quiz     | Test quiz | C1     | quiz1    | 1         |
-    When I am on the "Test quiz" "mod_hippotrack > User overrides" page logged in as "teacher"
+      | hippotrack     | Test hippotrack | C1     | hippotrack1    | 1         |
+    When I am on the "Test hippotrack" "mod_hippotrack > User overrides" page logged in as "teacher"
     Then I should see "No groups you can access."
     And the "Add user override" "button" should be disabled
 
   Scenario: A non-editing teacher can see the overrides, but not change them
     Given the following "activities" exist:
       | activity   | name      | course | idnumber |
-      | quiz       | Test quiz | C1     | quiz1    |
+      | hippotrack       | Test hippotrack | C1     | hippotrack1    |
     And the following "mod_hippotrack > user overrides" exist:
-      | quiz      | user     | attempts |
-      | Test quiz | student1 | 2        |
-      | Test quiz | student2 | 2        |
-    And I am on the "Test quiz" "mod_hippotrack > View" page logged in as "helper"
+      | hippotrack      | user     | attempts |
+      | Test hippotrack | student1 | 2        |
+      | Test hippotrack | student2 | 2        |
+    And I am on the "Test hippotrack" "mod_hippotrack > View" page logged in as "helper"
     When I navigate to "Overrides" in current page administration
     Then "Student One" "table_row" should exist
     And "Student Two" "table_row" should exist
@@ -155,7 +155,7 @@ Feature: Quiz user override
     And "Edit" "link" should not exist in the "Student One" "table_row"
     And "Copy" "link" should not exist in the "Student One" "table_row"
     And "Delete" "link" should not exist in the "Student One" "table_row"
-    And I am on the "Test quiz" "mod_hippotrack > View" page
+    And I am on the "Test hippotrack" "mod_hippotrack > View" page
     And I should see "Settings overrides exist (Users: 2)"
 
   @javascript
@@ -164,12 +164,12 @@ Feature: Quiz user override
       | showuseridentity | email,profile_field_frog |
     And the following "activities" exist:
       | activity   | name      | course | idnumber |
-      | quiz       | Test quiz | C1     | quiz1    |
+      | hippotrack       | Test hippotrack | C1     | hippotrack1    |
     And the following "mod_hippotrack > user overrides" exist:
-      | quiz      | user     | attempts |
-      | Test quiz | student1 | 2        |
-      | Test quiz | student2 | 2        |
-    When I am on the "Test quiz" "mod_hippotrack > User overrides" page logged in as "teacher"
+      | hippotrack      | user     | attempts |
+      | Test hippotrack | student1 | 2        |
+      | Test hippotrack | student2 | 2        |
+    When I am on the "Test hippotrack" "mod_hippotrack > User overrides" page logged in as "teacher"
     Then I should see "yellow frog" in the "Student One" "table_row"
     And I should see "prince frog" in the "Student Two" "table_row"
 
@@ -193,6 +193,6 @@ Feature: Quiz user override
       | Course 2 | C2        | 0        |
     And the following "activities" exist:
       | activity   | name       | course | idnumber |
-      | quiz       | Other quiz | C2     | quiz2    |
-    When I am on the "Other quiz" "mod_hippotrack > User overrides" page logged in as "admin"
+      | hippotrack       | Other hippotrack | C2     | hippotrack2    |
+    When I am on the "Other hippotrack" "mod_hippotrack > User overrides" page logged in as "admin"
     Then the "Add user override" "button" should be disabled

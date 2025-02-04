@@ -39,29 +39,29 @@ class behat_mod_hippotrack_generator extends behat_generator_base {
             'group overrides' => [
                 'singular' => 'group override',
                 'datagenerator' => 'override',
-                'required' => ['quiz', 'group'],
-                'switchids' => ['quiz' => 'quiz', 'group' => 'groupid'],
+                'required' => ['hippotrack', 'group'],
+                'switchids' => ['hippotrack' => 'hippotrack', 'group' => 'groupid'],
             ],
             'user overrides' => [
                 'singular' => 'user override',
                 'datagenerator' => 'override',
-                'required' => ['quiz', 'user'],
-                'switchids' => ['quiz' => 'quiz', 'user' => 'userid'],
+                'required' => ['hippotrack', 'user'],
+                'switchids' => ['hippotrack' => 'hippotrack', 'user' => 'userid'],
             ],
         ];
     }
 
     /**
-     * Look up the id of a quiz from its name.
+     * Look up the id of a hippotrack from its name.
      *
-     * @param string $quizname the quiz name, for example 'Test quiz'.
+     * @param string $hippotrackname the hippotrack name, for example 'Test hippotrack'.
      * @return int corresponding id.
      */
-    protected function get_quiz_id(string $quizname): int {
+    protected function get_hippotrack_id(string $hippotrackname): int {
         global $DB;
 
-        if (!$id = $DB->get_field('quiz', 'id', ['name' => $quizname])) {
-            throw new Exception('There is no quiz with name "' . $quizname . '" does not exist');
+        if (!$id = $DB->get_field('hippotrack', 'id', ['name' => $hippotrackname])) {
+            throw new Exception('There is no hippotrack with name "' . $hippotrackname . '" does not exist');
         }
         return $id;
     }

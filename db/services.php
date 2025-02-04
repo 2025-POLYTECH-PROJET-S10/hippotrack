@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz external functions and service definitions.
+ * HippoTrack external functions and service definitions.
  *
  * @package    mod_hippotrack
  * @category   external
@@ -28,95 +28,95 @@ defined('MOODLE_INTERNAL') || die;
 
 $functions = array(
 
-    'mod_hippotrack_get_quizzes_by_courses' => array(
+    'mod_hippotrack_get_hippotrackzes_by_courses' => array(
         'classname'     => 'mod_hippotrack_external',
-        'methodname'    => 'get_quizzes_by_courses',
-        'description'   => 'Returns a list of quizzes in a provided list of courses,
-                            if no list is provided all quizzes that the user can view will be returned.',
+        'methodname'    => 'get_hippotrackzes_by_courses',
+        'description'   => 'Returns a list of hippotrackzes in a provided list of courses,
+                            if no list is provided all hippotrackzes that the user can view will be returned.',
         'type'          => 'read',
-        'capabilities'  => 'mod/quiz:view',
+        'capabilities'  => 'mod/hippotrack:view',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
-    'mod_hippotrack_view_quiz' => array(
+    'mod_hippotrack_view_hippotrack' => array(
         'classname'     => 'mod_hippotrack_external',
-        'methodname'    => 'view_quiz',
+        'methodname'    => 'view_hippotrack',
         'description'   => 'Trigger the course module viewed event and update the module completion status.',
         'type'          => 'write',
-        'capabilities'  => 'mod/quiz:view',
+        'capabilities'  => 'mod/hippotrack:view',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
     'mod_hippotrack_get_user_attempts' => array(
         'classname'     => 'mod_hippotrack_external',
         'methodname'    => 'get_user_attempts',
-        'description'   => 'Return a list of attempts for the given quiz and user.',
+        'description'   => 'Return a list of attempts for the given hippotrack and user.',
         'type'          => 'read',
-        'capabilities'  => 'mod/quiz:view',
+        'capabilities'  => 'mod/hippotrack:view',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
     'mod_hippotrack_get_user_best_grade' => array(
         'classname'     => 'mod_hippotrack_external',
         'methodname'    => 'get_user_best_grade',
-        'description'   => 'Get the best current grade for the given user on a quiz.',
+        'description'   => 'Get the best current grade for the given user on a hippotrack.',
         'type'          => 'read',
-        'capabilities'  => 'mod/quiz:view',
+        'capabilities'  => 'mod/hippotrack:view',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
     'mod_hippotrack_get_combined_review_options' => array(
         'classname'     => 'mod_hippotrack_external',
         'methodname'    => 'get_combined_review_options',
-        'description'   => 'Combines the review options from a number of different quiz attempts.',
+        'description'   => 'Combines the review options from a number of different hippotrack attempts.',
         'type'          => 'read',
-        'capabilities'  => 'mod/quiz:view',
+        'capabilities'  => 'mod/hippotrack:view',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
     'mod_hippotrack_start_attempt' => array(
         'classname'     => 'mod_hippotrack_external',
         'methodname'    => 'start_attempt',
-        'description'   => 'Starts a new attempt at a quiz.',
+        'description'   => 'Starts a new attempt at a hippotrack.',
         'type'          => 'write',
-        'capabilities'  => 'mod/quiz:attempt',
+        'capabilities'  => 'mod/hippotrack:attempt',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
     'mod_hippotrack_get_attempt_data' => array(
         'classname'     => 'mod_hippotrack_external',
         'methodname'    => 'get_attempt_data',
-        'description'   => 'Returns information for the given attempt page for a quiz attempt in progress.',
+        'description'   => 'Returns information for the given attempt page for a hippotrack attempt in progress.',
         'type'          => 'read',
-        'capabilities'  => 'mod/quiz:attempt',
+        'capabilities'  => 'mod/hippotrack:attempt',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
     'mod_hippotrack_get_attempt_summary' => array(
         'classname'     => 'mod_hippotrack_external',
         'methodname'    => 'get_attempt_summary',
-        'description'   => 'Returns a summary of a quiz attempt before it is submitted.',
+        'description'   => 'Returns a summary of a hippotrack attempt before it is submitted.',
         'type'          => 'read',
-        'capabilities'  => 'mod/quiz:attempt',
+        'capabilities'  => 'mod/hippotrack:attempt',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
     'mod_hippotrack_save_attempt' => array(
         'classname'     => 'mod_hippotrack_external',
         'methodname'    => 'save_attempt',
-        'description'   => 'Processes save requests during the quiz.
-                            This function is intended for the quiz auto-save feature.',
+        'description'   => 'Processes save requests during the hippotrack.
+                            This function is intended for the hippotrack auto-save feature.',
         'type'          => 'write',
-        'capabilities'  => 'mod/quiz:attempt',
+        'capabilities'  => 'mod/hippotrack:attempt',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
     'mod_hippotrack_process_attempt' => array(
         'classname'     => 'mod_hippotrack_external',
         'methodname'    => 'process_attempt',
-        'description'   => 'Process responses during an attempt at a quiz and also deals with attempts finishing.',
+        'description'   => 'Process responses during an attempt at a hippotrack and also deals with attempts finishing.',
         'type'          => 'write',
-        'capabilities'  => 'mod/quiz:attempt',
+        'capabilities'  => 'mod/hippotrack:attempt',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
@@ -125,7 +125,7 @@ $functions = array(
         'methodname'    => 'get_attempt_review',
         'description'   => 'Returns review information for the given finished attempt, can be used by users or teachers.',
         'type'          => 'read',
-        'capabilities'  => 'mod/quiz:reviewmyattempts',
+        'capabilities'  => 'mod/hippotrack:reviewmyattempts',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
@@ -134,7 +134,7 @@ $functions = array(
         'methodname'    => 'view_attempt',
         'description'   => 'Trigger the attempt viewed event.',
         'type'          => 'write',
-        'capabilities'  => 'mod/quiz:attempt',
+        'capabilities'  => 'mod/hippotrack:attempt',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
@@ -143,7 +143,7 @@ $functions = array(
         'methodname'    => 'view_attempt_summary',
         'description'   => 'Trigger the attempt summary viewed event.',
         'type'          => 'write',
-        'capabilities'  => 'mod/quiz:attempt',
+        'capabilities'  => 'mod/hippotrack:attempt',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
@@ -152,51 +152,51 @@ $functions = array(
         'methodname'    => 'view_attempt_review',
         'description'   => 'Trigger the attempt reviewed event.',
         'type'          => 'write',
-        'capabilities'  => 'mod/quiz:reviewmyattempts',
+        'capabilities'  => 'mod/hippotrack:reviewmyattempts',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
-    'mod_hippotrack_get_quiz_feedback_for_grade' => array(
+    'mod_hippotrack_get_hippotrack_feedback_for_grade' => array(
         'classname'     => 'mod_hippotrack_external',
-        'methodname'    => 'get_quiz_feedback_for_grade',
-        'description'   => 'Get the feedback text that should be show to a student who got the given grade in the given quiz.',
+        'methodname'    => 'get_hippotrack_feedback_for_grade',
+        'description'   => 'Get the feedback text that should be show to a student who got the given grade in the given hippotrack.',
         'type'          => 'read',
-        'capabilities'  => 'mod/quiz:view',
+        'capabilities'  => 'mod/hippotrack:view',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
-    'mod_hippotrack_get_quiz_access_information' => array(
+    'mod_hippotrack_get_hippotrack_access_information' => array(
         'classname'     => 'mod_hippotrack_external',
-        'methodname'    => 'get_quiz_access_information',
-        'description'   => 'Return access information for a given quiz.',
+        'methodname'    => 'get_hippotrack_access_information',
+        'description'   => 'Return access information for a given hippotrack.',
         'type'          => 'read',
-        'capabilities'  => 'mod/quiz:view',
+        'capabilities'  => 'mod/hippotrack:view',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
     'mod_hippotrack_get_attempt_access_information' => array(
         'classname'     => 'mod_hippotrack_external',
         'methodname'    => 'get_attempt_access_information',
-        'description'   => 'Return access information for a given attempt in a quiz.',
+        'description'   => 'Return access information for a given attempt in a hippotrack.',
         'type'          => 'read',
-        'capabilities'  => 'mod/quiz:view',
+        'capabilities'  => 'mod/hippotrack:view',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
-    'mod_hippotrack_get_quiz_required_qtypes' => array(
+    'mod_hippotrack_get_hippotrack_required_qtypes' => array(
         'classname'     => 'mod_hippotrack_external',
-        'methodname'    => 'get_quiz_required_qtypes',
-        'description'   => 'Return the potential question types that would be required for a given quiz.',
+        'methodname'    => 'get_hippotrack_required_qtypes',
+        'description'   => 'Return the potential question types that would be required for a given hippotrack.',
         'type'          => 'read',
-        'capabilities'  => 'mod/quiz:view',
+        'capabilities'  => 'mod/hippotrack:view',
         'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
     ),
 
     'mod_hippotrack_set_question_version' => [
         'classname'     => 'mod_hippotrack\external\submit_question_version',
-        'description'   => 'Set the version of question that would be required for a given quiz.',
+        'description'   => 'Set the version of question that would be required for a given hippotrack.',
         'type'          => 'write',
-        'capabilities'  => 'mod/quiz:view',
+        'capabilities'  => 'mod/hippotrack:view',
         'ajax'          => true,
     ],
 );

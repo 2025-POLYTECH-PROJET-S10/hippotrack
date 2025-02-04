@@ -218,7 +218,7 @@ YUI.add('moodle-mod_hippotrack-util-slot', function (Y, NAME) {
          * @return void
          */
         updateOneSlotSections: function () {
-            Y.all('.mod-quiz-edit-content ul.slots li.section').each(function (section) {
+            Y.all('.mod-hippotrack-edit-content ul.slots li.section').each(function (section) {
                 if (section.all(this.SELECTORS.SLOT).size() > 1) {
                     section.removeClass('only-has-one-slot');
                 } else {
@@ -344,12 +344,12 @@ YUI.add('moodle-mod_hippotrack-util-slot', function (Y, NAME) {
                 }
 
                 // Update the link and image titles
-                pagebreaklink.set('title', M.util.get_string(action, 'quiz'));
+                pagebreaklink.set('title', M.util.get_string(action, 'hippotrack'));
                 pagebreaklink.setData('action', action);
                 // Update the image title.
                 var icon = pagebreaklink.one(this.SELECTORS.ICON);
-                icon.set('title', M.util.get_string(action, 'quiz'));
-                icon.set('alt', M.util.get_string(action, 'quiz'));
+                icon.set('title', M.util.get_string(action, 'hippotrack'));
+                icon.set('alt', M.util.get_string(action, 'hippotrack'));
 
                 // Update the image src.
                 icon.set('src', M.util.image_url(iconname));
@@ -418,20 +418,20 @@ YUI.add('moodle-mod_hippotrack-util-slot', function (Y, NAME) {
             }
 
             if (requiresprevious) {
-                link.set('title', M.util.get_string('questiondependencyremove', 'quiz', a));
+                link.set('title', M.util.get_string('questiondependencyremove', 'hippotrack', a));
                 link.setData('action', 'removedependency');
                 window.require(['core/templates'], function (Templates) {
-                    Templates.renderPix('t/locked', 'core', M.util.get_string('questiondependsonprevious', 'quiz')).then(
+                    Templates.renderPix('t/locked', 'core', M.util.get_string('questiondependsonprevious', 'hippotrack')).then(
                         function (html) {
                             icon.replace(html);
                         }
                     );
                 });
             } else {
-                link.set('title', M.util.get_string('questiondependencyadd', 'quiz', a));
+                link.set('title', M.util.get_string('questiondependencyadd', 'hippotrack', a));
                 link.setData('action', 'adddependency');
                 window.require(['core/templates'], function (Templates) {
-                    Templates.renderPix('t/unlocked', 'core', M.util.get_string('questiondependencyfree', 'quiz')).then(
+                    Templates.renderPix('t/unlocked', 'core', M.util.get_string('questiondependencyfree', 'hippotrack')).then(
                         function (html) {
                             icon.replace(html);
                         }

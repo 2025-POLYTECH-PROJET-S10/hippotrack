@@ -21,7 +21,7 @@ use mod_hippotrack_display_options;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
  * Unit tests for {@link mod_hippotrack_display_options}.
@@ -31,20 +31,20 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
  * @copyright  2010 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quizdisplayoptions_test extends \basic_testcase {
+class hippotrackdisplayoptions_test extends \basic_testcase {
     public function test_num_attempts_access_rule() {
-        $quiz = new \stdClass();
-        $quiz->decimalpoints = 2;
-        $quiz->questiondecimalpoints = -1;
-        $quiz->reviewattempt          = 0x11110;
-        $quiz->reviewcorrectness      = 0x10000;
-        $quiz->reviewmarks            = 0x01110;
-        $quiz->reviewspecificfeedback = 0x10000;
-        $quiz->reviewgeneralfeedback  = 0x01000;
-        $quiz->reviewrightanswer      = 0x00100;
-        $quiz->reviewoverallfeedback  = 0x00010;
+        $hippotrack = new \stdClass();
+        $hippotrack->decimalpoints = 2;
+        $hippotrack->questiondecimalpoints = -1;
+        $hippotrack->reviewattempt          = 0x11110;
+        $hippotrack->reviewcorrectness      = 0x10000;
+        $hippotrack->reviewmarks            = 0x01110;
+        $hippotrack->reviewspecificfeedback = 0x10000;
+        $hippotrack->reviewgeneralfeedback  = 0x01000;
+        $hippotrack->reviewrightanswer      = 0x00100;
+        $hippotrack->reviewoverallfeedback  = 0x00010;
 
-        $options = mod_hippotrack_display_options::make_from_quiz($quiz,
+        $options = mod_hippotrack_display_options::make_from_hippotrack($hippotrack,
             mod_hippotrack_display_options::DURING);
 
         $this->assertEquals(true, $options->attempt);
@@ -56,8 +56,8 @@ class quizdisplayoptions_test extends \basic_testcase {
         $this->assertEquals(mod_hippotrack_display_options::VISIBLE, $options->manualcomment);
         $this->assertEquals(2, $options->markdp);
 
-        $quiz->questiondecimalpoints = 5;
-        $options = mod_hippotrack_display_options::make_from_quiz($quiz,
+        $hippotrack->questiondecimalpoints = 5;
+        $options = mod_hippotrack_display_options::make_from_hippotrack($hippotrack,
             mod_hippotrack_display_options::IMMEDIATELY_AFTER);
 
         $this->assertEquals(mod_hippotrack_display_options::MARK_AND_MAX, $options->marks);
@@ -68,13 +68,13 @@ class quizdisplayoptions_test extends \basic_testcase {
         $this->assertEquals(mod_hippotrack_display_options::HIDDEN, $options->manualcomment);
         $this->assertEquals(5, $options->markdp);
 
-        $options = mod_hippotrack_display_options::make_from_quiz($quiz,
+        $options = mod_hippotrack_display_options::make_from_hippotrack($hippotrack,
             mod_hippotrack_display_options::LATER_WHILE_OPEN);
 
         $this->assertEquals(mod_hippotrack_display_options::VISIBLE, $options->rightanswer);
         $this->assertEquals(mod_hippotrack_display_options::HIDDEN, $options->generalfeedback);
 
-        $options = mod_hippotrack_display_options::make_from_quiz($quiz,
+        $options = mod_hippotrack_display_options::make_from_hippotrack($hippotrack,
             mod_hippotrack_display_options::AFTER_CLOSE);
 
         $this->assertEquals(mod_hippotrack_display_options::VISIBLE, $options->overallfeedback);

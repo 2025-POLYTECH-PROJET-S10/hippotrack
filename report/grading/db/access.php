@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capability definitions for the quiz manual grading report.
+ * Capability definitions for the hippotrack manual grading report.
  *
- * @package   quiz_grading
+ * @package   hippotrack_grading
  * @copyright 2010 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,26 +26,26 @@ defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
     // Is the user allowed to see the student's real names while grading?
-    'quiz/grading:viewstudentnames' => array(
+    'hippotrack/grading:viewstudentnames' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW
         ),
-        'clonepermissionsfrom' => 'mod/quiz:viewreports'
+        'clonepermissionsfrom' => 'mod/hippotrack:viewreports'
     ),
 
     // Is the user allowed to see the student's identity fields while grading?
     // Note that the name of this capability is now out-of-date, but to preserve
     // backwards compatibility, the name was not changed when the functionality was updated.
-    'quiz/grading:viewidnumber' => array(
+    'hippotrack/grading:viewidnumber' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW
         ),
-        'clonepermissionsfrom' => 'mod/quiz:viewreports'
+        'clonepermissionsfrom' => 'mod/hippotrack:viewreports'
     )
 );

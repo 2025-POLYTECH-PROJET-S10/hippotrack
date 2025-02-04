@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the base class for quiz access plugins backup code.
+ * Defines the base class for hippotrack access plugins backup code.
  *
  * @package   mod_hippotrack
  * @copyright 2011 The Open University
@@ -27,8 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * Base class for backing up all the quiz settings and attempt data for an
- * access rule quiz sub-plugin.
+ * Base class for backing up all the hippotrack settings and attempt data for an
+ * access rule hippotrack sub-plugin.
  *
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -37,16 +37,16 @@ class backup_mod_hippotrack_access_subplugin extends backup_subplugin {
 
     /**
      * Use this method to describe the XML structure required to store your
-     * sub-plugin's settings for a particular quiz, and how that data is stored
+     * sub-plugin's settings for a particular hippotrack, and how that data is stored
      * in the database.
      */
-    protected function define_quiz_subplugin_structure() {
+    protected function define_hippotrack_subplugin_structure() {
         // Do nothing by default.
     }
 
     /**
      * Use this method to describe the XML structure required to store your
-     * sub-plugin's settings for a particular quiz attempt, and how that data
+     * sub-plugin's settings for a particular hippotrack attempt, and how that data
      * is stored in the database.
      */
     protected function define_attempt_subplugin_structure() {

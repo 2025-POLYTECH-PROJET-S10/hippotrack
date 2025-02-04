@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the custom question bank view used on the Edit quiz page.
+ * Defines the custom question bank view used on the Edit hippotrack page.
  *
  * @package   mod_hippotrack
  * @category  question
@@ -29,7 +29,7 @@ use core_question\local\bank\question_version_status;
 use mod_hippotrack\question\bank\filter\custom_category_condition;
 
 /**
- * Subclass to customise the view of the question bank for the quiz editing screen.
+ * Subclass to customise the view of the question bank for the hippotrack editing screen.
  *
  * @copyright  2009 Tim Hunt
  * @author     2021 Safat Shahin <safatshahin@catalyst-au.net>
@@ -39,11 +39,11 @@ class custom_view extends \core_question\local\bank\view {
     /** @var int number of questions per page to show in the add from question bank modal. */
     const DEFAULT_PAGE_SIZE = 20;
 
-    /** @var bool $quizhasattempts whether the quiz this is used by has been attemptd. */
-    protected $quizhasattempts = false;
+    /** @var bool $hippotrackhasattempts whether the hippotrack this is used by has been attemptd. */
+    protected $hippotrackhasattempts = false;
 
-    /** @var \stdClass $quiz the quiz settings. */
-    protected $quiz = false;
+    /** @var \stdClass $hippotrack the hippotrack settings. */
+    protected $hippotrack = false;
 
     /** @var int The maximum displayed length of the category info. */
     const MAX_TEXT_LENGTH = 200;
@@ -54,11 +54,11 @@ class custom_view extends \core_question\local\bank\view {
      * @param \moodle_url $pageurl
      * @param \stdClass $course course settings
      * @param \stdClass $cm activity settings.
-     * @param \stdClass $quiz quiz settings.
+     * @param \stdClass $hippotrack hippotrack settings.
      */
-    public function __construct($contexts, $pageurl, $course, $cm, $quiz) {
+    public function __construct($contexts, $pageurl, $course, $cm, $hippotrack) {
         parent::__construct($contexts, $pageurl, $course, $cm);
-        $this->quiz = $quiz;
+        $this->hippotrack = $hippotrack;
         $this->pagesize = self::DEFAULT_PAGE_SIZE;
     }
 
@@ -130,7 +130,7 @@ class custom_view extends \core_question\local\bank\view {
     }
 
     protected function default_sort(): array {
-        // Using the extended class for quiz specific sort.
+        // Using the extended class for hippotrack specific sort.
         return [
             'qbank_viewquestiontype\\question_type_column' => 1,
             'mod_hippotrack\\question\\bank\\question_name_text_column' => 1,
@@ -138,16 +138,16 @@ class custom_view extends \core_question\local\bank\view {
     }
 
     /**
-     * Let the question bank display know whether the quiz has been attempted,
-     * hence whether some bits of UI, like the add this question to the quiz icon,
+     * Let the question bank display know whether the hippotrack has been attempted,
+     * hence whether some bits of UI, like the add this question to the hippotrack icon,
      * should be displayed.
      *
-     * @param bool $quizhasattempts whether the quiz has attempts.
+     * @param bool $hippotrackhasattempts whether the hippotrack has attempts.
      */
-    public function set_quiz_has_attempts($quizhasattempts): void {
-        $this->quizhasattempts = $quizhasattempts;
-        if ($quizhasattempts && isset($this->visiblecolumns['addtoquizaction'])) {
-            unset($this->visiblecolumns['addtoquizaction']);
+    public function set_hippotrack_has_attempts($hippotrackhasattempts): void {
+        $this->hippotrackhasattempts = $hippotrackhasattempts;
+        if ($hippotrackhasattempts && isset($this->visiblecolumns['addtohippotrackaction'])) {
+            unset($this->visiblecolumns['addtohippotrackaction']);
         }
     }
 
@@ -158,20 +158,20 @@ class custom_view extends \core_question\local\bank\view {
      * @return \moodle_url
      */
     public function preview_question_url($question) {
-        return quiz_question_preview_url($this->quiz, $question);
+        return hippotrack_question_preview_url($this->hippotrack, $question);
     }
 
     /**
-     * URL of add to quiz.
+     * URL of add to hippotrack.
      *
      * @param $questionid
      * @return \moodle_url
      */
-    public function add_to_quiz_url($questionid) {
+    public function add_to_hippotrack_url($questionid) {
         $params = $this->baseurl->params();
         $params['addquestion'] = $questionid;
         $params['sesskey'] = sesskey();
-        return new \moodle_url('/mod/quiz/edit.php', $params);
+        return new \moodle_url('/mod/hippotrack/edit.php', $params);
     }
 
     /**
@@ -194,18 +194,18 @@ class custom_view extends \core_question\local\bank\view {
 
     protected function display_bottom_controls(\context $catcontext): void {
         $cmoptions = new \stdClass();
-        $cmoptions->hasattempts = !empty($this->quizhasattempts);
+        $cmoptions->hasattempts = !empty($this->hippotrackhasattempts);
 
         $canuseall = has_capability('moodle/question:useall', $catcontext);
 
         echo \html_writer::start_tag('div', ['class' => 'pt-2']);
         if ($canuseall) {
-            // Add selected questions to the quiz.
+            // Add selected questions to the hippotrack.
             $params = array(
                 'type' => 'submit',
                 'name' => 'add',
                 'class' => 'btn btn-primary',
-                'value' => get_string('addselectedquestionstoquiz', 'quiz'),
+                'value' => get_string('addselectedquestionstohippotrack', 'hippotrack'),
                 'data-action' => 'toggle',
                 'data-togglegroup' => 'qbank',
                 'data-toggle' => 'action',

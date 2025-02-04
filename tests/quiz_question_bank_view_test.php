@@ -25,14 +25,14 @@ global $CFG;
 require_once($CFG->dirroot . '/question/editlib.php');
 
 /**
- * Unit tests for the quiz's own question bank view class.
+ * Unit tests for the hippotrack's own question bank view class.
  *
  * @package    mod_hippotrack
  * @category   test
  * @copyright  2018 the Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_question_bank_view_test extends \advanced_testcase {
+class hippotrack_question_bank_view_test extends \advanced_testcase {
 
     public function test_viewing_question_bank_should_not_load_individual_questions() {
         $this->resetAfterTest();
@@ -41,11 +41,11 @@ class quiz_question_bank_view_test extends \advanced_testcase {
         /** @var core_question_generator $questiongenerator */
         $questiongenerator = $generator->get_plugin_generator('core_question');
 
-        // Create a course and a quiz.
+        // Create a course and a hippotrack.
         $course = $generator->create_course();
-        $quiz = $this->getDataGenerator()->create_module('quiz', array('course' => $course->id));
-        $context = \context_module::instance($quiz->cmid);
-        $cm = get_coursemodule_from_instance('quiz', $quiz->id);
+        $hippotrack = $this->getDataGenerator()->create_module('hippotrack', array('course' => $course->id));
+        $context = \context_module::instance($hippotrack->cmid);
+        $cm = get_coursemodule_from_instance('hippotrack', $hippotrack->id);
 
         // Create a question in the default category.
         $contexts = new question_edit_contexts($context);
@@ -58,7 +58,7 @@ class quiz_question_bank_view_test extends \advanced_testcase {
         $cache->delete($questiondata->id);
 
         // Generate the view.
-        $view = new custom_view($contexts, new \moodle_url('/'), $course, $cm, $quiz);
+        $view = new custom_view($contexts, new \moodle_url('/'), $course, $cm, $hippotrack);
         ob_start();
         $pagevars = [
             'qpage' => 0,

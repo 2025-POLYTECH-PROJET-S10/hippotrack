@@ -1,6 +1,6 @@
-@mod @mod_hippotrack @quiz @quiz_overview @javascript
-Feature: Regrading quiz attempts using the Grades report
-    In order to be able to correct mistakes I made setting up my quiz
+@mod @mod_hippotrack @hippotrack @hippotrack_overview @javascript
+Feature: Regrading hippotrack attempts using the Grades report
+    In order to be able to correct mistakes I made setting up my hippotrack
     As a teacher
     I need to be able to re-grade attempts after editing questions
 
@@ -25,58 +25,58 @@ Feature: Regrading quiz attempts using the Grades report
       | Course       | C1        | Test questions |
     And the following "activities" exist:
       | activity | name                       | course | idnumber |
-      | quiz     | Quiz for testing regrading | C1     | quiz1    |
+      | hippotrack     | HippoTrack for testing regrading | C1     | hippotrack1    |
     And the following "questions" exist:
       | questioncategory | qtype       | name |
       | Test questions   | truefalse   | TF   |
       | Test questions   | shortanswer | SA   |
-    And quiz "Quiz for testing regrading" contains the following questions:
+    And hippotrack "HippoTrack for testing regrading" contains the following questions:
       | question | page | maxmark |
       | TF       | 1    | 5.0     |
       | SA       | 1    | 5.0     |
-    And user "student1" has attempted "Quiz for testing regrading" with responses:
+    And user "student1" has attempted "HippoTrack for testing regrading" with responses:
       | slot | response |
       | 1    | True     |
       | 2    | frog     |
-    And user "student2" has attempted "Quiz for testing regrading" with responses:
+    And user "student2" has attempted "HippoTrack for testing regrading" with responses:
       | slot | response |
       | 1    | True     |
       | 2    | toad     |
 
   Scenario: Regrade all attempts
-    Given I am on the "Quiz for testing regrading" "quiz activity" page logged in as teacher
+    Given I am on the "HippoTrack for testing regrading" "hippotrack activity" page logged in as teacher
     And I navigate to "Results" in current page administration
     When I press "Regrade all"
 
     # Note, the order is not defined, so we can only check part of the message.
-    # Also, nothing has changed in the quiz, so the regrade won't alter any scores,
+    # Also, nothing has changed in the hippotrack, so the regrade won't alter any scores,
     # but this is still a useful test that the regrade process completes without errors.
-    Then I should see "Quiz for testing regrading"
+    Then I should see "HippoTrack for testing regrading"
     And I should see "Finished regrading (2/2)"
     And I should see "Regrade completed"
     And I press "Continue"
 
     # These next tests just serve to check we got back to the report.
-    And I should see "Quiz for testing regrading"
+    And I should see "HippoTrack for testing regrading"
     And I should see "Overall number of students achieving grade ranges"
 
   Scenario: Regrade selected attempts
-    Given I am on the "Quiz for testing regrading" "quiz activity" page logged in as teacher
+    Given I am on the "HippoTrack for testing regrading" "hippotrack activity" page logged in as teacher
     And I navigate to "Results" in current page administration
     When I click on "Select attempt" "checkbox" in the "Student Two" "table_row"
 
     And I press "Regrade selected attempts"
-    Then I should see "Quiz for testing regrading"
+    Then I should see "HippoTrack for testing regrading"
     And I should see "Finished regrading (1/1)"
     And I should see "Regrade completed"
     And I press "Continue"
 
     # These next tests just serve to check we got back to the report.
-    And I should see "Quiz for testing regrading"
+    And I should see "HippoTrack for testing regrading"
     And I should see "Overall number of students achieving grade ranges"
 
   Scenario: Dry-run a full regrade, then regrade the attempts that will need it.
-    Given I am on the "Quiz for testing regrading" "mod_hippotrack > edit" page logged in as teacher
+    Given I am on the "HippoTrack for testing regrading" "mod_hippotrack > edit" page logged in as teacher
     And I follow "Edit question SA"
     And I set the field "id_fraction_1" to "50%"
     And I press "id_submitbutton"
@@ -86,7 +86,7 @@ Feature: Regrading quiz attempts using the Grades report
     And I press "Dry run a full regrade"
 
     # Note, the order is not defined, so we can only check part of the message.
-    Then I should see "Quiz for testing regrading"
+    Then I should see "HippoTrack for testing regrading"
     And I should see "Finished regrading (2/2)"
     And I should see "Regrade completed"
     And I press "Continue"
@@ -98,35 +98,35 @@ Feature: Regrading quiz attempts using the Grades report
     And "Student TwoReview attempt" row "Q. 2/50.00Sort by Q. 2/50.00 Ascending" column of "attempts" table should contain "40.00/25.00"
     And "Student TwoReview attempt" row "Grade/100.00Sort by Grade/100.00 Ascending" column of "attempts" table should contain "90.00/75.00"
     And I press "Regrade attempts marked as needing regrading (1)"
-    And I should see "Quiz for testing regrading"
+    And I should see "HippoTrack for testing regrading"
     And I should see "Finished regrading (1/1)"
     And I should see "Regrade completed"
     And I press "Continue"
 
     # These next tests just serve to check we got back to the report.
-    And I should see "Quiz for testing regrading"
+    And I should see "HippoTrack for testing regrading"
     And I should see "Overall number of students achieving grade ranges"
     # Now, both old-score strike-through and new score plain, are still shown, but now it indicates what did change.
     And "Student TwoReview attempt" row "Q. 2/50.00Sort by Q. 2/50.00 Ascending" column of "attempts" table should contain "40.00/25.00"
     And "Student TwoReview attempt" row "Grade/100.00Sort by Grade/100.00 Ascending" column of "attempts" table should contain "90.00/75.00"
     And "Regrade attempts marked as needing regrading" "button" should not exist
 
-  Scenario: Regrade all attempts works against quiz selected question version
-    Given I am on the "Quiz for testing regrading" "quiz activity" page logged in as teacher
+  Scenario: Regrade all attempts works against hippotrack selected question version
+    Given I am on the "HippoTrack for testing regrading" "hippotrack activity" page logged in as teacher
     And I navigate to "Results" in current page administration
     When I press "Dry run a full regrade"
-    Then I should see "Quiz for testing regrading"
+    Then I should see "HippoTrack for testing regrading"
     And I should see "Finished regrading (2/2)"
     And I should see "Regrade completed"
     And I press "Continue"
-    And I should see "Quiz for testing regrading"
+    And I should see "HippoTrack for testing regrading"
     And I should see "Overall number of students achieving grade ranges"
     And "Student One" row "Regrade" column of "attempts" table should not contain "Needed"
-    And I am on the "Quiz for testing regrading" "mod_hippotrack > question bank" page
+    And I am on the "HippoTrack for testing regrading" "mod_hippotrack > question bank" page
     And I choose "Edit question" action for "TF" in the question bank
     And I set the field "Correct answer" to "False"
     And I press "id_submitbutton"
-    And I am on the "Quiz for testing regrading" "mod_hippotrack > edit" page
+    And I am on the "HippoTrack for testing regrading" "mod_hippotrack > edit" page
     And I set the field "version" in the "TF" "list_item" to "v2 (latest)"
     And I navigate to "Results" in current page administration
     And I press "Dry run a full regrade"
@@ -141,16 +141,16 @@ Feature: Regrading quiz attempts using the Grades report
     And "Student OneReview attempt" row "Q. 1/50.00Sort by Q. 1/50.00 Ascending" column of "attempts" table should contain "50.00/0.00"
     And "Incorrect" "icon" should appear before "50.00/0.00" "text"
 
-  Scenario: Regrade all attempts works against quiz selected latest question version
-    Given I am on the "Quiz for testing regrading" "quiz activity" page logged in as teacher
+  Scenario: Regrade all attempts works against hippotrack selected latest question version
+    Given I am on the "HippoTrack for testing regrading" "hippotrack activity" page logged in as teacher
     And I navigate to "Results" in current page administration
-    And I click on "mod-quiz-report-overview-report-selectall-attempts" "checkbox"
+    And I click on "mod-hippotrack-report-overview-report-selectall-attempts" "checkbox"
     And I click on "Delete selected attempts" "button"
     And I click on "Yes" "button"
-    And I am on the "Quiz for testing regrading" "mod_hippotrack > edit" page
+    And I am on the "HippoTrack for testing regrading" "mod_hippotrack > edit" page
     And I should see "(latest)" in the "TF" "list_item"
     # Create multiple question versions.
-    And I am on the "Quiz for testing regrading" "mod_hippotrack > question bank" page
+    And I am on the "HippoTrack for testing regrading" "mod_hippotrack > question bank" page
     And I choose "Edit question" action for "TF" in the question bank
     And I set the field "Correct answer" to "True"
     And I press "id_submitbutton"
@@ -158,7 +158,7 @@ Feature: Regrading quiz attempts using the Grades report
     And I set the field "Question name" to "New version of TF"
     And I set the field "Correct answer" to "False"
     And I press "id_submitbutton"
-    And I am on the "Quiz for testing regrading" "mod_hippotrack > edit" page
+    And I am on the "HippoTrack for testing regrading" "mod_hippotrack > edit" page
     And I should see "(latest)" in the "TF" "list_item"
     And I click on "version" "select" in the "TF" "list_item"
     And I should see "v1"
@@ -166,11 +166,11 @@ Feature: Regrading quiz attempts using the Grades report
     And I should see "v3 (latest)"
     # Set version that is going to be attempted to an older one.
     And I set the field "version" in the "TF" "list_item" to "v1"
-    And user "student3" has attempted "Quiz for testing regrading" with responses:
+    And user "student3" has attempted "HippoTrack for testing regrading" with responses:
       | slot | response |
       | 1    | True     |
       | 2    | toad     |
-    And I am on the "Quiz for testing regrading" "mod_hippotrack > edit" page
+    And I am on the "HippoTrack for testing regrading" "mod_hippotrack > edit" page
     And I set the field "version" in the "TF" "list_item" to "Always latest"
     And I navigate to "Results" in current page administration
     And I press "Regrade all"
@@ -181,16 +181,16 @@ Feature: Regrading quiz attempts using the Grades report
     And "Incorrect" "icon" should appear before "50.00/0.00" "text"
 
   Scenario: Regrade attempts should always regrade against latest random question version
-    Given I am on the "Quiz for testing regrading" "quiz activity" page logged in as teacher
+    Given I am on the "HippoTrack for testing regrading" "hippotrack activity" page logged in as teacher
     And I navigate to "Results" in current page administration
-    And I click on "mod-quiz-report-overview-report-selectall-attempts" "checkbox"
+    And I click on "mod-hippotrack-report-overview-report-selectall-attempts" "checkbox"
     And I click on "Delete selected attempts" "button"
     And I click on "Yes" "button"
     # Create multiple question versions.
-    And I am on the "Quiz for testing regrading" "mod_hippotrack > question bank" page
+    And I am on the "HippoTrack for testing regrading" "mod_hippotrack > question bank" page
     And I choose "Delete" action for "SA" in the question bank
     And I press "Delete"
-    And I am on the "Quiz for testing regrading" "mod_hippotrack > edit" page
+    And I am on the "HippoTrack for testing regrading" "mod_hippotrack > edit" page
     And I click on "Delete" "link" in the "TF" "list_item"
     And I click on "Yes" "button" in the "Confirm" "dialogue"
     And I click on "Delete" "link" in the "SA" "list_item"
@@ -199,14 +199,14 @@ Feature: Regrading quiz attempts using the Grades report
     And I follow "a random question"
     And I set the field "Number of random questions" to "1"
     And I press "Add random question"
-    And I am on the "Quiz for testing regrading" "quiz activity" page logged in as student3
-    And I click on "Attempt quiz" "button"
+    And I am on the "HippoTrack for testing regrading" "hippotrack activity" page logged in as student3
+    And I click on "Attempt hippotrack" "button"
     And I should see "The answer is true."
     And I set the field "True" to "1"
     And I click on "Finish attempt ..." "button"
     And I press "Submit all and finish"
     And I click on "Submit" "button" in the "Submit all your answers and finish?" "dialogue"
-    And I am on the "Quiz for testing regrading" "mod_hippotrack > question bank" page logged in as teacher
+    And I am on the "HippoTrack for testing regrading" "mod_hippotrack > question bank" page logged in as teacher
     And I choose "Edit question" action for "TF" in the question bank
     And I set the field "Correct answer" to "False"
     And I press "id_submitbutton"

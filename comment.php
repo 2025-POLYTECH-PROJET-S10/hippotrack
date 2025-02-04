@@ -30,26 +30,26 @@ $attemptid = required_param('attempt', PARAM_INT);
 $slot = required_param('slot', PARAM_INT); // The question number in the attempt.
 $cmid = optional_param('cmid', null, PARAM_INT);
 
-$PAGE->set_url('/mod/quiz/comment.php', array('attempt' => $attemptid, 'slot' => $slot));
+$PAGE->set_url('/mod/hippotrack/comment.php', array('attempt' => $attemptid, 'slot' => $slot));
 
-$attemptobj = quiz_create_attempt_handling_errors($attemptid, $cmid);
+$attemptobj = hippotrack_create_attempt_handling_errors($attemptid, $cmid);
 $attemptobj->preload_all_attempt_step_users();
 $student = $DB->get_record('user', array('id' => $attemptobj->get_userid()));
 
 // Can only grade finished attempts.
 if (!$attemptobj->is_finished()) {
-    throw new \moodle_exception('attemptclosed', 'quiz');
+    throw new \moodle_exception('attemptclosed', 'hippotrack');
 }
 
 // Check login and permissions.
 require_login($attemptobj->get_course(), false, $attemptobj->get_cm());
-$attemptobj->require_capability('mod/quiz:grade');
+$attemptobj->require_capability('mod/hippotrack:grade');
 
 // Print the page header.
 $PAGE->set_pagelayout('popup');
-$PAGE->set_title(get_string('manualgradequestion', 'quiz', array(
+$PAGE->set_title(get_string('manualgradequestion', 'hippotrack', array(
         'question' => format_string($attemptobj->get_question_name($slot)),
-        'quiz' => format_string($attemptobj->get_quiz_name()), 'user' => fullname($student))));
+        'hippotrack' => format_string($attemptobj->get_hippotrack_name()), 'user' => fullname($student))));
 $PAGE->set_heading($attemptobj->get_course()->fullname);
 $output = $PAGE->get_renderer('mod_hippotrack');
 echo $output->header();
@@ -67,15 +67,15 @@ $summarydata['user'] = array(
             fullname($student, true)),
 );
 
-// Quiz name.
-$summarydata['quizname'] = array(
-    'title'   => get_string('modulename', 'quiz'),
-    'content' => format_string($attemptobj->get_quiz_name()),
+// HippoTrack name.
+$summarydata['hippotrackname'] = array(
+    'title'   => get_string('modulename', 'hippotrack'),
+    'content' => format_string($attemptobj->get_hippotrack_name()),
 );
 
 // Question name.
 $summarydata['questionname'] = array(
-    'title'   => get_string('question', 'quiz'),
+    'title'   => get_string('question', 'hippotrack'),
     'content' => $attemptobj->get_question_name($slot),
 );
 
@@ -92,7 +92,7 @@ if (data_submitted() && confirm_sesskey()) {
             'courseid' => $attemptobj->get_courseid(),
             'context' => context_module::instance($attemptobj->get_cmid()),
             'other' => array(
-                'quizid' => $attemptobj->get_quizid(),
+                'hippotrackid' => $attemptobj->get_hippotrackid(),
                 'attemptid' => $attemptobj->get_attemptid(),
                 'slot' => $slot
             )
@@ -106,12 +106,12 @@ if (data_submitted() && confirm_sesskey()) {
     }
 }
 
-// Print quiz information.
+// Print hippotrack information.
 echo $output->review_summary_table($summarydata, 0);
 
 // Print the comment form.
 echo '<form method="post" class="mform" id="manualgradingform" action="' .
-        $CFG->wwwroot . '/mod/quiz/comment.php">';
+        $CFG->wwwroot . '/mod/hippotrack/comment.php">';
 echo $attemptobj->render_question_for_commenting($slot);
 ?>
 <div>
@@ -125,14 +125,14 @@ echo $attemptobj->render_question_for_commenting($slot);
         <div class="fitem fitem_actionbuttons fitem_fsubmit mt-3">
             <fieldset class="felement fsubmit">
                 <input id="id_submitbutton" type="submit" name="submit" class="btn btn-primary" value="<?php
-                        print_string('save', 'quiz'); ?>"/>
+                        print_string('save', 'hippotrack'); ?>"/>
             </fieldset>
         </div>
     </div>
 </fieldset>
 <?php
 echo '</form>';
-$PAGE->requires->js_init_call('M.mod_hippotrack.init_comment_popup', null, false, quiz_get_js_module());
+$PAGE->requires->js_init_call('M.mod_hippotrack.init_comment_popup', null, false, hippotrack_get_js_module());
 
 // End of the page.
 echo $output->footer();

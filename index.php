@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This script lists all the instances of quiz in a particular course
+ * This script lists all the instances of hippotrack in a particular course
  *
  * @package    mod_hippotrack
  * @copyright  1999 onwards Martin Dougiamas  {@link http://moodle.com}
@@ -27,7 +27,7 @@ require_once("../../config.php");
 require_once("locallib.php");
 
 $id = required_param('id', PARAM_INT);
-$PAGE->set_url('/mod/quiz/index.php', array('id'=>$id));
+$PAGE->set_url('/mod/hippotrack/index.php', array('id'=>$id));
 if (!$course = $DB->get_record('course', array('id' => $id))) {
     throw new \moodle_exception('invalidcourseid');
 }
@@ -42,23 +42,23 @@ $event = \mod_hippotrack\event\course_module_instance_list_viewed::create($param
 $event->trigger();
 
 // Print the header.
-$strquizzes = get_string("modulenameplural", "quiz");
-$PAGE->navbar->add($strquizzes);
-$PAGE->set_title($strquizzes);
+$strhippotrackzes = get_string("modulenameplural", "hippotrack");
+$PAGE->navbar->add($strhippotrackzes);
+$PAGE->set_title($strhippotrackzes);
 $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
-echo $OUTPUT->heading($strquizzes, 2);
+echo $OUTPUT->heading($strhippotrackzes, 2);
 
 // Get all the appropriate data.
-if (!$quizzes = get_all_instances_in_course("quiz", $course)) {
-    notice(get_string('thereareno', 'moodle', $strquizzes), "../../course/view.php?id=$course->id");
+if (!$hippotrackzes = get_all_instances_in_course("hippotrack", $course)) {
+    notice(get_string('thereareno', 'moodle', $strhippotrackzes), "../../course/view.php?id=$course->id");
     die;
 }
 
 // Check if we need the feedback header.
 $showfeedback = false;
-foreach ($quizzes as $quiz) {
-    if (quiz_has_feedback($quiz)) {
+foreach ($hippotrackzes as $hippotrack) {
+    if (hippotrack_has_feedback($hippotrack)) {
         $showfeedback=true;
     }
     if ($showfeedback) {
@@ -70,7 +70,7 @@ foreach ($quizzes as $quiz) {
 $headings = array(get_string('name'));
 $align = array('left');
 
-array_push($headings, get_string('quizcloses', 'quiz'));
+array_push($headings, get_string('hippotrackcloses', 'hippotrack'));
 array_push($align, 'left');
 
 if (course_format_uses_sections($course->format)) {
@@ -82,25 +82,25 @@ array_unshift($align, 'center');
 
 $showing = '';
 
-if (has_capability('mod/quiz:viewreports', $coursecontext)) {
-    array_push($headings, get_string('attempts', 'quiz'));
+if (has_capability('mod/hippotrack:viewreports', $coursecontext)) {
+    array_push($headings, get_string('attempts', 'hippotrack'));
     array_push($align, 'left');
     $showing = 'stats';
 
-} else if (has_any_capability(array('mod/quiz:reviewmyattempts', 'mod/quiz:attempt'),
+} else if (has_any_capability(array('mod/hippotrack:reviewmyattempts', 'mod/hippotrack:attempt'),
         $coursecontext)) {
-    array_push($headings, get_string('grade', 'quiz'));
+    array_push($headings, get_string('grade', 'hippotrack'));
     array_push($align, 'left');
     if ($showfeedback) {
-        array_push($headings, get_string('feedback', 'quiz'));
+        array_push($headings, get_string('feedback', 'hippotrack'));
         array_push($align, 'left');
     }
     $showing = 'grades';
 
     $grades = $DB->get_records_sql_menu('
-            SELECT qg.quiz, qg.grade
-            FROM {quiz_grades} qg
-            JOIN {quiz} q ON q.id = qg.quiz
+            SELECT qg.hippotrack, qg.grade
+            FROM {hippotrack_grades} qg
+            JOIN {hippotrack} q ON q.id = qg.hippotrack
             WHERE q.course = ? AND qg.userid = ?',
             array($course->id, $USER->id));
 }
@@ -112,63 +112,63 @@ $table->align = $align;
 // Populate the table with the list of instances.
 $currentsection = '';
 // Get all closing dates.
-$timeclosedates = quiz_get_user_timeclose($course->id);
-foreach ($quizzes as $quiz) {
-    $cm = get_coursemodule_from_instance('quiz', $quiz->id);
+$timeclosedates = hippotrack_get_user_timeclose($course->id);
+foreach ($hippotrackzes as $hippotrack) {
+    $cm = get_coursemodule_from_instance('hippotrack', $hippotrack->id);
     $context = context_module::instance($cm->id);
     $data = array();
 
     // Section number if necessary.
     $strsection = '';
-    if ($quiz->section != $currentsection) {
-        if ($quiz->section) {
-            $strsection = $quiz->section;
-            $strsection = get_section_name($course, $quiz->section);
+    if ($hippotrack->section != $currentsection) {
+        if ($hippotrack->section) {
+            $strsection = $hippotrack->section;
+            $strsection = get_section_name($course, $hippotrack->section);
         }
         if ($currentsection !== "") {
             $table->data[] = 'hr';
         }
-        $currentsection = $quiz->section;
+        $currentsection = $hippotrack->section;
     }
     $data[] = $strsection;
 
     // Link to the instance.
     $class = '';
-    if (!$quiz->visible) {
+    if (!$hippotrack->visible) {
         $class = ' class="dimmed"';
     }
-    $data[] = "<a$class href=\"view.php?id=$quiz->coursemodule\">" .
-            format_string($quiz->name, true) . '</a>';
+    $data[] = "<a$class href=\"view.php?id=$hippotrack->coursemodule\">" .
+            format_string($hippotrack->name, true) . '</a>';
 
     // Close date.
-    if (($timeclosedates[$quiz->id]->usertimeclose != 0)) {
-        $data[] = userdate($timeclosedates[$quiz->id]->usertimeclose);
+    if (($timeclosedates[$hippotrack->id]->usertimeclose != 0)) {
+        $data[] = userdate($timeclosedates[$hippotrack->id]->usertimeclose);
     } else {
-        $data[] = get_string('noclose', 'quiz');
+        $data[] = get_string('noclose', 'hippotrack');
     }
 
     if ($showing == 'stats') {
-        // The $quiz objects returned by get_all_instances_in_course have the necessary $cm
+        // The $hippotrack objects returned by get_all_instances_in_course have the necessary $cm
         // fields set to make the following call work.
-        $data[] = quiz_attempt_summary_link_to_reports($quiz, $cm, $context);
+        $data[] = hippotrack_attempt_summary_link_to_reports($hippotrack, $cm, $context);
 
     } else if ($showing == 'grades') {
         // Grade and feedback.
-        $attempts = quiz_get_user_attempts($quiz->id, $USER->id, 'all');
-        list($someoptions, $alloptions) = quiz_get_combined_reviewoptions(
-                $quiz, $attempts);
+        $attempts = hippotrack_get_user_attempts($hippotrack->id, $USER->id, 'all');
+        list($someoptions, $alloptions) = hippotrack_get_combined_reviewoptions(
+                $hippotrack, $attempts);
 
         $grade = '';
         $feedback = '';
-        if ($quiz->grade && array_key_exists($quiz->id, $grades)) {
+        if ($hippotrack->grade && array_key_exists($hippotrack->id, $grades)) {
             if ($alloptions->marks >= question_display_options::MARK_AND_MAX) {
                 $a = new stdClass();
-                $a->grade = quiz_format_grade($quiz, $grades[$quiz->id]);
-                $a->maxgrade = quiz_format_grade($quiz, $quiz->grade);
-                $grade = get_string('outofshort', 'quiz', $a);
+                $a->grade = hippotrack_format_grade($hippotrack, $grades[$hippotrack->id]);
+                $a->maxgrade = hippotrack_format_grade($hippotrack, $hippotrack->grade);
+                $grade = get_string('outofshort', 'hippotrack', $a);
             }
             if ($alloptions->overallfeedback) {
-                $feedback = quiz_feedback_for_grade($grades[$quiz->id], $quiz, $context);
+                $feedback = hippotrack_feedback_for_grade($grades[$hippotrack->id], $hippotrack, $context);
             }
         }
         $data[] = $grade;
@@ -178,7 +178,7 @@ foreach ($quizzes as $quiz) {
     }
 
     $table->data[] = $data;
-} // End of loop over quiz instances.
+} // End of loop over hippotrack instances.
 
 // Display the table.
 echo html_writer::table($table);

@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'quiz_overview', language 'en', branch 'MOODLE_20_STABLE'
+ * Strings for component 'hippotrack_overview', language 'en', branch 'MOODLE_20_STABLE'
  *
- * @package   quiz_overview
+ * @package   hippotrack_overview
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -35,12 +35,12 @@ $string['highlightinggraded'] = 'The user attempt that contributes to final grad
 $string['needed'] = 'Needed';
 $string['noattemptsonly'] = 'Show / download {$a} with no attempts only';
 $string['noattemptstoregrade'] = 'No attempts need regrading';
-$string['nogradepermission'] = 'You don\'t have permission to grade this quiz.';
-$string['onlyoneattemptallowed'] = 'Only one attempt per user allowed on this quiz.';
+$string['nogradepermission'] = 'You don\'t have permission to grade this hippotrack.';
+$string['onlyoneattemptallowed'] = 'Only one attempt per user allowed on this hippotrack.';
 $string['optallattempts'] = 'all attempts';
-$string['optallstudents'] = 'all {$a} who have or have not attempted the quiz';
-$string['optattemptsonly'] = '{$a} who have attempted the quiz';
-$string['optnoattemptsonly'] = '{$a} who have not attempted the quiz';
+$string['optallstudents'] = 'all {$a} who have or have not attempted the hippotrack';
+$string['optattemptsonly'] = '{$a} who have attempted the hippotrack';
+$string['optnoattemptsonly'] = '{$a} who have not attempted the hippotrack';
 $string['optonlyregradedattempts'] = 'that have been regraded / are marked as needing regrading';
 $string['overview'] = 'Grades';
 $string['overviewdownload'] = 'Overview download';
@@ -53,7 +53,7 @@ $string['pluginname'] = 'Grades';
 $string['preferencespage'] = 'Preferences just for this page';
 $string['preferencessave'] = 'Show report';
 $string['preferencesuser'] = 'Your preferences for this report';
-$string['privacy:metadata:preference:quiz_overview_slotmarks'] = 'Whether to show marks for each question slot.';
+$string['privacy:metadata:preference:hippotrack_overview_slotmarks'] = 'Whether to show marks for each question slot.';
 $string['privacy:preference:slotmarks:yes'] = 'Marks are shown alongside the question slot.';
 $string['privacy:preference:slotmarks:no'] = 'Marks are not shown alongside the question slot.';
 $string['regrade'] = 'Regrade';
@@ -75,6 +75,6 @@ $string['show'] = 'Show / download';
 $string['showattempts'] = 'Only show / download attempts';
 $string['showdetailedmarks'] = 'Marks for each question';
 $string['showinggraded'] = 'Showing only the attempt graded for each user.';
-$string['showinggradedandungraded'] = 'Showing graded and ungraded attempts for each user. The one attempt for each user that is graded is highlighted. The grading method for this quiz is {$a}.';
+$string['showinggradedandungraded'] = 'Showing graded and ungraded attempts for each user. The one attempt for each user that is graded is highlighted. The grading method for this hippotrack is {$a}.';
 $string['studentingroup'] = '\'{$a->coursestudent}\' in group \'{$a->groupname}\'';
 $string['studentingrouplong'] = '\'{$a->coursestudent}\' in this group';

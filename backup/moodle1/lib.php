@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Quiz conversion handler
+ * HippoTrack conversion handler
  */
 class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
 
@@ -43,7 +43,7 @@ class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
      * For each path returned, the corresponding conversion method must be
      * defined.
      *
-     * Note that the path /MOODLE_BACKUP/COURSE/MODULES/MOD/QUIZ does not
+     * Note that the path /MOODLE_BACKUP/COURSE/MODULES/mod/hippotrack does not
      * actually exist in the file. The last element with the module name was
      * appended by the moodle1_converter class.
      *
@@ -52,7 +52,7 @@ class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
     public function get_paths() {
         return array(
             new convert_path(
-                'quiz', '/MOODLE_BACKUP/COURSE/MODULES/MOD/QUIZ',
+                'hippotrack', '/MOODLE_BACKUP/COURSE/MODULES/mod/hippotrack',
                 array(
                     'newfields' => array(
                         'showuserpicture'       => 0,
@@ -62,10 +62,10 @@ class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
                     ),
                 )
             ),
-            new convert_path('quiz_question_instances',
-                    '/MOODLE_BACKUP/COURSE/MODULES/MOD/QUIZ/QUESTION_INSTANCES'),
-            new convert_path('quiz_question_instance',
-                    '/MOODLE_BACKUP/COURSE/MODULES/MOD/QUIZ/QUESTION_INSTANCES/QUESTION_INSTANCE',
+            new convert_path('hippotrack_question_instances',
+                    '/MOODLE_BACKUP/COURSE/MODULES/mod/hippotrack/QUESTION_INSTANCES'),
+            new convert_path('hippotrack_question_instance',
+                    '/MOODLE_BACKUP/COURSE/MODULES/mod/hippotrack/QUESTION_INSTANCES/QUESTION_INSTANCE',
                 array(
                     'renamefields' => array(
                         'question' => 'questionid',
@@ -73,10 +73,10 @@ class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
                     ),
                 )
             ),
-            new convert_path('quiz_feedbacks',
-                    '/MOODLE_BACKUP/COURSE/MODULES/MOD/QUIZ/FEEDBACKS'),
-            new convert_path('quiz_feedback',
-                    '/MOODLE_BACKUP/COURSE/MODULES/MOD/QUIZ/FEEDBACKS/FEEDBACK',
+            new convert_path('hippotrack_feedbacks',
+                    '/MOODLE_BACKUP/COURSE/MODULES/mod/hippotrack/FEEDBACKS'),
+            new convert_path('hippotrack_feedback',
+                    '/MOODLE_BACKUP/COURSE/MODULES/mod/hippotrack/FEEDBACKS/FEEDBACK',
                 array(
                     'newfields' => array(
                         'feedbacktextformat' => FORMAT_HTML,
@@ -87,17 +87,17 @@ class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
     }
 
     /**
-     * This is executed every time we have one /MOODLE_BACKUP/COURSE/MODULES/MOD/QUIZ
+     * This is executed every time we have one /MOODLE_BACKUP/COURSE/MODULES/mod/hippotrack
      * data available
      */
-    public function process_quiz($data) {
+    public function process_hippotrack($data) {
         global $CFG;
 
         // Replay the upgrade step 2008081501.
         if (is_null($data['sumgrades'])) {
             $data['sumgrades'] = 0;
-            // TODO for user data: quiz_attempts SET sumgrades=0 WHERE sumgrades IS NULL.
-            // TODO for user data: quiz_grades.grade should be not be null , convert to default 0.
+            // TODO for user data: hippotrack_attempts SET sumgrades=0 WHERE sumgrades IS NULL.
+            // TODO for user data: hippotrack_grades.grade should be not be null , convert to default 0.
         }
 
         // Replay the upgrade step 2009042000.
@@ -124,12 +124,12 @@ class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
         $data['intro'] = moodle1_converter::migrate_referenced_files(
                 $data['intro'], $this->fileman);
 
-        // Start writing quiz.xml.
-        $this->open_xml_writer("activities/quiz_{$this->moduleid}/quiz.xml");
+        // Start writing hippotrack.xml.
+        $this->open_xml_writer("activities/hippotrack_{$this->moduleid}/hippotrack.xml");
         $this->xmlwriter->begin_tag('activity', array('id' => $instanceid,
-                'moduleid' => $this->moduleid, 'modulename' => 'quiz',
+                'moduleid' => $this->moduleid, 'modulename' => 'hippotrack',
                 'contextid' => $contextid));
-        $this->xmlwriter->begin_tag('quiz', array('id' => $instanceid));
+        $this->xmlwriter->begin_tag('hippotrack', array('id' => $instanceid));
 
         foreach ($data as $field => $value) {
             if ($field <> 'id') {
@@ -140,27 +140,27 @@ class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
         return $data;
     }
 
-    public function on_quiz_question_instances_start() {
+    public function on_hippotrack_question_instances_start() {
         $this->xmlwriter->begin_tag('question_instances');
     }
 
-    public function on_quiz_question_instances_end() {
+    public function on_hippotrack_question_instances_end() {
         $this->xmlwriter->end_tag('question_instances');
     }
 
-    public function process_quiz_question_instance($data) {
+    public function process_hippotrack_question_instance($data) {
         $this->write_xml('question_instance', $data, array('/question_instance/id'));
     }
 
-    public function on_quiz_feedbacks_start() {
+    public function on_hippotrack_feedbacks_start() {
         $this->xmlwriter->begin_tag('feedbacks');
     }
 
-    public function on_quiz_feedbacks_end() {
+    public function on_hippotrack_feedbacks_end() {
         $this->xmlwriter->end_tag('feedbacks');
     }
 
-    public function process_quiz_feedback($data) {
+    public function process_hippotrack_feedback($data) {
         // Replay the upgrade step 2010122302.
         if (is_null($data['mingrade'])) {
             $data['mingrade'] = 0;
@@ -173,20 +173,20 @@ class moodle1_mod_hippotrack_handler extends moodle1_mod_handler {
     }
 
     /**
-     * This is executed when we reach the closing </MOD> tag of our 'quiz' path
+     * This is executed when we reach the closing </MOD> tag of our 'hippotrack' path
      */
-    public function on_quiz_end() {
+    public function on_hippotrack_end() {
 
         // Append empty <overrides> subpath element.
         $this->write_xml('overrides', array());
 
-        // Finish writing quiz.xml.
-        $this->xmlwriter->end_tag('quiz');
+        // Finish writing hippotrack.xml.
+        $this->xmlwriter->end_tag('hippotrack');
         $this->xmlwriter->end_tag('activity');
         $this->close_xml_writer();
 
         // Write inforef.xml.
-        $this->open_xml_writer("activities/quiz_{$this->moduleid}/inforef.xml");
+        $this->open_xml_writer("activities/hippotrack_{$this->moduleid}/inforef.xml");
         $this->xmlwriter->begin_tag('inforef');
         $this->xmlwriter->begin_tag('fileref');
         foreach ($this->fileman->get_fileids() as $fileid) {

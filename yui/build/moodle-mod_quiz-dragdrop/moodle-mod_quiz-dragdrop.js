@@ -2,9 +2,9 @@ YUI.add('moodle-mod_hippotrack-dragdrop', function (Y, NAME) {
 
     /* eslint-disable no-unused-vars */
     /**
-     * Drag and Drop for Quiz sections and slots.
+     * Drag and Drop for HippoTrack sections and slots.
      *
-     * @module moodle-mod-quiz-dragdrop
+     * @module moodle-mod-hippotrack-dragdrop
      */
 
     var CSS = {
@@ -12,7 +12,7 @@ YUI.add('moodle-mod_hippotrack-dragdrop', function (Y, NAME) {
         ACTIVITY: 'activity',
         ACTIVITYINSTANCE: 'activityinstance',
         CONTENT: 'content',
-        COURSECONTENT: 'mod-quiz-edit-content',
+        COURSECONTENT: 'mod-hippotrack-edit-content',
         EDITINGMOVE: 'editing_move',
         ICONCLASS: 'iconsmall',
         JUMPMENU: 'jumpmenu',
@@ -78,7 +78,7 @@ YUI.add('moodle-mod_hippotrack-dragdrop', function (Y, NAME) {
                     moveOnEnd: false
                 });
                 del.dd.plug(Y.Plugin.DDConstrained, {
-                    // Keep it inside the .mod-quiz-edit-content
+                    // Keep it inside the .mod-hippotrack-edit-content
                     constrain: '#' + CSS.PAGECONTENT,
                     stickY: true
                 });
@@ -202,7 +202,7 @@ YUI.add('moodle-mod_hippotrack-dragdrop', function (Y, NAME) {
             // Prepare request parameters
             params.sesskey = M.cfg.sesskey;
             params.courseid = this.get('courseid');
-            params.quizid = this.get('quizid');
+            params.hippotrackid = this.get('hippotrackid');
             params['class'] = 'section';
             params.field = 'move';
             params.id = dragnodeid;
@@ -277,7 +277,7 @@ YUI.add('moodle-mod_hippotrack-dragdrop', function (Y, NAME) {
             courseid: {
                 value: null
             },
-            quizid: {
+            hippotrackid: {
                 value: null
             },
             ajaxurl: {
@@ -312,11 +312,11 @@ YUI.add('moodle-mod_hippotrack-dragdrop', function (Y, NAME) {
 
             this.samenodelabel = {
                 identifier: 'dragtoafter',
-                component: 'quiz'
+                component: 'hippotrack'
             };
             this.parentnodelabel = {
                 identifier: 'dragtostart',
-                component: 'quiz'
+                component: 'hippotrack'
             };
 
             // Go through all sections
@@ -337,12 +337,12 @@ YUI.add('moodle-mod_hippotrack-dragdrop', function (Y, NAME) {
                 cloneNode: true
             });
             del.dd.plug(Y.Plugin.DDConstrained, {
-                // Keep it inside the .mod-quiz-edit-content
+                // Keep it inside the .mod-hippotrack-edit-content
                 constrain: '#' + CSS.SLOTS
             });
             del.dd.plug(Y.Plugin.DDWinScroll);
 
-            M.mod_hippotrack.quizbase.register_module(this);
+            M.mod_hippotrack.hippotrackbase.register_module(this);
             M.mod_hippotrack.dragres = this;
         },
 
@@ -353,7 +353,7 @@ YUI.add('moodle-mod_hippotrack-dragdrop', function (Y, NAME) {
          * @param {String} baseselector The CSS selector or node to limit scope to
          */
         setup_for_section: function () {
-            Y.Node.all('.mod-quiz-edit-content ul.slots ul.section').each(function (resources) {
+            Y.Node.all('.mod-hippotrack-edit-content ul.slots ul.section').each(function (resources) {
                 resources.setAttribute('data-draggroups', this.groups.join(' '));
                 // Define empty ul as droptarget, so that item could be moved to empty list
                 new Y.DD.Drop({
@@ -420,7 +420,7 @@ YUI.add('moodle-mod_hippotrack-dragdrop', function (Y, NAME) {
             // Prepare request parameters
             params.sesskey = M.cfg.sesskey;
             params.courseid = this.get('courseid');
-            params.quizid = this.get('quizid');
+            params.hippotrackid = this.get('hippotrackid');
             params['class'] = 'resource';
             params.field = 'move';
             params.id = Number(Y.Moodle.mod_hippotrack.util.slot.getId(dragnode));
@@ -450,7 +450,7 @@ YUI.add('moodle-mod_hippotrack-dragdrop', function (Y, NAME) {
                     success: function (tid, response) {
                         var responsetext = Y.JSON.parse(response.responseText);
                         var params = { element: dragnode, visible: responsetext.visible };
-                        M.mod_hippotrack.quizbase.invoke_function('set_visibility_resource_ui', params);
+                        M.mod_hippotrack.hippotrackbase.invoke_function('set_visibility_resource_ui', params);
                         this.unlock_drag_handle(drag, CSS.EDITINGMOVE);
                         window.setTimeout(function () {
                             spinner.hide();
@@ -510,7 +510,7 @@ YUI.add('moodle-mod_hippotrack-dragdrop', function (Y, NAME) {
             courseid: {
                 value: null
             },
-            quizid: {
+            hippotrackid: {
                 value: null
             },
             ajaxurl: {
@@ -538,7 +538,7 @@ YUI.add('moodle-mod_hippotrack-dragdrop', function (Y, NAME) {
         "dd-scroll",
         "moodle-core-dragdrop",
         "moodle-core-notification",
-        "moodle-mod_hippotrack-quizbase",
+        "moodle-mod_hippotrack-hippotrackbase",
         "moodle-mod_hippotrack-util-base",
         "moodle-mod_hippotrack-util-page",
         "moodle-mod_hippotrack-util-slot",

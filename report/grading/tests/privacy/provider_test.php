@@ -17,14 +17,14 @@
 /**
  * Privacy provider tests.
  *
- * @package   quiz_grading
+ * @package   hippotrack_grading
  * @copyright 2020 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace quiz_grading\privacy;
+namespace hippotrack_grading\privacy;
 
 use core_privacy\local\metadata\collection;
-use quiz_grading\privacy\provider;
+use hippotrack_grading\privacy\provider;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\transform;
 
@@ -60,15 +60,15 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        set_user_preference('quiz_grading_pagesize', 42);
-        set_user_preference('quiz_grading_order', 'random');
+        set_user_preference('hippotrack_grading_pagesize', 42);
+        set_user_preference('hippotrack_grading_order', 'random');
 
         provider::export_user_preferences($USER->id);
 
         $writer = writer::with_context(\context_system::instance());
         $this->assertTrue($writer->has_any_data());
 
-        $preferences = $writer->get_user_preferences('quiz_grading');
+        $preferences = $writer->get_user_preferences('hippotrack_grading');
 
         $this->assertNotEmpty($preferences->pagesize);
         $this->assertEquals(42, $preferences->pagesize->value);
@@ -88,14 +88,14 @@ class provider_test extends \core_privacy\tests\provider_testcase {
 
         $customfields = ['username', 'idnumber', 'email', 'profile_field_frog'];
         foreach ($customfields as $customfield) {
-            set_user_preference('quiz_grading_order', $customfield);
+            set_user_preference('hippotrack_grading_order', $customfield);
 
             provider::export_user_preferences($USER->id);
 
             $writer = writer::with_context(\context_system::instance());
             $this->assertTrue($writer->has_any_data());
 
-            $preferences = $writer->get_user_preferences('quiz_grading');
+            $preferences = $writer->get_user_preferences('hippotrack_grading');
 
             $this->assertNotEmpty($preferences->order);
             $this->assertEquals(\core_user\fields::get_display_name($customfield), $preferences->order->value);

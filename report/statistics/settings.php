@@ -17,7 +17,7 @@
 /**
  * Settings for the Statisics report
  *
- * @package   quiz_statistics
+ * @package   hippotrack_statistics
  * @copyright 2023 onwards Catalyst IT EU {@link https://catalyst-eu.net}
  * @author    Mark Johnson <mark.johnson@catalyst-eu.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,9 +27,9 @@ defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext(
-        'quiz_statistics/getstatslocktimeout',
-        get_string('getstatslocktimeout', 'quiz_statistics'),
-        get_string('getstatslocktimeoutdesc', 'quiz_statistics'),
+        'hippotrack_statistics/getstatslocktimeout',
+        get_string('getstatslocktimeout', 'hippotrack_statistics'),
+        get_string('getstatslocktimeoutdesc', 'hippotrack_statistics'),
         MINSECS * 15
     ));
 }

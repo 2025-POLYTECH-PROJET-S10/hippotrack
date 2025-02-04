@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Renderer outputting the quiz editing UI.
+ * Renderer outputting the hippotrack editing UI.
  *
  * @package mod_hippotrack
  * @copyright 2013 The Open University.
@@ -33,7 +33,7 @@ use qbank_previewquestion\question_preview_options;
 use renderable;
 
 /**
- * Renderer outputting the quiz editing UI.
+ * Renderer outputting the hippotrack editing UI.
  *
  * @copyright 2013 The Open University.
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -42,33 +42,33 @@ use renderable;
 class edit_renderer extends \plugin_renderer_base {
 
     /** @var string The toggle group name of the checkboxes for the toggle-all functionality. */
-    protected $togglegroup = 'quiz-questions';
+    protected $togglegroup = 'hippotrack-questions';
 
     /**
      * Render the edit page
      *
-     * @param \quiz $quizobj object containing all the quiz settings information.
-     * @param structure $structure object containing the structure of the quiz.
+     * @param \hippotrack $hippotrackobj object containing all the hippotrack settings information.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param \core_question\local\bank\question_edit_contexts $contexts the relevant question bank contexts.
      * @param \moodle_url $pageurl the canonical URL of this page.
      * @param array $pagevars the variables from {@link question_edit_setup()}.
      * @return string HTML to output.
      */
-    public function edit_page(\quiz $quizobj, structure $structure,
+    public function edit_page(\hippotrack $hippotrackobj, structure $structure,
         \core_question\local\bank\question_edit_contexts $contexts, \moodle_url $pageurl, array $pagevars) {
         $output = '';
 
         // Page title.
-        $output .= $this->heading(get_string('questions', 'quiz'));
+        $output .= $this->heading(get_string('questions', 'hippotrack'));
 
         // Information at the top.
-        $output .= $this->quiz_state_warnings($structure);
+        $output .= $this->hippotrack_state_warnings($structure);
 
         $output .= html_writer::start_div('mod_hippotrack-edit-top-controls');
 
         $output .= html_writer::start_div('d-flex justify-content-between flex-wrap mb-1');
         $output .= html_writer::start_div('d-flex flex-column justify-content-around');
-        $output .= $this->quiz_information($structure);
+        $output .= $this->hippotrack_information($structure);
         $output .= html_writer::end_tag('div');
         $output .= $this->maximum_grade_input($structure, $pageurl);
         $output .= html_writer::end_tag('div');
@@ -80,7 +80,7 @@ class edit_renderer extends \plugin_renderer_base {
         $output .= html_writer::end_tag('div');
 
         $output .= html_writer::start_div('d-flex flex-column justify-content-around');
-        $output .= $this->total_marks($quizobj->get_quiz());
+        $output .= $this->total_marks($hippotrackobj->get_hippotrack());
         $output .= html_writer::end_tag('div');
         $output .= html_writer::end_tag('div');
 
@@ -112,7 +112,7 @@ class edit_renderer extends \plugin_renderer_base {
         // Include the contents of any other popups required.
         if ($structure->can_be_edited()) {
             $thiscontext = $contexts->lowest();
-            $this->page->requires->js_call_amd('mod_hippotrack/quizquestionbank', 'init', [
+            $this->page->requires->js_call_amd('mod_hippotrack/hippotrackquestionbank', 'init', [
                 $thiscontext->id
             ]);
 
@@ -132,14 +132,14 @@ class edit_renderer extends \plugin_renderer_base {
     }
 
     /**
-     * Render any warnings that might be required about the state of the quiz,
+     * Render any warnings that might be required about the state of the hippotrack,
      * e.g. if it has been attempted, or if the shuffle questions option is
      * turned on.
      *
-     * @param structure $structure the quiz structure.
+     * @param structure $structure the hippotrack structure.
      * @return string HTML to output.
      */
-    public function quiz_state_warnings(structure $structure) {
+    public function hippotrack_state_warnings(structure $structure) {
         $warnings = $structure->get_edit_page_warnings();
 
         if (empty($warnings)) {
@@ -156,25 +156,25 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * Render the status bar.
      *
-     * @param structure $structure the quiz structure.
+     * @param structure $structure the hippotrack structure.
      * @return string HTML to output.
      */
-    public function quiz_information(structure $structure) {
+    public function hippotrack_information(structure $structure) {
         list($currentstatus, $explanation) = $structure->get_dates_summary();
 
         $output = html_writer::span(
-                    get_string('numquestionsx', 'quiz', $structure->get_question_count()),
+                    get_string('numquestionsx', 'hippotrack', $structure->get_question_count()),
                     'numberofquestions') . ' | ' .
-                html_writer::span($currentstatus, 'quizopeningstatus',
+                html_writer::span($currentstatus, 'hippotrackopeningstatus',
                     array('title' => $explanation));
 
         return html_writer::div($output, 'statusbar');
     }
 
     /**
-     * Render the form for setting a quiz' overall grade
+     * Render the form for setting a hippotrack' overall grade
      *
-     * @param structure $structure the quiz structure.
+     * @param structure $structure the hippotrack structure.
      * @param \moodle_url $pageurl the canonical URL of this page.
      * @return string HTML to output.
      */
@@ -182,7 +182,7 @@ class edit_renderer extends \plugin_renderer_base {
         $output = '';
         $output .= html_writer::start_div('maxgrade');
         $output .= html_writer::start_tag('form', array('method' => 'post', 'action' => 'edit.php',
-                'class' => 'quizsavegradesform form-inline'));
+                'class' => 'hippotracksavegradesform form-inline'));
         $output .= html_writer::start_tag('fieldset', array('class' => 'invisiblefieldset'));
         $output .= html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()));
         $output .= html_writer::input_hidden_params($pageurl);
@@ -190,10 +190,10 @@ class edit_renderer extends \plugin_renderer_base {
                 array('for' => 'inputmaxgrade'));
         $output .= html_writer::empty_tag('input', array('type' => 'text', 'id' => 'inputmaxgrade',
                 'name' => 'maxgrade', 'size' => ($structure->get_decimal_places_for_grades() + 2),
-                'value' => $structure->formatted_quiz_grade(),
+                'value' => $structure->formatted_hippotrack_grade(),
                 'class' => 'form-control'));
         $output .= html_writer::empty_tag('input', array('type' => 'submit', 'class' => 'btn btn-secondary ml-1',
-                'name' => 'savechanges', 'value' => get_string('save', 'quiz')));
+                'name' => 'savechanges', 'value' => get_string('save', 'hippotrack')));
         $output .= html_writer::end_tag('fieldset');
         $output .= html_writer::end_tag('form');
         $output .= html_writer::end_tag('div');
@@ -202,19 +202,19 @@ class edit_renderer extends \plugin_renderer_base {
 
     /**
      * Return the repaginate button
-     * @param structure $structure the structure of the quiz being edited.
+     * @param structure $structure the structure of the hippotrack being edited.
      * @param \moodle_url $pageurl the canonical URL of this page.
      * @return string HTML to output.
      */
     protected function repaginate_button(structure $structure, \moodle_url $pageurl) {
-        $header = html_writer::tag('span', get_string('repaginatecommand', 'quiz'), array('class' => 'repaginatecommand'));
+        $header = html_writer::tag('span', get_string('repaginatecommand', 'hippotrack'), array('class' => 'repaginatecommand'));
         $form = $this->repaginate_form($structure, $pageurl);
 
         $buttonoptions = array(
             'type'  => 'submit',
             'name'  => 'repaginate',
             'id'    => 'repaginatecommand',
-            'value' => get_string('repaginatecommand', 'quiz'),
+            'value' => get_string('repaginatecommand', 'hippotrack'),
             'class' => 'btn btn-secondary mr-1',
             'data-header' => $header,
             'data-form'   => $form,
@@ -231,7 +231,7 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * Generate the bulk action button.
      *
-     * @param structure $structure the structure of the quiz being edited.
+     * @param structure $structure the structure of the hippotrack being edited.
      * @return string HTML to output.
      */
     protected function selectmultiple_button(structure $structure) {
@@ -239,20 +239,20 @@ class edit_renderer extends \plugin_renderer_base {
             'type'  => 'button',
             'name'  => 'selectmultiple',
             'id'    => 'selectmultiplecommand',
-            'value' => get_string('selectmultipleitems', 'quiz'),
+            'value' => get_string('selectmultipleitems', 'hippotrack'),
             'class' => 'btn btn-secondary'
         );
         if (!$structure->can_be_edited()) {
             $buttonoptions['disabled'] = 'disabled';
         }
 
-        return html_writer::tag('button', get_string('selectmultipleitems', 'quiz'), $buttonoptions);
+        return html_writer::tag('button', get_string('selectmultipleitems', 'hippotrack'), $buttonoptions);
     }
 
     /**
      * Generate the controls that appear when the bulk action button is pressed.
      *
-     * @param structure $structure the structure of the quiz being edited.
+     * @param structure $structure the structure of the hippotrack being edited.
      * @return string HTML to output.
      */
     protected function selectmultiple_controls(structure $structure) {
@@ -290,7 +290,7 @@ class edit_renderer extends \plugin_renderer_base {
         $toolbaroptions = array(
             'class' => 'btn-toolbar m-1',
             'role' => 'toolbar',
-            'aria-label' => get_string('selectmultipletoolbar', 'quiz'),
+            'aria-label' => get_string('selectmultipletoolbar', 'hippotrack'),
         );
 
         // Select all/deselect all questions.
@@ -313,13 +313,13 @@ class edit_renderer extends \plugin_renderer_base {
 
     /**
      * Return the repaginate form
-     * @param structure $structure the structure of the quiz being edited.
+     * @param structure $structure the structure of the hippotrack being edited.
      * @param \moodle_url $pageurl the canonical URL of this page.
      * @return string HTML to output.
      */
     protected function repaginate_form(structure $structure, \moodle_url $pageurl) {
         $perpage = array();
-        $perpage[0] = get_string('allinone', 'quiz');
+        $perpage[0] = get_string('allinone', 'hippotrack');
         for ($i = 1; $i <= 50; ++$i) {
             $perpage[$i] = $i;
         }
@@ -339,7 +339,7 @@ class edit_renderer extends \plugin_renderer_base {
 
         $formcontent = html_writer::tag('form', html_writer::div(
                     html_writer::input_hidden_params($hiddenurl) .
-                    get_string('repaginate', 'quiz', $select) .
+                    get_string('repaginate', 'hippotrack', $select) .
                     html_writer::empty_tag('input', $buttonattributes)
                 ), array('action' => 'edit.php', 'method' => 'post'));
 
@@ -347,21 +347,21 @@ class edit_renderer extends \plugin_renderer_base {
     }
 
     /**
-     * Render the total marks available for the quiz.
+     * Render the total marks available for the hippotrack.
      *
-     * @param \stdClass $quiz the quiz settings from the database.
+     * @param \stdClass $hippotrack the hippotrack settings from the database.
      * @return string HTML to output.
      */
-    public function total_marks($quiz) {
-        $totalmark = html_writer::span(quiz_format_grade($quiz, $quiz->sumgrades), 'mod_hippotrack_summarks');
+    public function total_marks($hippotrack) {
+        $totalmark = html_writer::span(hippotrack_format_grade($hippotrack, $hippotrack->sumgrades), 'mod_hippotrack_summarks');
         return html_writer::tag('span',
-                get_string('totalmarksx', 'quiz', $totalmark),
+                get_string('totalmarksx', 'hippotrack', $totalmark),
                 array('class' => 'totalpoints'));
     }
 
     /**
      * Generate the starting container html for the start of a list of sections
-     * @param structure $structure the structure of the quiz being edited.
+     * @param structure $structure the structure of the hippotrack being edited.
      * @return string HTML to output.
      */
     protected function start_section_list(structure $structure) {
@@ -383,8 +383,8 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * Display the start of a section, before the questions.
      *
-     * @param structure $structure the structure of the quiz being edited.
-     * @param \stdClass $section The quiz_section entry from DB
+     * @param structure $structure the structure of the hippotrack being edited.
+     * @param \stdClass $section The hippotrack_section entry from DB
      * @return string HTML to output.
      */
     protected function start_section($structure, $section) {
@@ -401,7 +401,7 @@ class edit_renderer extends \plugin_renderer_base {
             $sectionheading = html_writer::span($sectionheadingtext, 'instancesection');
         } else {
             // Use a sr-only default section heading, so we don't end up with an empty section heading.
-            $sectionheadingtext = get_string('sectionnoname', 'quiz');
+            $sectionheadingtext = get_string('sectionnoname', 'hippotrack');
             $sectionheading = html_writer::span($sectionheadingtext, 'instancesection sr-only');
         }
 
@@ -419,7 +419,7 @@ class edit_renderer extends \plugin_renderer_base {
             $editsectionheadingicon = '';
         } else {
             $editsectionheadingicon = html_writer::link(new \moodle_url('#'),
-                $this->pix_icon('t/editstring', get_string('sectionheadingedit', 'quiz', $sectionheadingtext),
+                $this->pix_icon('t/editstring', get_string('sectionheadingedit', 'hippotrack', $sectionheadingtext),
                         'moodle', array('class' => 'editicon visibleifjs')),
                         array('class' => 'editing_section', 'data-action' => 'edit_section_title', 'role' => 'button'));
         }
@@ -438,8 +438,8 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * Display a checkbox for shuffling question within a section.
      *
-     * @param structure $structure object containing the structure of the quiz.
-     * @param \stdClass $section data from the quiz_section table.
+     * @param structure $structure object containing the structure of the hippotrack.
+     * @param \stdClass $section data from the hippotrack_section table.
      * @return string HTML to output.
      */
     public function section_shuffle_questions(structure $structure, $section) {
@@ -459,7 +459,7 @@ class edit_renderer extends \plugin_renderer_base {
         }
 
         if ($structure->is_first_section($section)) {
-            $help = $this->help_icon('shufflequestions', 'quiz');
+            $help = $this->help_icon('shufflequestions', 'hippotrack');
         } else {
             $help = '';
         }
@@ -467,7 +467,7 @@ class edit_renderer extends \plugin_renderer_base {
         $helpspan = html_writer::span($help, 'shuffle-help-tip');
         $progressspan = html_writer::span('', 'shuffle-progress');
         $checkbox = html_writer::empty_tag('input', $checkboxattributes);
-        $label = html_writer::label(get_string('shufflequestions', 'quiz'),
+        $label = html_writer::label(get_string('shufflequestions', 'hippotrack'),
                 $checkboxattributes['id'], false);
         return html_writer::span($progressspan . $checkbox . $label. ' ' . $helpspan,
                 'instanceshufflequestions', array('data-action' => 'shuffle_questions'));
@@ -486,14 +486,14 @@ class edit_renderer extends \plugin_renderer_base {
     }
 
     /**
-     * Render an icon to remove a section from the quiz.
+     * Render an icon to remove a section from the hippotrack.
      *
      * @param object $section the section to be removed.
      * @return string HTML to output.
      */
     public function section_remove_icon($section) {
-        $title = get_string('sectionheadingremove', 'quiz', format_string($section->heading));
-        $url = new \moodle_url('/mod/quiz/edit.php',
+        $title = get_string('sectionheadingremove', 'hippotrack', format_string($section->heading));
+        $url = new \moodle_url('/mod/hippotrack/edit.php',
                 array('sesskey' => sesskey(), 'removesection' => '1', 'sectionid' => $section->id));
         $image = $this->pix_icon('t/delete', $title);
         return $this->action_link($url, $image, null, array(
@@ -501,11 +501,11 @@ class edit_renderer extends \plugin_renderer_base {
     }
 
     /**
-     * Renders HTML to display the questions in a section of the quiz.
+     * Renders HTML to display the questions in a section of the hippotrack.
      *
-     * This function calls {@link core_course_renderer::quiz_section_question()}
+     * This function calls {@link core_course_renderer::hippotrack_section_question()}
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param \stdClass $section information about the section.
      * @param \core_question\local\bank\question_edit_contexts $contexts the relevant question bank contexts.
      * @param array $pagevars the variables from {@link \question_edit_setup()}.
@@ -525,7 +525,7 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * Displays one question with the surrounding controls.
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $slot which slot we are outputting.
      * @param \core_question\local\bank\question_edit_contexts $contexts the relevant question bank contexts.
      * @param array $pagevars the variables from {@link \question_edit_setup()}.
@@ -539,7 +539,7 @@ class edit_renderer extends \plugin_renderer_base {
 
         // Page split/join icon.
         $joinhtml = '';
-        if ($structure->can_be_edited() && !$structure->is_last_slot_in_quiz($slot) &&
+        if ($structure->can_be_edited() && !$structure->is_last_slot_in_hippotrack($slot) &&
                                             !$structure->is_last_slot_in_section($slot)) {
             $joinhtml = $this->page_split_join_button($structure, $slot);
         }
@@ -558,7 +558,7 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * Displays one question with the surrounding controls.
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $slot the first slot on the page we are outputting.
      * @param \core_question\local\bank\question_edit_contexts $contexts the relevant question bank contexts.
      * @param array $pagevars the variables from {@link \question_edit_setup()}.
@@ -591,7 +591,7 @@ class edit_renderer extends \plugin_renderer_base {
 
     /**
      * Returns the add menu that is output once per page.
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $page the page number that this menu will add to.
      * @param \moodle_url $pageurl the canonical URL of this page.
      * @param \core_question\local\bank\question_edit_contexts $contexts the relevant question bank contexts.
@@ -606,14 +606,14 @@ class edit_renderer extends \plugin_renderer_base {
             return '';
         }
         $menu = new \action_menu();
-        $menu->set_constraint('.mod-quiz-edit-content');
-        $trigger = html_writer::tag('span', get_string('add', 'quiz'), array('class' => 'add-menu'));
+        $menu->set_constraint('.mod-hippotrack-edit-content');
+        $trigger = html_writer::tag('span', get_string('add', 'hippotrack'), array('class' => 'add-menu'));
         $menu->set_menu_trigger($trigger);
         // The menu appears within an absolutely positioned element causing width problems.
         // Make sure no-wrap is set so that we don't get a squashed menu.
         $menu->set_nowrap_on_items(true);
 
-        // Disable the link if quiz has attempts.
+        // Disable the link if hippotrack has attempts.
         if (!$structure->can_be_edited()) {
             return $this->render($menu);
         }
@@ -634,7 +634,7 @@ class edit_renderer extends \plugin_renderer_base {
 
     /**
      * Returns the list of actions to go in the add menu.
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $page the page number that this menu will add to.
      * @param \moodle_url $pageurl the canonical URL of this page.
      * @param array $pagevars the variables from {@link \question_edit_setup()}.
@@ -646,13 +646,13 @@ class edit_renderer extends \plugin_renderer_base {
         static $str;
         if (!isset($str)) {
             $str = get_strings(array('addasection', 'addaquestion', 'addarandomquestion',
-                    'addarandomselectedquestion', 'questionbank'), 'quiz');
+                    'addarandomselectedquestion', 'questionbank'), 'hippotrack');
         }
 
         // Get section, page, slotnumber and maxmark.
         $actions = array();
 
-        // Add a new question to the quiz.
+        // Add a new question to the hippotrack.
         $returnurl = new \moodle_url($pageurl, array('addonpage' => $page));
         $params = array('returnurl' => $returnurl->out_as_local_url(false),
                 'cmid' => $structure->get_cmid(), 'category' => $questioncategoryid,
@@ -667,9 +667,9 @@ class edit_renderer extends \plugin_renderer_base {
         // Call question bank.
         $icon = new \pix_icon('t/add', $str->questionbank, 'moodle', array('class' => 'iconsmall', 'title' => ''));
         if ($page) {
-            $title = get_string('addquestionfrombanktopage', 'quiz', $page);
+            $title = get_string('addquestionfrombanktopage', 'hippotrack', $page);
         } else {
-            $title = get_string('addquestionfrombankatend', 'quiz');
+            $title = get_string('addquestionfrombankatend', 'hippotrack');
         }
         $attributes = array('class' => 'cm-edit-action questionbank',
                 'data-header' => $title, 'data-action' => 'questionbank', 'data-addonpage' => $page);
@@ -677,15 +677,15 @@ class edit_renderer extends \plugin_renderer_base {
 
         // Add a random question.
         if ($structure->can_add_random_questions()) {
-            $returnurl = new \moodle_url('/mod/quiz/edit.php', array('cmid' => $structure->get_cmid(), 'data-addonpage' => $page));
+            $returnurl = new \moodle_url('/mod/hippotrack/edit.php', array('cmid' => $structure->get_cmid(), 'data-addonpage' => $page));
             $params = ['returnurl' => $returnurl, 'cmid' => $structure->get_cmid(), 'appendqnumstring' => 'addarandomquestion'];
-            $url = new \moodle_url('/mod/quiz/addrandom.php', $params);
+            $url = new \moodle_url('/mod/hippotrack/addrandom.php', $params);
             $icon = new \pix_icon('t/add', $str->addarandomquestion, 'moodle', array('class' => 'iconsmall', 'title' => ''));
             $attributes = array('class' => 'cm-edit-action addarandomquestion', 'data-action' => 'addarandomquestion');
             if ($page) {
-                $title = get_string('addrandomquestiontopage', 'quiz', $page);
+                $title = get_string('addrandomquestiontopage', 'hippotrack', $page);
             } else {
-                $title = get_string('addrandomquestionatend', 'quiz');
+                $title = get_string('addrandomquestionatend', 'hippotrack');
             }
             $attributes = array_merge(array('data-header' => $title, 'data-addonpage' => $page), $attributes);
             $actions['addarandomquestion'] = new \action_menu_link_secondary($url, $icon, $str->addarandomquestion, $attributes);
@@ -706,9 +706,9 @@ class edit_renderer extends \plugin_renderer_base {
     }
 
     /**
-     * Render the form that contains the data for adding a new question to the quiz.
+     * Render the form that contains the data for adding a new question to the hippotrack.
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $page the page number that this menu will add to.
      * @param \moodle_url $pageurl the canonical URL of this page.
      * @param array $pagevars the variables from {@link \question_edit_setup()}.
@@ -736,7 +736,7 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * Display a question.
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $slot the first slot on the page we are outputting.
      * @param \moodle_url $pageurl the canonical URL of this page.
      * @return string HTML to output.
@@ -782,7 +782,7 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * Get the checkbox render.
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $slot the slot on the page we are outputting.
      * @return string HTML to output.
      */
@@ -794,7 +794,7 @@ class edit_renderer extends \plugin_renderer_base {
                 'name' => 'selectquestion[]',
                 'value' => $questionslot,
                 'classes' => 'select-multiple-checkbox',
-                'label' => get_string('selectquestionslot', 'quiz', $questionslot),
+                'label' => get_string('selectquestionslot', 'hippotrack', $questionslot),
                 'labelclasses' => 'sr-only',
             ]);
 
@@ -804,7 +804,7 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * Get the question name for the slot.
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $slot the slot on the page we are outputting.
      * @param \moodle_url $pageurl the canonical URL of this page.
      * @return string HTML to output.
@@ -823,7 +823,7 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * Get the action icons render.
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $slot the slot on the page we are outputting.
      * @param \moodle_url $pageurl the canonical URL of this page.
      * @return string HTML to output.
@@ -834,7 +834,7 @@ class edit_renderer extends \plugin_renderer_base {
         $slotinfo = $structure->get_slot_by_number($slot);
         $questionicons = '';
         if ($qtype !== 'random') {
-            $questionicons .= $this->question_preview_icon($structure->get_quiz(),
+            $questionicons .= $this->question_preview_icon($structure->get_hippotrack(),
                     $structure->get_question_in_slot($slot),
                     null, null, $slotinfo->requestedversion ?: question_preview_options::ALWAYS_LATEST);
         }
@@ -849,7 +849,7 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * Render the move icon.
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $slot the first slot on the page we are outputting.
      * @return string The markup for the move action.
      */
@@ -875,7 +875,7 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * Render the preview icon.
      *
-     * @param \stdClass $quiz the quiz settings from the database.
+     * @param \stdClass $hippotrack the hippotrack settings from the database.
      * @param \stdClass $questiondata which question to preview.
      *      If ->questionid is set, that is used instead of ->id.
      * @param bool $label if true, show the preview question label after the icon
@@ -883,23 +883,23 @@ class edit_renderer extends \plugin_renderer_base {
      * @param int $restartversion version to use when restarting the preview
      * @return string HTML to output.
      */
-    public function question_preview_icon($quiz, $questiondata, $label = null, $variant = null, $restartversion = null) {
+    public function question_preview_icon($hippotrack, $questiondata, $label = null, $variant = null, $restartversion = null) {
         $question = clone($questiondata);
         if (isset($question->questionid)) {
 
             $question->id = $question->questionid;
         }
 
-        $url = quiz_question_preview_url($quiz, $question, $variant, $restartversion);
+        $url = hippotrack_question_preview_url($hippotrack, $question, $variant, $restartversion);
 
         // Do we want a label?
         $strpreviewlabel = '';
         if ($label) {
-            $strpreviewlabel = ' ' . get_string('preview', 'quiz');
+            $strpreviewlabel = ' ' . get_string('preview', 'hippotrack');
         }
 
         // Build the icon.
-        $strpreviewquestion = get_string('previewquestion', 'quiz');
+        $strpreviewquestion = get_string('previewquestion', 'hippotrack');
         $image = $this->pix_icon('t/preview', $strpreviewquestion);
 
         $action = new \popup_action('click', $url, 'questionpreview',
@@ -910,9 +910,9 @@ class edit_renderer extends \plugin_renderer_base {
     }
 
     /**
-     * Render an icon to remove a question from the quiz.
+     * Render an icon to remove a question from the hippotrack.
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $slot the first slot on the page we are outputting.
      * @param \moodle_url $pageurl the canonical URL of the edit page.
      * @return string HTML to output.
@@ -928,28 +928,28 @@ class edit_renderer extends \plugin_renderer_base {
     }
 
     /**
-     * Display an icon to split or join two pages of the quiz.
+     * Display an icon to split or join two pages of the hippotrack.
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $slot the first slot on the page we are outputting.
      * @return string HTML to output.
      */
     public function page_split_join_button($structure, $slot) {
         $insertpagebreak = !$structure->is_last_slot_on_page($slot);
-        $url = new \moodle_url('repaginate.php', array('quizid' => $structure->get_quizid(),
+        $url = new \moodle_url('repaginate.php', array('hippotrackid' => $structure->get_hippotrackid(),
                 'slot' => $slot, 'repag' => $insertpagebreak ? 2 : 1, 'sesskey' => sesskey()));
 
         if ($insertpagebreak) {
-            $title = get_string('addpagebreak', 'quiz');
+            $title = get_string('addpagebreak', 'hippotrack');
             $image = $this->image_icon('e/insert_page_break', $title);
             $action = 'addpagebreak';
         } else {
-            $title = get_string('removepagebreak', 'quiz');
+            $title = get_string('removepagebreak', 'hippotrack');
             $image = $this->image_icon('e/remove_page_break', $title);
             $action = 'removepagebreak';
         }
 
-        // Disable the link if quiz has attempts.
+        // Disable the link if hippotrack has attempts.
         $disabled = null;
         if (!$structure->can_be_edited()) {
             $disabled = 'disabled';
@@ -963,7 +963,7 @@ class edit_renderer extends \plugin_renderer_base {
      * Display the icon for whether this question can only be seen if the previous
      * one has been answered.
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $slot the first slot on the page we are outputting.
      * @return string HTML to output.
      */
@@ -973,18 +973,18 @@ class edit_renderer extends \plugin_renderer_base {
             'previousq' => $structure->get_displayed_number_for_slot(max($slot - 1, 1)),
         );
         if ($structure->is_question_dependent_on_previous_slot($slot)) {
-            $title = get_string('questiondependencyremove', 'quiz', $a);
-            $image = $this->pix_icon('t/locked', get_string('questiondependsonprevious', 'quiz'),
+            $title = get_string('questiondependencyremove', 'hippotrack', $a);
+            $image = $this->pix_icon('t/locked', get_string('questiondependsonprevious', 'hippotrack'),
                     'moodle', array('title' => ''));
             $action = 'removedependency';
         } else {
-            $title = get_string('questiondependencyadd', 'quiz', $a);
-            $image = $this->pix_icon('t/unlocked', get_string('questiondependencyfree', 'quiz'),
+            $title = get_string('questiondependencyadd', 'hippotrack', $a);
+            $image = $this->pix_icon('t/unlocked', get_string('questiondependencyfree', 'hippotrack'),
                     'moodle', array('title' => ''));
             $action = 'adddependency';
         }
 
-        // Disable the link if quiz has attempts.
+        // Disable the link if hippotrack has attempts.
         $disabled = null;
         if (!$structure->can_be_edited()) {
             $disabled = 'disabled';
@@ -999,12 +999,12 @@ class edit_renderer extends \plugin_renderer_base {
     }
 
     /**
-     * Renders html to display a name with the link to the question on a quiz edit page
+     * Renders html to display a name with the link to the question on a hippotrack edit page
      *
      * If the user does not have permission to edi the question, it is rendered
      * without a link
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $slot which slot we are outputting.
      * @param \moodle_url $pageurl the canonical URL of this page.
      * @return string HTML to output.
@@ -1017,7 +1017,7 @@ class edit_renderer extends \plugin_renderer_base {
                 'returnurl' => $pageurl->out_as_local_url(),
                 'cmid' => $structure->get_cmid(), 'id' => $question->questionid));
 
-        $instancename = quiz_question_tostring($question);
+        $instancename = hippotrack_question_tostring($question);
 
         $qtype = \question_bank::get_qtype($question->qtype, false);
         $namestr = $qtype->local_name();
@@ -1033,7 +1033,7 @@ class edit_renderer extends \plugin_renderer_base {
         // Display the link itself.
         $activitylink = $icon . html_writer::tag('span', $editicon . $instancename, array('class' => 'instancename'));
         $output .= html_writer::link($editurl, $activitylink,
-                array('title' => get_string('editquestion', 'quiz').' '.$title));
+                array('title' => get_string('editquestion', 'hippotrack').' '.$title));
 
         return $output;
     }
@@ -1042,7 +1042,7 @@ class edit_renderer extends \plugin_renderer_base {
      * Renders html to display a random question the link to edit the configuration
      * and also to see that category in the question bank.
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $slotnumber which slot we are outputting.
      * @param \moodle_url $pageurl the canonical URL of this page.
      * @return string HTML to output.
@@ -1050,15 +1050,15 @@ class edit_renderer extends \plugin_renderer_base {
     public function random_question(structure $structure, $slotnumber, $pageurl) {
         $question = $structure->get_question_in_slot($slotnumber);
         $slot = $structure->get_slot_by_number($slotnumber);
-        $editurl = new \moodle_url('/mod/quiz/editrandom.php',
+        $editurl = new \moodle_url('/mod/hippotrack/editrandom.php',
                 array('returnurl' => $pageurl->out_as_local_url(), 'slotid' => $slot->id));
 
         $temp = clone($question);
         $temp->questiontext = '';
         $temp->name = qbank_helper::describe_random_question($slot);
-        $instancename = quiz_question_tostring($temp);
+        $instancename = hippotrack_question_tostring($temp);
 
-        $configuretitle = get_string('configurerandomquestion', 'quiz');
+        $configuretitle = get_string('configurerandomquestion', 'hippotrack');
         $qtype = \question_bank::get_qtype($question->qtype, false);
         $namestr = $qtype->local_name();
         $icon = $this->pix_icon('icon', $namestr, $qtype->plugin_name(), array('title' => $namestr,
@@ -1084,7 +1084,7 @@ class edit_renderer extends \plugin_renderer_base {
         // selected from in the question bank.
         $qbankurl = new \moodle_url('/question/edit.php', $qbankurlparams);
         $qbanklink = ' ' . \html_writer::link($qbankurl,
-                        get_string('seequestions', 'quiz'), array('class' => 'mod_hippotrack_random_qbank_link'));
+                        get_string('seequestions', 'hippotrack'), array('class' => 'mod_hippotrack_random_qbank_link'));
 
         return html_writer::link($editurl, $icon . $editicon, array('title' => $configuretitle)) .
                 ' ' . $instancename . ' ' . $qbanklink;
@@ -1093,7 +1093,7 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * Display the 'marked out of' information for a question.
      * Along with the regrade action.
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param int $slot which slot we are outputting.
      * @return string HTML to output.
      */
@@ -1110,7 +1110,7 @@ class edit_renderer extends \plugin_renderer_base {
 
         $output = html_writer::span($structure->formatted_question_grade($slot),
                 'instancemaxmark decimalplaces_' . $structure->get_decimal_places_for_question_marks(),
-                array('title' => get_string('maxmark', 'quiz')));
+                array('title' => get_string('maxmark', 'hippotrack')));
 
         $output .= html_writer::span(
             html_writer::link(
@@ -1119,7 +1119,7 @@ class edit_renderer extends \plugin_renderer_base {
                 array(
                     'class' => 'editing_maxmark',
                     'data-action' => 'editmaxmark',
-                    'title' => get_string('editmaxmark', 'quiz'),
+                    'title' => get_string('editmaxmark', 'hippotrack'),
                 )
             )
         );
@@ -1159,7 +1159,7 @@ class edit_renderer extends \plugin_renderer_base {
      * Initialise the JavaScript for the general editing. (JavaScript for popups
      * is handled with the specific code for those.)
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param \core_question\local\bank\question_edit_contexts $contexts the relevant question bank contexts.
      * @param array $pagevars the variables from {@link \question_edit_setup()}.
      * @param \moodle_url $pageurl the canonical URL of this page.
@@ -1169,8 +1169,8 @@ class edit_renderer extends \plugin_renderer_base {
             \core_question\local\bank\question_edit_contexts $contexts, array $pagevars, \moodle_url $pageurl) {
 
         $config = new \stdClass();
-        $config->resourceurl = '/mod/quiz/edit_rest.php';
-        $config->sectionurl = '/mod/quiz/edit_rest.php';
+        $config->resourceurl = '/mod/hippotrack/edit_rest.php';
+        $config->sectionurl = '/mod/hippotrack/edit_rest.php';
         $config->pageparams = array();
         $config->questiondecimalpoints = $structure->get_decimal_places_for_question_marks();
         $config->pagehtml = $this->new_page_template($structure, $contexts, $pagevars, $pageurl);
@@ -1180,7 +1180,7 @@ class edit_renderer extends \plugin_renderer_base {
                 'M.mod_hippotrack.init_resource_toolbox',
                 array(array(
                         'courseid' => $structure->get_courseid(),
-                        'quizid' => $structure->get_quizid(),
+                        'hippotrackid' => $structure->get_hippotrackid(),
                         'ajaxurl' => $config->resourceurl,
                         'config' => $config,
                 ))
@@ -1188,12 +1188,12 @@ class edit_renderer extends \plugin_renderer_base {
         unset($config->pagehtml);
         unset($config->addpageiconhtml);
 
-        $this->page->requires->strings_for_js(array('areyousureremoveselected'), 'quiz');
+        $this->page->requires->strings_for_js(array('areyousureremoveselected'), 'hippotrack');
         $this->page->requires->yui_module('moodle-mod_hippotrack-toolboxes',
                 'M.mod_hippotrack.init_section_toolbox',
                 array(array(
                         'courseid' => $structure,
-                        'quizid' => $structure->get_quizid(),
+                        'hippotrackid' => $structure->get_hippotrackid(),
                         'ajaxurl' => $config->sectionurl,
                         'config' => $config,
                 ))
@@ -1202,7 +1202,7 @@ class edit_renderer extends \plugin_renderer_base {
         $this->page->requires->yui_module('moodle-mod_hippotrack-dragdrop', 'M.mod_hippotrack.init_section_dragdrop',
                 array(array(
                         'courseid' => $structure,
-                        'quizid' => $structure->get_quizid(),
+                        'hippotrackid' => $structure->get_hippotrackid(),
                         'ajaxurl' => $config->sectionurl,
                         'config' => $config,
                 )), null, true);
@@ -1210,7 +1210,7 @@ class edit_renderer extends \plugin_renderer_base {
         $this->page->requires->yui_module('moodle-mod_hippotrack-dragdrop', 'M.mod_hippotrack.init_resource_dragdrop',
                 array(array(
                         'courseid' => $structure,
-                        'quizid' => $structure->get_quizid(),
+                        'hippotrackid' => $structure->get_hippotrackid(),
                         'ajaxurl' => $config->resourceurl,
                         'config' => $config,
                 )), null, true);
@@ -1254,7 +1254,7 @@ class edit_renderer extends \plugin_renderer_base {
                 'questiondependencyfree',
                 'questiondependencyremove',
                 'questiondependsonprevious',
-        ), 'quiz');
+        ), 'hippotrack');
 
         foreach (\question_bank::get_all_qtypes() as $qtype => $notused) {
             $this->page->requires->string_for_js('pluginname', 'qtype_' . $qtype);
@@ -1266,7 +1266,7 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * HTML for a page, with ids stripped, so it can be used as a javascript template.
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @param \core_question\local\bank\question_edit_contexts $contexts the relevant question bank contexts.
      * @param array $pagevars the variables from {@link \question_edit_setup()}.
      * @param \moodle_url $pageurl the canonical URL of this page.
@@ -1288,7 +1288,7 @@ class edit_renderer extends \plugin_renderer_base {
         $strcontexts[] = 'addonpage%3D';
         $strcontexts[] = 'addonpage=';
         $strcontexts[] = 'addonpage="';
-        $strcontexts[] = get_string('addquestionfrombanktopage', 'quiz', '');
+        $strcontexts[] = get_string('addquestionfrombanktopage', 'hippotrack', '');
         $strcontexts[] = 'data-addonpage%3D';
         $strcontexts[] = 'action-menu-';
 
@@ -1302,7 +1302,7 @@ class edit_renderer extends \plugin_renderer_base {
     /**
      * HTML for a page, with ids stripped, so it can be used as a javascript template.
      *
-     * @param structure $structure object containing the structure of the quiz.
+     * @param structure $structure object containing the structure of the hippotrack.
      * @return string HTML for a new icon
      */
     protected function add_page_icon_template(structure $structure) {

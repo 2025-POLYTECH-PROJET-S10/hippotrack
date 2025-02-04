@@ -22,7 +22,7 @@ use restore_controller;
 use restore_dbops;
 
 /**
- * Unit tests restoring quiz attempts
+ * Unit tests restoring hippotrack attempts
  *
  * @package     mod_hippotrack
  * @copyright   2021 Paul Holden <paulh@moodle.com>
@@ -42,7 +42,7 @@ class restore_attempt_test extends \advanced_testcase {
     /**
      * Test restore dates.
      *
-     * @covers \restore_quiz_activity_structure_step
+     * @covers \restore_hippotrack_activity_structure_step
      */
     public function test_restore_question_attempts_missing_users(): void {
         global $DB, $USER;
@@ -50,7 +50,7 @@ class restore_attempt_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        // Contains a quiz with four attempts from different users. The users are as follows (user ID -> user):
+        // Contains a hippotrack with four attempts from different users. The users are as follows (user ID -> user):
         // 3 -> User 01, 4 -> User 02, 5 -> User 03, 6 -> User 04.
         // The user details for User 02 and User 03 have been removed from the backup file.
         $testfixture = __DIR__ . '/fixtures/question_attempts_missing_users.mbz';
@@ -74,7 +74,7 @@ class restore_attempt_test extends \advanced_testcase {
         // Grade restore also generates some debugging.
         $this->assertDebuggingCalledCount(2);
 
-        $restoredquiz = $DB->get_record('quiz', []);
+        $restoredhippotrack = $DB->get_record('hippotrack', []);
 
         // Assert logs were added for User 02 and User 03, due to missing mapping lookup.
         $loginfomessages = $DB->get_fieldset_select('backup_logs', 'message', 'backupid = ? AND loglevel = ?', [
@@ -82,14 +82,14 @@ class restore_attempt_test extends \advanced_testcase {
             backup::LOG_INFO,
         ]);
 
-        $this->assertContains("Mapped user ID not found for user 4, quiz {$restoredquiz->id}, attempt 1. Skipping quiz attempt",
+        $this->assertContains("Mapped user ID not found for user 4, hippotrack {$restoredhippotrack->id}, attempt 1. Skipping hippotrack attempt",
             $loginfomessages);
-        $this->assertContains("Mapped user ID not found for user 5, quiz {$restoredquiz->id}, attempt 1. Skipping quiz attempt",
+        $this->assertContains("Mapped user ID not found for user 5, hippotrack {$restoredhippotrack->id}, attempt 1. Skipping hippotrack attempt",
             $loginfomessages);
 
         // User 01 has supplied the wrong answer, assert dates match the backup file too.
-        $user01attempt = $DB->get_record('quiz_attempts', [
-            'quiz' => $restoredquiz->id,
+        $user01attempt = $DB->get_record('hippotrack_attempts', [
+            'hippotrack' => $restoredhippotrack->id,
             'userid' => core_user::get_user_by_username('user01')->id,
         ]);
 
@@ -98,8 +98,8 @@ class restore_attempt_test extends \advanced_testcase {
         $this->assertEquals(0.0, (float) $user01attempt->sumgrades);
 
         // User 04 has supplied the correct answer, assert dates match the backup file too.
-        $user04attempt = $DB->get_record('quiz_attempts', [
-            'quiz' => $restoredquiz->id,
+        $user04attempt = $DB->get_record('hippotrack_attempts', [
+            'hippotrack' => $restoredhippotrack->id,
             'userid' => core_user::get_user_by_username('user04')->id,
         ]);
 

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Definition of log events for the quiz module.
+ * Definition of log events for the hippotrack module.
  *
  * @package    mod_hippotrack
  * @category   log
@@ -26,19 +26,19 @@
 defined('MOODLE_INTERNAL') || die();
 
 $logs = array(
-    array('module'=>'quiz', 'action'=>'add', 'mtable'=>'quiz', 'field'=>'name'),
-    array('module'=>'quiz', 'action'=>'update', 'mtable'=>'quiz', 'field'=>'name'),
-    array('module'=>'quiz', 'action'=>'view', 'mtable'=>'quiz', 'field'=>'name'),
-    array('module'=>'quiz', 'action'=>'report', 'mtable'=>'quiz', 'field'=>'name'),
-    array('module'=>'quiz', 'action'=>'attempt', 'mtable'=>'quiz', 'field'=>'name'),
-    array('module'=>'quiz', 'action'=>'submit', 'mtable'=>'quiz', 'field'=>'name'),
-    array('module'=>'quiz', 'action'=>'review', 'mtable'=>'quiz', 'field'=>'name'),
-    array('module'=>'quiz', 'action'=>'editquestions', 'mtable'=>'quiz', 'field'=>'name'),
-    array('module'=>'quiz', 'action'=>'preview', 'mtable'=>'quiz', 'field'=>'name'),
-    array('module'=>'quiz', 'action'=>'start attempt', 'mtable'=>'quiz', 'field'=>'name'),
-    array('module'=>'quiz', 'action'=>'close attempt', 'mtable'=>'quiz', 'field'=>'name'),
-    array('module'=>'quiz', 'action'=>'continue attempt', 'mtable'=>'quiz', 'field'=>'name'),
-    array('module'=>'quiz', 'action'=>'edit override', 'mtable'=>'quiz', 'field'=>'name'),
-    array('module'=>'quiz', 'action'=>'delete override', 'mtable'=>'quiz', 'field'=>'name'),
-    array('module'=>'quiz', 'action'=>'view summary', 'mtable'=>'quiz', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'add', 'mtable'=>'hippotrack', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'update', 'mtable'=>'hippotrack', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'view', 'mtable'=>'hippotrack', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'report', 'mtable'=>'hippotrack', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'attempt', 'mtable'=>'hippotrack', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'submit', 'mtable'=>'hippotrack', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'review', 'mtable'=>'hippotrack', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'editquestions', 'mtable'=>'hippotrack', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'preview', 'mtable'=>'hippotrack', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'start attempt', 'mtable'=>'hippotrack', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'close attempt', 'mtable'=>'hippotrack', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'continue attempt', 'mtable'=>'hippotrack', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'edit override', 'mtable'=>'hippotrack', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'delete override', 'mtable'=>'hippotrack', 'field'=>'name'),
+    array('module'=>'hippotrack', 'action'=>'view summary', 'mtable'=>'hippotrack', 'field'=>'name'),
 );

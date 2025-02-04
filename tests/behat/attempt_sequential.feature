@@ -1,5 +1,5 @@
 @mod @mod_hippotrack
-Feature: Attempt a quiz in a sequential mode
+Feature: Attempt a hippotrack in a sequential mode
   As a student I should not be able to see the previous questions
 
   Background:
@@ -25,8 +25,8 @@ Feature: Attempt a quiz in a sequential mode
       | Test questions   | truefalse | TF4  | Fourth question |
     And the following "activities" exist:
       | activity | name   | intro              | course | idnumber | preferredbehaviour | navmethod  |
-      | quiz     | Quiz 1 | Quiz 1 description | C1     | quiz1    | immediatefeedback  | sequential |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack     | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | immediatefeedback  | sequential |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | requireprevious |
       | TF1      | 1    | 1               |
       | TF2      | 2    | 1               |
@@ -35,10 +35,10 @@ Feature: Attempt a quiz in a sequential mode
 
   @javascript
   Scenario Outline: As a student I should not be able to navigate out of sequence if sequential navigation is on.
-    Given I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
-    And I press "Attempt quiz"
+    Given I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
+    And I press "Attempt hippotrack"
     And I should see "First question"
-    When I am on the "Quiz 1 > student > Attempt 1 > <pagenumber>" "mod_hippotrack > Attempt view" page
+    When I am on the "HippoTrack 1 > student > Attempt 1 > <pagenumber>" "mod_hippotrack > Attempt view" page
     And I should see "<canseequestion>"
     Then I should not see "<cannotseequestion>"
     Examples:
@@ -48,47 +48,47 @@ Feature: Attempt a quiz in a sequential mode
       | 4          | First question  | Fourth question   |
 
   @javascript
-  Scenario: As a student I should not be able to navigate out of sequence by opening new windows on the same quiz.
+  Scenario: As a student I should not be able to navigate out of sequence by opening new windows on the same hippotrack.
     Given the following config values are set as admin:
       | config         | value | plugin |
-      | autosaveperiod | 60    | quiz   |
-    And I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
-    And I press "Attempt quiz"
+      | autosaveperiod | 60    | hippotrack   |
+    And I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
+    And I press "Attempt hippotrack"
     And I should see "First question"
     And I click on "True" "radio" in the "First question" "question"
     And I click on "Next page" "button"
-    When I am on the "Quiz 1 > student > Attempt 1 > 3" "mod_hippotrack > Attempt view" page
+    When I am on the "HippoTrack 1 > student > Attempt 1 > 3" "mod_hippotrack > Attempt view" page
     And I click on "True" "radio" in the "Third question" "question"
     And I should see "Third question"
     And I click on "Next page" "button"
-    And I am on the "Quiz 1 > student > Attempt 1 > 1" "mod_hippotrack > Attempt view" page
+    And I am on the "HippoTrack 1 > student > Attempt 1 > 1" "mod_hippotrack > Attempt view" page
     Then I should see "Fourth question"
 
   @javascript
   Scenario: As a student I should not be able to save my data by opening a given page out of sequence.
     Given the following config values are set as admin:
       | config         | value | plugin |
-      | autosaveperiod | 1     | quiz   |
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
-    And I press "Attempt quiz"
-    And I am on the "Quiz 1 > student > Attempt 1 > 2" "mod_hippotrack > Attempt view" page
+      | autosaveperiod | 1     | hippotrack   |
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
+    And I press "Attempt hippotrack"
+    And I am on the "HippoTrack 1 > student > Attempt 1 > 2" "mod_hippotrack > Attempt view" page
     And I should see "Second question"
     And I click on "True" "radio" in the "Second question" "question"
     And I wait "2" seconds
-    And I am on the "Quiz 1 > student > Attempt 1 > 1" "mod_hippotrack > Attempt view" page
+    And I am on the "HippoTrack 1 > student > Attempt 1 > 1" "mod_hippotrack > Attempt view" page
     Then I should see "Second question"
 
   @javascript
   Scenario: As a student I can review question I have finished in any order
-    Given user "student" has attempted "Quiz 1" with responses:
+    Given user "student" has attempted "HippoTrack 1" with responses:
       | slot | response |
       |   1  | True     |
       |   2  | False    |
       |   3  | False    |
       |   4  | False    |
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
     And I follow "Review"
-    And I am on the "Quiz 1 > student > Attempt 1 > 3" "mod_hippotrack > Attempt view" page
+    And I am on the "HippoTrack 1 > student > Attempt 1 > 3" "mod_hippotrack > Attempt view" page
     And I should see "Third question"
-    And I am on the "Quiz 1 > student > Attempt 1 > 2" "mod_hippotrack > Attempt view" page
+    And I am on the "HippoTrack 1 > student > Attempt 1 > 2" "mod_hippotrack > Attempt view" page
     Then I should see "Second question"

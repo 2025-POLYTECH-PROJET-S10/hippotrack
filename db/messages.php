@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines message providers (types of message sent) for the quiz module.
+ * Defines message providers (types of message sent) for the hippotrack module.
  *
  * @package   mod_hippotrack
  * @copyright 2010 Andrew Davis http://moodle.com
@@ -25,30 +25,30 @@
 defined('MOODLE_INTERNAL') || die();
 
 $messageproviders = array(
-    // Notify teacher that a student has submitted a quiz attempt.
+    // Notify teacher that a student has submitted a hippotrack attempt.
     'submission' => array(
-        'capability' => 'mod/quiz:emailnotifysubmission'
+        'capability' => 'mod/hippotrack:emailnotifysubmission'
     ),
 
-    // Confirm a student's quiz attempt.
+    // Confirm a student's hippotrack attempt.
     'confirmation' => array(
-        'capability' => 'mod/quiz:emailconfirmsubmission',
+        'capability' => 'mod/hippotrack:emailconfirmsubmission',
         'defaults' => array(
             'airnotifier' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_ENABLED,
         ),
     ),
 
-    // Warning to the student that their quiz attempt is now overdue, if the quiz
+    // Warning to the student that their hippotrack attempt is now overdue, if the hippotrack
     // has a grace period.
     'attempt_overdue' => array(
-        'capability' => 'mod/quiz:emailwarnoverdue',
+        'capability' => 'mod/hippotrack:emailwarnoverdue',
         'defaults' => array(
             'airnotifier' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_ENABLED,
         ),
     ),
 
     'attempt_grading_complete' => [
-        'capability' => 'mod/quiz:emailnotifyattemptgraded',
+        'capability' => 'mod/hippotrack:emailnotifyattemptgraded',
         'defaults' => [
             'airnotifier' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_ENABLED,
         ],

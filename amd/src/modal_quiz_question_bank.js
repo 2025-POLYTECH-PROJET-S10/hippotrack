@@ -16,7 +16,7 @@
 /**
  * Contain the logic for the question bank modal.
  *
- * @module     mod_hippotrack/modal_quiz_question_bank
+ * @module     mod_hippotrack/modal_hippotrack_question_bank
  * @copyright  2018 Ryan Wyllie <ryan@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -41,7 +41,7 @@ define([
 
         var registered = false;
         var SELECTORS = {
-            ADD_TO_QUIZ_CONTAINER: 'td.addtoquizaction',
+            ADD_TO_HIPPOTRACK_CONTAINER: 'td.addtohippotrackaction',
             ANCHOR: 'a[href]',
             PREVIEW_CONTAINER: 'td.previewaction',
             SEARCH_OPTIONS: '#advancedsearch',
@@ -54,16 +54,16 @@ define([
          *
          * @param {object} root The root jQuery element for the modal
          */
-        var ModalQuizQuestionBank = function (root) {
+        var ModalHippoTrackQuestionBank = function (root) {
             Modal.call(this, root);
 
             this.contextId = null;
             this.addOnPageId = null;
         };
 
-        ModalQuizQuestionBank.TYPE = 'mod_hippotrack-quiz-question-bank';
-        ModalQuizQuestionBank.prototype = Object.create(Modal.prototype);
-        ModalQuizQuestionBank.prototype.constructor = ModalQuizQuestionBank;
+        ModalHippoTrackQuestionBank.TYPE = 'mod_hippotrack-hippotrack-question-bank';
+        ModalHippoTrackQuestionBank.prototype = Object.create(Modal.prototype);
+        ModalHippoTrackQuestionBank.prototype.constructor = ModalHippoTrackQuestionBank;
 
         /**
          * Save the Moodle context id that the question bank is being
@@ -72,7 +72,7 @@ define([
          * @method setContextId
          * @param {int} id
          */
-        ModalQuizQuestionBank.prototype.setContextId = function (id) {
+        ModalHippoTrackQuestionBank.prototype.setContextId = function (id) {
             this.contextId = id;
         };
 
@@ -82,18 +82,18 @@ define([
          * @method getContextId
          * @return {int}
          */
-        ModalQuizQuestionBank.prototype.getContextId = function () {
+        ModalHippoTrackQuestionBank.prototype.getContextId = function () {
             return this.contextId;
         };
 
         /**
          * Set the id of the page that the question should be added to
-         * when the user clicks the add to quiz link.
+         * when the user clicks the add to hippotrack link.
          *
          * @method setAddOnPageId
          * @param {int} id
          */
-        ModalQuizQuestionBank.prototype.setAddOnPageId = function (id) {
+        ModalHippoTrackQuestionBank.prototype.setAddOnPageId = function (id) {
             this.addOnPageId = id;
         };
 
@@ -103,7 +103,7 @@ define([
          * @method getAddOnPageId
          * @return {int}
          */
-        ModalQuizQuestionBank.prototype.getAddOnPageId = function () {
+        ModalHippoTrackQuestionBank.prototype.getAddOnPageId = function () {
             return this.addOnPageId;
         };
 
@@ -117,7 +117,7 @@ define([
          * @method show
          * @return {void}
          */
-        ModalQuizQuestionBank.prototype.show = function () {
+        ModalHippoTrackQuestionBank.prototype.show = function () {
             this.reloadBodyContent(window.location.search);
             return Modal.prototype.show.call(this);
         };
@@ -132,11 +132,11 @@ define([
          * @method reloadBodyContent
          * @param {string} queryString URL encoded string.
          */
-        ModalQuizQuestionBank.prototype.reloadBodyContent = function (queryString) {
+        ModalHippoTrackQuestionBank.prototype.reloadBodyContent = function (queryString) {
             // Load the question bank fragment to be displayed in the modal.
             var promise = Fragment.loadFragment(
                 'mod_hippotrack',
-                'quiz_question_bank',
+                'hippotrack_question_bank',
                 this.getContextId(),
                 {
                     querystring: queryString
@@ -150,11 +150,11 @@ define([
          * Update the URL of the anchor element that the user clicked on to make
          * sure that the question is added to the correct page.
          *
-         * @method handleAddToQuizEvent
+         * @method handleAddToHippoTrackEvent
          * @param {event} e A JavaScript event
          * @param {object} anchorElement The anchor element that was triggered
          */
-        ModalQuizQuestionBank.prototype.handleAddToQuizEvent = function (e, anchorElement) {
+        ModalHippoTrackQuestionBank.prototype.handleAddToHippoTrackEvent = function (e, anchorElement) {
             // If the user clicks the plus icon to add the question to the page
             // directly then we need to intercept the click in order to adjust the
             // href and include the correct add on page id before the page is
@@ -170,7 +170,7 @@ define([
          * @param {event} e A JavaScript event
          * @param {object} anchorElement The anchor element that was triggered
          */
-        ModalQuizQuestionBank.prototype.handlePreviewContainerEvent = function (e, anchorElement) {
+        ModalHippoTrackQuestionBank.prototype.handlePreviewContainerEvent = function (e, anchorElement) {
             var popupOptions = [
                 'height=600',
                 'width=800',
@@ -202,7 +202,7 @@ define([
          * @method handleDisplayOptionFormEvent
          * @param {event} e A JavaScript event
          */
-        ModalQuizQuestionBank.prototype.handleDisplayOptionFormEvent = function (e) {
+        ModalHippoTrackQuestionBank.prototype.handleDisplayOptionFormEvent = function (e) {
             // Stop propagation to prevent other wild event handlers
             // from submitting the form on change.
             e.stopPropagation();
@@ -217,14 +217,14 @@ define([
          * Listen for changes to the display options form.
          *
          * This handles the user changing:
-         *      - The quiz category select box
+         *      - The hippotrack category select box
          *      - The tags to filter by
          *      - Show/hide questions from sub categories
          *      - Show/hide old questions
          *
          * @method registerDisplayOptionListeners
          */
-        ModalQuizQuestionBank.prototype.registerDisplayOptionListeners = function () {
+        ModalHippoTrackQuestionBank.prototype.registerDisplayOptionListeners = function () {
             // Listen for changes to the display options form.
             this.getModal().on('change', SELECTORS.DISPLAY_OPTIONS, function (e) {
                 // Get the element that was changed.
@@ -251,7 +251,7 @@ define([
          *
          * @method registerEventListeners
          */
-        ModalQuizQuestionBank.prototype.registerEventListeners = function () {
+        ModalHippoTrackQuestionBank.prototype.registerEventListeners = function () {
             // Apply parent event listeners.
             Modal.prototype.registerEventListeners.call(this);
 
@@ -259,7 +259,7 @@ define([
             this.registerDisplayOptionListeners();
 
             this.getModal().on('submit', SELECTORS.ADD_QUESTIONS_FORM, function (e) {
-                // If the user clicks on the "Add selected questions to the quiz" button to add some questions to the page
+                // If the user clicks on the "Add selected questions to the hippotrack" button to add some questions to the page
                 // then we need to intercept the submit in order to include the correct "add on page id" before the form is
                 // submitted.
                 var formElement = $(e.currentTarget);
@@ -273,9 +273,9 @@ define([
             this.getModal().on('click', SELECTORS.ANCHOR, function (e) {
                 var anchorElement = $(e.currentTarget);
 
-                // If the anchor element was the add to quiz link.
-                if (anchorElement.closest(SELECTORS.ADD_TO_QUIZ_CONTAINER).length) {
-                    this.handleAddToQuizEvent(e, anchorElement);
+                // If the anchor element was the add to hippotrack link.
+                if (anchorElement.closest(SELECTORS.ADD_TO_HIPPOTRACK_CONTAINER).length) {
+                    this.handleAddToHippoTrackEvent(e, anchorElement);
                     return;
                 }
 
@@ -308,13 +308,13 @@ define([
         // imported so that you can create modals of this type using the modal factory.
         if (!registered) {
             ModalRegistry.register(
-                ModalQuizQuestionBank.TYPE,
-                ModalQuizQuestionBank,
+                ModalHippoTrackQuestionBank.TYPE,
+                ModalHippoTrackQuestionBank,
                 'core/modal'
             );
 
             registered = true;
         }
 
-        return ModalQuizQuestionBank;
+        return ModalHippoTrackQuestionBank;
     });

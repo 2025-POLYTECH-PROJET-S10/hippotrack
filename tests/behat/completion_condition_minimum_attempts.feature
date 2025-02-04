@@ -1,8 +1,8 @@
 @mod @mod_hippotrack @core_completion
-Feature: Set a quiz to be marked complete when the student completes a minimum amount of attempts
-  In order to ensure a student has completed the quiz before being marked complete
+Feature: Set a hippotrack to be marked complete when the student completes a minimum amount of attempts
+  In order to ensure a student has completed the hippotrack before being marked complete
   As a teacher
-  I need to set a quiz to complete when the student completes a certain amount of attempts
+  I need to set a hippotrack to complete when the student completes a certain amount of attempts
 
   Background:
     Given the following "users" exist:
@@ -26,36 +26,36 @@ Feature: Set a quiz to be marked complete when the student completes a minimum a
       | Test questions   | truefalse | First question | Answer the first question |
     And the following "activities" exist:
       | activity | name           | course | idnumber | completion | completionminattemptsenabled | completionminattempts |
-      | quiz     | Test quiz name | C1     | quiz1    | 2          | 1                            | 2                     |
-    And quiz "Test quiz name" contains the following questions:
+      | hippotrack     | Test hippotrack name | C1     | hippotrack1    | 2          | 1                            | 2                     |
+    And hippotrack "Test hippotrack name" contains the following questions:
       | question       | page |
       | First question | 1    |
-    And user "student1" has attempted "Test quiz name" with responses:
+    And user "student1" has attempted "Test hippotrack name" with responses:
       | slot | response |
       |   1  | False    |
 
   Scenario: student1 uses up both attempts without passing
     When I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And "Completed: Test quiz name" "icon" should not exist in the "Test quiz name" "list_item"
+    And "Completed: Test hippotrack name" "icon" should not exist in the "Test hippotrack name" "list_item"
     And I log out
     And I log in as "student1"
     And I am on "Course 1" course homepage
-    And the "Make attempts: 2" completion condition of "Test quiz name" is displayed as "todo"
-    And I follow "Test quiz name"
-    And I press "Re-attempt quiz"
+    And the "Make attempts: 2" completion condition of "Test hippotrack name" is displayed as "todo"
+    And I follow "Test hippotrack name"
+    And I press "Re-attempt hippotrack"
     And I set the field "False" to "1"
     And I press "Finish attempt ..."
     And I press "Submit all and finish"
     And I am on "Course 1" course homepage
-    Then the "Make attempts: 2" completion condition of "Test quiz name" is displayed as "done"
-    And I follow "Test quiz name"
-    And the "Make attempts: 2" completion condition of "Test quiz name" is displayed as "done"
+    Then the "Make attempts: 2" completion condition of "Test hippotrack name" is displayed as "done"
+    And I follow "Test hippotrack name"
+    And the "Make attempts: 2" completion condition of "Test hippotrack name" is displayed as "done"
     And I log out
     And I log in as "teacher1"
     And I am on "Course 1" course homepage
-    And I follow "Test quiz name"
-    And "Test quiz name" should have the "Make attempts: 2" completion condition
+    And I follow "Test hippotrack name"
+    And "Test hippotrack name" should have the "Make attempts: 2" completion condition
     And I am on "Course 1" course homepage
     And I navigate to "Reports" in current page administration
     And I click on "Activity completion" "link"

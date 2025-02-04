@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz statistics report, table for showing response analysis for a particular question (or sub question).
+ * HippoTrack statistics report, table for showing response analysis for a particular question (or sub question).
  *
- * @package   quiz_statistics
+ * @package   hippotrack_statistics
  * @copyright 2014 Open University
  * @author    James Pratt <me@jamiep.org>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -39,7 +39,7 @@ require_once($CFG->libdir . '/tablelib.php');
  * @author    James Pratt <me@jamiep.org>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_statistics_question_table extends flexible_table {
+class hippotrack_statistics_question_table extends flexible_table {
     /** @var object full question object for this question. */
     protected $questiondata;
 
@@ -53,7 +53,7 @@ class quiz_statistics_question_table extends flexible_table {
      * displayed.
      */
     public function __construct($qid) {
-        parent::__construct('mod-quiz-report-statistics-question-table' . $qid);
+        parent::__construct('mod-hippotrack-report-statistics-question-table' . $qid);
     }
 
     /**
@@ -70,7 +70,7 @@ class quiz_statistics_question_table extends flexible_table {
 
         $this->define_baseurl($reporturl->out());
         $this->collapsible(false);
-        $this->set_attribute('class', 'generaltable generalbox boxaligncenter quizresponseanalysis');
+        $this->set_attribute('class', 'generaltable generalbox boxaligncenter hippotrackresponseanalysis');
 
         // Define the table columns.
         $columns = array();
@@ -78,39 +78,39 @@ class quiz_statistics_question_table extends flexible_table {
 
         if ($responseanalysis->has_subparts()) {
             $columns[] = 'part';
-            $headers[] = get_string('partofquestion', 'quiz_statistics');
+            $headers[] = get_string('partofquestion', 'hippotrack_statistics');
         }
 
         if ($responseanalysis->has_multiple_response_classes()) {
             $columns[] = 'responseclass';
-            $headers[] = get_string('modelresponse', 'quiz_statistics');
+            $headers[] = get_string('modelresponse', 'hippotrack_statistics');
 
             if ($responseanalysis->has_actual_responses()) {
                 $columns[] = 'response';
-                $headers[] = get_string('actualresponse', 'quiz_statistics');
+                $headers[] = get_string('actualresponse', 'hippotrack_statistics');
             }
 
         } else {
             $columns[] = 'response';
-            $headers[] = get_string('response', 'quiz_statistics');
+            $headers[] = get_string('response', 'hippotrack_statistics');
         }
 
         $columns[] = 'fraction';
-        $headers[] = get_string('optiongrade', 'quiz_statistics');
+        $headers[] = get_string('optiongrade', 'hippotrack_statistics');
 
         if (!$responseanalysis->has_multiple_tries_data()) {
             $columns[] = 'totalcount';
-            $headers[] = get_string('count', 'quiz_statistics');
+            $headers[] = get_string('count', 'hippotrack_statistics');
         } else {
             $countcolumns = range(1, $responseanalysis->get_maximum_tries());
             foreach ($countcolumns as $countcolumn) {
                 $columns[] = 'trycount'.$countcolumn;
-                $headers[] = get_string('counttryno', 'quiz_statistics', $countcolumn);
+                $headers[] = get_string('counttryno', 'hippotrack_statistics', $countcolumn);
             }
         }
 
         $columns[] = 'frequency';
-        $headers[] = get_string('frequency', 'quiz_statistics');
+        $headers[] = get_string('frequency', 'hippotrack_statistics');
 
         $this->define_columns($columns);
         $this->define_headers($headers);

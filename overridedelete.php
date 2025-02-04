@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page handles deleting quiz overrides
+ * This page handles deleting hippotrack overrides
  *
  * @package    mod_hippotrack
  * @copyright  2010 Matt Petro
@@ -24,20 +24,20 @@
 
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot.'/mod/quiz/lib.php');
-require_once($CFG->dirroot.'/mod/quiz/locallib.php');
-require_once($CFG->dirroot.'/mod/quiz/override_form.php');
+require_once($CFG->dirroot.'/mod/hippotrack/lib.php');
+require_once($CFG->dirroot.'/mod/hippotrack/locallib.php');
+require_once($CFG->dirroot.'/mod/hippotrack/override_form.php');
 
 $overrideid = required_param('id', PARAM_INT);
 $confirm = optional_param('confirm', false, PARAM_BOOL);
 
-if (! $override = $DB->get_record('quiz_overrides', array('id' => $overrideid))) {
-    throw new \moodle_exception('invalidoverrideid', 'quiz');
+if (! $override = $DB->get_record('hippotrack_overrides', array('id' => $overrideid))) {
+    throw new \moodle_exception('invalidoverrideid', 'hippotrack');
 }
-if (! $quiz = $DB->get_record('quiz', array('id' => $override->quiz))) {
+if (! $hippotrack = $DB->get_record('hippotrack', array('id' => $override->hippotrack))) {
     throw new \moodle_exception('invalidcoursemodule');
 }
-if (! $cm = get_coursemodule_from_instance("quiz", $quiz->id, $quiz->course)) {
+if (! $cm = get_coursemodule_from_instance("hippotrack", $hippotrack->id, $hippotrack->course)) {
     throw new \moodle_exception('invalidcoursemodule');
 }
 $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
@@ -47,21 +47,21 @@ $context = context_module::instance($cm->id);
 require_login($course, false, $cm);
 
 // Check the user has the required capabilities to modify an override.
-require_capability('mod/quiz:manageoverrides', $context);
+require_capability('mod/hippotrack:manageoverrides', $context);
 
 if ($override->groupid) {
     if (!groups_group_visible($override->groupid, $course, $cm)) {
-        throw new \moodle_exception('invalidoverrideid', 'quiz');
+        throw new \moodle_exception('invalidoverrideid', 'hippotrack');
     }
 } else {
     if (!groups_user_groups_visible($course, $override->userid, $cm)) {
-        throw new \moodle_exception('invalidoverrideid', 'quiz');
+        throw new \moodle_exception('invalidoverrideid', 'hippotrack');
     }
 }
 
-$url = new moodle_url('/mod/quiz/overridedelete.php', array('id'=>$override->id));
+$url = new moodle_url('/mod/hippotrack/overridedelete.php', array('id'=>$override->id));
 $confirmurl = new moodle_url($url, array('id'=>$override->id, 'confirm'=>1));
-$cancelurl = new moodle_url('/mod/quiz/overrides.php', array('cmid'=>$cm->id));
+$cancelurl = new moodle_url('/mod/hippotrack/overrides.php', array('cmid'=>$cm->id));
 
 if (!empty($override->userid)) {
     $cancelurl->param('mode', 'user');
@@ -71,15 +71,15 @@ if (!empty($override->userid)) {
 if ($confirm) {
     require_sesskey();
 
-    // Set the course module id before calling quiz_delete_override().
-    $quiz->cmid = $cm->id;
-    quiz_delete_override($quiz, $override->id);
+    // Set the course module id before calling hippotrack_delete_override().
+    $hippotrack->cmid = $cm->id;
+    hippotrack_delete_override($hippotrack, $override->id);
 
     redirect($cancelurl);
 }
 
 // Prepare the page to show the confirmation form.
-$stroverride = get_string('override', 'quiz');
+$stroverride = get_string('override', 'hippotrack');
 $title = get_string('deletecheck', null, $stroverride);
 
 $PAGE->set_url($url);
@@ -89,7 +89,7 @@ $PAGE->navbar->add($title);
 $PAGE->set_title($title);
 $PAGE->set_heading($course->fullname);
 $PAGE->activityheader->set_attrs([
-    "title" => format_string($quiz->name, true, ['context' => $context]),
+    "title" => format_string($hippotrack->name, true, ['context' => $context]),
     "description" => "",
     "hidecompletion" => true
 ]);
@@ -97,13 +97,13 @@ echo $OUTPUT->header();
 
 if ($override->groupid) {
     $group = $DB->get_record('groups', ['id' => $override->groupid], 'id, name');
-    $confirmstr = get_string("overridedeletegroupsure", "quiz", format_string($group->name, true, ['context' => $context]));
+    $confirmstr = get_string("overridedeletegroupsure", "hippotrack", format_string($group->name, true, ['context' => $context]));
 } else {
     $user = $DB->get_record('user', ['id' => $override->userid]);
     profile_load_custom_fields($user);
 
-    $confirmstr = get_string('overridedeleteusersure', 'quiz',
-            quiz_override_form::display_user_name($user,
+    $confirmstr = get_string('overridedeleteusersure', 'hippotrack',
+            hippotrack_override_form::display_user_name($user,
                     \core_user\fields::get_identity_fields($context)));
 }
 

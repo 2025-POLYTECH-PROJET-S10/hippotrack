@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Implementaton of the quizaccess_ipaddress plugin.
+ * Implementaton of the hippotrackaccess_ipaddress plugin.
  *
- * @package    quizaccess
+ * @package    hippotrackaccess
  * @subpackage ipaddress
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
+require_once($CFG->dirroot . '/mod/hippotrack/accessrule/accessrulebase.php');
 
 
 /**
@@ -35,21 +35,21 @@ require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
  * @copyright  2009 Tim Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quizaccess_ipaddress extends quiz_access_rule_base {
+class hippotrackaccess_ipaddress extends hippotrack_access_rule_base {
 
-    public static function make(quiz $quizobj, $timenow, $canignoretimelimits) {
-        if (empty($quizobj->get_quiz()->subnet)) {
+    public static function make(hippotrack $hippotrackobj, $timenow, $canignoretimelimits) {
+        if (empty($hippotrackobj->get_hippotrack()->subnet)) {
             return null;
         }
 
-        return new self($quizobj, $timenow);
+        return new self($hippotrackobj, $timenow);
     }
 
     public function prevent_access() {
-        if (address_in_subnet(getremoteaddr(), $this->quiz->subnet)) {
+        if (address_in_subnet(getremoteaddr(), $this->hippotrack->subnet)) {
             return false;
         } else {
-            return get_string('subnetwrong', 'quizaccess_ipaddress');
+            return get_string('subnetwrong', 'hippotrackaccess_ipaddress');
         }
     }
 }

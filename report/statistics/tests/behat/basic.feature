@@ -1,8 +1,8 @@
-@mod @mod_hippotrack @quiz @quiz_statistics
+@mod @mod_hippotrack @hippotrack @hippotrack_statistics
 Feature: Basic use of the Statistics report
   In order to see how my students are progressing
   As a teacher
-  I need to see all their quiz responses
+  I need to see all their hippotrack responses
 
   Background:
     Given the following "users" exist:
@@ -30,8 +30,8 @@ Feature: Basic use of the Statistics report
       | Test questions   | truefalse | Question C | This is question 03 |
     And the following "activities" exist:
       | activity   | name   | course | idnumber |
-      | quiz       | Quiz 1 | C1     | quiz1    |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | C1     | hippotrack1    |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question   | page |
       | Question A | 1    |
       | Question B | 1    |
@@ -39,26 +39,26 @@ Feature: Basic use of the Statistics report
 
   @javascript
   Scenario: Report works when there are no attempts
-    When I am on the "Quiz 1" "mod_hippotrack > Statistics report" page logged in as teacher1
-    Then I should see "No attempts have been made at this quiz, or all attempts have questions that need manual grading."
+    When I am on the "HippoTrack 1" "mod_hippotrack > Statistics report" page logged in as teacher1
+    Then I should see "No attempts have been made at this hippotrack, or all attempts have questions that need manual grading."
     And I should not see "Statistics for question positions"
     And "Show chart data" "link" should not exist
-    And user "student1" has attempted "Quiz 1" with responses:
+    And user "student1" has attempted "HippoTrack 1" with responses:
       | slot | response |
       |   1  | True     |
       |   2  | False    |
       |   3  | False    |
-    And user "student2" has attempted "Quiz 1" with responses:
+    And user "student2" has attempted "HippoTrack 1" with responses:
       | slot | response |
       |   1  | True     |
       |   2  | True     |
       |   3  | True     |
-    And user "student3" has attempted "Quiz 1" with responses:
+    And user "student3" has attempted "HippoTrack 1" with responses:
       | slot | response |
       |   1  | False    |
       |   2  | False    |
       |   3  | False    |
-    And I am on the "Quiz 1" "mod_hippotrack > Statistics report" page logged in as teacher1
+    And I am on the "HippoTrack 1" "mod_hippotrack > Statistics report" page logged in as teacher1
     And I press "Show report"
     And I should not see "No questions have been attempted yet"
     And "Show chart data" "link" should exist

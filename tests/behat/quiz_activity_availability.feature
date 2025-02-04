@@ -1,8 +1,8 @@
 @mod @mod_hippotrack
-Feature: Quiz availability can be set
-  In order to see quiz availability
+Feature: HippoTrack availability can be set
+  In order to see hippotrack availability
   As a teacher
-  I need to be able to set quiz opening and closing times
+  I need to be able to set hippotrack opening and closing times
 
   Background:
     Given the following "users" exist:
@@ -23,67 +23,67 @@ Feature: Quiz availability can be set
       | questioncategory | qtype     | name | questiontext    |
       | Test questions   | truefalse | TF1  | First question  |
 
-  Scenario Outline: Set quiz opening time while closing time is disabled
+  Scenario Outline: Set hippotrack opening time while closing time is disabled
     Given the following "activities" exist:
       | activity | course | name   | timeopen   |
-      | quiz     | C1     | Quiz 1 | <timeopen> |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack     | C1     | HippoTrack 1 | <timeopen> |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | maxmark |
       | TF1      | 1    | 2       |
-    When I am on the "Quiz 1" "quiz activity" page logged in as student1
+    When I am on the "HippoTrack 1" "hippotrack activity" page logged in as student1
     # Confirm display as student depending on case.
     Then I should see "<opentext>:"
     And I should see "<timeopen>%A, %d %B %Y, %I:%M##"
     And I should not see "Close:"
-    And I <quizavailability> see "This quiz is currently not available."
-    And "Attempt quiz" "button" <attemptvisibility> exist
+    And I <hippotrackavailability> see "This hippotrack is currently not available."
+    And "Attempt hippotrack" "button" <attemptvisibility> exist
 
     Examples:
-      | opentext | timeopen      | attemptvisibility | quizavailability |
+      | opentext | timeopen      | attemptvisibility | hippotrackavailability |
       # Case 1 - open is set to future date, close is disabled.
       | Opens    | ##tomorrow##  | should not        | should           |
       # Case 4 - open is set to past date, close is disabled.
       | Opened   | ##yesterday## | should           | should not        |
 
-  Scenario Outline: Set quiz closing time while opening time is disabled
+  Scenario Outline: Set hippotrack closing time while opening time is disabled
     Given the following "activities" exist:
       | activity | course | name   | timeclose   |
-      | quiz     | C1     | Quiz 1 | <timeclose> |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack     | C1     | HippoTrack 1 | <timeclose> |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | maxmark |
       | TF1      | 1    | 2       |
-    When I am on the "Quiz 1" "quiz activity" page logged in as student1
+    When I am on the "HippoTrack 1" "hippotrack activity" page logged in as student1
     # Confirm display as student depending on case.
     Then I should see "<closetext>:"
     And I should see "<timeclose>%A, %d %B %Y, %I:%M##"
-    And I <quizavailability> see "This quiz is currently not available."
-    And "Attempt quiz" "button" <attemptvisibility> exist
+    And I <hippotrackavailability> see "This hippotrack is currently not available."
+    And "Attempt hippotrack" "button" <attemptvisibility> exist
 
     Examples:
-      | closetext | timeclose      | attemptvisibility | quizavailability |
+      | closetext | timeclose      | attemptvisibility | hippotrackavailability |
       # Case 2 - open is disabled, close is set to past date.
       | Closed    | ##yesterday##  | should not        | should not       |
       # Case 5 - open is disabled, close is set to future date.
       | Closes    | ##tomorrow##   | should            | should not       |
 
-  Scenario Outline: Set quiz opening and closing times
+  Scenario Outline: Set hippotrack opening and closing times
     Given the following "activities" exist:
       | activity | course | name   | timeopen   | timeclose   |
-      | quiz     | C1     | Quiz 1 | <timeopen> | <timeclose> |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack     | C1     | HippoTrack 1 | <timeopen> | <timeclose> |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | maxmark |
       | TF1      | 1    | 2       |
-    When I am on the "Quiz 1" "quiz activity" page logged in as student1
+    When I am on the "HippoTrack 1" "hippotrack activity" page logged in as student1
     # Confirm display as student depending on case.
     Then I should see "<opentext>:"
     And I should see "<timeopen>%A, %d %B %Y, %I:%M##"
     And I should see "<closetext>:"
     And I should see "<timeclose>%A, %d %B %Y, %I:%M##"
-    And I <quizavailability> see "This quiz is currently not available."
-    And "Attempt quiz" "button" <attemptvisibility> exist
+    And I <hippotrackavailability> see "This hippotrack is currently not available."
+    And "Attempt hippotrack" "button" <attemptvisibility> exist
 
     Examples:
-      | opentext | timeopen        | closetext | timeclose      | attemptvisibility | quizavailability |
+      | opentext | timeopen        | closetext | timeclose      | attemptvisibility | hippotrackavailability |
       # Case 6 - open and close are set to past date.
       | Opened   | ##3 days ago## | Closed     | ##yesterday##  | should not        | should not       |
       # Case 7 - open is set to past date, close is set to future date.
@@ -91,36 +91,36 @@ Feature: Quiz availability can be set
       # Case 8 - open and close are set to future date
       | Opens    | ##tomorrow##   | Closes     | ##+2 days##    | should not        | should           |
 
-  Scenario: Quiz time open and time close are disabled
+  Scenario: HippoTrack time open and time close are disabled
     # Case 3 - both open and close are disabled.
     Given the following "activities" exist:
       | activity | course | name   |
-      | quiz     | C1     | Quiz 1 |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack     | C1     | HippoTrack 1 |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | maxmark |
       | TF1      | 1    | 2       |
-    When I am on the "Quiz 1" "quiz activity" page logged in as student1
+    When I am on the "HippoTrack 1" "hippotrack activity" page logged in as student1
     Then I should not see "Opens"
     And I should not see "Opened"
     And I should not see "Closes"
     And I should not see "Closed"
-    And I should not see "This quiz is currently not available."
-    And "Attempt quiz" "button" should exist
+    And I should not see "This hippotrack is currently not available."
+    And "Attempt hippotrack" "button" should exist
 
   @javascript
-  Scenario Outline: Timer is displayed when quiz closes in less than an hour
+  Scenario Outline: Timer is displayed when hippotrack closes in less than an hour
     Given the following "activities" exist:
       | activity | course | name   | timeclose   |
-      | quiz     | C1     | Quiz 1 | <closedate> |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack     | C1     | HippoTrack 1 | <closedate> |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    And I am on the "Quiz 1" "quiz activity" page logged in as "teacher1"
-    When I press "Preview quiz"
+    And I am on the "HippoTrack 1" "hippotrack activity" page logged in as "teacher1"
+    When I press "Preview hippotrack"
     # Confirm timer visibility for teacher
     Then I <timervisibility> see "Time left"
-    And I am on the "Quiz 1" "quiz activity" page logged in as "student1"
-    And I press "Attempt quiz"
+    And I am on the "HippoTrack 1" "hippotrack activity" page logged in as "student1"
+    And I press "Attempt hippotrack"
     # Confirm timer visibility for student
     And I <timervisibility> see "Time left"
 

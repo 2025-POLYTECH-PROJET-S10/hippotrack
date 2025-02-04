@@ -31,7 +31,7 @@ defined('MOODLE_INTERNAL') || die();
  * @property-read array $other {
  *      Extra information about event.
  *
- *      - int quizid: the id of the quiz.
+ *      - int hippotrackid: the id of the hippotrack.
  * }
  *
  * @package    mod_hippotrack
@@ -45,7 +45,7 @@ class attempt_reviewed extends \core\event\base {
      * Init method.
      */
     protected function init() {
-        $this->data['objecttable'] = 'quiz_attempts';
+        $this->data['objecttable'] = 'hippotrack_attempts';
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
     }
@@ -65,8 +65,8 @@ class attempt_reviewed extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->userid' has reviewed quiz attempt with id '$this->objectid' by user ".
-            "with id '$this->relateduserid' for the quiz with course module id '$this->contextinstanceid'.";
+        return "The user with id '$this->userid' has reviewed hippotrack attempt with id '$this->objectid' by user ".
+            "with id '$this->relateduserid' for the hippotrack with course module id '$this->contextinstanceid'.";
     }
 
     /**
@@ -75,7 +75,7 @@ class attempt_reviewed extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/quiz/review.php', array('attempt' => $this->objectid));
+        return new \moodle_url('/mod/hippotrack/review.php', array('attempt' => $this->objectid));
     }
 
     /**
@@ -84,8 +84,8 @@ class attempt_reviewed extends \core\event\base {
      * @return array
      */
     protected function get_legacy_logdata() {
-        return array($this->courseid, 'quiz', 'review', 'review.php?attempt=' . $this->objectid,
-            $this->other['quizid'], $this->contextinstanceid);
+        return array($this->courseid, 'hippotrack', 'review', 'review.php?attempt=' . $this->objectid,
+            $this->other['hippotrackid'], $this->contextinstanceid);
     }
 
     /**
@@ -101,18 +101,18 @@ class attempt_reviewed extends \core\event\base {
             throw new \coding_exception('The \'relateduserid\' must be set.');
         }
 
-        if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+        if (!isset($this->other['hippotrackid'])) {
+            throw new \coding_exception('The \'hippotrackid\' value must be set in other.');
         }
     }
 
     public static function get_objectid_mapping() {
-        return array('db' => 'quiz_attempts', 'restore' => 'quiz_attempt');
+        return array('db' => 'hippotrack_attempts', 'restore' => 'hippotrack_attempt');
     }
 
     public static function get_other_mapping() {
         $othermapped = array();
-        $othermapped['quizid'] = array('db' => 'quiz', 'restore' => 'quiz');
+        $othermapped['hippotrackid'] = array('db' => 'hippotrack', 'restore' => 'hippotrack');
 
         return $othermapped;
     }

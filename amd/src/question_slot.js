@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Render the question slot template for each question in the quiz edit view.
+ * Render the question slot template for each question in the hippotrack edit view.
  *
  * @module     mod_hippotrack/question_slot
  * @copyright  2021 Catalyst IT Australia Pty Ltd

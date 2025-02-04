@@ -1,8 +1,8 @@
 @mod @mod_hippotrack @core_completion
-Feature: View activity completion in the quiz activity
-  In order to have visibility of quiz completion requirements
+Feature: View activity completion in the hippotrack activity
+  In order to have visibility of hippotrack completion requirements
   As a student
-  I need to be able to view my quiz completion progress
+  I need to be able to view my hippotrack completion progress
 
   Background:
     Given the following "users" exist:
@@ -25,10 +25,10 @@ Feature: View activity completion in the quiz activity
       | questioncategory | qtype     | name           | questiontext              |
       | Test questions   | truefalse | First question | Answer the first question |
     And the following "activity" exists:
-      | activity                     | quiz           |
+      | activity                     | hippotrack           |
       | course                       | C1             |
-      | idnumber                     | quiz1          |
-      | name                         | Test quiz name |
+      | idnumber                     | hippotrack1          |
+      | name                         | Test hippotrack name |
       | section                      | 1              |
       | attempts                     | 2              |
       | gradepass                    | 5.00           |
@@ -39,39 +39,39 @@ Feature: View activity completion in the quiz activity
       | completionattemptsexhausted  | 1              |
       | completionminattemptsenabled | 1              |
       | completionminattempts        | 1              |
-    And quiz "Test quiz name" contains the following questions:
+    And hippotrack "Test hippotrack name" contains the following questions:
       | question       | page |
       | First question | 1    |
 
-  Scenario Outline: A student can complete a quiz activity by achieving a passing grade
+  Scenario Outline: A student can complete a hippotrack activity by achieving a passing grade
     When I log in as "student1"
     And I am on "Course 1" course homepage
-    And I follow "Test quiz name"
-    And the "View" completion condition of "Test quiz name" is displayed as "done"
-    And the "Make attempts: 1" completion condition of "Test quiz name" is displayed as "todo"
-    And the "Receive a grade" completion condition of "Test quiz name" is displayed as "todo"
-    And the "Receive a passing grade" completion condition of "Test quiz name" is displayed as "todo"
-    And the "Receive a pass grade or complete all available attempts" completion condition of "Test quiz name" is displayed as "todo"
-    And user "student1" has attempted "Test quiz name" with responses:
+    And I follow "Test hippotrack name"
+    And the "View" completion condition of "Test hippotrack name" is displayed as "done"
+    And the "Make attempts: 1" completion condition of "Test hippotrack name" is displayed as "todo"
+    And the "Receive a grade" completion condition of "Test hippotrack name" is displayed as "todo"
+    And the "Receive a passing grade" completion condition of "Test hippotrack name" is displayed as "todo"
+    And the "Receive a pass grade or complete all available attempts" completion condition of "Test hippotrack name" is displayed as "todo"
+    And user "student1" has attempted "Test hippotrack name" with responses:
       | slot | response |
       |   1  | False    |
     And I am on "Course 1" course homepage
-    And I follow "Test quiz name"
-    And the "View" completion condition of "Test quiz name" is displayed as "done"
-    And the "Make attempts: 1" completion condition of "Test quiz name" is displayed as "done"
-    And the "Receive a grade" completion condition of "Test quiz name" is displayed as "done"
-    And the "Receive a passing grade" completion condition of "Test quiz name" is displayed as "failed"
-    And the "Receive a pass grade or complete all available attempts" completion condition of "Test quiz name" is displayed as "todo"
-    And I press "Re-attempt quiz"
+    And I follow "Test hippotrack name"
+    And the "View" completion condition of "Test hippotrack name" is displayed as "done"
+    And the "Make attempts: 1" completion condition of "Test hippotrack name" is displayed as "done"
+    And the "Receive a grade" completion condition of "Test hippotrack name" is displayed as "done"
+    And the "Receive a passing grade" completion condition of "Test hippotrack name" is displayed as "failed"
+    And the "Receive a pass grade or complete all available attempts" completion condition of "Test hippotrack name" is displayed as "todo"
+    And I press "Re-attempt hippotrack"
     And I set the field "<answer>" to "1"
     And I press "Finish attempt ..."
     And I press "Submit all and finish"
     And I follow "Finish review"
-    And the "View" completion condition of "Test quiz name" is displayed as "done"
-    And the "Make attempts: 1" completion condition of "Test quiz name" is displayed as "done"
-    And the "Receive a grade" completion condition of "Test quiz name" is displayed as "done"
-    And the "Receive a passing grade" completion condition of "Test quiz name" is displayed as "<passcompletionexpected>"
-    And the "Receive a pass grade or complete all available attempts" completion condition of "Test quiz name" is displayed as "done"
+    And the "View" completion condition of "Test hippotrack name" is displayed as "done"
+    And the "Make attempts: 1" completion condition of "Test hippotrack name" is displayed as "done"
+    And the "Receive a grade" completion condition of "Test hippotrack name" is displayed as "done"
+    And the "Receive a passing grade" completion condition of "Test hippotrack name" is displayed as "<passcompletionexpected>"
+    And the "Receive a pass grade or complete all available attempts" completion condition of "Test hippotrack name" is displayed as "done"
     And I log out
     And I log in as "teacher1"
     And I am on "Course 1" course homepage

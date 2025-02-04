@@ -30,7 +30,7 @@ namespace mod_hippotrack\event;
  * @property-read array $other {
  *      Extra information about event.
  *
- *      - int quizid: the id of the quiz.
+ *      - int hippotrackid: the id of the hippotrack.
  *      - int firstslotid: id of the slot which we will add the section break before.
  *      - int firstslotnumber: slot number of the slot which we will add the section break before.
  *      - string title: the title of new section.
@@ -42,7 +42,7 @@ namespace mod_hippotrack\event;
  */
 class section_break_created extends \core\event\base {
     protected function init() {
-        $this->data['objecttable'] = 'quiz_sections';
+        $this->data['objecttable'] = 'hippotrack_sections';
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
     }
@@ -55,11 +55,11 @@ class section_break_created extends \core\event\base {
         return "The user with id '$this->userid' created a new section break with id '{$this->objectid}' " .
             "and title '{$this->other['title']}' before the slot with id '{$this->other['firstslotid']}' " .
             "and slot number '{$this->other['firstslotnumber']}' " .
-            "belonging to the quiz with course module id '$this->contextinstanceid'.";
+            "belonging to the hippotrack with course module id '$this->contextinstanceid'.";
     }
 
     public function get_url() {
-        return new \moodle_url('/mod/quiz/edit.php', [
+        return new \moodle_url('/mod/hippotrack/edit.php', [
             'cmid' => $this->contextinstanceid
         ]);
     }
@@ -75,8 +75,8 @@ class section_break_created extends \core\event\base {
             throw new \coding_exception('The \'contextinstanceid\' value must be set.');
         }
 
-        if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+        if (!isset($this->other['hippotrackid'])) {
+            throw new \coding_exception('The \'hippotrackid\' value must be set in other.');
         }
 
         if (!isset($this->other['firstslotid'])) {
@@ -93,13 +93,13 @@ class section_break_created extends \core\event\base {
     }
 
     public static function get_objectid_mapping() {
-        return ['db' => 'quiz_sections', 'restore' => 'quiz_section'];
+        return ['db' => 'hippotrack_sections', 'restore' => 'hippotrack_section'];
     }
 
     public static function get_other_mapping() {
         $othermapped = [];
-        $othermapped['quizid'] = ['db' => 'quiz', 'restore' => 'quiz'];
-        $othermapped['firstslotid'] = ['db' => 'quiz_slots', 'restore' => 'quiz_question_instance'];
+        $othermapped['hippotrackid'] = ['db' => 'hippotrack', 'restore' => 'hippotrack'];
+        $othermapped['firstslotid'] = ['db' => 'hippotrack_slots', 'restore' => 'hippotrack_question_instance'];
 
         return $othermapped;
     }

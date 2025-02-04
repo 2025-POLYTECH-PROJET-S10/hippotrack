@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capability definitions for the quiz module.
+ * Capability definitions for the hippotrack module.
  *
  * @package    mod_hippotrack
  * @copyright  2006 The Open University
@@ -26,9 +26,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
 
-    // Ability to see that the quiz exists, and the basic information
+    // Ability to see that the hippotrack exists, and the basic information
     // about it, for example the start date and time limit.
-    'mod/quiz:view' => [
+    'mod/hippotrack:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -40,8 +40,8 @@ $capabilities = [
         ]
     ],
 
-    // Ability to add a new quiz to the course.
-    'mod/quiz:addinstance' => [
+    // Ability to add a new hippotrack to the course.
+    'mod/hippotrack:addinstance' => [
         'riskbitmask' => RISK_XSS,
 
         'captype' => 'write',
@@ -53,8 +53,8 @@ $capabilities = [
         'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ],
 
-    // Ability to do the quiz as a 'student'.
-    'mod/quiz:attempt' => [
+    // Ability to do the hippotrack as a 'student'.
+    'mod/hippotrack:attempt' => [
         'riskbitmask' => RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -64,18 +64,18 @@ $capabilities = [
     ],
 
     // Ability for a 'Student' to review their previous attempts. Review by
-    // 'Teachers' is controlled by mod/quiz:viewreports.
-    'mod/quiz:reviewmyattempts' => [
+    // 'Teachers' is controlled by mod/hippotrack:viewreports.
+    'mod/hippotrack:reviewmyattempts' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
             'student' => CAP_ALLOW
         ],
-        'clonepermissionsfrom' => 'moodle/quiz:attempt'
+        'clonepermissionsfrom' => 'moodle/hippotrack:attempt'
     ],
 
-    // Edit the quiz settings, add and remove questions.
-    'mod/quiz:manage' => [
+    // Edit the hippotrack settings, add and remove questions.
+    'mod/hippotrack:manage' => [
         'riskbitmask' => RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -85,8 +85,8 @@ $capabilities = [
         ]
     ],
 
-    // Edit the quiz overrides.
-    'mod/quiz:manageoverrides' => [
+    // Edit the hippotrack overrides.
+    'mod/hippotrack:manageoverrides' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -95,8 +95,8 @@ $capabilities = [
         ]
     ],
 
-    // View the quiz overrides (only checked for users who don't have mod/quiz:manageoverrides.
-    'mod/quiz:viewoverrides' => [
+    // View the hippotrack overrides (only checked for users who don't have mod/hippotrack:manageoverrides.
+    'mod/hippotrack:viewoverrides' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -106,8 +106,8 @@ $capabilities = [
         ]
     ],
 
-    // Preview the quiz.
-    'mod/quiz:preview' => [
+    // Preview the hippotrack.
+    'mod/hippotrack:preview' => [
         'captype' => 'write', // Only just a write.
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
@@ -118,7 +118,7 @@ $capabilities = [
     ],
 
     // Manually grade and comment on student attempts at a question.
-    'mod/quiz:grade' => [
+    'mod/hippotrack:grade' => [
         'riskbitmask' => RISK_SPAM | RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -129,8 +129,8 @@ $capabilities = [
         ]
     ],
 
-    // Regrade quizzes.
-    'mod/quiz:regrade' => [
+    // Regrade hippotrackzes.
+    'mod/hippotrack:regrade' => [
         'riskbitmask' => RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -139,11 +139,11 @@ $capabilities = [
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW
         ],
-        'clonepermissionsfrom' =>  'mod/quiz:grade'
+        'clonepermissionsfrom' =>  'mod/hippotrack:grade'
     ],
 
-    // View the quiz reports.
-    'mod/quiz:viewreports' => [
+    // View the hippotrack reports.
+    'mod/hippotrack:viewreports' => [
         'riskbitmask' => RISK_PERSONAL,
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
@@ -155,7 +155,7 @@ $capabilities = [
     ],
 
     // Delete attempts using the overview report.
-    'mod/quiz:deleteattempts' => [
+    'mod/hippotrack:deleteattempts' => [
         'riskbitmask' => RISK_DATALOSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -166,35 +166,35 @@ $capabilities = [
     ],
 
     // Do not have the time limit imposed. Used for accessibility legislation compliance.
-    'mod/quiz:ignoretimelimits' => [
+    'mod/hippotrack:ignoretimelimits' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => []
     ],
 
-    // Receive a confirmation message of own quiz submission.
-    'mod/quiz:emailconfirmsubmission' => [
+    // Receive a confirmation message of own hippotrack submission.
+    'mod/hippotrack:emailconfirmsubmission' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => []
     ],
 
-    // Receive a notification message of other peoples' quiz submissions.
-    'mod/quiz:emailnotifysubmission' => [
+    // Receive a notification message of other peoples' hippotrack submissions.
+    'mod/hippotrack:emailnotifysubmission' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => []
     ],
 
-    // Receive a notification message when a quiz attempt becomes overdue.
-    'mod/quiz:emailwarnoverdue' => [
+    // Receive a notification message when a hippotrack attempt becomes overdue.
+    'mod/hippotrack:emailwarnoverdue' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => []
     ],
 
-    // Receive a notification message when a quiz attempt manual graded.
-    'mod/quiz:emailnotifyattemptgraded' => [
+    // Receive a notification message when a hippotrack attempt manual graded.
+    'mod/hippotrack:emailnotifyattemptgraded' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => []

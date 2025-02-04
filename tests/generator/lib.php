@@ -17,7 +17,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Quiz module test data generator class
+ * HippoTrack module test data generator class
  *
  * @package mod_hippotrack
  * @copyright 2012 The Open University
@@ -28,16 +28,16 @@ class mod_hippotrack_generator extends testing_module_generator {
     public function create_instance($record = null, array $options = null) {
         global $CFG;
 
-        require_once($CFG->dirroot.'/mod/quiz/locallib.php');
+        require_once($CFG->dirroot.'/mod/hippotrack/locallib.php');
         $record = (object)(array)$record;
 
-        $defaultquizsettings = array(
+        $defaulthippotracksettings = array(
             'timeopen'               => 0,
             'timeclose'              => 0,
             'preferredbehaviour'     => 'deferredfeedback',
             'attempts'               => 0,
             'attemptonlast'          => 0,
-            'grademethod'            => QUIZ_GRADEHIGHEST,
+            'grademethod'            => HIPPOTRACK_GRADEHIGHEST,
             'decimalpoints'          => 2,
             'questiondecimalpoints'  => -1,
             'attemptduring'          => 1,
@@ -77,17 +77,17 @@ class mod_hippotrack_generator extends testing_module_generator {
             'timelimit'              => 0,
             'overduehandling'        => 'autosubmit',
             'graceperiod'            => 86400,
-            'quizpassword'           => '',
+            'hippotrackpassword'           => '',
             'subnet'                 => '',
             'browsersecurity'        => '',
             'delay1'                 => 0,
             'delay2'                 => 0,
             'showuserpicture'        => 0,
             'showblocks'             => 0,
-            'navmethod'              => QUIZ_NAVMETHOD_FREE,
+            'navmethod'              => HIPPOTRACK_NAVMETHOD_FREE,
         );
 
-        foreach ($defaultquizsettings as $name => $value) {
+        foreach ($defaulthippotracksettings as $name => $value) {
             if (!isset($record->{$name})) {
                 $record->{$name} = $value;
             }
@@ -101,9 +101,9 @@ class mod_hippotrack_generator extends testing_module_generator {
     }
 
     /**
-     * Create a quiz attempt for a particular user at a particular course.
+     * Create a hippotrack attempt for a particular user at a particular course.
      *
-     * @param int $quizid the quiz id (from the mdl_quit table, not cmid).
+     * @param int $hippotrackid the hippotrack id (from the mdl_quit table, not cmid).
      * @param int $userid the user id.
      * @param array $forcedrandomquestions slot => questionid. Optional,
      *      used with random questions, to control which one is 'randomly' selected in that slot.
@@ -112,15 +112,15 @@ class mod_hippotrack_generator extends testing_module_generator {
      *      variants is 'randomly' selected.
      * @return stdClass the new attempt.
      */
-    public function create_attempt($quizid, $userid, array $forcedrandomquestions = [],
+    public function create_attempt($hippotrackid, $userid, array $forcedrandomquestions = [],
             array $forcedvariants = []) {
-        // Build quiz object and load questions.
-        $quizobj = quiz::create($quizid, $userid);
+        // Build hippotrack object and load questions.
+        $hippotrackobj = hippotrack::create($hippotrackid, $userid);
 
         $attemptnumber = 1;
         $attempt = null;
 
-        if ($attempts = quiz_get_user_attempts($quizid, $userid, 'all', true)) {
+        if ($attempts = hippotrack_get_user_attempts($hippotrackid, $userid, 'all', true)) {
             // There is/are already an attempt/some attempts.
             // Take the last attempt.
             $attempt = end($attempts);
@@ -128,12 +128,12 @@ class mod_hippotrack_generator extends testing_module_generator {
             $attemptnumber = $attempt->attempt + 1;
         }
 
-        return quiz_prepare_and_start_new_attempt($quizobj, $attemptnumber, $attempt, false,
+        return hippotrack_prepare_and_start_new_attempt($hippotrackobj, $attemptnumber, $attempt, false,
                 $forcedrandomquestions, $forcedvariants);
     }
 
     /**
-     * Submit responses to a quiz attempt.
+     * Submit responses to a hippotrack attempt.
      *
      * To be realistic, you should ensure that $USER is set to the user whose attempt
      * it is before calling this.
@@ -148,7 +148,7 @@ class mod_hippotrack_generator extends testing_module_generator {
     public function submit_responses($attemptid, array $responses, $checkbutton, $finishattempt) {
         $questiongenerator = $this->datagenerator->get_plugin_generator('core_question');
 
-        $attemptobj = quiz_attempt::create($attemptid);
+        $attemptobj = hippotrack_attempt::create($attemptid);
 
         $postdata = $questiongenerator->get_simulated_post_data_for_questions_in_usage(
                 $attemptobj->get_question_usage(), $responses, $checkbutton);
@@ -179,30 +179,30 @@ class mod_hippotrack_generator extends testing_module_generator {
     }
 
     /**
-     * Create a quiz override (either user or group).
+     * Create a hippotrack override (either user or group).
      *
-     * @param array $data must specify quizid, and one of userid or groupid.
+     * @param array $data must specify hippotrackid, and one of userid or groupid.
      */
     public function create_override(array $data): void {
         global $DB;
 
         // Validate.
-        if (!isset($data['quiz'])) {
-            throw new coding_exception('Must specify quiz (id) when creating a quiz override.');
+        if (!isset($data['hippotrack'])) {
+            throw new coding_exception('Must specify hippotrack (id) when creating a hippotrack override.');
         }
 
         if (!isset($data['userid']) && !isset($data['groupid'])) {
-            throw new coding_exception('Must specify one of userid or groupid when creating a quiz override.');
+            throw new coding_exception('Must specify one of userid or groupid when creating a hippotrack override.');
         }
 
         if (isset($data['userid']) && isset($data['groupid'])) {
-            throw new coding_exception('Cannot specify both userid and groupid when creating a quiz override.');
+            throw new coding_exception('Cannot specify both userid and groupid when creating a hippotrack override.');
         }
 
         // Create the override.
-        $DB->insert_record('quiz_overrides', (object) $data);
+        $DB->insert_record('hippotrack_overrides', (object) $data);
 
         // Update any associated calendar events, if necessary.
-        quiz_update_events($DB->get_record('quiz', ['id' => $data['quiz']], '*', MUST_EXIST));
+        hippotrack_update_events($DB->get_record('hippotrack', ['id' => $data['hippotrack']], '*', MUST_EXIST));
     }
 }

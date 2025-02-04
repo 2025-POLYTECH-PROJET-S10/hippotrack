@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file defines the quiz grades table.
+ * This file defines the hippotrack grades table.
  *
- * @package   quiz_overview
+ * @package   hippotrack_overview
  * @copyright 2008 Jamie Pratt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,34 +25,34 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/report/attemptsreport_table.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/attemptsreport_table.php');
 
 
 /**
- * This is a table subclass for displaying the quiz grades report.
+ * This is a table subclass for displaying the hippotrack grades report.
  *
  * @copyright 2008 Jamie Pratt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_overview_table extends quiz_attempts_report_table {
+class hippotrack_overview_table extends hippotrack_attempts_report_table {
 
     protected $regradedqs = array();
 
     /**
      * Constructor
-     * @param object $quiz
+     * @param object $hippotrack
      * @param context $context
      * @param string $qmsubselect
-     * @param quiz_overview_options $options
+     * @param hippotrack_overview_options $options
      * @param \core\dml\sql_join $groupstudentsjoins
      * @param \core\dml\sql_join $studentsjoins
      * @param array $questions
      * @param moodle_url $reporturl
      */
-    public function __construct($quiz, $context, $qmsubselect,
-            quiz_overview_options $options, \core\dml\sql_join $groupstudentsjoins,
+    public function __construct($hippotrack, $context, $qmsubselect,
+            hippotrack_overview_options $options, \core\dml\sql_join $groupstudentsjoins,
             \core\dml\sql_join $studentsjoins, $questions, $reporturl) {
-        parent::__construct('mod-quiz-report-overview-report', $quiz , $context,
+        parent::__construct('mod-hippotrack-report-overview-report', $hippotrack , $context,
                 $qmsubselect, $options, $groupstudentsjoins, $studentsjoins, $questions, $reporturl);
     }
 
@@ -95,7 +95,7 @@ class quiz_overview_table extends quiz_attempts_report_table {
     }
 
     /**
-     * Calculate the average overall and question scores for a set of attempts at the quiz.
+     * Calculate the average overall and question scores for a set of attempts at the hippotrack.
      *
      * @param string $label the title ot use for this row.
      * @param \core\dml\sql_join $usersjoins to indicate a set of users.
@@ -106,15 +106,15 @@ class quiz_overview_table extends quiz_attempts_report_table {
 
         list($fields, $from, $where, $params) = $this->base_sql($usersjoins);
         $record = $DB->get_record_sql("
-                SELECT AVG(quizaouter.sumgrades) AS grade, COUNT(quizaouter.sumgrades) AS numaveraged
-                  FROM {quiz_attempts} quizaouter
+                SELECT AVG(hippotrackaouter.sumgrades) AS grade, COUNT(hippotrackaouter.sumgrades) AS numaveraged
+                  FROM {hippotrack_attempts} hippotrackaouter
                   JOIN (
-                       SELECT DISTINCT quiza.id
+                       SELECT DISTINCT hippotracka.id
                          FROM $from
                         WHERE $where
-                       ) relevant_attempt_ids ON quizaouter.id = relevant_attempt_ids.id
+                       ) relevant_attempt_ids ON hippotrackaouter.id = relevant_attempt_ids.id
                 ", $params);
-        $record->grade = quiz_rescale_grade($record->grade, $this->quiz, false);
+        $record->grade = hippotrack_rescale_grade($record->grade, $this->hippotrack, false);
         if ($this->is_downloading()) {
             $namekey = 'lastname';
         } else {
@@ -123,19 +123,19 @@ class quiz_overview_table extends quiz_attempts_report_table {
         $averagerow = array(
             $namekey       => $label,
             'sumgrades'    => $this->format_average($record),
-            'feedbacktext' => strip_tags(quiz_report_feedback_for_grade(
-                                         $record->grade, $this->quiz->id, $this->context))
+            'feedbacktext' => strip_tags(hippotrack_report_feedback_for_grade(
+                                         $record->grade, $this->hippotrack->id, $this->context))
         );
 
         if ($this->options->slotmarks) {
             $dm = new question_engine_data_mapper();
-            $qubaids = new qubaid_join("{quiz_attempts} quizaouter
+            $qubaids = new qubaid_join("{hippotrack_attempts} hippotrackaouter
                   JOIN (
-                       SELECT DISTINCT quiza.id
+                       SELECT DISTINCT hippotracka.id
                          FROM $from
                         WHERE $where
-                       ) relevant_attempt_ids ON quizaouter.id = relevant_attempt_ids.id",
-                    'quizaouter.uniqueid', '1 = 1', $params);
+                       ) relevant_attempt_ids ON hippotrackaouter.id = relevant_attempt_ids.id",
+                    'hippotrackaouter.uniqueid', '1 = 1', $params);
             $avggradebyq = $dm->load_average_marks($qubaids, array_keys($this->questions));
 
             $averagerow += $this->format_average_grade_for_questions($avggradebyq);
@@ -170,8 +170,8 @@ class quiz_overview_table extends quiz_attempts_report_table {
         foreach ($this->questions as $question) {
             if (isset($gradeaverages[$question->slot]) && $question->maxmark > 0) {
                 $record = $gradeaverages[$question->slot];
-                $record->grade = quiz_rescale_grade(
-                        $record->averagefraction * $question->maxmark, $this->quiz, false);
+                $record->grade = hippotrack_rescale_grade(
+                        $record->averagefraction * $question->maxmark, $this->hippotrack, false);
 
             } else {
                 $record = new stdClass();
@@ -195,9 +195,9 @@ class quiz_overview_table extends quiz_attempts_report_table {
         if (is_null($record->grade)) {
             $average = '-';
         } else if ($question) {
-            $average = quiz_format_question_grade($this->quiz, $record->grade);
+            $average = hippotrack_format_question_grade($this->hippotrack, $record->grade);
         } else {
-            $average = quiz_format_grade($this->quiz, $record->grade);
+            $average = hippotrack_format_grade($this->hippotrack, $record->grade);
         }
 
         if ($this->download) {
@@ -214,12 +214,12 @@ class quiz_overview_table extends quiz_attempts_report_table {
     }
 
     protected function submit_buttons() {
-        if (has_capability('mod/quiz:regrade', $this->context)) {
+        if (has_capability('mod/hippotrack:regrade', $this->context)) {
             $regradebuttonparams = [
                 'type'  => 'submit',
                 'class' => 'btn btn-secondary mr-1',
                 'name'  => 'regrade',
-                'value' => get_string('regradeselected', 'quiz_overview'),
+                'value' => get_string('regradeselected', 'hippotrack_overview'),
                 'data-action' => 'toggle',
                 'data-togglegroup' => $this->togglegroup,
                 'data-toggle' => 'action',
@@ -231,11 +231,11 @@ class quiz_overview_table extends quiz_attempts_report_table {
     }
 
     public function col_sumgrades($attempt) {
-        if ($attempt->state != quiz_attempt::FINISHED) {
+        if ($attempt->state != hippotrack_attempt::FINISHED) {
             return '-';
         }
 
-        $grade = quiz_rescale_grade($attempt->sumgrades, $this->quiz);
+        $grade = hippotrack_rescale_grade($attempt->sumgrades, $this->hippotrack);
         if ($this->is_downloading()) {
             return $grade;
         }
@@ -256,20 +256,20 @@ class quiz_overview_table extends quiz_attempts_report_table {
                             [$question->slot]->fraction * $question->maxmark;
                 }
             }
-            $newsumgrade = quiz_rescale_grade($newsumgrade, $this->quiz);
-            $oldsumgrade = quiz_rescale_grade($oldsumgrade, $this->quiz);
+            $newsumgrade = hippotrack_rescale_grade($newsumgrade, $this->hippotrack);
+            $oldsumgrade = hippotrack_rescale_grade($oldsumgrade, $this->hippotrack);
             $grade = html_writer::tag('del', $oldsumgrade) . '/' .
                     html_writer::empty_tag('br') . $newsumgrade;
         }
-        return html_writer::link(new moodle_url('/mod/quiz/review.php',
+        return html_writer::link(new moodle_url('/mod/hippotrack/review.php',
                 array('attempt' => $attempt->attempt)), $grade,
-                array('title' => get_string('reviewattempt', 'quiz')));
+                array('title' => get_string('reviewattempt', 'hippotrack')));
     }
 
     /**
      * @param string $colname the name of the column.
      * @param object $attempt the row of data - see the SQL in display() in
-     * mod/quiz/report/overview/report.php to see what fields are present,
+     * mod/hippotrack/report/overview/report.php to see what fields are present,
      * and what they are called.
      * @return string the contents of the cell.
      */
@@ -296,8 +296,8 @@ class quiz_overview_table extends quiz_attempts_report_table {
                 $grade = '-';
             }
         } else {
-            $grade = quiz_rescale_grade(
-                    $stepdata->fraction * $question->maxmark, $this->quiz, 'question');
+            $grade = hippotrack_rescale_grade(
+                    $stepdata->fraction * $question->maxmark, $this->hippotrack, 'question');
         }
 
         if ($this->is_downloading()) {
@@ -306,12 +306,12 @@ class quiz_overview_table extends quiz_attempts_report_table {
 
         if (isset($this->regradedqs[$attempt->usageid][$slot])) {
             $gradefromdb = $grade;
-            $newgrade = quiz_rescale_grade(
+            $newgrade = hippotrack_rescale_grade(
                     $this->regradedqs[$attempt->usageid][$slot]->newfraction * $question->maxmark,
-                    $this->quiz, 'question');
-            $oldgrade = quiz_rescale_grade(
+                    $this->hippotrack, 'question');
+            $oldgrade = hippotrack_rescale_grade(
                     $this->regradedqs[$attempt->usageid][$slot]->oldfraction * $question->maxmark,
-                    $this->quiz, 'question');
+                    $this->hippotrack, 'question');
 
             $grade = html_writer::tag('del', $oldgrade) . '/' .
                     html_writer::empty_tag('br') . $newgrade;
@@ -324,23 +324,23 @@ class quiz_overview_table extends quiz_attempts_report_table {
         if ($attempt->regraded == '') {
             return '';
         } else if ($attempt->regraded == 0) {
-            return get_string('needed', 'quiz_overview');
+            return get_string('needed', 'hippotrack_overview');
         } else if ($attempt->regraded == 1) {
-            return get_string('done', 'quiz_overview');
+            return get_string('done', 'hippotrack_overview');
         }
     }
 
     protected function update_sql_after_count($fields, $from, $where, $params) {
         $fields .= ", COALESCE((
                                 SELECT MAX(qqr.regraded)
-                                  FROM {quiz_overview_regrades} qqr
-                                 WHERE qqr.questionusageid = quiza.uniqueid
+                                  FROM {hippotrack_overview_regrades} qqr
+                                 WHERE qqr.questionusageid = hippotracka.uniqueid
                           ), -1) AS regraded";
         if ($this->options->onlyregraded) {
             $where .= " AND COALESCE((
                                     SELECT MAX(qqr.regraded)
-                                      FROM {quiz_overview_regrades} qqr
-                                     WHERE qqr.questionusageid = quiza.uniqueid
+                                      FROM {hippotrack_overview_regrades} qqr
+                                     WHERE qqr.questionusageid = hippotracka.uniqueid
                                 ), -1) <> -1";
         }
         return [$fields, $from, $where, $params];
@@ -364,7 +364,7 @@ class quiz_overview_table extends quiz_attempts_report_table {
     public function query_db($pagesize, $useinitialsbar = true) {
         parent::query_db($pagesize, $useinitialsbar);
 
-        if ($this->options->slotmarks && has_capability('mod/quiz:regrade', $this->context)) {
+        if ($this->options->slotmarks && has_capability('mod/hippotrack:regrade', $this->context)) {
             $this->regradedqs = $this->get_regraded_questions();
         }
     }
@@ -377,8 +377,8 @@ class quiz_overview_table extends quiz_attempts_report_table {
         global $DB;
 
         $qubaids = $this->get_qubaids_condition();
-        $regradedqs = $DB->get_records_select('quiz_overview_regrades',
+        $regradedqs = $DB->get_records_select('hippotrack_overview_regrades',
                 'questionusageid ' . $qubaids->usage_id_in(), $qubaids->usage_id_in_params());
-        return quiz_report_index_by_keys($regradedqs, array('questionusageid', 'slot'));
+        return hippotrack_report_index_by_keys($regradedqs, array('questionusageid', 'slot'));
     }
 }

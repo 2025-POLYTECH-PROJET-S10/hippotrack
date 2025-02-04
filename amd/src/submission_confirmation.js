@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * A javascript module to handle submission confirmation for quiz.
+ * A javascript module to handle submission confirmation for hippotrack.
  *
  * @module    mod_hippotrack/submission_confirmation
  * @copyright 2022 Huong Nguyen <huongnv13@gmail.com>
@@ -28,7 +28,7 @@ import Templates from 'core/templates';
 import { get_string as getString } from 'core/str';
 
 const SELECTOR = {
-    attemptSubmitButton: '.path-mod-quiz .btn-finishattempt button',
+    attemptSubmitButton: '.path-mod-hippotrack .btn-finishattempt button',
     attemptSubmitForm: 'form#frm-finishattempt',
 };
 
@@ -47,12 +47,12 @@ const registerEventListeners = (unAnsweredQuestions) => {
             e.preventDefault();
             try {
                 await saveCancelPromise(
-                    getString('submission_confirmation', 'quiz'),
+                    getString('submission_confirmation', 'hippotrack'),
                     Templates.render(TEMPLATES.submissionConfirmation, {
                         hasunanswered: unAnsweredQuestions > 0,
                         totalunanswered: unAnsweredQuestions
                     }),
-                    getString('submitallandfinish', 'quiz')
+                    getString('submitallandfinish', 'hippotrack')
                 );
 
                 // Save pressed.
@@ -72,7 +72,7 @@ const registerEventListeners = (unAnsweredQuestions) => {
 export const init = (unAnsweredQuestions) => {
     Prefetch.prefetchStrings('core', ['submit']);
     Prefetch.prefetchStrings('core_admin', ['confirmation']);
-    Prefetch.prefetchStrings('quiz', ['submitallandfinish', 'submission_confirmation']);
+    Prefetch.prefetchStrings('hippotrack', ['submitallandfinish', 'submission_confirmation']);
     Prefetch.prefetchTemplate(TEMPLATES.submissionConfirmation);
     registerEventListeners(unAnsweredQuestions);
 };

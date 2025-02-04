@@ -1,7 +1,7 @@
 @mod @mod_hippotrack
-Feature: Flag quiz questions
+Feature: Flag hippotrack questions
   As a student
-  In order to flag a quiz questions
+  In order to flag a hippotrack questions
   All review options for immediately after the attempt are ticked
 
   Background:
@@ -25,8 +25,8 @@ Feature: Flag quiz questions
       | Test questions   | truefalse   | TF2   | Second question |
       | Test questions   | truefalse   | TF3   | Third question  |
     And the following "activity" exists:
-      | activity                    | quiz   |
-      | name                        | Quiz 1 |
+      | activity                    | hippotrack   |
+      | name                        | HippoTrack 1 |
       | course                      | C1     |
       | attemptimmediately          | 1      |
       | correctnessimmediately      | 1      |
@@ -36,16 +36,16 @@ Feature: Flag quiz questions
       | generalfeedbackimmediately  | 1      |
       | rightanswerimmediately      | 1      |
       | overallfeedbackimmediately  | 1      |
-    And quiz "Quiz 1" contains the following questions:
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
       | TF2      | 2    |
       | TF3      | 3    |
 
   @javascript
-  Scenario: Flag a quiz during and after quiz attempt
-    Given I am on the "Quiz 1" "quiz activity" page logged in as student1
-    And I press "Attempt quiz"
+  Scenario: Flag a hippotrack during and after hippotrack attempt
+    Given I am on the "HippoTrack 1" "hippotrack activity" page logged in as student1
+    And I press "Attempt hippotrack"
     # flag question 1
     When I press "Flag question"
     # Confirm question 1 is flagged in navigation
@@ -66,7 +66,7 @@ Feature: Flag quiz questions
     And I should see "Flag question" in the "Second question" "question"
     And I should see "Flag question" in the "Third question" "question"
     And I click on "Flagged" "button" in the "Second question" "question"
-    And I am on the "Quiz 1" "mod_hippotrack > Grades report" page logged in as teacher1
+    And I am on the "HippoTrack 1" "mod_hippotrack > Grades report" page logged in as teacher1
     And "Flagged" "icon" should exist in the "Student 1" "table_row"
-    And I am on the "Quiz 1" "mod_hippotrack > Responses report" page
+    And I am on the "HippoTrack 1" "mod_hippotrack > Responses report" page
     And "Flagged" "icon" should exist in the "Student 1" "table_row"

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Cache data source for the quiz overrides.
+ * Cache data source for the hippotrack overrides.
  *
  * @package   mod_hippotrack
  * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
@@ -29,7 +29,7 @@ namespace mod_hippotrack\cache;
 use cache_definition;
 
 /**
- * Class quiz_overrides
+ * Class hippotrack_overrides
  *
  * @package   mod_hippotrack
  * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
@@ -64,23 +64,23 @@ class overrides implements \cache_data_source {
     public function load_for_cache($key) {
         global $DB;
 
-        [$quizid, $ug, $ugid] = explode('_', $key);
-        $quizid = (int) $quizid;
+        [$hippotrackid, $ug, $ugid] = explode('_', $key);
+        $hippotrackid = (int) $hippotrackid;
 
         switch ($ug) {
             case 'u':
                 $userid = (int) $ugid;
                 $override = $DB->get_record(
-                    'quiz_overrides',
-                    ['quiz' => $quizid, 'userid' => $userid],
+                    'hippotrack_overrides',
+                    ['hippotrack' => $hippotrackid, 'userid' => $userid],
                     'timeopen, timeclose, timelimit, attempts, password'
                 );
                 break;
             case 'g':
                 $groupid = (int) $ugid;
                 $override = $DB->get_record(
-                    'quiz_overrides',
-                    ['quiz' => $quizid, 'groupid' => $groupid],
+                    'hippotrack_overrides',
+                    ['hippotrack' => $hippotrackid, 'groupid' => $groupid],
                     'timeopen, timeclose, timelimit, attempts, password'
                 );
                 break;

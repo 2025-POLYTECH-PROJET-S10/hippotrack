@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem implementation for quizaccess_ipaddress.
+ * Privacy Subsystem implementation for hippotrackaccess_ipaddress.
  *
- * @package    quizaccess_ipaddress
+ * @package    hippotrackaccess_ipaddress
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_ipaddress\privacy;
+namespace hippotrackaccess_ipaddress\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Privacy Subsystem for quizaccess_ipaddress implementing null_provider.
+ * Privacy Subsystem for hippotrackaccess_ipaddress implementing null_provider.
  *
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

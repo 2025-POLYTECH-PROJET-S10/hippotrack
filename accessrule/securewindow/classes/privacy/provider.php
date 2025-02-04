@@ -15,19 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem implementation for quizaccess_securewindow.
+ * Privacy Subsystem implementation for hippotrackaccess_securewindow.
  *
- * @package    quizaccess_securewindow
+ * @package    hippotrackaccess_securewindow
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace quizaccess_securewindow\privacy;
+namespace hippotrackaccess_securewindow\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Privacy Subsystem for quizaccess_securewindow implementing null_provider.
+ * Privacy Subsystem for hippotrackaccess_securewindow implementing null_provider.
  *
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

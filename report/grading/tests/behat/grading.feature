@@ -1,4 +1,4 @@
-@mod @mod_hippotrack @quiz @quiz_grading
+@mod @mod_hippotrack @hippotrack @hippotrack_grading
 Feature: Basic use of the Manual grading report
   In order to easily find students attempts that need manual grading
   As a teacher
@@ -52,31 +52,31 @@ Feature: Basic use of the Manual grading report
       | Test questions   | shortanswer | Short answer 001 | Where is the capital city of France? | Paris    | 100%  |
     And the following "activities" exist:
       | activity | name   | course | idnumber | groupmode | grouping |
-      | quiz     | Quiz 1 | C1     | quiz1    | 1         | tging    |
-      | quiz     | Quiz 2 | C1     | quiz2    | 1         | tging    |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack     | HippoTrack 1 | C1     | hippotrack1    | 1         | tging    |
+      | hippotrack     | HippoTrack 2 | C1     | hippotrack2    | 1         | tging    |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question         | page |
       | Short answer 001 | 1    |
 
   Scenario: Manual grading report without attempts
-    When I am on the "Quiz 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
+    When I am on the "HippoTrack 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
     Then I should see "Separate groups (Tutor groups)"
     And I should see "All participants"
-    And I should see "Quiz 1"
+    And I should see "HippoTrack 1"
     And I should see "Questions that need grading"
     And I should see "Nothing to display"
     And I follow "Also show questions that have been graded automatically"
     And I should see "Nothing to display"
 
   Scenario: Manual grading report with attempts
-    Given user "student1" has attempted "Quiz 1" with responses:
+    Given user "student1" has attempted "HippoTrack 1" with responses:
       | slot | response |
       | 1    | Paris    |
     And I reload the page
-    When I am on the "Quiz 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
+    When I am on the "HippoTrack 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
     Then I should see "Separate groups (Tutor groups)"
     And I should see "All participants"
-    And I should see "Quiz 1"
+    And I should see "HippoTrack 1"
     And I follow "Also show questions that have been graded automatically"
     And I should see "Short answer 001"
     And "Short answer 001" row "To grade" column of "questionstograde" table should contain "0"
@@ -102,10 +102,10 @@ Feature: Basic use of the Manual grading report
     And "Short answer 001" row "Already graded" column of "questionstograde" table should contain "1"
 
   Scenario: Manual grading settings are remembered as user preferences
-    Given user "student1" has attempted "Quiz 1" with responses:
+    Given user "student1" has attempted "HippoTrack 1" with responses:
       | slot | response |
       | 1    | Paris    |
-    When I am on the "Quiz 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
+    When I am on the "HippoTrack 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
     And I follow "Also show questions that have been graded automatically"
     And I click on "update grades" "link" in the "Short answer 001" "table_row"
     And I set the following fields to these values:
@@ -113,7 +113,7 @@ Feature: Basic use of the Manual grading report
       | Order attempts by  | Date |
     And I press "Change options"
     And I log out
-    And I am on the "Quiz 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
+    And I am on the "HippoTrack 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
     And I follow "Also show questions that have been graded automatically"
     And I click on "update grades" "link" in the "Short answer 001" "table_row"
     Then the following fields match these values:
@@ -122,10 +122,10 @@ Feature: Basic use of the Manual grading report
 
   @javascript
   Scenario: Manual grading settings are validated
-    Given user "student1" has attempted "Quiz 1" with responses:
+    Given user "student1" has attempted "HippoTrack 1" with responses:
       | slot | response |
       | 1    | Paris    |
-    And I am on the "Quiz 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
+    And I am on the "HippoTrack 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
     And I follow "Also show questions that have been graded automatically"
     And I click on "update grades" "link" in the "Short answer 001" "table_row"
     When I set the following fields to these values:
@@ -145,24 +145,24 @@ Feature: Basic use of the Manual grading report
 
   @javascript
   Scenario: Teacher can see user custom filed columns as additional user identity
-    Given user "student1" has attempted "Quiz 1" with responses:
+    Given user "student1" has attempted "HippoTrack 1" with responses:
       | slot | response |
       | 1    | Paris    |
-    When I am on the "Quiz 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
+    When I am on the "HippoTrack 1" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
     And I follow "Also show questions that have been graded automatically"
     And I click on "update grades" "link" in the "Short answer 001" "table_row"
     Then I should see "Attempt number 1 for S1 Student1 (student1, S1000, student1@example.com, little yellow frog)"
     And I should not see "You must enter a number that is greater than 0."
 
   Scenario: A marker cannot access the report in separate group
-    Given user "student1" has attempted "Quiz 1" with responses:
+    Given user "student1" has attempted "HippoTrack 1" with responses:
       | slot | response |
       | 1    | frog     |
-    And user "student2" has attempted "Quiz 1" with responses:
+    And user "student2" has attempted "HippoTrack 1" with responses:
       | slot | response |
       | 1    | Duck     |
-    When I am on the "Quiz 1" "mod_hippotrack > Manual grading report" page logged in as "marker"
-    Then I should see "Quiz 1"
+    When I am on the "HippoTrack 1" "mod_hippotrack > Manual grading report" page logged in as "marker"
+    Then I should see "HippoTrack 1"
     And I should see "Separate groups: All participants"
     Then I should see "Sorry, but you need to be part of a group to see this page."
 
@@ -171,28 +171,28 @@ Feature: Basic use of the Manual grading report
     Given the following "questions" exist:
       | questioncategory | qtype | name     | user  | questiontext    |
       | Test questions   | essay | Essay Q1 | admin | Question 1 text |
-    And quiz "Quiz 2" contains the following questions:
+    And hippotrack "HippoTrack 2" contains the following questions:
       | question | page |
       | Essay Q1 | 1    |
-    When I am on the "Quiz 2" "mod_hippotrack > View" page logged in as "student1"
-    And I press "Attempt quiz"
+    When I am on the "HippoTrack 2" "mod_hippotrack > View" page logged in as "student1"
+    And I press "Attempt hippotrack"
     And I set the field "Answer text Question 1" to "This is my attempt 1"
     And I follow "Finish attempt ..."
     And I press "Submit all and finish"
     And I click on "Submit all and finish" "button" in the "Submit all your answers and finish?" "dialogue"
     And I click on "Finish review" "link"
-    And I press "Re-attempt quiz"
+    And I press "Re-attempt hippotrack"
     And I set the field "Answer text Question 1" to "This is my attempt 2"
     And I follow "Finish attempt ..."
     And I press "Submit all and finish"
     And I click on "Submit all and finish" "button" in the "Submit all your answers and finish?" "dialogue"
     And I click on "Finish review" "link"
-    And I press "Re-attempt quiz"
+    And I press "Re-attempt hippotrack"
     And I set the field "Answer text Question 1" to "This is my attempt 3"
     And I follow "Finish attempt ..."
     And I press "Submit all and finish"
     And I click on "Submit all and finish" "button" in the "Submit all your answers and finish?" "dialogue"
-    And I am on the "Quiz 2" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
+    And I am on the "HippoTrack 2" "mod_hippotrack > Manual grading report" page logged in as "teacher1"
     And I follow "Also show questions that have been graded automatically"
     And I should see "Essay Q1"
     And "Essay Q1" row "To grade" column of "questionstograde" table should contain "3"

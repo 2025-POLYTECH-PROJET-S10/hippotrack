@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the renderer for the quiz module.
+ * Defines the renderer for the hippotrack module.
  *
  * @package   mod_hippotrack
  * @copyright 2011 The Open University
@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * The renderer for the quiz module.
+ * The renderer for the hippotrack module.
  *
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -36,7 +36,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     /**
      * Builds the review page
      *
-     * @param quiz_attempt $attemptobj an instance of quiz_attempt.
+     * @param hippotrack_attempt $attemptobj an instance of hippotrack_attempt.
      * @param array $slots an array of intgers relating to questions.
      * @param int $page the current page number
      * @param bool $showall whether to show entire attempt on one page.
@@ -45,7 +45,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
      * @param array $summarydata contains all table data
      * @return $output containing html data.
      */
-    public function review_page(quiz_attempt $attemptobj, $slots, $page, $showall,
+    public function review_page(hippotrack_attempt $attemptobj, $slots, $page, $showall,
                                 $lastpage, mod_hippotrack_display_options $displayoptions,
                                 $summarydata) {
 
@@ -64,14 +64,14 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     /**
      * Renders the review question pop-up.
      *
-     * @param quiz_attempt $attemptobj an instance of quiz_attempt.
+     * @param hippotrack_attempt $attemptobj an instance of hippotrack_attempt.
      * @param int $slot which question to display.
      * @param int $seq which step of the question attempt to show. null = latest.
      * @param mod_hippotrack_display_options $displayoptions instance of mod_hippotrack_display_options.
      * @param array $summarydata contains all table data
      * @return $output containing html data.
      */
-    public function review_question_page(quiz_attempt $attemptobj, $slot, $seq,
+    public function review_question_page(hippotrack_attempt $attemptobj, $slot, $seq,
             mod_hippotrack_display_options $displayoptions, $summarydata) {
 
         $output = '';
@@ -92,15 +92,15 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     /**
      * Renders the review question pop-up.
      *
-     * @param quiz_attempt $attemptobj an instance of quiz_attempt.
+     * @param hippotrack_attempt $attemptobj an instance of hippotrack_attempt.
      * @param string $message Why the review is not allowed.
      * @return string html to output.
      */
-    public function review_question_not_allowed(quiz_attempt $attemptobj, $message) {
+    public function review_question_not_allowed(hippotrack_attempt $attemptobj, $message) {
         $output = '';
         $output .= $this->header();
-        $output .= $this->heading(format_string($attemptobj->get_quiz_name(), true,
-                                  array("context" => $attemptobj->get_quizobj()->get_context())));
+        $output .= $this->heading(format_string($attemptobj->get_hippotrack_name(), true,
+                                  array("context" => $attemptobj->get_hippotrackobj()->get_context())));
         $output .= $this->notification($message);
         $output .= $this->close_window_button();
         $output .= $this->footer();
@@ -143,7 +143,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
 
         $output = '';
         $output .= html_writer::start_tag('table', array(
-                'class' => 'generaltable generalbox quizreviewsummary'));
+                'class' => 'generaltable generalbox hippotrackreviewsummary'));
         $output .= html_writer::start_tag('tbody');
         foreach ($summarydata as $rowdata) {
             if ($rowdata['title'] instanceof renderable) {
@@ -172,14 +172,14 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     /**
      * Renders each question
      *
-     * @param quiz_attempt $attemptobj instance of quiz_attempt
+     * @param hippotrack_attempt $attemptobj instance of hippotrack_attempt
      * @param bool $reviewing
      * @param array $slots array of intgers relating to questions
      * @param int $page current page number
      * @param bool $showall if true shows attempt on single page
      * @param mod_hippotrack_display_options $displayoptions instance of mod_hippotrack_display_options
      */
-    public function questions(quiz_attempt $attemptobj, $reviewing, $slots, $page, $showall,
+    public function questions(hippotrack_attempt $attemptobj, $reviewing, $slots, $page, $showall,
                               mod_hippotrack_display_options $displayoptions) {
         $output = '';
         foreach ($slots as $slot) {
@@ -196,7 +196,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
      * @param int $page current page number
      * @param mod_hippotrack_display_options $displayoptions instance of mod_hippotrack_display_options
      * @param $content contains each question
-     * @param quiz_attempt $attemptobj instance of quiz_attempt
+     * @param hippotrack_attempt $attemptobj instance of hippotrack_attempt
      * @param bool $showall if true display attempt on one page
      */
     public function review_form($page, $showall, $displayoptions, $content, $attemptobj) {
@@ -205,7 +205,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
         }
 
         $this->page->requires->js_init_call('M.mod_hippotrack.init_review_form', null, false,
-                quiz_get_js_module());
+                hippotrack_get_js_module());
 
         $output = '';
         $output .= html_writer::start_tag('form', array('action' => $attemptobj->review_url(null,
@@ -228,21 +228,21 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     /**
      * Returns either a liink or button
      *
-     * @param quiz_attempt $attemptobj instance of quiz_attempt
+     * @param hippotrack_attempt $attemptobj instance of hippotrack_attempt
      */
-    public function finish_review_link(quiz_attempt $attemptobj) {
+    public function finish_review_link(hippotrack_attempt $attemptobj) {
         $url = $attemptobj->view_url();
 
         if ($attemptobj->get_access_manager(time())->attempt_must_be_in_popup()) {
             $this->page->requires->js_init_call('M.mod_hippotrack.secure_window.init_close_button',
-                    array($url), false, quiz_get_js_module());
+                    array($url), false, hippotrack_get_js_module());
             return html_writer::empty_tag('input', array('type' => 'button',
-                    'value' => get_string('finishreview', 'quiz'),
+                    'value' => get_string('finishreview', 'hippotrack'),
                     'id' => 'secureclosebutton',
                     'class' => 'mod_hippotrack-next-nav btn btn-primary'));
 
         } else {
-            return html_writer::link($url, get_string('finishreview', 'quiz'),
+            return html_writer::link($url, get_string('finishreview', 'hippotrack'),
                     array('class' => 'mod_hippotrack-next-nav'));
         }
     }
@@ -253,7 +253,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
      * Note, the name of this function is no longer accurate, but when the design
      * changed, it was decided to keep the old name for backwards compatibility.
      *
-     * @param quiz_attempt $attemptobj instance of quiz_attempt
+     * @param hippotrack_attempt $attemptobj instance of hippotrack_attempt
      * @param int $page the current page
      * @param bool $lastpage if true current page is the last page
      * @param bool|null $showall if true, the URL will be to review the entire attempt on one page,
@@ -261,26 +261,26 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
      *
      * @return string HTML fragment.
      */
-    public function review_next_navigation(quiz_attempt $attemptobj, $page, $lastpage, $showall = null) {
+    public function review_next_navigation(hippotrack_attempt $attemptobj, $page, $lastpage, $showall = null) {
         $nav = '';
         if ($page > 0) {
-            $nav .= link_arrow_left(get_string('navigateprevious', 'quiz'),
+            $nav .= link_arrow_left(get_string('navigateprevious', 'hippotrack'),
                     $attemptobj->review_url(null, $page - 1, $showall), false, 'mod_hippotrack-prev-nav');
         }
         if ($lastpage) {
             $nav .= $this->finish_review_link($attemptobj);
         } else {
-            $nav .= link_arrow_right(get_string('navigatenext', 'quiz'),
+            $nav .= link_arrow_right(get_string('navigatenext', 'hippotrack'),
                     $attemptobj->review_url(null, $page + 1, $showall), false, 'mod_hippotrack-next-nav');
         }
         return html_writer::tag('div', $nav, array('class' => 'submitbtns'));
     }
 
     /**
-     * Return the HTML of the quiz timer.
+     * Return the HTML of the hippotrack timer.
      * @return string HTML content.
      */
-    public function countdown_timer(quiz_attempt $attemptobj, $timenow) {
+    public function countdown_timer(hippotrack_attempt $attemptobj, $timenow) {
 
         $timeleft = $attemptobj->get_time_left_display($timenow);
         if ($timeleft !== false) {
@@ -288,7 +288,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
             $timerstartvalue = $timeleft;
             if (!$ispreview) {
                 // Make sure the timer starts just above zero. If $timeleft was <= 0, then
-                // this will just have the effect of causing the quiz to be submitted immediately.
+                // this will just have the effect of causing the hippotrack to be submitted immediately.
                 $timerstartvalue = max($timerstartvalue, 1);
             }
             $this->initialise_timer($timerstartvalue, $ispreview);
@@ -304,15 +304,15 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
      * @param moodle_url $url contains a url to the given page
      */
     public function restart_preview_button($url) {
-        return $this->single_button($url, get_string('startnewpreview', 'quiz'));
+        return $this->single_button($url, get_string('startnewpreview', 'hippotrack'));
     }
 
     /**
      * Outputs the navigation block panel
      *
-     * @param quiz_nav_panel_base $panel instance of quiz_nav_panel_base
+     * @param hippotrack_nav_panel_base $panel instance of hippotrack_nav_panel_base
      */
-    public function navigation_panel(quiz_nav_panel_base $panel) {
+    public function navigation_panel(hippotrack_nav_panel_base $panel) {
 
         $output = '';
         $userpicture = $panel->user_picture();
@@ -337,24 +337,24 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
                 array('class' => 'othernav'));
 
         $this->page->requires->js_init_call('M.mod_hippotrack.nav.init', null, false,
-                quiz_get_js_module());
+                hippotrack_get_js_module());
 
         return $output;
     }
 
     /**
-     * Display a quiz navigation button.
+     * Display a hippotrack navigation button.
      *
-     * @param quiz_nav_question_button $button
+     * @param hippotrack_nav_question_button $button
      * @return string HTML fragment.
      */
-    protected function render_quiz_nav_question_button(quiz_nav_question_button $button) {
+    protected function render_hippotrack_nav_question_button(hippotrack_nav_question_button $button) {
         $classes = array('qnbutton', $button->stateclass, $button->navmethod, 'btn');
         $extrainfo = array();
 
         if ($button->currentpage) {
             $classes[] = 'thispage';
-            $extrainfo[] = get_string('onthispage', 'quiz');
+            $extrainfo[] = get_string('onthispage', 'hippotrack');
         }
 
         // Flagged?
@@ -377,9 +377,9 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
         $a->attributes = implode(' ', $extrainfo);
         $tagcontents = html_writer::tag('span', '', array('class' => 'thispageholder')) .
                         html_writer::tag('span', '', array('class' => 'trafficlight')) .
-                        get_string($qnostring, 'quiz', $a);
+                        get_string($qnostring, 'hippotrack', $a);
         $tagattributes = array('class' => implode(' ', $classes), 'id' => $button->id,
-                                  'title' => $button->statestring, 'data-quiz-page' => $button->page);
+                                  'title' => $button->statestring, 'data-hippotrack-page' => $button->page);
 
         if ($button->url) {
             return html_writer::link($button->url, $tagcontents, $tagattributes);
@@ -389,14 +389,14 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Display a quiz navigation heading.
+     * Display a hippotrack navigation heading.
      *
-     * @param quiz_nav_section_heading $heading the heading.
+     * @param hippotrack_nav_section_heading $heading the heading.
      * @return string HTML fragment.
      */
-    protected function render_quiz_nav_section_heading(quiz_nav_section_heading $heading) {
+    protected function render_hippotrack_nav_section_heading(hippotrack_nav_section_heading $heading) {
         if (empty($heading->heading)) {
-            $headingtext = get_string('sectionnoname', 'quiz');
+            $headingtext = get_string('sectionnoname', 'hippotrack');
             $class = ' dimmed_text';
         } else {
             $headingtext = $heading->heading;
@@ -425,13 +425,13 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
         return implode(', ', $attemptlinks);
     }
 
-    public function start_attempt_page(quiz $quizobj, mod_hippotrack_preflight_check_form $mform) {
+    public function start_attempt_page(hippotrack $hippotrackobj, mod_hippotrack_preflight_check_form $mform) {
         $output = '';
         $output .= $this->header();
-        $output .= $this->during_attempt_tertiary_nav($quizobj->view_url());
-        $output .= $this->heading(format_string($quizobj->get_quiz_name(), true,
-                                  array("context" => $quizobj->get_context())));
-        $output .= $this->quiz_intro($quizobj->get_quiz(), $quizobj->get_cm());
+        $output .= $this->during_attempt_tertiary_nav($hippotrackobj->view_url());
+        $output .= $this->heading(format_string($hippotrackobj->get_hippotrack_name(), true,
+                                  array("context" => $hippotrackobj->get_context())));
+        $output .= $this->hippotrack_intro($hippotrackobj->get_hippotrack(), $hippotrackobj->get_cm());
         $output .= $mform->render();
         $output .= $this->footer();
         return $output;
@@ -440,9 +440,9 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     /**
      * Attempt Page
      *
-     * @param quiz_attempt $attemptobj Instance of quiz_attempt
+     * @param hippotrack_attempt $attemptobj Instance of hippotrack_attempt
      * @param int $page Current page number
-     * @param quiz_access_manager $accessmanager Instance of quiz_access_manager
+     * @param hippotrack_access_manager $accessmanager Instance of hippotrack_access_manager
      * @param array $messages An array of messages
      * @param array $slots Contains an array of integers that relate to questions
      * @param int $id The ID of an attempt
@@ -454,7 +454,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
         $output = '';
         $output .= $this->header();
         $output .= $this->during_attempt_tertiary_nav($attemptobj->view_url());
-        $output .= $this->quiz_notices($messages);
+        $output .= $this->hippotrack_notices($messages);
         $output .= $this->countdown_timer($attemptobj, time());
         $output .= $this->attempt_form($attemptobj, $page, $slots, $id, $nextpage);
         $output .= $this->footer();
@@ -464,15 +464,15 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     /**
      * Render the tertiary navigation for pages during the attempt.
      *
-     * @param string|moodle_url $quizviewurl url of the view.php page for this quiz.
+     * @param string|moodle_url $hippotrackviewurl url of the view.php page for this hippotrack.
      * @return string HTML to output.
      */
-    public function during_attempt_tertiary_nav($quizviewurl): string {
+    public function during_attempt_tertiary_nav($hippotrackviewurl): string {
         $output = '';
         $output .= html_writer::start_div('container-fluid tertiary-navigation');
         $output .= html_writer::start_div('row');
         $output .= html_writer::start_div('navitem');
-        $output .= html_writer::link($quizviewurl, get_string('back'),
+        $output .= html_writer::link($hippotrackviewurl, get_string('back'),
                 ['class' => 'btn btn-secondary']);
         $output .= html_writer::end_div();
         $output .= html_writer::end_div();
@@ -485,12 +485,12 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
      *
      * @param array $messages
      */
-    public function quiz_notices($messages) {
+    public function hippotrack_notices($messages) {
         if (!$messages) {
             return '';
         }
         return $this->notification(
-            html_writer::tag('p', get_string('accessnoticesheader', 'quiz')) . $this->access_messages($messages),
+            html_writer::tag('p', get_string('accessnoticesheader', 'hippotrack')) . $this->access_messages($messages),
             'warning',
             false
         );
@@ -499,7 +499,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     /**
      * Ouputs the form for making an attempt
      *
-     * @param quiz_attempt $attemptobj
+     * @param hippotrack_attempt $attemptobj
      * @param int $page Current page number
      * @param array $slots Array of integers relating to questions
      * @param int $id ID of the attempt
@@ -522,7 +522,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
                     $attemptobj->attempt_url($slot, $page), $this);
         }
 
-        $navmethod = $attemptobj->get_quiz()->navmethod;
+        $navmethod = $attemptobj->get_hippotrack()->navmethod;
         $output .= $this->attempt_navigation_buttons($page, $attemptobj->is_last_page($page), $navmethod);
 
         // Some hidden fields to trach what is going on.
@@ -558,8 +558,8 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
      * Display the prev/next buttons that go at the bottom of each page of the attempt.
      *
      * @param int $page the page number. Starts at 0 for the first page.
-     * @param bool $lastpage is this the last page in the quiz?
-     * @param string $navmethod Optional quiz attribute, 'free' (default) or 'sequential'
+     * @param bool $lastpage is this the last page in the hippotrack?
+     * @param string $navmethod Optional hippotrack attribute, 'free' (default) or 'sequential'
      * @return string HTML fragment.
      */
     protected function attempt_navigation_buttons($page, $lastpage, $navmethod = 'free') {
@@ -568,14 +568,14 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
         $output .= html_writer::start_tag('div', array('class' => 'submitbtns'));
         if ($page > 0 && $navmethod == 'free') {
             $output .= html_writer::empty_tag('input', array('type' => 'submit', 'name' => 'previous',
-                    'value' => get_string('navigateprevious', 'quiz'), 'class' => 'mod_hippotrack-prev-nav btn btn-secondary',
+                    'value' => get_string('navigateprevious', 'hippotrack'), 'class' => 'mod_hippotrack-prev-nav btn btn-secondary',
                     'id' => 'mod_hippotrack-prev-nav'));
             $this->page->requires->js_call_amd('core_form/submit', 'init', ['mod_hippotrack-prev-nav']);
         }
         if ($lastpage) {
-            $nextlabel = get_string('endtest', 'quiz');
+            $nextlabel = get_string('endtest', 'hippotrack');
         } else {
-            $nextlabel = get_string('navigatenext', 'quiz');
+            $nextlabel = get_string('navigatenext', 'hippotrack');
         }
         $output .= html_writer::empty_tag('input', array('type' => 'submit', 'name' => 'next',
                 'value' => $nextlabel, 'class' => 'mod_hippotrack-next-nav btn btn-primary', 'id' => 'mod_hippotrack-next-nav'));
@@ -594,7 +594,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
      */
     public function redo_question_button($slot, $disabled) {
         $attributes = array('type' => 'submit',  'name' => 'redoslot' . $slot,
-            'value' => get_string('redoquestion', 'quiz'),
+            'value' => get_string('redoquestion', 'hippotrack'),
             'class' => 'mod_hippotrack-redo_question_button btn btn-secondary');
         if ($disabled) {
             $attributes['disabled'] = 'disabled';
@@ -608,7 +608,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
      */
     public function initialise_timer($timerstartvalue, $ispreview) {
         $options = array($timerstartvalue, (bool)$ispreview);
-        $this->page->requires->js_init_call('M.mod_hippotrack.timer.init', $options, false, quiz_get_js_module());
+        $this->page->requires->js_init_call('M.mod_hippotrack.timer.init', $options, false, hippotrack_get_js_module());
     }
 
     /**
@@ -625,14 +625,14 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
 
         if ($message) {
             $output .= html_writer::tag('p', $message);
-            $output .= html_writer::tag('p', get_string('windowclosing', 'quiz'));
+            $output .= html_writer::tag('p', get_string('windowclosing', 'hippotrack'));
             $delay = 5;
         } else {
-            $output .= html_writer::tag('p', get_string('pleaseclose', 'quiz'));
+            $output .= html_writer::tag('p', get_string('pleaseclose', 'hippotrack'));
             $delay = 0;
         }
         $this->page->requires->js_init_call('M.mod_hippotrack.secure_window.close',
-                array($url, $delay), false, quiz_get_js_module());
+                array($url, $delay), false, hippotrack_get_js_module());
 
         $output .= $this->box_end();
         $output .= $this->footer();
@@ -661,15 +661,15 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     /**
      * Create the summary page
      *
-     * @param quiz_attempt $attemptobj
+     * @param hippotrack_attempt $attemptobj
      * @param mod_hippotrack_display_options $displayoptions
      */
     public function summary_page($attemptobj, $displayoptions) {
         $output = '';
         $output .= $this->header();
         $output .= $this->during_attempt_tertiary_nav($attemptobj->view_url());
-        $output .= $this->heading(format_string($attemptobj->get_quiz_name()));
-        $output .= $this->heading(get_string('summaryofattempt', 'quiz'), 3);
+        $output .= $this->heading(format_string($attemptobj->get_hippotrack_name()));
+        $output .= $this->heading(get_string('summaryofattempt', 'hippotrack'), 3);
         $output .= $this->summary_table($attemptobj, $displayoptions);
         $output .= $this->summary_page_controls($attemptobj);
         $output .= $this->footer();
@@ -679,19 +679,19 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     /**
      * Generates the table of summarydata
      *
-     * @param quiz_attempt $attemptobj
+     * @param hippotrack_attempt $attemptobj
      * @param mod_hippotrack_display_options $displayoptions
      */
     public function summary_table($attemptobj, $displayoptions) {
         // Prepare the summary table header.
         $table = new html_table();
-        $table->attributes['class'] = 'generaltable quizsummaryofattempt boxaligncenter';
-        $table->head = array(get_string('question', 'quiz'), get_string('status', 'quiz'));
+        $table->attributes['class'] = 'generaltable hippotracksummaryofattempt boxaligncenter';
+        $table->head = array(get_string('question', 'hippotrack'), get_string('status', 'hippotrack'));
         $table->align = array('left', 'left');
         $table->size = array('', '');
         $markscolumn = $displayoptions->marks >= question_display_options::MARK_AND_MAX;
         if ($markscolumn) {
-            $table->head[] = get_string('marks', 'quiz');
+            $table->head[] = get_string('marks', 'hippotrack');
             $table->align[] = 'left';
             $table->size[] = '';
         }
@@ -705,13 +705,13 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
             $heading = $attemptobj->get_heading_before_slot($slot);
             if ($heading !== null) {
                 // There is a heading here.
-                $rowclasses = 'quizsummaryheading';
+                $rowclasses = 'hippotracksummaryheading';
                 if ($heading) {
                     $heading = format_string($heading);
-                } else if (count($attemptobj->get_quizobj()->get_sections()) > 1) {
-                    // If this is the start of an unnamed section, and the quiz has more
+                } else if (count($attemptobj->get_hippotrackobj()->get_sections()) > 1) {
+                    // If this is the start of an unnamed section, and the hippotrack has more
                     // than one section, then add a default heading.
-                    $heading = get_string('sectionnoname', 'quiz');
+                    $heading = get_string('sectionnoname', 'hippotrack');
                     $rowclasses .= ' dimmed_text';
                 }
                 $cell = new html_table_cell(format_string($heading));
@@ -729,7 +729,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
             // Real question, show it.
             $flag = '';
             if ($attemptobj->is_question_flagged($slot)) {
-                // Quiz has custom JS manipulating these image tags - so we can't use the pix_icon method here.
+                // HippoTrack has custom JS manipulating these image tags - so we can't use the pix_icon method here.
                 $flag = html_writer::empty_tag('img', array('src' => $this->image_url('i/flagged'),
                         'alt' => get_string('flagged', 'question'), 'class' => 'questionflag icon-post'));
             }
@@ -745,7 +745,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
                 $row[] = $attemptobj->get_question_mark($slot);
             }
             $table->data[] = $row;
-            $table->rowclasses[] = 'quizsummary' . $slot . ' ' . $attemptobj->get_question_state_class(
+            $table->rowclasses[] = 'hippotracksummary' . $slot . ' ' . $attemptobj->get_question_state_class(
                     $slot, $displayoptions->correctness);
         }
 
@@ -758,16 +758,16 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     /**
      * Creates any controls a the page should have.
      *
-     * @param quiz_attempt $attemptobj
+     * @param hippotrack_attempt $attemptobj
      */
     public function summary_page_controls($attemptobj) {
         $output = '';
 
         // Return to place button.
-        if ($attemptobj->get_state() == quiz_attempt::IN_PROGRESS) {
+        if ($attemptobj->get_state() == hippotrack_attempt::IN_PROGRESS) {
             $button = new single_button(
                     new moodle_url($attemptobj->attempt_url(null, $attemptobj->get_currentpage())),
-                    get_string('returnattempt', 'quiz'));
+                    get_string('returnattempt', 'hippotrack'));
             $output .= $this->container($this->container($this->render($button),
                     'controls'), 'submitbtns mdl-align');
         }
@@ -784,13 +784,13 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
 
         $button = new single_button(
                 new moodle_url($attemptobj->processattempt_url(), $options),
-                get_string('submitallandfinish', 'quiz'));
+                get_string('submitallandfinish', 'hippotrack'));
         $button->id = 'responseform';
         $button->class = 'btn-finishattempt';
         $button->formid = 'frm-finishattempt';
-        if ($attemptobj->get_state() == quiz_attempt::IN_PROGRESS) {
+        if ($attemptobj->get_state() == hippotrack_attempt::IN_PROGRESS) {
             $totalunanswered = 0;
-            if ($attemptobj->get_quiz()->navmethod == 'free') {
+            if ($attemptobj->get_hippotrack()->navmethod == 'free') {
                 // Only count the unanswered question if the navigation method is set to free.
                 $totalunanswered = $attemptobj->get_number_of_unanswered_questions();
             }
@@ -800,11 +800,11 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
 
         $duedate = $attemptobj->get_due_date();
         $message = '';
-        if ($attemptobj->get_state() == quiz_attempt::OVERDUE) {
-            $message = get_string('overduemustbesubmittedby', 'quiz', userdate($duedate));
+        if ($attemptobj->get_state() == hippotrack_attempt::OVERDUE) {
+            $message = get_string('overduemustbesubmittedby', 'hippotrack', userdate($duedate));
 
         } else if ($duedate) {
-            $message = get_string('mustbesubmittedby', 'quiz', userdate($duedate));
+            $message = get_string('mustbesubmittedby', 'hippotrack', userdate($duedate));
         }
 
         $output .= $this->countdown_timer($attemptobj, time());
@@ -821,20 +821,20 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
      * Generates the view page
      *
      * @param stdClass $course the course settings row from the database.
-     * @param stdClass $quiz the quiz settings row from the database.
+     * @param stdClass $hippotrack the hippotrack settings row from the database.
      * @param stdClass $cm the course_module settings row from the database.
-     * @param context_module $context the quiz context.
+     * @param context_module $context the hippotrack context.
      * @param mod_hippotrack_view_object $viewobj
      * @return string HTML to display
      */
-    public function view_page($course, $quiz, $cm, $context, $viewobj) {
+    public function view_page($course, $hippotrack, $cm, $context, $viewobj) {
         $output = '';
 
         $output .= $this->view_page_tertiary_nav($viewobj);
-        $output .= $this->view_information($quiz, $cm, $context, $viewobj->infomessages);
-        $output .= $this->view_table($quiz, $context, $viewobj);
-        $output .= $this->view_result_info($quiz, $context, $cm, $viewobj);
-        $output .= $this->box($this->view_page_buttons($viewobj), 'quizattempt');
+        $output .= $this->view_information($hippotrack, $cm, $context, $viewobj->infomessages);
+        $output .= $this->view_table($hippotrack, $context, $viewobj);
+        $output .= $this->view_result_info($hippotrack, $context, $cm, $viewobj);
+        $output .= $this->box($this->view_page_buttons($viewobj), 'hippotrackattempt');
         return $output;
     }
 
@@ -854,8 +854,8 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
             $content .= $attemptbtn;
         }
 
-        if ($viewobj->canedit && !$viewobj->quizhasquestions) {
-            $content .= html_writer::link($viewobj->editurl, get_string('addquestion', 'quiz'),
+        if ($viewobj->canedit && !$viewobj->hippotrackhasquestions) {
+            $content .= html_writer::link($viewobj->editurl, get_string('addquestion', 'hippotrack'),
                     ['class' => 'btn btn-secondary']);
         }
 
@@ -876,16 +876,16 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     public function view_page_buttons(mod_hippotrack_view_object $viewobj) {
         $output = '';
 
-        if (!$viewobj->quizhasquestions) {
+        if (!$viewobj->hippotrackhasquestions) {
             $output .= html_writer::div(
-                    $this->notification(get_string('noquestions', 'quiz'), 'warning', false),
+                    $this->notification(get_string('noquestions', 'hippotrack'), 'warning', false),
                     'text-left mb-3');
         }
         $output .= $this->access_messages($viewobj->preventmessages);
 
         if ($viewobj->showbacktocourse) {
             $output .= $this->single_button($viewobj->backtocourseurl,
-                    get_string('backtocourse', 'quiz'), 'get',
+                    get_string('backtocourse', 'hippotrack'), 'get',
                     array('class' => 'continuebutton'));
         }
 
@@ -910,13 +910,13 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
             // Calling code was not updated since the API change.
             debugging('The third argument to start_attempt_button should now be the ' .
                     'mod_hippotrack_preflight_check_form from ' .
-                    'quiz_access_manager::get_preflight_check_form, not a warning message string.');
+                    'hippotrack_access_manager::get_preflight_check_form, not a warning message string.');
         }
 
         $button = new single_button($url, $buttontext, 'post', true);
-        $button->class .= ' quizstartbuttondiv';
+        $button->class .= ' hippotrackstartbuttondiv';
         if ($popuprequired) {
-            $button->class .= ' quizsecuremoderequired';
+            $button->class .= ' hippotracksecuremoderequired';
         }
 
         $popupjsoptions = null;
@@ -932,18 +932,18 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
         }
 
         $this->page->requires->js_call_amd('mod_hippotrack/preflightcheck', 'init',
-                array('.quizstartbuttondiv [type=submit]', get_string('startattempt', 'quiz'),
+                array('.hippotrackstartbuttondiv [type=submit]', get_string('startattempt', 'hippotrack'),
                        '#mod_hippotrack_preflight_form', $popupjsoptions));
 
         return $this->render($button) . $checkform;
     }
 
     /**
-     * Generate a message saying that this quiz has no questions, with a button to
+     * Generate a message saying that this hippotrack has no questions, with a button to
      * go to the edit page, if the user has the right capability.
      *
-     * @param bool $canedit can the current user edit the quiz?
-     * @param moodle_url $editurl URL of the edit quiz page.
+     * @param bool $canedit can the current user edit the hippotrack?
+     * @param moodle_url $editurl URL of the edit hippotrack page.
      * @return string HTML to output.
      *
      * @deprecated since Moodle 4.0 MDL-71915 - please do not use this function any more.
@@ -954,9 +954,9 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
         $output = html_writer::start_tag('div', array('class' => 'card text-center mb-3'));
         $output .= html_writer::start_tag('div', array('class' => 'card-body'));
 
-        $output .= $this->notification(get_string('noquestions', 'quiz'), 'warning', false);
+        $output .= $this->notification(get_string('noquestions', 'hippotrack'), 'warning', false);
         if ($canedit) {
-            $output .= $this->single_button($editurl, get_string('editquiz', 'quiz'), 'get');
+            $output .= $this->single_button($editurl, get_string('edithippotrack', 'hippotrack'), 'get');
         }
         $output .= html_writer::end_tag('div');
         $output .= html_writer::end_tag('div');
@@ -965,20 +965,20 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Outputs an error message for any guests accessing the quiz
+     * Outputs an error message for any guests accessing the hippotrack
      *
      * @param stdClass $course the course settings row from the database.
-     * @param stdClass $quiz the quiz settings row from the database.
+     * @param stdClass $hippotrack the hippotrack settings row from the database.
      * @param stdClass $cm the course_module settings row from the database.
-     * @param context_module $context the quiz context.
+     * @param context_module $context the hippotrack context.
      * @param array $messages Array containing any messages
      * @param mod_hippotrack_view_object $viewobj
      */
-    public function view_page_guest($course, $quiz, $cm, $context, $messages, $viewobj) {
+    public function view_page_guest($course, $hippotrack, $cm, $context, $messages, $viewobj) {
         $output = '';
         $output .= $this->view_page_tertiary_nav($viewobj);
-        $output .= $this->view_information($quiz, $cm, $context, $messages);
-        $guestno = html_writer::tag('p', get_string('guestsno', 'quiz'));
+        $output .= $this->view_information($hippotrack, $cm, $context, $messages);
+        $guestno = html_writer::tag('p', get_string('guestsno', 'hippotrack'));
         $liketologin = html_writer::tag('p', get_string('liketologin'));
         $referer = get_local_referer(false);
         $output .= $this->confirm($guestno."\n\n".$liketologin."\n", get_login_url(), $referer);
@@ -989,18 +989,18 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
      * Outputs and error message for anyone who is not enrolle don the course
      *
      * @param stdClass $course the course settings row from the database.
-     * @param stdClass $quiz the quiz settings row from the database.
+     * @param stdClass $hippotrack the hippotrack settings row from the database.
      * @param stdClass $cm the course_module settings row from the database.
-     * @param context_module $context the quiz context.
+     * @param context_module $context the hippotrack context.
      * @param array $messages Array containing any messages
      * @param mod_hippotrack_view_object $viewobj
      */
-    public function view_page_notenrolled($course, $quiz, $cm, $context, $messages, $viewobj) {
+    public function view_page_notenrolled($course, $hippotrack, $cm, $context, $messages, $viewobj) {
         global $CFG;
         $output = '';
         $output .= $this->view_page_tertiary_nav($viewobj);
-        $output .= $this->view_information($quiz, $cm, $context, $messages);
-        $youneedtoenrol = html_writer::tag('p', get_string('youneedtoenrol', 'quiz'));
+        $output .= $this->view_information($hippotrack, $cm, $context, $messages);
+        $youneedtoenrol = html_writer::tag('p', get_string('youneedtoenrol', 'hippotrack'));
         $button = html_writer::tag('p',
                 $this->continue_button($CFG->wwwroot . '/course/view.php?id=' . $course->id));
         $output .= $this->box($youneedtoenrol."\n\n".$button."\n", 'generalbox', 'notice');
@@ -1010,33 +1010,33 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     /**
      * Output the page information
      *
-     * @param object $quiz the quiz settings.
+     * @param object $hippotrack the hippotrack settings.
      * @param object $cm the course_module object.
-     * @param context $context the quiz context.
+     * @param context $context the hippotrack context.
      * @param array $messages any access messages that should be described.
-     * @param bool $quizhasquestions does quiz has questions added.
+     * @param bool $hippotrackhasquestions does hippotrack has questions added.
      * @return string HTML to output.
      */
-    public function view_information($quiz, $cm, $context, $messages, bool $quizhasquestions = false) {
+    public function view_information($hippotrack, $cm, $context, $messages, bool $hippotrackhasquestions = false) {
         $output = '';
 
         // Output any access messages.
         if ($messages) {
-            $output .= $this->box($this->access_messages($messages), 'quizinfo');
+            $output .= $this->box($this->access_messages($messages), 'hippotrackinfo');
         }
 
         // Show number of attempts summary to those who can view reports.
-        if (has_capability('mod/quiz:viewreports', $context)) {
-            if ($strattemptnum = $this->quiz_attempt_summary_link_to_reports($quiz, $cm,
+        if (has_capability('mod/hippotrack:viewreports', $context)) {
+            if ($strattemptnum = $this->hippotrack_attempt_summary_link_to_reports($hippotrack, $cm,
                     $context)) {
                 $output .= html_writer::tag('div', $strattemptnum,
-                        array('class' => 'quizattemptcounts'));
+                        array('class' => 'hippotrackattemptcounts'));
             }
         }
 
-        if (has_any_capability(['mod/quiz:manageoverrides', 'mod/quiz:viewoverrides'], $context)) {
-            if ($overrideinfo = $this->quiz_override_summary_links($quiz, $cm)) {
-                $output .= html_writer::tag('div', $overrideinfo, ['class' => 'quizattemptcounts']);
+        if (has_any_capability(['mod/hippotrack:manageoverrides', 'mod/hippotrack:viewoverrides'], $context)) {
+            if ($overrideinfo = $this->hippotrack_override_summary_links($hippotrack, $cm)) {
+                $output .= html_writer::tag('div', $overrideinfo, ['class' => 'hippotrackattemptcounts']);
             }
         }
 
@@ -1044,73 +1044,73 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Output the quiz intro.
-     * @param object $quiz the quiz settings.
+     * Output the hippotrack intro.
+     * @param object $hippotrack the hippotrack settings.
      * @param object $cm the course_module object.
      * @return string HTML to output.
      */
-    public function quiz_intro($quiz, $cm) {
-        if (html_is_blank($quiz->intro)) {
+    public function hippotrack_intro($hippotrack, $cm) {
+        if (html_is_blank($hippotrack->intro)) {
             return '';
         }
 
-        return $this->box(format_module_intro('quiz', $quiz, $cm->id), 'generalbox', 'intro');
+        return $this->box(format_module_intro('hippotrack', $hippotrack, $cm->id), 'generalbox', 'intro');
     }
 
     /**
      * Generates the table heading.
      */
     public function view_table_heading() {
-        return $this->heading(get_string('summaryofattempts', 'quiz'), 3);
+        return $this->heading(get_string('summaryofattempts', 'hippotrack'), 3);
     }
 
     /**
      * Generates the table of data
      *
-     * @param array $quiz Array contining quiz data
+     * @param array $hippotrack Array contining hippotrack data
      * @param int $context The page context ID
      * @param mod_hippotrack_view_object $viewobj
      */
-    public function view_table($quiz, $context, $viewobj) {
+    public function view_table($hippotrack, $context, $viewobj) {
         if (!$viewobj->attempts) {
             return '';
         }
 
         // Prepare table header.
         $table = new html_table();
-        $table->attributes['class'] = 'generaltable quizattemptsummary';
+        $table->attributes['class'] = 'generaltable hippotrackattemptsummary';
         $table->head = array();
         $table->align = array();
         $table->size = array();
-        $table->caption = get_string('summaryofattempts', 'quiz');
+        $table->caption = get_string('summaryofattempts', 'hippotrack');
         $table->captionhide = true;
         if ($viewobj->attemptcolumn) {
-            $table->head[] = get_string('attemptnumber', 'quiz');
+            $table->head[] = get_string('attemptnumber', 'hippotrack');
             $table->align[] = 'center';
             $table->size[] = '';
         }
-        $table->head[] = get_string('attemptstate', 'quiz');
+        $table->head[] = get_string('attemptstate', 'hippotrack');
         $table->align[] = 'left';
         $table->size[] = '';
         if ($viewobj->markcolumn) {
-            $table->head[] = get_string('marks', 'quiz') . ' / ' .
-                    quiz_format_grade($quiz, $quiz->sumgrades);
+            $table->head[] = get_string('marks', 'hippotrack') . ' / ' .
+                    hippotrack_format_grade($hippotrack, $hippotrack->sumgrades);
             $table->align[] = 'center';
             $table->size[] = '';
         }
         if ($viewobj->gradecolumn) {
             $table->head[] = get_string('gradenoun') . ' / ' .
-                    quiz_format_grade($quiz, $quiz->grade);
+                    hippotrack_format_grade($hippotrack, $hippotrack->grade);
             $table->align[] = 'center';
             $table->size[] = '';
         }
         if ($viewobj->canreviewmine) {
-            $table->head[] = get_string('review', 'quiz');
+            $table->head[] = get_string('review', 'hippotrack');
             $table->align[] = 'center';
             $table->size[] = '';
         }
         if ($viewobj->feedbackcolumn) {
-            $table->head[] = get_string('feedback', 'quiz');
+            $table->head[] = get_string('feedback', 'hippotrack');
             $table->align[] = 'left';
             $table->size[] = '';
         }
@@ -1123,7 +1123,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
             // Add the attempt number.
             if ($viewobj->attemptcolumn) {
                 if ($attemptobj->is_preview()) {
-                    $row[] = get_string('preview', 'quiz');
+                    $row[] = get_string('preview', 'hippotrack');
                 } else {
                     $row[] = $attemptobj->get_attempt_number();
                 }
@@ -1134,14 +1134,14 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
             if ($viewobj->markcolumn) {
                 if ($attemptoptions->marks >= question_display_options::MARK_AND_MAX &&
                         $attemptobj->is_finished()) {
-                    $row[] = quiz_format_grade($quiz, $attemptobj->get_sum_marks());
+                    $row[] = hippotrack_format_grade($hippotrack, $attemptobj->get_sum_marks());
                 } else {
                     $row[] = '';
                 }
             }
 
             // Ouside the if because we may be showing feedback but not grades.
-            $attemptgrade = quiz_rescale_grade($attemptobj->get_sum_marks(), $quiz, false);
+            $attemptgrade = hippotrack_rescale_grade($attemptobj->get_sum_marks(), $hippotrack, false);
 
             if ($viewobj->gradecolumn) {
                 if ($attemptoptions->marks >= question_display_options::MARK_AND_MAX &&
@@ -1150,13 +1150,13 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
                     // Highlight the highest grade if appropriate.
                     if ($viewobj->overallstats && !$attemptobj->is_preview()
                             && $viewobj->numattempts > 1 && !is_null($viewobj->mygrade)
-                            && $attemptobj->get_state() == quiz_attempt::FINISHED
+                            && $attemptobj->get_state() == hippotrack_attempt::FINISHED
                             && $attemptgrade == $viewobj->mygrade
-                            && $quiz->grademethod == QUIZ_GRADEHIGHEST) {
+                            && $hippotrack->grademethod == HIPPOTRACK_GRADEHIGHEST) {
                         $table->rowclasses[$attemptobj->get_attempt_number()] = 'bestrow';
                     }
 
-                    $row[] = quiz_format_grade($quiz, $attemptgrade);
+                    $row[] = hippotrack_format_grade($hippotrack, $attemptgrade);
                 } else {
                     $row[] = '';
                 }
@@ -1169,7 +1169,7 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
 
             if ($viewobj->feedbackcolumn && $attemptobj->is_finished()) {
                 if ($attemptoptions->overallfeedback) {
-                    $row[] = quiz_feedback_for_grade($attemptgrade, $quiz, $context);
+                    $row[] = hippotrack_feedback_for_grade($attemptgrade, $hippotrack, $context);
                 } else {
                     $row[] = '';
                 }
@@ -1190,41 +1190,41 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
 
     /**
      * Generate a brief textual desciption of the current state of an attempt.
-     * @param quiz_attempt $attemptobj the attempt
+     * @param hippotrack_attempt $attemptobj the attempt
      * @param int $timenow the time to use as 'now'.
      * @return string the appropriate lang string to describe the state.
      */
     public function attempt_state($attemptobj) {
         switch ($attemptobj->get_state()) {
-            case quiz_attempt::IN_PROGRESS:
-                return get_string('stateinprogress', 'quiz');
+            case hippotrack_attempt::IN_PROGRESS:
+                return get_string('stateinprogress', 'hippotrack');
 
-            case quiz_attempt::OVERDUE:
-                return get_string('stateoverdue', 'quiz') . html_writer::tag('span',
-                        get_string('stateoverduedetails', 'quiz',
+            case hippotrack_attempt::OVERDUE:
+                return get_string('stateoverdue', 'hippotrack') . html_writer::tag('span',
+                        get_string('stateoverduedetails', 'hippotrack',
                                 userdate($attemptobj->get_due_date())),
                         array('class' => 'statedetails'));
 
-            case quiz_attempt::FINISHED:
-                return get_string('statefinished', 'quiz') . html_writer::tag('span',
-                        get_string('statefinisheddetails', 'quiz',
+            case hippotrack_attempt::FINISHED:
+                return get_string('statefinished', 'hippotrack') . html_writer::tag('span',
+                        get_string('statefinisheddetails', 'hippotrack',
                                 userdate($attemptobj->get_submitted_date())),
                         array('class' => 'statedetails'));
 
-            case quiz_attempt::ABANDONED:
-                return get_string('stateabandoned', 'quiz');
+            case hippotrack_attempt::ABANDONED:
+                return get_string('stateabandoned', 'hippotrack');
         }
     }
 
     /**
-     * Generates data pertaining to quiz results
+     * Generates data pertaining to hippotrack results
      *
-     * @param array $quiz Array containing quiz data
+     * @param array $hippotrack Array containing hippotrack data
      * @param int $context The page context ID
      * @param int $cm The Course Module Id
      * @param mod_hippotrack_view_object $viewobj
      */
-    public function view_result_info($quiz, $context, $cm, $viewobj) {
+    public function view_result_info($hippotrack, $context, $cm, $viewobj) {
         $output = '';
         if (!$viewobj->numattempts && !$viewobj->gradecolumn && is_null($viewobj->mygrade)) {
             return $output;
@@ -1234,16 +1234,16 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
         if ($viewobj->overallstats) {
             if ($viewobj->moreattempts) {
                 $a = new stdClass();
-                $a->method = quiz_get_grading_option_name($quiz->grademethod);
-                $a->mygrade = quiz_format_grade($quiz, $viewobj->mygrade);
-                $a->quizgrade = quiz_format_grade($quiz, $quiz->grade);
-                $resultinfo .= $this->heading(get_string('gradesofar', 'quiz', $a), 3);
+                $a->method = hippotrack_get_grading_option_name($hippotrack->grademethod);
+                $a->mygrade = hippotrack_format_grade($hippotrack, $viewobj->mygrade);
+                $a->hippotrackgrade = hippotrack_format_grade($hippotrack, $hippotrack->grade);
+                $resultinfo .= $this->heading(get_string('gradesofar', 'hippotrack', $a), 3);
             } else {
                 $a = new stdClass();
-                $a->grade = quiz_format_grade($quiz, $viewobj->mygrade);
-                $a->maxgrade = quiz_format_grade($quiz, $quiz->grade);
-                $a = get_string('outofshort', 'quiz', $a);
-                $resultinfo .= $this->heading(get_string('yourfinalgradeis', 'quiz', $a), 3);
+                $a->grade = hippotrack_format_grade($hippotrack, $viewobj->mygrade);
+                $a->maxgrade = hippotrack_format_grade($hippotrack, $hippotrack->grade);
+                $a = get_string('outofshort', 'hippotrack', $a);
+                $resultinfo .= $this->heading(get_string('yourfinalgradeis', 'hippotrack', $a), 3);
             }
         }
 
@@ -1253,14 +1253,14 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
                     array('class' => 'overriddennotice'))."\n";
         }
         if ($viewobj->gradebookfeedback) {
-            $resultinfo .= $this->heading(get_string('comment', 'quiz'), 3);
-            $resultinfo .= html_writer::div($viewobj->gradebookfeedback, 'quizteacherfeedback') . "\n";
+            $resultinfo .= $this->heading(get_string('comment', 'hippotrack'), 3);
+            $resultinfo .= html_writer::div($viewobj->gradebookfeedback, 'hippotrackteacherfeedback') . "\n";
         }
         if ($viewobj->feedbackcolumn) {
-            $resultinfo .= $this->heading(get_string('overallfeedback', 'quiz'), 3);
+            $resultinfo .= $this->heading(get_string('overallfeedback', 'hippotrack'), 3);
             $resultinfo .= html_writer::div(
-                    quiz_feedback_for_grade($viewobj->mygrade, $quiz, $context),
-                    'quizgradefeedback') . "\n";
+                    hippotrack_feedback_for_grade($viewobj->mygrade, $hippotrack, $context),
+                    'hippotrackgradefeedback') . "\n";
         }
 
         if ($resultinfo) {
@@ -1280,13 +1280,13 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
      */
     public function review_link($url, $reviewinpopup, $popupoptions) {
         if ($reviewinpopup) {
-            $button = new single_button($url, get_string('review', 'quiz'));
-            $button->add_action(new popup_action('click', $url, 'quizpopup', $popupoptions));
+            $button = new single_button($url, get_string('review', 'hippotrack'));
+            $button->add_action(new popup_action('click', $url, 'hippotrackpopup', $popupoptions));
             return $this->render($button);
 
         } else {
-            return html_writer::link($url, get_string('review', 'quiz'),
-                    array('title' => get_string('reviewthisattempt', 'quiz')));
+            return html_writer::link($url, get_string('review', 'hippotrack'),
+                    array('title' => get_string('reviewthisattempt', 'hippotrack')));
         }
     }
 
@@ -1302,54 +1302,54 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
     }
 
     /**
-     * Returns the same as {@link quiz_num_attempt_summary()} but wrapped in a link
-     * to the quiz reports.
+     * Returns the same as {@link hippotrack_num_attempt_summary()} but wrapped in a link
+     * to the hippotrack reports.
      *
-     * @param stdClass $quiz the quiz object. Only $quiz->id is used at the moment.
+     * @param stdClass $hippotrack the hippotrack object. Only $hippotrack->id is used at the moment.
      * @param stdClass $cm the cm object. Only $cm->course, $cm->groupmode and $cm->groupingid
      * fields are used at the moment.
-     * @param context $context the quiz context.
+     * @param context $context the hippotrack context.
      * @param bool $returnzero if false (default), when no attempts have been made '' is returned
      *      instead of 'Attempts: 0'.
      * @param int $currentgroup if there is a concept of current group where this method is being
      *      called (e.g. a report) pass it in here. Default 0 which means no current group.
      * @return string HTML fragment for the link.
      */
-    public function quiz_attempt_summary_link_to_reports($quiz, $cm, $context,
+    public function hippotrack_attempt_summary_link_to_reports($hippotrack, $cm, $context,
                                                           $returnzero = false, $currentgroup = 0) {
         global $CFG;
-        $summary = quiz_num_attempt_summary($quiz, $cm, $returnzero, $currentgroup);
+        $summary = hippotrack_num_attempt_summary($hippotrack, $cm, $returnzero, $currentgroup);
         if (!$summary) {
             return '';
         }
 
-        require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
-        $url = new moodle_url('/mod/quiz/report.php', array(
-                'id' => $cm->id, 'mode' => quiz_report_default_report($context)));
+        require_once($CFG->dirroot . '/mod/hippotrack/report/reportlib.php');
+        $url = new moodle_url('/mod/hippotrack/report.php', array(
+                'id' => $cm->id, 'mode' => hippotrack_report_default_report($context)));
         return html_writer::link($url, $summary);
     }
 
     /**
      * Render a summary of the number of group and user overrides, with corresponding links.
      *
-     * @param stdClass $quiz the quiz settings.
+     * @param stdClass $hippotrack the hippotrack settings.
      * @param stdClass|cm_info $cm the cm object.
      * @param int $currentgroup currently selected group, if there is one.
      * @return string HTML fragment for the link.
      */
-    public function quiz_override_summary_links(stdClass $quiz, stdClass $cm, $currentgroup = 0): string {
+    public function hippotrack_override_summary_links(stdClass $hippotrack, stdClass $cm, $currentgroup = 0): string {
 
-        $baseurl = new moodle_url('/mod/quiz/overrides.php', ['cmid' => $cm->id]);
-        $counts = quiz_override_summary($quiz, $cm, $currentgroup);
+        $baseurl = new moodle_url('/mod/hippotrack/overrides.php', ['cmid' => $cm->id]);
+        $counts = hippotrack_override_summary($hippotrack, $cm, $currentgroup);
 
         $links = [];
         if ($counts['group']) {
             $links[] = html_writer::link(new moodle_url($baseurl, ['mode' => 'group']),
-                    get_string('overridessummarygroup', 'quiz', $counts['group']));
+                    get_string('overridessummarygroup', 'hippotrack', $counts['group']));
         }
         if ($counts['user']) {
             $links[] = html_writer::link(new moodle_url($baseurl, ['mode' => 'user']),
-                    get_string('overridessummaryuser', 'quiz', $counts['user']));
+                    get_string('overridessummaryuser', 'hippotrack', $counts['user']));
         }
 
         if (!$links) {
@@ -1359,13 +1359,13 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
         $links = implode(', ', $links);
         switch ($counts['mode']) {
             case 'onegroup':
-                return get_string('overridessummarythisgroup', 'quiz', $links);
+                return get_string('overridessummarythisgroup', 'hippotrack', $links);
 
             case 'somegroups':
-                return get_string('overridessummaryyourgroups', 'quiz', $links);
+                return get_string('overridessummaryyourgroups', 'hippotrack', $links);
 
             case 'allgroups':
-                return get_string('overridessummary', 'quiz', $links);
+                return get_string('overridessummary', 'hippotrack', $links);
 
             default:
                 throw new coding_exception('Unexpected mode ' . $counts['mode']);
@@ -1405,8 +1405,8 @@ class mod_hippotrack_renderer extends plugin_renderer_base {
      */
     public function connection_warning() {
         $options = array('filter' => false, 'newlines' => false);
-        $warning = format_text(get_string('connectionerror', 'quiz'), FORMAT_MARKDOWN, $options);
-        $ok = format_text(get_string('connectionok', 'quiz'), FORMAT_MARKDOWN, $options);
+        $warning = format_text(get_string('connectionerror', 'hippotrack'), FORMAT_MARKDOWN, $options);
+        $ok = format_text(get_string('connectionok', 'hippotrack'), FORMAT_MARKDOWN, $options);
         return html_writer::tag('div', $warning,
                     array('id' => 'connection-error', 'style' => 'display: none;', 'role' => 'alert')) .
                     html_writer::tag('div', $ok, array('id' => 'connection-ok', 'style' => 'display: none;', 'role' => 'alert'));
@@ -1424,20 +1424,20 @@ class mod_hippotrack_links_to_other_attempts implements renderable {
 
 
 class mod_hippotrack_view_object {
-    /** @var array $infomessages of messages with information to display about the quiz. */
+    /** @var array $infomessages of messages with information to display about the hippotrack. */
     public $infomessages;
-    /** @var array $attempts contains all the user's attempts at this quiz. */
+    /** @var array $attempts contains all the user's attempts at this hippotrack. */
     public $attempts;
-    /** @var array $attemptobjs quiz_attempt objects corresponding to $attempts. */
+    /** @var array $attemptobjs hippotrack_attempt objects corresponding to $attempts. */
     public $attemptobjs;
-    /** @var quiz_access_manager $accessmanager contains various access rules. */
+    /** @var hippotrack_access_manager $accessmanager contains various access rules. */
     public $accessmanager;
     /** @var bool $canreviewmine whether the current user has the capability to
      *       review their own attempts. */
     public $canreviewmine;
-    /** @var bool $canedit whether the current user has the capability to edit the quiz. */
+    /** @var bool $canedit whether the current user has the capability to edit the hippotrack. */
     public $canedit;
-    /** @var moodle_url $editurl the URL for editing this quiz. */
+    /** @var moodle_url $editurl the URL for editing this hippotrack. */
     public $editurl;
     /** @var int $attemptcolumn contains the number of attempts done. */
     public $attemptcolumn;
@@ -1453,7 +1453,7 @@ class mod_hippotrack_view_object {
     public $timenow;
     /** @var int $numattempts contains the total number of attempts. */
     public $numattempts;
-    /** @var float $mygrade contains the user's final grade for a quiz. */
+    /** @var float $mygrade contains the user's final grade for a hippotrack. */
     public $mygrade;
     /** @var bool $moreattempts whether this user is allowed more attempts. */
     public $moreattempts;
@@ -1466,7 +1466,7 @@ class mod_hippotrack_view_object {
     /** @var object $lastfinishedattempt the last attempt from the attempts array. */
     public $lastfinishedattempt;
     /** @var array $preventmessages of messages telling the user why they can't
-     *       attempt the quiz now. */
+     *       attempt the hippotrack now. */
     public $preventmessages;
     /** @var string $buttontext caption for the start attempt button. If this is null, show no
      *      button, or if it is '' show a back to the course button. */
@@ -1484,8 +1484,8 @@ class mod_hippotrack_view_object {
     public $popuprequired;
     /** @var array options to use for the popup window, if required. */
     public $popupoptions;
-    /** @var bool $quizhasquestions whether the quiz has any questions. */
-    public $quizhasquestions;
+    /** @var bool $hippotrackhasquestions whether the hippotrack has any questions. */
+    public $hippotrackhasquestions;
 
     public function __get($field) {
         switch ($field) {

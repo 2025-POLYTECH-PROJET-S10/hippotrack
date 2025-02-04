@@ -17,13 +17,13 @@ YUI.add('moodle-mod_hippotrack-autosave', function (Y, NAME) {
 
 
     /**
-     * Auto-save functionality for during quiz attempts.
+     * Auto-save functionality for during hippotrack attempts.
      *
      * @module moodle-mod_hippotrack-autosave
      */
 
     /**
-     * Auto-save functionality for during quiz attempts.
+     * Auto-save functionality for during hippotrack attempts.
      *
      * @class M.mod_hippotrack.autosave
      */
@@ -90,7 +90,7 @@ YUI.add('moodle-mod_hippotrack-autosave', function (Y, NAME) {
          * @static
          */
         SELECTORS: {
-            QUIZ_FORM: '#responseform',
+            HIPPOTRACK_FORM: '#responseform',
             VALUE_CHANGE_ELEMENTS: 'input, textarea, [contenteditable="true"]',
             CHANGE_ELEMENTS: 'input, select',
             HIDDEN_INPUTS: 'input[type=hidden]',
@@ -103,10 +103,10 @@ YUI.add('moodle-mod_hippotrack-autosave', function (Y, NAME) {
          *
          * @property AUTOSAVE_HANDLER
          * @type String
-         * @default M.cfg.wwwroot + '/mod/quiz/autosave.ajax.php'
+         * @default M.cfg.wwwroot + '/mod/hippotrack/autosave.ajax.php'
          * @private
          */
-        AUTOSAVE_HANDLER: M.cfg.wwwroot + '/mod/quiz/autosave.ajax.php',
+        AUTOSAVE_HANDLER: M.cfg.wwwroot + '/mod/hippotrack/autosave.ajax.php',
 
         /**
          * The delay (in milliseconds) between a change being made, and it being auto-saved.
@@ -192,7 +192,7 @@ YUI.add('moodle-mod_hippotrack-autosave', function (Y, NAME) {
          * a save happening.
          */
         init: function (delay) {
-            this.form = Y.one(this.SELECTORS.QUIZ_FORM);
+            this.form = Y.one(this.SELECTORS.HIPPOTRACK_FORM);
             if (!this.form) {
                 return;
             }

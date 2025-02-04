@@ -19,11 +19,11 @@ namespace mod_hippotrack;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/lib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/lib.php');
 
 /**
  * Unit tests for the calendar event modification callbacks used
- * for dragging and dropping quiz calendar events in the calendar
+ * for dragging and dropping hippotrack calendar events in the calendar
  * UI.
  *
  * @package    mod_hippotrack
@@ -34,12 +34,12 @@ require_once($CFG->dirroot . '/mod/quiz/lib.php');
 class calendar_event_modified_test extends \advanced_testcase {
 
     /**
-     * Create an instance of the quiz activity.
+     * Create an instance of the hippotrack activity.
      *
      * @param array $properties Properties to set on the activity
-     * @return stdClass Quiz activity instance
+     * @return stdClass HippoTrack activity instance
      */
-    protected function create_quiz_instance(array $properties) {
+    protected function create_hippotrack_instance(array $properties) {
         global $DB;
 
         $generator = $this->getDataGenerator();
@@ -51,38 +51,38 @@ class calendar_event_modified_test extends \advanced_testcase {
             $courseid = $properties['course'];
         }
 
-        $quizgenerator = $generator->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(array_merge(['course' => $courseid], $properties));
+        $hippotrackgenerator = $generator->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(array_merge(['course' => $courseid], $properties));
 
         if (isset($properties['timemodified'])) {
             // The generator overrides the timemodified value to set it as
             // the current time even if a value is provided so we need to
             // make sure it's set back to the requested value.
-            $quiz->timemodified = $properties['timemodified'];
-            $DB->update_record('quiz', $quiz);
+            $hippotrack->timemodified = $properties['timemodified'];
+            $DB->update_record('hippotrack', $hippotrack);
         }
 
-        return $quiz;
+        return $hippotrack;
     }
 
     /**
-     * Create a calendar event for a quiz activity instance.
+     * Create a calendar event for a hippotrack activity instance.
      *
-     * @param \stdClass $quiz The activity instance
+     * @param \stdClass $hippotrack The activity instance
      * @param array $eventproperties Properties to set on the calendar event
      * @return calendar_event
      */
-    protected function create_quiz_calendar_event(\stdClass $quiz, array $eventproperties) {
+    protected function create_hippotrack_calendar_event(\stdClass $hippotrack, array $eventproperties) {
         $defaultproperties = [
             'name' => 'Test event',
             'description' => '',
             'format' => 1,
-            'courseid' => $quiz->course,
+            'courseid' => $hippotrack->course,
             'groupid' => 0,
             'userid' => 2,
-            'modulename' => 'quiz',
-            'instance' => $quiz->id,
-            'eventtype' => QUIZ_EVENT_TYPE_OPEN,
+            'modulename' => 'hippotrack',
+            'instance' => $hippotrack->id,
+            'eventtype' => HIPPOTRACK_EVENT_TYPE_OPEN,
             'timestart' => time(),
             'timeduration' => 86400,
             'visible' => 1
@@ -92,7 +92,7 @@ class calendar_event_modified_test extends \advanced_testcase {
     }
 
     /**
-     * An unkown event type should not change the quiz instance.
+     * An unkown event type should not change the hippotrack instance.
      */
     public function test_mod_hippotrack_core_calendar_event_timestart_updated_unknown_event() {
         global $DB;
@@ -101,22 +101,22 @@ class calendar_event_modified_test extends \advanced_testcase {
         $this->setAdminUser();
         $timeopen = time();
         $timeclose = $timeopen + DAYSECS;
-        $quiz = $this->create_quiz_instance(['timeopen' => $timeopen, 'timeclose' => $timeclose]);
-        $event = $this->create_quiz_calendar_event($quiz, [
-            'eventtype' => QUIZ_EVENT_TYPE_OPEN . "SOMETHING ELSE",
+        $hippotrack = $this->create_hippotrack_instance(['timeopen' => $timeopen, 'timeclose' => $timeclose]);
+        $event = $this->create_hippotrack_calendar_event($hippotrack, [
+            'eventtype' => HIPPOTRACK_EVENT_TYPE_OPEN . "SOMETHING ELSE",
             'timestart' => 1
         ]);
 
-        mod_hippotrack_core_calendar_event_timestart_updated($event, $quiz);
+        mod_hippotrack_core_calendar_event_timestart_updated($event, $hippotrack);
 
-        $quiz = $DB->get_record('quiz', ['id' => $quiz->id]);
-        $this->assertEquals($timeopen, $quiz->timeopen);
-        $this->assertEquals($timeclose, $quiz->timeclose);
+        $hippotrack = $DB->get_record('hippotrack', ['id' => $hippotrack->id]);
+        $this->assertEquals($timeopen, $hippotrack->timeopen);
+        $this->assertEquals($timeclose, $hippotrack->timeclose);
     }
 
     /**
-     * A QUIZ_EVENT_TYPE_OPEN event should update the timeopen property of
-     * the quiz activity.
+     * A HIPPOTRACK_EVENT_TYPE_OPEN event should update the timeopen property of
+     * the hippotrack activity.
      */
     public function test_mod_hippotrack_core_calendar_event_timestart_updated_open_event() {
         global $DB;
@@ -127,30 +127,30 @@ class calendar_event_modified_test extends \advanced_testcase {
         $timeclose = $timeopen + DAYSECS;
         $timemodified = 1;
         $newtimeopen = $timeopen - DAYSECS;
-        $quiz = $this->create_quiz_instance([
+        $hippotrack = $this->create_hippotrack_instance([
             'timeopen' => $timeopen,
             'timeclose' => $timeclose,
             'timemodified' => $timemodified
         ]);
-        $event = $this->create_quiz_calendar_event($quiz, [
-            'eventtype' => QUIZ_EVENT_TYPE_OPEN,
+        $event = $this->create_hippotrack_calendar_event($hippotrack, [
+            'eventtype' => HIPPOTRACK_EVENT_TYPE_OPEN,
             'timestart' => $newtimeopen
         ]);
 
-        mod_hippotrack_core_calendar_event_timestart_updated($event, $quiz);
+        mod_hippotrack_core_calendar_event_timestart_updated($event, $hippotrack);
 
-        $quiz = $DB->get_record('quiz', ['id' => $quiz->id]);
+        $hippotrack = $DB->get_record('hippotrack', ['id' => $hippotrack->id]);
         // Ensure the timeopen property matches the event timestart.
-        $this->assertEquals($newtimeopen, $quiz->timeopen);
+        $this->assertEquals($newtimeopen, $hippotrack->timeopen);
         // Ensure the timeclose isn't changed.
-        $this->assertEquals($timeclose, $quiz->timeclose);
+        $this->assertEquals($timeclose, $hippotrack->timeclose);
         // Ensure the timemodified property has been changed.
-        $this->assertNotEquals($timemodified, $quiz->timemodified);
+        $this->assertNotEquals($timemodified, $hippotrack->timemodified);
     }
 
     /**
-     * A QUIZ_EVENT_TYPE_CLOSE event should update the timeclose property of
-     * the quiz activity.
+     * A HIPPOTRACK_EVENT_TYPE_CLOSE event should update the timeclose property of
+     * the hippotrack activity.
      */
     public function test_mod_hippotrack_core_calendar_event_timestart_updated_close_event() {
         global $DB;
@@ -161,30 +161,30 @@ class calendar_event_modified_test extends \advanced_testcase {
         $timeclose = $timeopen + DAYSECS;
         $timemodified = 1;
         $newtimeclose = $timeclose + DAYSECS;
-        $quiz = $this->create_quiz_instance([
+        $hippotrack = $this->create_hippotrack_instance([
             'timeopen' => $timeopen,
             'timeclose' => $timeclose,
             'timemodified' => $timemodified
         ]);
-        $event = $this->create_quiz_calendar_event($quiz, [
-            'eventtype' => QUIZ_EVENT_TYPE_CLOSE,
+        $event = $this->create_hippotrack_calendar_event($hippotrack, [
+            'eventtype' => HIPPOTRACK_EVENT_TYPE_CLOSE,
             'timestart' => $newtimeclose
         ]);
 
-        mod_hippotrack_core_calendar_event_timestart_updated($event, $quiz);
+        mod_hippotrack_core_calendar_event_timestart_updated($event, $hippotrack);
 
-        $quiz = $DB->get_record('quiz', ['id' => $quiz->id]);
+        $hippotrack = $DB->get_record('hippotrack', ['id' => $hippotrack->id]);
         // Ensure the timeclose property matches the event timestart.
-        $this->assertEquals($newtimeclose, $quiz->timeclose);
+        $this->assertEquals($newtimeclose, $hippotrack->timeclose);
         // Ensure the timeopen isn't changed.
-        $this->assertEquals($timeopen, $quiz->timeopen);
+        $this->assertEquals($timeopen, $hippotrack->timeopen);
         // Ensure the timemodified property has been changed.
-        $this->assertNotEquals($timemodified, $quiz->timemodified);
+        $this->assertNotEquals($timemodified, $hippotrack->timemodified);
     }
 
     /**
-     * A QUIZ_EVENT_TYPE_OPEN event should not update the timeopen property of
-     * the quiz activity if it's an override.
+     * A HIPPOTRACK_EVENT_TYPE_OPEN event should not update the timeopen property of
+     * the hippotrack activity if it's an override.
      */
     public function test_mod_hippotrack_core_calendar_event_timestart_updated_open_event_override() {
         global $DB;
@@ -196,40 +196,40 @@ class calendar_event_modified_test extends \advanced_testcase {
         $timeclose = $timeopen + DAYSECS;
         $timemodified = 1;
         $newtimeopen = $timeopen - DAYSECS;
-        $quiz = $this->create_quiz_instance([
+        $hippotrack = $this->create_hippotrack_instance([
             'timeopen' => $timeopen,
             'timeclose' => $timeclose,
             'timemodified' => $timemodified
         ]);
-        $event = $this->create_quiz_calendar_event($quiz, [
+        $event = $this->create_hippotrack_calendar_event($hippotrack, [
             'userid' => $user->id,
-            'eventtype' => QUIZ_EVENT_TYPE_OPEN,
+            'eventtype' => HIPPOTRACK_EVENT_TYPE_OPEN,
             'timestart' => $newtimeopen
         ]);
         $record = (object) [
-            'quiz' => $quiz->id,
+            'hippotrack' => $hippotrack->id,
             'userid' => $user->id
         ];
 
-        $DB->insert_record('quiz_overrides', $record);
+        $DB->insert_record('hippotrack_overrides', $record);
 
-        mod_hippotrack_core_calendar_event_timestart_updated($event, $quiz);
+        mod_hippotrack_core_calendar_event_timestart_updated($event, $hippotrack);
 
-        $quiz = $DB->get_record('quiz', ['id' => $quiz->id]);
+        $hippotrack = $DB->get_record('hippotrack', ['id' => $hippotrack->id]);
         // Ensure the timeopen property doesn't change.
-        $this->assertEquals($timeopen, $quiz->timeopen);
+        $this->assertEquals($timeopen, $hippotrack->timeopen);
         // Ensure the timeclose isn't changed.
-        $this->assertEquals($timeclose, $quiz->timeclose);
+        $this->assertEquals($timeclose, $hippotrack->timeclose);
         // Ensure the timemodified property has not been changed.
-        $this->assertEquals($timemodified, $quiz->timemodified);
+        $this->assertEquals($timemodified, $hippotrack->timemodified);
     }
 
     /**
-     * If a student somehow finds a way to update the quiz calendar event
-     * then the callback should not update the quiz activity otherwise that
+     * If a student somehow finds a way to update the hippotrack calendar event
+     * then the callback should not update the hippotrack activity otherwise that
      * would be a security issue.
      */
-    public function test_student_role_cant_update_quiz_activity() {
+    public function test_student_role_cant_update_hippotrack_activity() {
         global $DB;
 
         $this->resetAfterTest();
@@ -243,7 +243,7 @@ class calendar_event_modified_test extends \advanced_testcase {
         $now = time();
         $timeopen = (new \DateTime())->setTimestamp($now);
         $newtimeopen = (new \DateTime())->setTimestamp($now)->modify('+1 day');
-        $quiz = $this->create_quiz_instance([
+        $hippotrack = $this->create_hippotrack_instance([
             'course' => $course->id,
             'timeopen' => $timeopen->getTimestamp()
         ]);
@@ -251,8 +251,8 @@ class calendar_event_modified_test extends \advanced_testcase {
         $generator->enrol_user($user->id, $course->id, 'student');
         $generator->role_assign($roleid, $user->id, $context->id);
 
-        $event = $this->create_quiz_calendar_event($quiz, [
-            'eventtype' => QUIZ_EVENT_TYPE_OPEN,
+        $event = $this->create_hippotrack_calendar_event($hippotrack, [
+            'eventtype' => HIPPOTRACK_EVENT_TYPE_OPEN,
             'timestart' => $timeopen->getTimestamp()
         ]);
 
@@ -260,20 +260,20 @@ class calendar_event_modified_test extends \advanced_testcase {
 
         $this->setUser($user);
 
-        mod_hippotrack_core_calendar_event_timestart_updated($event, $quiz);
+        mod_hippotrack_core_calendar_event_timestart_updated($event, $hippotrack);
 
-        $newquiz = $DB->get_record('quiz', ['id' => $quiz->id]);
+        $newhippotrack = $DB->get_record('hippotrack', ['id' => $hippotrack->id]);
         // The time open shouldn't have changed even though we updated the calendar
         // event.
-        $this->assertEquals($timeopen->getTimestamp(), $newquiz->timeopen);
+        $this->assertEquals($timeopen->getTimestamp(), $newhippotrack->timeopen);
     }
 
     /**
-     * A teacher with the capability to modify a quiz module should be
-     * able to update the quiz activity dates by changing the calendar
+     * A teacher with the capability to modify a hippotrack module should be
+     * able to update the hippotrack activity dates by changing the calendar
      * event.
      */
-    public function test_teacher_role_can_update_quiz_activity() {
+    public function test_teacher_role_can_update_hippotrack_activity() {
         global $DB;
 
         $this->resetAfterTest();
@@ -287,7 +287,7 @@ class calendar_event_modified_test extends \advanced_testcase {
         $now = time();
         $timeopen = (new \DateTime())->setTimestamp($now);
         $newtimeopen = (new \DateTime())->setTimestamp($now)->modify('+1 day');
-        $quiz = $this->create_quiz_instance([
+        $hippotrack = $this->create_hippotrack_instance([
             'course' => $course->id,
             'timeopen' => $timeopen->getTimestamp()
         ]);
@@ -295,8 +295,8 @@ class calendar_event_modified_test extends \advanced_testcase {
         $generator->enrol_user($user->id, $course->id, 'teacher');
         $generator->role_assign($roleid, $user->id, $context->id);
 
-        $event = $this->create_quiz_calendar_event($quiz, [
-            'eventtype' => QUIZ_EVENT_TYPE_OPEN,
+        $event = $this->create_hippotrack_calendar_event($hippotrack, [
+            'eventtype' => HIPPOTRACK_EVENT_TYPE_OPEN,
             'timestart' => $newtimeopen->getTimestamp()
         ]);
 
@@ -307,17 +307,17 @@ class calendar_event_modified_test extends \advanced_testcase {
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
 
-        mod_hippotrack_core_calendar_event_timestart_updated($event, $quiz);
+        mod_hippotrack_core_calendar_event_timestart_updated($event, $hippotrack);
 
         $triggeredevents = $sink->get_events();
         $moduleupdatedevents = array_filter($triggeredevents, function($e) {
             return is_a($e, 'core\event\course_module_updated');
         });
 
-        $newquiz = $DB->get_record('quiz', ['id' => $quiz->id]);
+        $newhippotrack = $DB->get_record('hippotrack', ['id' => $hippotrack->id]);
         // The should be updated along with the event because the user has sufficient
         // capabilities.
-        $this->assertEquals($newtimeopen->getTimestamp(), $newquiz->timeopen);
+        $this->assertEquals($newtimeopen->getTimestamp(), $newhippotrack->timeopen);
         // Confirm that a module updated event is fired when the module
         // is changed.
         $this->assertNotEmpty($moduleupdatedevents);
@@ -334,22 +334,22 @@ class calendar_event_modified_test extends \advanced_testcase {
         $this->setAdminUser();
         $timeopen = time();
         $timeclose = $timeopen + DAYSECS;
-        $quiz = $this->create_quiz_instance([
+        $hippotrack = $this->create_hippotrack_instance([
             'timeopen' => $timeopen,
             'timeclose' => $timeclose
         ]);
-        $event = $this->create_quiz_calendar_event($quiz, [
-            'eventtype' => QUIZ_EVENT_TYPE_OPEN . "SOMETHING ELSE",
+        $event = $this->create_hippotrack_calendar_event($hippotrack, [
+            'eventtype' => HIPPOTRACK_EVENT_TYPE_OPEN . "SOMETHING ELSE",
             'timestart' => 1
         ]);
 
-        list ($min, $max) = mod_hippotrack_core_calendar_get_valid_event_timestart_range($event, $quiz);
+        list ($min, $max) = mod_hippotrack_core_calendar_get_valid_event_timestart_range($event, $hippotrack);
         $this->assertNull($min);
         $this->assertNull($max);
     }
 
     /**
-     * The open event should be limited by the quiz's timeclose property, if it's set.
+     * The open event should be limited by the hippotrack's timeclose property, if it's set.
      */
     public function test_mod_hippotrack_core_calendar_get_valid_event_timestart_range_open_event() {
         global $DB;
@@ -358,24 +358,24 @@ class calendar_event_modified_test extends \advanced_testcase {
         $this->setAdminUser();
         $timeopen = time();
         $timeclose = $timeopen + DAYSECS;
-        $quiz = $this->create_quiz_instance([
+        $hippotrack = $this->create_hippotrack_instance([
             'timeopen' => $timeopen,
             'timeclose' => $timeclose
         ]);
-        $event = $this->create_quiz_calendar_event($quiz, [
-            'eventtype' => QUIZ_EVENT_TYPE_OPEN,
+        $event = $this->create_hippotrack_calendar_event($hippotrack, [
+            'eventtype' => HIPPOTRACK_EVENT_TYPE_OPEN,
             'timestart' => 1
         ]);
 
         // The max limit should be bounded by the timeclose value.
-        list ($min, $max) = mod_hippotrack_core_calendar_get_valid_event_timestart_range($event, $quiz);
+        list ($min, $max) = mod_hippotrack_core_calendar_get_valid_event_timestart_range($event, $hippotrack);
 
         $this->assertNull($min);
         $this->assertEquals($timeclose, $max[0]);
 
         // No timeclose value should result in no upper limit.
-        $quiz->timeclose = 0;
-        list ($min, $max) = mod_hippotrack_core_calendar_get_valid_event_timestart_range($event, $quiz);
+        $hippotrack->timeclose = 0;
+        list ($min, $max) = mod_hippotrack_core_calendar_get_valid_event_timestart_range($event, $hippotrack);
 
         $this->assertNull($min);
         $this->assertNull($max);
@@ -394,31 +394,31 @@ class calendar_event_modified_test extends \advanced_testcase {
         $course = $generator->create_course();
         $timeopen = time();
         $timeclose = $timeopen + DAYSECS;
-        $quiz = $this->create_quiz_instance([
+        $hippotrack = $this->create_hippotrack_instance([
             'course' => $course->id,
             'timeopen' => $timeopen,
             'timeclose' => $timeclose
         ]);
-        $event = $this->create_quiz_calendar_event($quiz, [
+        $event = $this->create_hippotrack_calendar_event($hippotrack, [
             'userid' => $user->id,
-            'eventtype' => QUIZ_EVENT_TYPE_OPEN,
+            'eventtype' => HIPPOTRACK_EVENT_TYPE_OPEN,
             'timestart' => 1
         ]);
         $record = (object) [
-            'quiz' => $quiz->id,
+            'hippotrack' => $hippotrack->id,
             'userid' => $user->id
         ];
 
-        $DB->insert_record('quiz_overrides', $record);
+        $DB->insert_record('hippotrack_overrides', $record);
 
-        list ($min, $max) = mod_hippotrack_core_calendar_get_valid_event_timestart_range($event, $quiz);
+        list ($min, $max) = mod_hippotrack_core_calendar_get_valid_event_timestart_range($event, $hippotrack);
 
         $this->assertFalse($min);
         $this->assertFalse($max);
     }
 
     /**
-     * The close event should be limited by the quiz's timeopen property, if it's set.
+     * The close event should be limited by the hippotrack's timeopen property, if it's set.
      */
     public function test_mod_hippotrack_core_calendar_get_valid_event_timestart_range_close_event() {
         global $DB;
@@ -427,24 +427,24 @@ class calendar_event_modified_test extends \advanced_testcase {
         $this->setAdminUser();
         $timeopen = time();
         $timeclose = $timeopen + DAYSECS;
-        $quiz = $this->create_quiz_instance([
+        $hippotrack = $this->create_hippotrack_instance([
             'timeopen' => $timeopen,
             'timeclose' => $timeclose
         ]);
-        $event = $this->create_quiz_calendar_event($quiz, [
-            'eventtype' => QUIZ_EVENT_TYPE_CLOSE,
+        $event = $this->create_hippotrack_calendar_event($hippotrack, [
+            'eventtype' => HIPPOTRACK_EVENT_TYPE_CLOSE,
             'timestart' => 1,
         ]);
 
         // The max limit should be bounded by the timeclose value.
-        list ($min, $max) = mod_hippotrack_core_calendar_get_valid_event_timestart_range($event, $quiz);
+        list ($min, $max) = mod_hippotrack_core_calendar_get_valid_event_timestart_range($event, $hippotrack);
 
         $this->assertEquals($timeopen, $min[0]);
         $this->assertNull($max);
 
         // No timeclose value should result in no upper limit.
-        $quiz->timeopen = 0;
-        list ($min, $max) = mod_hippotrack_core_calendar_get_valid_event_timestart_range($event, $quiz);
+        $hippotrack->timeopen = 0;
+        list ($min, $max) = mod_hippotrack_core_calendar_get_valid_event_timestart_range($event, $hippotrack);
 
         $this->assertNull($min);
         $this->assertNull($max);
@@ -452,9 +452,9 @@ class calendar_event_modified_test extends \advanced_testcase {
 
     /**
      * When the close date event is changed and it results in the time close value of
-     * the quiz being updated then the open quiz attempts should also be updated.
+     * the hippotrack being updated then the open hippotrack attempts should also be updated.
      */
-    public function test_core_calendar_event_timestart_updated_update_quiz_attempt() {
+    public function test_core_calendar_event_timestart_updated_update_hippotrack_attempt() {
         global $DB;
 
         $this->resetAfterTest();
@@ -471,9 +471,9 @@ class calendar_event_modified_test extends \advanced_testcase {
         $timeopen = (new \DateTime())->setTimestamp($now);
         $timeclose = (new \DateTime())->setTimestamp($now)->modify('+1 day');
         // The new close time being earlier than the time open + time limit should
-        // result in an update to the quiz attempts.
+        // result in an update to the hippotrack attempts.
         $newtimeclose = $timeopen->getTimestamp() + $timelimit - 10;
-        $quiz = $this->create_quiz_instance([
+        $hippotrack = $this->create_hippotrack_instance([
             'course' => $course->id,
             'timeopen' => $timeopen->getTimestamp(),
             'timeclose' => $timeclose->getTimestamp(),
@@ -484,17 +484,17 @@ class calendar_event_modified_test extends \advanced_testcase {
         $generator->enrol_user($teacher->id, $course->id, 'teacher');
         $generator->role_assign($roleid, $teacher->id, $context->id);
 
-        $event = $this->create_quiz_calendar_event($quiz, [
-            'eventtype' => QUIZ_EVENT_TYPE_CLOSE,
+        $event = $this->create_hippotrack_calendar_event($hippotrack, [
+            'eventtype' => HIPPOTRACK_EVENT_TYPE_CLOSE,
             'timestart' => $newtimeclose
         ]);
 
         assign_capability('moodle/course:manageactivities', CAP_ALLOW, $roleid, $context, true);
 
         $attemptid = $DB->insert_record(
-            'quiz_attempts',
+            'hippotrack_attempts',
             [
-                'quiz' => $quiz->id,
+                'hippotrack' => $hippotrack->id,
                 'userid' => $student->id,
                 'state' => 'inprogress',
                 'timestart' => $timeopen->getTimestamp(),
@@ -506,14 +506,14 @@ class calendar_event_modified_test extends \advanced_testcase {
 
         $this->setUser($teacher);
 
-        mod_hippotrack_core_calendar_event_timestart_updated($event, $quiz);
+        mod_hippotrack_core_calendar_event_timestart_updated($event, $hippotrack);
 
-        $quiz = $DB->get_record('quiz', ['id' => $quiz->id]);
-        $attempt = $DB->get_record('quiz_attempts', ['id' => $attemptid]);
+        $hippotrack = $DB->get_record('hippotrack', ['id' => $hippotrack->id]);
+        $attempt = $DB->get_record('hippotrack_attempts', ['id' => $attemptid]);
         // When the close date is changed so that it's earlier than the time open
-        // plus the time limit of the quiz then the attempt's timecheckstate should
-        // be updated to the new time close date of the quiz.
+        // plus the time limit of the hippotrack then the attempt's timecheckstate should
+        // be updated to the new time close date of the hippotrack.
         $this->assertEquals($newtimeclose, $attempt->timecheckstate);
-        $this->assertEquals($newtimeclose, $quiz->timeclose);
+        $this->assertEquals($newtimeclose, $hippotrack->timeclose);
     }
 }

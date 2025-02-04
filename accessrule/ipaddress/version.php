@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for the quizaccess_ipaddress plugin.
+ * Version information for the hippotrackaccess_ipaddress plugin.
  *
- * @package    quizaccess
+ * @package    hippotrackaccess
  * @subpackage ipaddress
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -29,4 +29,4 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version   = 2022112800;
 $plugin->requires  = 2022111800;
-$plugin->component = 'quizaccess_ipaddress';
+$plugin->component = 'hippotrackaccess_ipaddress';

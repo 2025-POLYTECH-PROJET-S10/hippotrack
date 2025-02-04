@@ -1,8 +1,8 @@
 @mod @mod_hippotrack
-Feature: Quiz question versioning
+Feature: HippoTrack question versioning
   In order to manage question versions
   As a teacher
-  I need to be able to choose which versions can be displayed in a quiz
+  I need to be able to choose which versions can be displayed in a hippotrack
 
   Background:
     Given the following "courses" exist:
@@ -19,18 +19,18 @@ Feature: Quiz question versioning
       | Course       | C1        | Test questions |
     And the following "activities" exist:
       | activity   | name   | course | idnumber |
-      | quiz       | Quiz 1 | C1     | quiz1    |
+      | hippotrack       | HippoTrack 1 | C1     | hippotrack1    |
     And the following "questions" exist:
       | questioncategory | qtype     | name           | questiontext              |
       | Test questions   | truefalse | First question | Answer the first question |
       | Test questions   | truefalse | Other question | Answer the first question |
-    And quiz "Quiz 1" contains the following questions:
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question          | page |
       | First question    | 1    |
 
   @javascript
   Scenario: Appropriate question version should be displayed when not edited
-    When I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher"
+    When I am on the "HippoTrack 1" "mod_hippotrack > Edit" page logged in as "teacher"
     Then I should see "First question"
     And I should see "Answer the first question"
     And the field "version" matches value "Always latest"
@@ -45,7 +45,7 @@ Feature: Quiz question versioning
 
   @javascript
   Scenario: Approriate question version should be displayed when edited
-    When I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher"
+    When I am on the "HippoTrack 1" "mod_hippotrack > Edit" page logged in as "teacher"
     And I click on "Edit question First question" "link"
     # We edit the question with new informations to generate a second version
     And I set the following fields to these values:
@@ -75,56 +75,56 @@ Feature: Quiz question versioning
       | Correct answer  | False                         |
       | Question status | Draft                         |
     And I press "id_submitbutton"
-    When I am on the "Quiz 1" "mod_hippotrack > Edit" page
+    When I am on the "HippoTrack 1" "mod_hippotrack > Edit" page
     Then I should see "First question"
     And I should see "Answer the first question"
     And the field "version" matches value "Always latest"
     And the "version" select box should contain "v1 (latest)"
     And the "version" select box should not contain "v2"
     And the "version" select box should not contain "v2 (latest)"
-    And I am on the "Quiz 1" "mod_hippotrack > View" page
-    And I press "Preview quiz"
+    And I am on the "HippoTrack 1" "mod_hippotrack > View" page
+    And I press "Preview hippotrack"
     And I should see "Answer the first question"
 
   @javascript
   Scenario: Creating a new question should have always latest in the version selection
-    When I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher"
+    When I am on the "HippoTrack 1" "mod_hippotrack > Edit" page logged in as "teacher"
     # Change the version of the existing question, to ensure it does not match later.
     And I set the field "version" to "v1 (latest)"
-    And I open the "Page 1" add to quiz menu
+    And I open the "Page 1" add to hippotrack menu
     And I follow "a new question"
     And I set the field "item_qtype_essay" to "1"
     And I press "submitbutton"
     And I set the following fields to these values:
       | Question name   | New essay                      |
-      | Question text   | Write 200 words about quizzes. |
+      | Question text   | Write 200 words about hippotrackzes. |
     And I press "id_submitbutton"
-    And I should see "New essay" on quiz page "1"
+    And I should see "New essay" on hippotrack page "1"
     And the field "version" in the "New essay" "list_item" matches value "Always latest"
 
   @javascript
   Scenario: Adding a question from question bank should have always latest in the version selection
-    When I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher"
-    And I open the "Page 1" add to quiz menu
+    When I am on the "HippoTrack 1" "mod_hippotrack > Edit" page logged in as "teacher"
+    And I open the "Page 1" add to hippotrack menu
     And I follow "from question bank"
     And I click on "Select" "checkbox" in the "Other question" "table_row"
-    And I press "Add selected questions to the quiz"
-    Then I should see "Other question" on quiz page "1"
+    And I press "Add selected questions to the hippotrack"
+    Then I should see "Other question" on hippotrack page "1"
     And the field "version" in the "Other question" "list_item" matches value "Always latest"
 
   @javascript
   Scenario: Adding a question where all available versions are drafts should display a helpful message.
-    Given quiz "Quiz 1" contains the following questions:
+    Given hippotrack "HippoTrack 1" contains the following questions:
       | question       | page |
       | First question | 1    |
-    And I am on the "Quiz 1" "mod_hippotrack > Question bank" page logged in as teacher
+    And I am on the "HippoTrack 1" "mod_hippotrack > Question bank" page logged in as teacher
     And I set the field "question_status_dropdown" in the "First question" "table_row" to "Draft"
-    When I am on the "Quiz 1" "mod_hippotrack > Edit" page
-    Then I should see "This question is in draft status. To use it in the quiz, go to the question bank and change the status to ready."
+    When I am on the "HippoTrack 1" "mod_hippotrack > Edit" page
+    Then I should see "This question is in draft status. To use it in the hippotrack, go to the question bank and change the status to ready."
 
   @javascript
   Scenario: Previewing a question set to use always latest version will set the preview to always latest version
-    When I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher"
+    When I am on the "HippoTrack 1" "mod_hippotrack > Edit" page logged in as "teacher"
     And the field "version" in the "First question" "list_item" matches value "Always latest"
     When I follow "Preview question"
     And I expand all fieldsets
@@ -132,7 +132,7 @@ Feature: Quiz question versioning
 
   @javascript
   Scenario: Previewing a question set to use a specific version will set the preview to that version
-    When I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher"
+    When I am on the "HippoTrack 1" "mod_hippotrack > Edit" page logged in as "teacher"
     And I set the field "version" to "v1 (latest)"
     When I follow "Preview question"
     And I expand all fieldsets

@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'quiz_grading', language 'en', branch 'MOODLE_20_STABLE'
+ * Strings for component 'hippotrack_grading', language 'en', branch 'MOODLE_20_STABLE'
  *
- * @package   quiz_grading
+ * @package   hippotrack_grading
  * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -51,7 +51,7 @@ $string['gradingattempt'] = 'Attempt number {$a->attempt} for {$a->fullname}';
 $string['gradingattemptwithcustomfields'] = 'Attempt number {$a->attempt} for {$a->fullname} ({$a->customfields})';
 $string['gradingattemptsxtoyofz'] = 'Grading attempts {$a->from} to {$a->to} of {$a->of}';
 $string['gradingnextungraded'] = 'Next {$a} ungraded attempts';
-$string['gradingnotallowed'] = 'You do not have permission to manually grade responses in this quiz';
+$string['gradingnotallowed'] = 'You do not have permission to manually grade responses in this hippotrack';
 $string['gradingquestionx'] = 'Grading question {$a->number}: {$a->questionname}';
 $string['gradingreport'] = 'Manual grading report';
 $string['gradinguser'] = 'Attempts for {$a}';

@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Implementaton of the quizaccess_openclosedate plugin.
+ * Implementaton of the hippotrackaccess_openclosedate plugin.
  *
- * @package    quizaccess
+ * @package    hippotrackaccess
  * @subpackage openclosedate
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,7 +26,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
+require_once($CFG->dirroot . '/mod/hippotrack/accessrule/accessrulebase.php');
 
 
 /**
@@ -35,33 +35,33 @@ require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
  * @copyright  2009 Tim Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quizaccess_openclosedate extends quiz_access_rule_base {
+class hippotrackaccess_openclosedate extends hippotrack_access_rule_base {
 
-    public static function make(quiz $quizobj, $timenow, $canignoretimelimits) {
-        // This rule is always used, even if the quiz has no open or close date.
-        return new self($quizobj, $timenow);
+    public static function make(hippotrack $hippotrackobj, $timenow, $canignoretimelimits) {
+        // This rule is always used, even if the hippotrack has no open or close date.
+        return new self($hippotrackobj, $timenow);
     }
 
     public function prevent_access() {
-        $message = get_string('notavailable', 'quizaccess_openclosedate');
+        $message = get_string('notavailable', 'hippotrackaccess_openclosedate');
 
-        if ($this->timenow < $this->quiz->timeopen) {
+        if ($this->timenow < $this->hippotrack->timeopen) {
             return $message;
         }
 
-        if (!$this->quiz->timeclose) {
+        if (!$this->hippotrack->timeclose) {
             return false;
         }
 
-        if ($this->timenow <= $this->quiz->timeclose) {
+        if ($this->timenow <= $this->hippotrack->timeclose) {
             return false;
         }
 
-        if ($this->quiz->overduehandling != 'graceperiod') {
+        if ($this->hippotrack->overduehandling != 'graceperiod') {
             return $message;
         }
 
-        if ($this->timenow <= $this->quiz->timeclose + $this->quiz->graceperiod) {
+        if ($this->timenow <= $this->hippotrack->timeclose + $this->hippotrack->graceperiod) {
             return false;
         }
 
@@ -69,12 +69,12 @@ class quizaccess_openclosedate extends quiz_access_rule_base {
     }
 
     public function is_finished($numprevattempts, $lastattempt) {
-        return $this->quiz->timeclose && $this->timenow > $this->quiz->timeclose;
+        return $this->hippotrack->timeclose && $this->timenow > $this->hippotrack->timeclose;
     }
 
     public function end_time($attempt) {
-        if ($this->quiz->timeclose) {
-            return $this->quiz->timeclose;
+        if ($this->hippotrack->timeclose) {
+            return $this->hippotrack->timeclose;
         }
         return false;
     }
@@ -82,13 +82,13 @@ class quizaccess_openclosedate extends quiz_access_rule_base {
     public function time_left_display($attempt, $timenow) {
         // If this is a teacher preview after the close date, do not show
         // the time.
-        if ($attempt->preview && $timenow > $this->quiz->timeclose) {
+        if ($attempt->preview && $timenow > $this->hippotrack->timeclose) {
             return false;
         }
         // Otherwise, return to the time left until the close date, providing that is
-        // less than QUIZ_SHOW_TIME_BEFORE_DEADLINE.
+        // less than HIPPOTRACK_SHOW_TIME_BEFORE_DEADLINE.
         $endtime = $this->end_time($attempt);
-        if ($endtime !== false && $timenow > $endtime - QUIZ_SHOW_TIME_BEFORE_DEADLINE) {
+        if ($endtime !== false && $timenow > $endtime - HIPPOTRACK_SHOW_TIME_BEFORE_DEADLINE) {
             return $endtime - $timenow;
         }
         return false;

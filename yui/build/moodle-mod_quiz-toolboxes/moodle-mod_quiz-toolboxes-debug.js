@@ -120,7 +120,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
 
             data.sesskey = M.cfg.sesskey;
             data.courseid = this.get('courseid');
-            data.quizid = this.get('quizid');
+            data.hippotrackid = this.get('hippotrackid');
 
             var uri = M.cfg.wwwroot + this.get('ajaxurl');
 
@@ -146,7 +146,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
                         }
                         if (responsetext.hasOwnProperty('newnumquestions')) {
                             Y.one(SELECTOR.NUMQUESTIONS).setHTML(
-                                M.util.get_string('numquestionsx', 'quiz', responsetext.newnumquestions)
+                                M.util.get_string('numquestionsx', 'hippotrack', responsetext.newnumquestions)
                             );
                         }
                         if (success_callback) {
@@ -206,7 +206,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
                  * @default 'topics'
                  * @type String
                  */
-                quizid: {
+                hippotrackid: {
                     'value': 0
                 },
                 /**
@@ -235,7 +235,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
      * Resource and activity toolbox class.
      *
      * This class is responsible for managing AJAX interactions with activities and resources
-     * when viewing a quiz in editing mode.
+     * when viewing a hippotrack in editing mode.
      *
      * @module mod_hippotrack-resource-toolbox
      * @namespace M.mod_hippotrack.resource_toolbox
@@ -247,7 +247,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
      * This is a class extending TOOLBOX containing code specific to resources
      *
      * This class is responsible for managing AJAX interactions with activities and resources
-     * when viewing a quiz in editing mode.
+     * when viewing a hippotrack in editing mode.
      *
      * @class resources
      * @constructor
@@ -292,7 +292,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
          * @protected
          */
         initializer: function () {
-            M.mod_hippotrack.quizbase.register_module(this);
+            M.mod_hippotrack.hippotrackbase.register_module(this);
             Y.delegate('click', this.handle_data_action, BODY, SELECTOR.ACTIVITYACTION, this);
             Y.delegate('click', this.handle_data_action, BODY, SELECTOR.DEPENDENCY_LINK, this);
             this.initialise_select_multiple();
@@ -412,7 +412,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
                 confirmstring = '',
                 qtypename = M.util.get_string('pluginname',
                     'qtype_' + element.getAttribute('class').match(/qtype_([^\s]*)/)[1]);
-            confirmstring = M.util.get_string('confirmremovequestion', 'quiz', qtypename);
+            confirmstring = M.util.get_string('confirmremovequestion', 'hippotrack', qtypename);
 
             // Create the confirmation dialogue.
             var confirm = new M.core.confirm({
@@ -482,8 +482,8 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
 
             if (typeof problemsection !== 'undefined') {
                 var alert = new M.core.alert({
-                    title: M.util.get_string('cannotremoveslots', 'quiz'),
-                    message: M.util.get_string('cannotremoveallsectionslots', 'quiz', problemsection)
+                    title: M.util.get_string('cannotremoveslots', 'hippotrack'),
+                    message: M.util.get_string('cannotremoveallsectionslots', 'hippotrack', problemsection)
                 });
 
                 alert.show();
@@ -510,7 +510,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
                 ids += Y.Moodle.mod_hippotrack.util.slot.getId(slot);
                 slots.push(slot);
             });
-            var element = Y.one('div.mod-quiz-edit-content');
+            var element = Y.one('div.mod-hippotrack-edit-content');
 
             // Do nothing if no slots are selected.
             if (!slots || !slots.length) {
@@ -519,7 +519,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
 
             // Create the confirmation dialogue.
             var confirm = new M.core.confirm({
-                question: M.util.get_string('areyousureremoveselected', 'quiz'),
+                question: M.util.get_string('areyousureremoveselected', 'hippotrack'),
                 modal: true
             });
 
@@ -802,7 +802,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
             courseid: {
                 'value': 0
             },
-            quizid: {
+            hippotrackid: {
                 'value': 0
             }
         }
@@ -828,7 +828,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
      * Section toolbox class.
      *
      * This class is responsible for managing AJAX interactions with sections
-     * when adding, editing, removing section headings when editing a quiz.
+     * when adding, editing, removing section headings when editing a hippotrack.
      *
      * @class section
      * @constructor
@@ -859,7 +859,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
          * @protected
          */
         initializer: function () {
-            M.mod_hippotrack.quizbase.register_module(this);
+            M.mod_hippotrack.hippotrackbase.register_module(this);
 
             BODY.delegate('key', this.handle_data_action, 'down:enter', SELECTOR.ACTIVITYACTION, this);
             Y.delegate('click', this.handle_data_action, BODY, SELECTOR.ACTIVITYACTION, this);
@@ -929,7 +929,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
 
             // Create the confirmation dialogue.
             var confirm = new M.core.confirm({
-                question: M.util.get_string('confirmremovesectionheading', 'quiz', activity.getData('sectionname')),
+                question: M.util.get_string('confirmremovesectionheading', 'hippotrack', activity.getData('sectionname')),
                 modal: true
             });
 
@@ -1031,7 +1031,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
                 var instancesectiontext = newtext;
                 if (newtext.trim() === '') {
                     // Add a sr-only default section heading text to make sure we don't end up with an empty section heading.
-                    instancesectiontext = M.util.get_string('sectionnoname', 'quiz');
+                    instancesectiontext = M.util.get_string('sectionnoname', 'hippotrack');
                     instancesection.addClass('sr-only');
                 } else {
                     // Show the section heading when a non-empty value is set.
@@ -1052,7 +1052,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
                         if (newtext !== response.instancesection) {
                             if (response.instancesection.trim() === '') {
                                 // Add a sr-only default section heading text.
-                                instancesectiontext = M.util.get_string('sectionnoname', 'quiz');
+                                instancesectiontext = M.util.get_string('sectionnoname', 'hippotrack');
                                 instancesection.addClass('sr-only');
                             } else {
                                 instancesectiontext = response.instancesection;
@@ -1063,13 +1063,13 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
                         }
 
                         activity.one(SELECTOR.EDITSECTIONICON).set('title',
-                            M.util.get_string('sectionheadingedit', 'quiz', response.instancesection));
+                            M.util.get_string('sectionheadingedit', 'hippotrack', response.instancesection));
                         activity.one(SELECTOR.EDITSECTIONICON).set('alt',
-                            M.util.get_string('sectionheadingedit', 'quiz', response.instancesection));
+                            M.util.get_string('sectionheadingedit', 'hippotrack', response.instancesection));
                         var deleteicon = activity.one(SELECTOR.DELETESECTIONICON);
                         if (deleteicon) {
-                            deleteicon.set('title', M.util.get_string('sectionheadingremove', 'quiz', response.instancesection));
-                            deleteicon.set('alt', M.util.get_string('sectionheadingremove', 'quiz', response.instancesection));
+                            deleteicon.set('title', M.util.get_string('sectionheadingremove', 'hippotrack', response.instancesection));
+                            deleteicon.set('alt', M.util.get_string('sectionheadingremove', 'hippotrack', response.instancesection));
                         }
                     }
                 });
@@ -1166,7 +1166,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
             courseid: {
                 'value': 0
             },
-            quizid: {
+            hippotrackid: {
                 'value': 0
             }
         }
@@ -1184,7 +1184,7 @@ YUI.add('moodle-mod_hippotrack-toolboxes', function (Y, NAME) {
         "event",
         "event-key",
         "io",
-        "moodle-mod_hippotrack-quizbase",
+        "moodle-mod_hippotrack-hippotrackbase",
         "moodle-mod_hippotrack-util-slot",
         "moodle-core-notification-ajaxexception"
     ]

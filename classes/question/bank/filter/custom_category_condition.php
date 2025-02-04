@@ -17,9 +17,9 @@
 namespace mod_hippotrack\question\bank\filter;
 
 /**
- * A custom filter condition for quiz to select question categories.
+ * A custom filter condition for hippotrack to select question categories.
  *
- * This is required as quiz will only use ready questions and the count should show according to that.
+ * This is required as hippotrack will only use ready questions and the count should show according to that.
  *
  * @package    mod_hippotrack
  * @category   question

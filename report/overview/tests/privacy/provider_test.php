@@ -17,14 +17,14 @@
 /**
  * Privacy provider tests.
  *
- * @package    quiz_overview
+ * @package    hippotrack_overview
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace quiz_overview\privacy;
+namespace hippotrack_overview\privacy;
 
 use core_privacy\local\metadata\collection;
-use quiz_overview\privacy\provider;
+use hippotrack_overview\privacy\provider;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\transform;
 
@@ -33,7 +33,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Privacy provider tests class.
  *
- * @package    quiz_overview
+ * @package    hippotrack_overview
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -62,7 +62,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        set_user_preference('quiz_overview_slotmarks', 1, $user);
+        set_user_preference('hippotrack_overview_slotmarks', 1, $user);
 
         // Switch to admin user (so we can validate preferences of the correct user are being exported).
         $this->setAdminUser();
@@ -73,10 +73,10 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $writer = writer::with_context(\context_system::instance());
         $this->assertTrue($writer->has_any_data());
 
-        $preferences = $writer->get_user_preferences('quiz_overview');
+        $preferences = $writer->get_user_preferences('hippotrack_overview');
         $this->assertNotEmpty($preferences->slotmarks);
         $this->assertEquals(transform::yesno(1), $preferences->slotmarks->value);
-        $description = get_string('privacy:preference:slotmarks:yes', 'quiz_overview');
+        $description = get_string('privacy:preference:slotmarks:yes', 'hippotrack_overview');
         $this->assertEquals($description, $preferences->slotmarks->description);
     }
 
@@ -90,7 +90,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $user = $this->getDataGenerator()->create_user();
         $this->setUser($user);
 
-        set_user_preference('quiz_overview_slotmarks', 0);
+        set_user_preference('hippotrack_overview_slotmarks', 0);
 
         // Switch to admin user (so we can validate preferences of the correct user are being exported).
         $this->setAdminUser();
@@ -101,10 +101,10 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $writer = writer::with_context(\context_system::instance());
         $this->assertTrue($writer->has_any_data());
 
-        $preferences = $writer->get_user_preferences('quiz_overview');
+        $preferences = $writer->get_user_preferences('hippotrack_overview');
         $this->assertNotEmpty($preferences->slotmarks);
         $this->assertEquals(transform::yesno(0), $preferences->slotmarks->value);
-        $description = get_string('privacy:preference:slotmarks:no', 'quiz_overview');
+        $description = get_string('privacy:preference:slotmarks:no', 'hippotrack_overview');
         $this->assertEquals($description, $preferences->slotmarks->description);
     }
 }

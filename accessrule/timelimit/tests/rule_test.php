@@ -14,37 +14,37 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quizaccess_timelimit;
+namespace hippotrackaccess_timelimit;
 
-use quiz;
-use quizaccess_timelimit;
+use hippotrack;
+use hippotrackaccess_timelimit;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/accessrule/timelimit/rule.php');
+require_once($CFG->dirroot . '/mod/hippotrack/accessrule/timelimit/rule.php');
 
 
 /**
- * Unit tests for the quizaccess_timelimit plugin.
+ * Unit tests for the hippotrackaccess_timelimit plugin.
  *
- * @package    quizaccess_timelimit
+ * @package    hippotrackaccess_timelimit
  * @copyright  2008 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class rule_test extends \basic_testcase {
     public function test_time_limit_access_rule() {
-        $quiz = new \stdClass();
-        $quiz->timeclose = 0;
-        $quiz->timelimit = 3600;
+        $hippotrack = new \stdClass();
+        $hippotrack->timeclose = 0;
+        $hippotrack->timelimit = 3600;
         $cm = new \stdClass();
         $cm->id = 0;
-        $quizobj = new quiz($quiz, $cm, null);
-        $rule = new quizaccess_timelimit($quizobj, 10000);
+        $hippotrackobj = new hippotrack($hippotrack, $cm, null);
+        $rule = new hippotrackaccess_timelimit($hippotrackobj, 10000);
         $attempt = new \stdClass();
 
         $this->assertEquals($rule->description(),
-            get_string('quiztimelimit', 'quizaccess_timelimit', format_time(3600)));
+            get_string('hippotracktimelimit', 'hippotrackaccess_timelimit', format_time(3600)));
 
         $attempt->timestart = 10000;
         $attempt->preview = 0;
@@ -72,28 +72,28 @@ class rule_test extends \basic_testcase {
     }
 
     /**
-     * Test the time_left_display method of the quizaccess_timelimit class.
+     * Test the time_left_display method of the hippotrackaccess_timelimit class.
      *
-     * @param int $timetoclose  The number of seconds that is left to the quiz' closing time
-     * @param int $timelimit    Time limit of the quiz
-     * @param int $displaylimit The limit that is displayed on the quiz page
+     * @param int $timetoclose  The number of seconds that is left to the hippotrack' closing time
+     * @param int $timelimit    Time limit of the hippotrack
+     * @param int $displaylimit The limit that is displayed on the hippotrack page
      * @param int $actuallimit  The actual limit that is being applied
      * @dataProvider time_limit_access_rule_with_time_close_provider
      */
     public function test_time_limit_access_rule_with_time_close($timetoclose, $timelimit, $displaylimit, $actuallimit) {
         $timenow = 10000;
 
-        $quiz = new \stdClass();
-        $quiz->timeclose = $timenow + $timetoclose;
-        $quiz->timelimit = $timelimit;
+        $hippotrack = new \stdClass();
+        $hippotrack->timeclose = $timenow + $timetoclose;
+        $hippotrack->timelimit = $timelimit;
         $cm = new \stdClass();
         $cm->id = 0;
-        $quizobj = new quiz($quiz, $cm, null);
-        $rule = new quizaccess_timelimit($quizobj, $timenow);
+        $hippotrackobj = new hippotrack($hippotrack, $cm, null);
+        $rule = new hippotrackaccess_timelimit($hippotrackobj, $timenow);
         $attempt = new \stdClass();
 
         $this->assertEquals($rule->description(),
-            get_string('quiztimelimit', 'quizaccess_timelimit', format_time($displaylimit)));
+            get_string('hippotracktimelimit', 'hippotrackaccess_timelimit', format_time($displaylimit)));
 
         $attempt->timestart = $timenow;
         $attempt->preview = 0;

@@ -37,16 +37,16 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        // Create a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
+        // Create a hippotrack.
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
 
         // Create a question category in the system context.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $questiongenerator->create_question_category();
 
-        // Create a random question without adding it to a quiz.
-        // We don't want to use quiz_add_random_questions because that itself, instantiates an object from the slot_random class.
+        // Create a random question without adding it to a hippotrack.
+        // We don't want to use hippotrack_add_random_questions because that itself, instantiates an object from the slot_random class.
         $form = new \stdClass();
         $form->category = $category->id . ',' . $category->contextid;
         $form->includesubcategories = true;
@@ -62,12 +62,12 @@ class local_structure_slot_random_test extends \advanced_testcase {
 
         // Slot data.
         $randomslotdata = new \stdClass();
-        $randomslotdata->quizid = $quiz->id;
+        $randomslotdata->hippotrackid = $hippotrack->id;
         $randomslotdata->maxmark = 1;
-        $randomslotdata->usingcontextid = \context_module::instance($quiz->cmid)->id;
+        $randomslotdata->usingcontextid = \context_module::instance($hippotrack->cmid)->id;
         $randomslotdata->questionscontextid = $category->contextid;
 
-        // Insert the random question to the quiz.
+        // Insert the random question to the hippotrack.
         $randomslot = new \mod_hippotrack\local\structure\slot_random($randomslotdata);
         $randomslot->set_filter_condition($filtercondition);
 
@@ -76,7 +76,7 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $rcp->setAccessible(true);
         $record = json_decode($rcp->getValue($randomslot));
 
-        $this->assertEquals($quiz->id, $randomslot->get_quiz()->id);
+        $this->assertEquals($hippotrack->id, $randomslot->get_hippotrack()->id);
         $this->assertEquals($category->id, $record->questioncategoryid);
         $this->assertEquals(1, $record->includingsubcategories);
 
@@ -86,21 +86,21 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $this->assertEquals(1, $record->maxmark);
     }
 
-    public function test_get_quiz_quiz() {
+    public function test_get_hippotrack_hippotrack() {
         global $SITE, $DB;
 
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        // Create a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
+        // Create a hippotrack.
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
 
         // Create a question category in the system context.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $questiongenerator->create_question_category();
 
-        quiz_add_random_questions($quiz, 0, $category->id, 1, false);
+        hippotrack_add_random_questions($hippotrack, 0, $category->id, 1, false);
 
         // Set the filter conditions.
         $filtercondition = new \stdClass();
@@ -109,35 +109,35 @@ class local_structure_slot_random_test extends \advanced_testcase {
 
         // Slot data.
         $randomslotdata = new \stdClass();
-        $randomslotdata->quizid = $quiz->id;
+        $randomslotdata->hippotrackid = $hippotrack->id;
         $randomslotdata->maxmark = 1;
-        $randomslotdata->usingcontextid = \context_module::instance($quiz->cmid)->id;
+        $randomslotdata->usingcontextid = \context_module::instance($hippotrack->cmid)->id;
         $randomslotdata->questionscontextid = $category->contextid;
 
         $randomslot = new \mod_hippotrack\local\structure\slot_random($randomslotdata);
         $randomslot->set_filter_condition($filtercondition);
 
-        // The create_instance had injected an additional cmid propery to the quiz. Let's remove that.
-        unset($quiz->cmid);
+        // The create_instance had injected an additional cmid propery to the hippotrack. Let's remove that.
+        unset($hippotrack->cmid);
 
-        $this->assertEquals($quiz, $randomslot->get_quiz());
+        $this->assertEquals($hippotrack, $randomslot->get_hippotrack());
     }
 
-    public function test_set_quiz() {
+    public function test_set_hippotrack() {
         global $SITE, $DB;
 
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        // Create a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
+        // Create a hippotrack.
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
 
         // Create a question category in the system context.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $questiongenerator->create_question_category();
 
-        quiz_add_random_questions($quiz, 0, $category->id, 1, false);
+        hippotrack_add_random_questions($hippotrack, 0, $category->id, 1, false);
 
         // Set the filter conditions.
         $filtercondition = new \stdClass();
@@ -146,45 +146,45 @@ class local_structure_slot_random_test extends \advanced_testcase {
 
         // Slot data.
         $randomslotdata = new \stdClass();
-        $randomslotdata->quizid = $quiz->id;
+        $randomslotdata->hippotrackid = $hippotrack->id;
         $randomslotdata->maxmark = 1;
-        $randomslotdata->usingcontextid = \context_module::instance($quiz->cmid)->id;
+        $randomslotdata->usingcontextid = \context_module::instance($hippotrack->cmid)->id;
         $randomslotdata->questionscontextid = $category->contextid;
 
         $randomslot = new \mod_hippotrack\local\structure\slot_random($randomslotdata);
         $randomslot->set_filter_condition($filtercondition);
 
-        // The create_instance had injected an additional cmid propery to the quiz. Let's remove that.
-        unset($quiz->cmid);
+        // The create_instance had injected an additional cmid propery to the hippotrack. Let's remove that.
+        unset($hippotrack->cmid);
 
-        $randomslot->set_quiz($quiz);
+        $randomslot->set_hippotrack($hippotrack);
 
         $rc = new \ReflectionClass('\mod_hippotrack\local\structure\slot_random');
-        $rcp = $rc->getProperty('quiz');
+        $rcp = $rc->getProperty('hippotrack');
         $rcp->setAccessible(true);
-        $quizpropery = $rcp->getValue($randomslot);
+        $hippotrackpropery = $rcp->getValue($randomslot);
 
-        $this->assertEquals($quiz, $quizpropery);
+        $this->assertEquals($hippotrack, $hippotrackpropery);
     }
 
     private function setup_for_test_tags($tagnames) {
         global $SITE, $DB;
 
-        // Create a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
+        // Create a hippotrack.
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
 
         // Create a question category in the system context.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $questiongenerator->create_question_category();
 
-        quiz_add_random_questions($quiz, 0, $category->id, 1, false);
+        hippotrack_add_random_questions($hippotrack, 0, $category->id, 1, false);
 
         // Slot data.
         $randomslotdata = new \stdClass();
-        $randomslotdata->quizid = $quiz->id;
+        $randomslotdata->hippotrackid = $hippotrack->id;
         $randomslotdata->maxmark = 1;
-        $randomslotdata->usingcontextid = \context_module::instance($quiz->cmid)->id;
+        $randomslotdata->usingcontextid = \context_module::instance($hippotrack->cmid)->id;
         $randomslotdata->questionscontextid = $category->contextid;
 
         $randomslot = new \mod_hippotrack\local\structure\slot_random($randomslotdata);
@@ -352,16 +352,16 @@ class local_structure_slot_random_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        // Create a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
-        $quizcontext = \context_module::instance($quiz->cmid);
+        // Create a hippotrack.
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(array('course' => $SITE->id, 'questionsperpage' => 3, 'grade' => 100.0));
+        $hippotrackcontext = \context_module::instance($hippotrack->cmid);
 
         // Create a question category in the system context.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $category = $questiongenerator->create_question_category();
 
-        // Create a random question without adding it to a quiz.
+        // Create a random question without adding it to a hippotrack.
         $form = new \stdClass();
         $form->category = $category->id . ',' . $category->contextid;
         $form->includesubcategories = true;
@@ -394,24 +394,24 @@ class local_structure_slot_random_test extends \advanced_testcase {
 
         // Slot data.
         $randomslotdata = new \stdClass();
-        $randomslotdata->quizid = $quiz->id;
+        $randomslotdata->hippotrackid = $hippotrack->id;
         $randomslotdata->maxmark = 1;
-        $randomslotdata->usingcontextid = $quizcontext->id;
+        $randomslotdata->usingcontextid = $hippotrackcontext->id;
         $randomslotdata->questionscontextid = $category->contextid;
 
-        // Insert the random question to the quiz.
+        // Insert the random question to the hippotrack.
         $randomslot = new \mod_hippotrack\local\structure\slot_random($randomslotdata);
         $randomslot->set_tags([$footag, $bartag]);
         $randomslot->set_filter_condition($filtercondition);
-        $randomslot->insert(1); // Put the question on the first page of the quiz.
+        $randomslot->insert(1); // Put the question on the first page of the hippotrack.
 
-        $slots = qbank_helper::get_question_structure($quiz->id, $quizcontext);
-        $quizslot = reset($slots);
+        $slots = qbank_helper::get_question_structure($hippotrack->id, $hippotrackcontext);
+        $hippotrackslot = reset($slots);
 
-        $this->assertEquals($category->id, $quizslot->category);
-        $this->assertEquals(1, $quizslot->randomrecurse);
-        $this->assertEquals(1, $quizslot->maxmark);
-        $tagspropery = $quizslot->randomtags;
+        $this->assertEquals($category->id, $hippotrackslot->category);
+        $this->assertEquals(1, $hippotrackslot->randomrecurse);
+        $this->assertEquals(1, $hippotrackslot->maxmark);
+        $tagspropery = $hippotrackslot->randomtags;
 
         $this->assertCount(2, $tagspropery);
         $this->assertEqualsCanonicalizing(

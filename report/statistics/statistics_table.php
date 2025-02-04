@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz statistics report, table for showing statistics of each question in the quiz.
+ * HippoTrack statistics report, table for showing statistics of each question in the hippotrack.
  *
- * @package   quiz_statistics
+ * @package   hippotrack_statistics
  * @copyright 2008 Jamie Pratt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,7 +29,7 @@ require_once($CFG->libdir.'/tablelib.php');
 use \core_question\statistics\questions\calculated_question_summary;
 
 /**
- * This table has one row for each question in the quiz, with sub-rows when
+ * This table has one row for each question in the hippotrack, with sub-rows when
  * random questions and variants appear.
  *
  * There are columns for the various item and position statistics.
@@ -37,31 +37,31 @@ use \core_question\statistics\questions\calculated_question_summary;
  * @copyright 2008 Jamie Pratt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_statistics_table extends flexible_table {
-    /** @var object the quiz settings. */
-    protected $quiz;
+class hippotrack_statistics_table extends flexible_table {
+    /** @var object the hippotrack settings. */
+    protected $hippotrack;
 
-    /** @var integer the quiz course_module id. */
+    /** @var integer the hippotrack course_module id. */
     protected $cmid;
 
     /**
      * Constructor.
      */
     public function __construct() {
-        parent::__construct('mod-quiz-report-statistics-report');
+        parent::__construct('mod-hippotrack-report-statistics-report');
     }
 
     /**
      * Set up the columns and headers and other properties of the table and then
      * call flexible_table::setup() method.
      *
-     * @param object $quiz the quiz settings
-     * @param int $cmid the quiz course_module id
+     * @param object $hippotrack the hippotrack settings
+     * @param int $cmid the hippotrack course_module id
      * @param moodle_url $reporturl the URL to redisplay this report.
      * @param int $s number of attempts included in the statistics.
      */
-    public function statistics_setup($quiz, $cmid, $reporturl, $s) {
-        $this->quiz = $quiz;
+    public function statistics_setup($hippotrack, $cmid, $reporturl, $s) {
+        $this->hippotrack = $hippotrack;
         $this->cmid = $cmid;
 
         // Define the table columns.
@@ -69,7 +69,7 @@ class quiz_statistics_table extends flexible_table {
         $headers = array();
 
         $columns[] = 'number';
-        $headers[] = get_string('questionnumber', 'quiz_statistics');
+        $headers[] = get_string('questionnumber', 'hippotrack_statistics');
 
         if (!$this->is_downloading()) {
             $columns[] = 'icon';
@@ -78,37 +78,37 @@ class quiz_statistics_table extends flexible_table {
             $headers[] = '';
         } else {
             $columns[] = 'qtype';
-            $headers[] = get_string('questiontype', 'quiz_statistics');
+            $headers[] = get_string('questiontype', 'hippotrack_statistics');
         }
 
         $columns[] = 'name';
-        $headers[] = get_string('questionname', 'quiz');
+        $headers[] = get_string('questionname', 'hippotrack');
 
         $columns[] = 's';
-        $headers[] = get_string('attempts', 'quiz_statistics');
+        $headers[] = get_string('attempts', 'hippotrack_statistics');
 
         if ($s > 1) {
             $columns[] = 'facility';
-            $headers[] = get_string('facility', 'quiz_statistics');
+            $headers[] = get_string('facility', 'hippotrack_statistics');
 
             $columns[] = 'sd';
-            $headers[] = get_string('standarddeviationq', 'quiz_statistics');
+            $headers[] = get_string('standarddeviationq', 'hippotrack_statistics');
         }
 
         $columns[] = 'random_guess_score';
-        $headers[] = get_string('random_guess_score', 'quiz_statistics');
+        $headers[] = get_string('random_guess_score', 'hippotrack_statistics');
 
         $columns[] = 'intended_weight';
-        $headers[] = get_string('intended_weight', 'quiz_statistics');
+        $headers[] = get_string('intended_weight', 'hippotrack_statistics');
 
         $columns[] = 'effective_weight';
-        $headers[] = get_string('effective_weight', 'quiz_statistics');
+        $headers[] = get_string('effective_weight', 'hippotrack_statistics');
 
         $columns[] = 'discrimination_index';
-        $headers[] = get_string('discrimination_index', 'quiz_statistics');
+        $headers[] = get_string('discrimination_index', 'hippotrack_statistics');
 
         $columns[] = 'discriminative_efficiency';
-        $headers[] = get_string('discriminative_efficiency', 'quiz_statistics');
+        $headers[] = get_string('discriminative_efficiency', 'hippotrack_statistics');
 
         $this->define_columns($columns);
         $this->define_headers($headers);
@@ -204,7 +204,7 @@ class quiz_statistics_table extends flexible_table {
         } else if ($questionstat->question->qtype === 'missingtype') {
             return '';
         } else {
-            return quiz_question_action_icons($this->quiz, $this->cmid,
+            return hippotrack_question_action_icons($this->hippotrack, $this->cmid,
                     $questionstat->question, $this->baseurl, $questionstat->variant);
         }
     }
@@ -232,7 +232,7 @@ class quiz_statistics_table extends flexible_table {
             $a = new stdClass();
             $a->name = $name;
             $a->variant = $questionstat->variant;
-            $name = get_string('nameforvariant', 'quiz_statistics', $a);
+            $name = get_string('nameforvariant', 'hippotrack_statistics', $a);
         }
 
         if ($this->is_downloading()) {
@@ -245,20 +245,20 @@ class quiz_statistics_table extends flexible_table {
                 // Variant of a sub-question.
                 $url = new moodle_url($baseurl, array('qid' => $questionstat->questionid, 'variant' => $questionstat->variant));
                 $name = html_writer::link($url, $name, array('title' => get_string('detailedanalysisforvariant',
-                                                                                   'quiz_statistics',
+                                                                                   'hippotrack_statistics',
                                                                                    $questionstat->variant)));
             } else if ($questionstat->slot) {
                 // Variant of a question in a slot.
                 $url = new moodle_url($baseurl, array('slot' => $questionstat->slot, 'variant' => $questionstat->variant));
                 $name = html_writer::link($url, $name, array('title' => get_string('detailedanalysisforvariant',
-                                                                                   'quiz_statistics',
+                                                                                   'hippotrack_statistics',
                                                                                    $questionstat->variant)));
             }
         } else {
             if ($questionstat->subquestion && !$questionstat->get_variants()) {
                 // Sub question without variants.
                 $url = new moodle_url($baseurl, array('qid' => $questionstat->questionid));
-                $name = html_writer::link($url, $name, array('title' => get_string('detailedanalysis', 'quiz_statistics')));
+                $name = html_writer::link($url, $name, array('title' => get_string('detailedanalysis', 'hippotrack_statistics')));
             } else if ($baseurl->param('slot') === null && $questionstat->slot) {
                 // Question in a slot, we are not on a page showing structural analysis of one slot,
                 // we don't want linking on those pages.
@@ -271,12 +271,12 @@ class quiz_statistics_table extends flexible_table {
                     // analysis page with specific text to clearly indicate the link to the user.
                     // Random and variant question rows will render the name without a link to improve clarity
                     // in the UI.
-                    $name = html_writer::div(get_string('rangeofvalues', 'quiz_statistics'));
+                    $name = html_writer::div(get_string('rangeofvalues', 'hippotrack_statistics'));
                 } else if (!$israndomquestion && !$questionstat->get_variants() && !$questionstat->get_sub_question_ids()) {
                     // Question cannot be broken down into sub-questions or variants. Link will show response analysis page.
                     $name = html_writer::link($url,
                                               $name,
-                                              array('title' => get_string('detailedanalysis', 'quiz_statistics')));
+                                              array('title' => get_string('detailedanalysis', 'hippotrack_statistics')));
                 }
             }
         }
@@ -287,9 +287,9 @@ class quiz_statistics_table extends flexible_table {
         }
 
         if ($this->is_calculated_question_summary($questionstat)) {
-            $name .= html_writer::link($url, get_string('viewanalysis', 'quiz_statistics'));
+            $name .= html_writer::link($url, get_string('viewanalysis', 'hippotrack_statistics'));
         } else if (!empty($questionstat->minmedianmaxnotice)) {
-            $name = get_string($questionstat->minmedianmaxnotice, 'quiz_statistics') . '<br />' . $name;
+            $name = get_string($questionstat->minmedianmaxnotice, 'hippotrack_statistics') . '<br />' . $name;
         }
 
         return $name;
@@ -364,7 +364,7 @@ class quiz_statistics_table extends flexible_table {
 
     /**
      * The intended question weight. Maximum mark for the question as a percentage
-     * of maximum mark for the quiz. That is, the indended influence this question
+     * of maximum mark for the hippotrack. That is, the indended influence this question
      * on the student's overall mark.
      * @param \core_question\statistics\questions\calculated $questionstat stats for the question.
      * @return string contents of this table cell.
@@ -376,12 +376,12 @@ class quiz_statistics_table extends flexible_table {
             if (is_null($min) && is_null($max)) {
                 return '';
             } else {
-                $min = quiz_report_scale_summarks_as_percentage($min, $this->quiz);
-                $max = quiz_report_scale_summarks_as_percentage($max, $this->quiz);
+                $min = hippotrack_report_scale_summarks_as_percentage($min, $this->hippotrack);
+                $max = hippotrack_report_scale_summarks_as_percentage($max, $this->hippotrack);
                 return $this->format_range($min, $max);
             }
         } else {
-            return quiz_report_scale_summarks_as_percentage($questionstat->maxmark, $this->quiz);
+            return hippotrack_report_scale_summarks_as_percentage($questionstat->maxmark, $this->hippotrack);
         }
     }
 
@@ -402,7 +402,7 @@ class quiz_statistics_table extends flexible_table {
             } else {
                 list( , $negcovar) = $questionstat->get_min_max_of('negcovar');
                 if ($negcovar) {
-                    $min = get_string('negcovar', 'quiz_statistics');
+                    $min = get_string('negcovar', 'hippotrack_statistics');
                 }
 
                 return $this->format_range($min, $max);
@@ -410,11 +410,11 @@ class quiz_statistics_table extends flexible_table {
         } else if (is_null($questionstat->effectiveweight)) {
             return '';
         } else if ($questionstat->negcovar) {
-            $negcovar = get_string('negcovar', 'quiz_statistics');
+            $negcovar = get_string('negcovar', 'hippotrack_statistics');
 
             if (!$this->is_downloading()) {
                 $negcovar = html_writer::tag('div',
-                        $negcovar . $OUTPUT->help_icon('negcovar', 'quiz_statistics'),
+                        $negcovar . $OUTPUT->help_icon('negcovar', 'hippotrack_statistics'),
                         array('class' => 'negcovar'));
             }
 
@@ -427,7 +427,7 @@ class quiz_statistics_table extends flexible_table {
     /**
      * Discrimination index. This is the product moment correlation coefficient
      * between the fraction for this question, and the average fraction for the
-     * other questions in this quiz.
+     * other questions in this hippotrack.
      * @param \core_question\statistics\questions\calculated $questionstat stats for the question.
      * @return string contents of this table cell.
      */
@@ -524,7 +524,7 @@ class quiz_statistics_table extends flexible_table {
             $a->min = $min;
             $a->max = $max;
 
-            return get_string('rangebetween', 'quiz_statistics', $a);
+            return get_string('rangebetween', 'hippotrack_statistics', $a);
         }
     }
 

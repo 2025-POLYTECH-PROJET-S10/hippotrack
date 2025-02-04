@@ -1,6 +1,6 @@
 @mod @mod_hippotrack
-Feature: Preview a quiz as a teacher
-  In order to verify my quizzes are ready for my students
+Feature: Preview a hippotrack as a teacher
+  In order to verify my hippotrackzes are ready for my students
   As a teacher
   I need to be able to preview them
 
@@ -19,34 +19,34 @@ Feature: Preview a quiz as a teacher
       | Course       | C1        | Test questions |
     And the following "activities" exist:
       | activity   | name   | intro              | course | idnumber |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    |
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    |
     And the following "questions" exist:
       | questioncategory | qtype       | name  | questiontext    |
       | Test questions   | truefalse   | TF1   | First question  |
       | Test questions   | truefalse   | TF2   | Second question |
-    And quiz "Quiz 1" contains the following questions:
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page | maxmark |
       | TF1      | 1    |         |
       | TF2      | 1    | 3.0     |
-    And user "teacher" has attempted "Quiz 1" with responses:
+    And user "teacher" has attempted "HippoTrack 1" with responses:
       | slot | response |
       |   1  | True     |
       |   2  | False    |
 
   @javascript
-  Scenario: Review the quiz attempt
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "teacher"
+  Scenario: Review the hippotrack attempt
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "teacher"
     And I follow "Review"
     Then I should see "25.00 out of 100.00"
     And I follow "Finish review"
     And "Review" "link" in the "Preview" "table_row" should be visible
 
   @javascript
-  Scenario: Review the quiz attempt with custom decimal separator
+  Scenario: Review the hippotrack attempt with custom decimal separator
     Given the following "language customisations" exist:
       | component       | stringid | value |
       | core_langconfig | decsep   | #     |
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "teacher"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "teacher"
     And I follow "Review"
     Then I should see "1#00/4#00"
     And I should see "25#00 out of 100#00"
@@ -54,27 +54,27 @@ Feature: Preview a quiz as a teacher
     And I follow "Finish review"
     And "Review" "link" in the "Preview" "table_row" should be visible
 
-  Scenario: Preview the quiz
-    Given I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "teacher"
-    When I press "Preview quiz"
+  Scenario: Preview the hippotrack
+    Given I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "teacher"
+    When I press "Preview hippotrack"
     Then I should see "Question 1"
     And "Start a new preview" "button" should exist
 
-  Scenario: Teachers should see a notice if the quiz is not available to students
+  Scenario: Teachers should see a notice if the hippotrack is not available to students
     Given the following "activities" exist:
       | activity   | name   | course | timeclose     |
-      | quiz       | Quiz 2 | C1     | ##yesterday## |
-    And quiz "Quiz 2" contains the following questions:
+      | hippotrack       | HippoTrack 2 | C1     | ##yesterday## |
+    And hippotrack "HippoTrack 2" contains the following questions:
       | question | page | maxmark |
       | TF1      | 1    |         |
       | TF2      | 1    | 3.0     |
-    When I am on the "Quiz 2" "mod_hippotrack > View" page logged in as "admin"
-    And I should see "This quiz is currently not available."
-    And I press "Preview quiz"
+    When I am on the "HippoTrack 2" "mod_hippotrack > View" page logged in as "admin"
+    And I should see "This hippotrack is currently not available."
+    And I press "Preview hippotrack"
     Then I should see "if this were a real attempt, you would be blocked" in the ".alert-warning" "css_element"
 
-  Scenario: Admins should be able to preview a quiz
-    Given I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "admin"
-    When I press "Preview quiz"
+  Scenario: Admins should be able to preview a hippotrack
+    Given I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "admin"
+    When I press "Preview hippotrack"
     Then I should see "Question 1"
     And "Start a new preview" "button" should exist

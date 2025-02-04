@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Admin settings class for the quiz review options.
+ * Admin settings class for the hippotrack review options.
  *
  * @package   mod_hippotrack
  * @copyright 2008 Tim Hunt
@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * Admin settings class for the quiz review options.
+ * Admin settings class for the hippotrack review options.
  *
  * @copyright  2008 Tim Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -69,13 +69,13 @@ class mod_hippotrack_admin_review_setting extends admin_setting {
      */
     public static function fields() {
         return array(
-            'attempt'          => get_string('theattempt', 'quiz'),
+            'attempt'          => get_string('theattempt', 'hippotrack'),
             'correctness'      => get_string('whethercorrect', 'question'),
             'marks'            => get_string('marks', 'question'),
             'specificfeedback' => get_string('specificfeedback', 'question'),
             'generalfeedback'  => get_string('generalfeedback', 'question'),
             'rightanswer'      => get_string('rightanswer', 'question'),
-            'overallfeedback'  => get_string('overallfeedback', 'quiz'),
+            'overallfeedback'  => get_string('overallfeedback', 'hippotrack'),
         );
     }
 
@@ -110,10 +110,10 @@ class mod_hippotrack_admin_review_setting extends admin_setting {
      */
     protected static function times() {
         return array(
-            self::DURING            => get_string('reviewduring', 'quiz'),
-            self::IMMEDIATELY_AFTER => get_string('reviewimmediately', 'quiz'),
-            self::LATER_WHILE_OPEN  => get_string('reviewopen', 'quiz'),
-            self::AFTER_CLOSE       => get_string('reviewclosed', 'quiz'),
+            self::DURING            => get_string('reviewduring', 'hippotrack'),
+            self::IMMEDIATELY_AFTER => get_string('reviewimmediately', 'hippotrack'),
+            self::LATER_WHILE_OPEN  => get_string('reviewopen', 'hippotrack'),
+            self::AFTER_CLOSE       => get_string('reviewclosed', 'hippotrack'),
         );
     }
 
@@ -171,6 +171,6 @@ class mod_hippotrack_admin_review_setting extends admin_setting {
         $return .= "</div>\n";
 
         return format_admin_setting($this, $this->visiblename, $return,
-                $this->description, true, '', get_string('everythingon', 'quiz'), $query);
+                $this->description, true, '', get_string('everythingon', 'hippotrack'), $query);
     }
 }

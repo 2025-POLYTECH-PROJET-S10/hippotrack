@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Admin settings class for the quiz browser security option.
+ * Admin settings class for the hippotrack browser security option.
  *
  * @package   mod_hippotrack
  * @copyright 2008 Tim Hunt
@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * Admin settings class for the quiz browser security option.
+ * Admin settings class for the hippotrack browser security option.
  *
  * Just so we can lazy-load the choices.
  *
@@ -42,8 +42,8 @@ class mod_hippotrack_admin_setting_browsersecurity extends admin_setting_configs
             return true;
         }
 
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-        $this->choices = quiz_access_manager::get_browser_security_choices();
+        require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
+        $this->choices = hippotrack_access_manager::get_browser_security_choices();
 
         return true;
     }

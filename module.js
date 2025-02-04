@@ -15,10 +15,10 @@
 /* eslint camelcase: off */
 
 /**
- * JavaScript library for the quiz module.
+ * JavaScript library for the hippotrack module.
  *
  * @package    mod
- * @subpackage quiz
+ * @subpackage hippotrack
  * @copyright  1999 onwards Martin Dougiamas  {@link http://moodle.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -46,7 +46,7 @@ M.mod_hippotrack.init_comment_popup = function (Y) {
     Y.on('click', function () { window.close() }, closebutton);
 }
 
-// Code for updating the countdown timer that is used on timed quizzes.
+// Code for updating the countdown timer that is used on timed hippotrackzes.
 M.mod_hippotrack.timer = {
     // YUI object.
     Y: null,
@@ -54,7 +54,7 @@ M.mod_hippotrack.timer = {
     // Timestamp at which time runs out, according to the student's computer's clock.
     endtime: 0,
 
-    // Is this a quiz preview?
+    // Is this a hippotrack preview?
     preview: 0,
 
     // This records the id of the timeout that updates the clock periodically,
@@ -67,14 +67,14 @@ M.mod_hippotrack.timer = {
     /**
      * @param Y the YUI object
      * @param start, the timer starting time, in seconds.
-     * @param preview, is this a quiz preview?
+     * @param preview, is this a hippotrack preview?
      */
     init: function (Y, start, preview) {
         M.mod_hippotrack.timer.Y = Y;
         M.mod_hippotrack.timer.endtime = M.pageloadstarttime.getTime() + start * 1000;
         M.mod_hippotrack.timer.preview = preview;
         M.mod_hippotrack.timer.update();
-        Y.one('#quiz-timer-wrapper').setStyle('display', 'flex');
+        Y.one('#hippotrack-timer-wrapper').setStyle('display', 'flex');
         require(['core_form/changechecker'], function (FormChangeChecker) {
             M.mod_hippotrack.timer.FormChangeChecker = FormChangeChecker;
         });
@@ -100,7 +100,7 @@ M.mod_hippotrack.timer = {
         }
     },
 
-    // Function to update the clock with the current time left, and submit the quiz if necessary.
+    // Function to update the clock with the current time left, and submit the hippotrack if necessary.
     update: function () {
         var Y = M.mod_hippotrack.timer.Y;
         var secondsleft = Math.floor((M.mod_hippotrack.timer.endtime - new Date().getTime()) / 1000);
@@ -108,7 +108,7 @@ M.mod_hippotrack.timer = {
         // If time has expired, set the hidden form field that says time has expired and submit
         if (secondsleft < 0) {
             M.mod_hippotrack.timer.stop(null);
-            Y.one('#quiz-time-left').setContent(M.util.get_string('timesup', 'quiz'));
+            Y.one('#hippotrack-time-left').setContent(M.util.get_string('timesup', 'hippotrack'));
             var input = Y.one('input[name=timeup]');
             input.set('value', 1);
             var form = input.ancestor('form');
@@ -122,7 +122,7 @@ M.mod_hippotrack.timer = {
 
         // If time has nearly expired, change the colour.
         if (secondsleft < 100) {
-            Y.one('#quiz-timer').removeClass('timeleft' + (secondsleft + 2))
+            Y.one('#hippotrack-timer').removeClass('timeleft' + (secondsleft + 2))
                 .removeClass('timeleft' + (secondsleft + 1))
                 .addClass('timeleft' + secondsleft);
         }
@@ -133,7 +133,7 @@ M.mod_hippotrack.timer = {
         var minutes = Math.floor(secondsleft / 60);
         secondsleft -= minutes * 60;
         var seconds = secondsleft;
-        Y.one('#quiz-time-left').setContent(hours + ':' +
+        Y.one('#hippotrack-time-left').setContent(hours + ':' +
             M.mod_hippotrack.timer.two_digit(minutes) + ':' +
             M.mod_hippotrack.timer.two_digit(seconds));
 
@@ -141,13 +141,13 @@ M.mod_hippotrack.timer = {
         M.mod_hippotrack.timer.timeoutid = setTimeout(M.mod_hippotrack.timer.update, 100);
     },
 
-    // Allow the end time of the quiz to be updated.
+    // Allow the end time of the hippotrack to be updated.
     updateEndTime: function (timeleft) {
         var newtimeleft = new Date().getTime() + timeleft * 1000;
 
         // Timer might not have been initialized yet. We initialize it with
-        // preview = 0, because it's better to take a preview for a real quiz
-        // than to take a real quiz for a preview.
+        // preview = 0, because it's better to take a preview for a real hippotrack
+        // than to take a real hippotrack for a preview.
         if (M.mod_hippotrack.timer.Y === null) {
             M.mod_hippotrack.timer.init(window.Y, timeleft, 0);
         }
@@ -176,12 +176,12 @@ M.mod_hippotrack.filesUpload = {
      * Disable navigation block when uploading and enable navigation block when all files are uploaded.
      */
     disableNavPanel: function () {
-        var quizNavigationBlock = document.getElementById('mod_hippotrack_navblock');
-        if (quizNavigationBlock) {
+        var hippotrackNavigationBlock = document.getElementById('mod_hippotrack_navblock');
+        if (hippotrackNavigationBlock) {
             if (M.mod_hippotrack.filesUpload.numberFilesUploading) {
-                quizNavigationBlock.classList.add('nav-disabled');
+                hippotrackNavigationBlock.classList.add('nav-disabled');
             } else {
-                quizNavigationBlock.classList.remove('nav-disabled');
+                hippotrackNavigationBlock.classList.remove('nav-disabled');
             }
         }
     }
@@ -191,7 +191,7 @@ M.mod_hippotrack.nav = M.mod_hippotrack.nav || {};
 
 M.mod_hippotrack.nav.update_flag_state = function (attemptid, questionid, newstate) {
     var Y = M.mod_hippotrack.nav.Y;
-    var navlink = Y.one('#quiznavbutton' + questionid);
+    var navlink = Y.one('#hippotracknavbutton' + questionid);
     navlink.removeClass('flagged');
     if (newstate == 1) {
         navlink.addClass('flagged');
@@ -204,7 +204,7 @@ M.mod_hippotrack.nav.update_flag_state = function (attemptid, questionid, newsta
 M.mod_hippotrack.nav.init = function (Y) {
     M.mod_hippotrack.nav.Y = Y;
 
-    Y.all('#quiznojswarning').remove();
+    Y.all('#hippotracknojswarning').remove();
 
     var form = Y.one('#responseform');
     if (form) {
@@ -310,7 +310,7 @@ M.mod_hippotrack.secure_window = {
     },
 
     prevent: function (e) {
-        alert(M.util.get_string('functiondisabledbysecuremode', 'quiz'));
+        alert(M.util.get_string('functiondisabledbysecuremode', 'hippotrack'));
         e.halt();
     },
 

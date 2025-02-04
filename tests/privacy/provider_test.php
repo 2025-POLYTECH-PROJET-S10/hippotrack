@@ -58,7 +58,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
     }
 
     /**
-     * Test for provider::get_contexts_for_userid() when there is no quiz attempt at all.
+     * Test for provider::get_contexts_for_userid() when there is no hippotrack attempt at all.
      */
     public function test_get_contexts_for_userid_no_attempt_with_override() {
         global $DB;
@@ -67,17 +67,17 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $course = $this->getDataGenerator()->create_course();
         $user = $this->getDataGenerator()->create_user();
 
-        // Make a quiz with an override.
+        // Make a hippotrack with an override.
         $this->setUser();
-        $quiz = $this->create_test_quiz($course);
-        $DB->insert_record('quiz_overrides', [
-            'quiz' => $quiz->id,
+        $hippotrack = $this->create_test_hippotrack($course);
+        $DB->insert_record('hippotrack_overrides', [
+            'hippotrack' => $hippotrack->id,
             'userid' => $user->id,
             'timeclose' => 1300,
             'timelimit' => null,
         ]);
 
-        $cm = get_coursemodule_from_instance('quiz', $quiz->id);
+        $cm = get_coursemodule_from_instance('hippotrack', $hippotrack->id);
         $context = \context_module::instance($cm->id);
 
         // Fetch the contexts - only one context should be returned.
@@ -128,7 +128,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
     }
 
     /**
-     * Export + Delete quiz data for a user who has made a single attempt.
+     * Export + Delete hippotrack data for a user who has made a single attempt.
      */
     public function test_user_with_data() {
         global $DB;
@@ -138,20 +138,20 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $user = $this->getDataGenerator()->create_user();
         $otheruser = $this->getDataGenerator()->create_user();
 
-        // Make a quiz with an override.
+        // Make a hippotrack with an override.
         $this->setUser();
-        $quiz = $this->create_test_quiz($course);
-        $DB->insert_record('quiz_overrides', [
-                'quiz' => $quiz->id,
+        $hippotrack = $this->create_test_hippotrack($course);
+        $DB->insert_record('hippotrack_overrides', [
+                'hippotrack' => $hippotrack->id,
                 'userid' => $user->id,
                 'timeclose' => 1300,
                 'timelimit' => null,
             ]);
 
-        // Run as the user and make an attempt on the quiz.
-        list($quizobj, $quba, $attemptobj) = $this->attempt_quiz($quiz, $user);
-        $this->attempt_quiz($quiz, $otheruser);
-        $context = $quizobj->get_context();
+        // Run as the user and make an attempt on the hippotrack.
+        list($hippotrackobj, $quba, $attemptobj) = $this->attempt_hippotrack($hippotrack, $user);
+        $this->attempt_hippotrack($hippotrack, $otheruser);
+        $context = $hippotrackobj->get_context();
 
         // Fetch the contexts - only one context should be returned.
         $this->setUser();
@@ -168,15 +168,15 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         );
         provider::export_user_data($approvedcontextlist);
 
-        // Ensure that the quiz data was exported correctly.
+        // Ensure that the hippotrack data was exported correctly.
         $writer = writer::with_context($context);
         $this->assertTrue($writer->has_any_data());
 
-        $quizdata = $writer->get_data([]);
-        $this->assertEquals($quizobj->get_quiz_name(), $quizdata->name);
+        $hippotrackdata = $writer->get_data([]);
+        $this->assertEquals($hippotrackobj->get_hippotrack_name(), $hippotrackdata->name);
 
         // Every module has an intro.
-        $this->assertTrue(isset($quizdata->intro));
+        $this->assertTrue(isset($hippotrackdata->intro));
 
         // Fetch the attempt data.
         $attempt = $attemptobj->get_attempt();
@@ -188,7 +188,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
 
         $attempt = $attemptobj->get_attempt();
         $this->assertTrue(isset($attemptdata->state));
-        $this->assertEquals(\quiz_attempt::state_name($attemptobj->get_state()), $attemptdata->state);
+        $this->assertEquals(\hippotrack_attempt::state_name($attemptobj->get_state()), $attemptdata->state);
         $this->assertTrue(isset($attemptdata->timestart));
         $this->assertTrue(isset($attemptdata->timefinish));
         $this->assertTrue(isset($attemptdata->timemodified));
@@ -199,12 +199,12 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->assertEquals(100.00, $attemptdata->grade->grade);
 
         // Check that the exported question attempts are correct.
-        $attemptsubcontext = helper::get_quiz_attempt_subcontext($attemptobj->get_attempt(), $user);
+        $attemptsubcontext = helper::get_hippotrack_attempt_subcontext($attemptobj->get_attempt(), $user);
         $this->assert_question_attempt_exported(
             $context,
             $attemptsubcontext,
             \question_engine::load_questions_usage_by_activity($attemptobj->get_uniqueid()),
-            quiz_get_review_options($quiz, $attemptobj->get_attempt(), $context),
+            hippotrack_get_review_options($hippotrack, $attemptobj->get_attempt(), $context),
             $user
         );
 
@@ -212,22 +212,22 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->setUser();
         provider::delete_data_for_user($approvedcontextlist);
         $this->expectException(\dml_missing_record_exception::class);
-        \quiz_attempt::create($attemptobj->get_quizid());
+        \hippotrack_attempt::create($attemptobj->get_hippotrackid());
     }
 
     /**
-     * Export + Delete quiz data for a user who has made a single attempt.
+     * Export + Delete hippotrack data for a user who has made a single attempt.
      */
     public function test_user_with_preview() {
         global $DB;
         $this->resetAfterTest(true);
 
-        // Make a quiz.
+        // Make a hippotrack.
         $course = $this->getDataGenerator()->create_course();
         $user = $this->getDataGenerator()->create_user();
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
-        $quiz = $quizgenerator->create_instance([
+        $hippotrack = $hippotrackgenerator->create_instance([
                 'course' => $course->id,
                 'questionsperpage' => 0,
                 'grade' => 100.0,
@@ -239,26 +239,26 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $cat = $questiongenerator->create_question_category();
 
         $saq = $questiongenerator->create_question('shortanswer', null, array('category' => $cat->id));
-        quiz_add_quiz_question($saq->id, $quiz);
+        hippotrack_add_hippotrack_question($saq->id, $hippotrack);
         $numq = $questiongenerator->create_question('numerical', null, array('category' => $cat->id));
-        quiz_add_quiz_question($numq->id, $quiz);
+        hippotrack_add_hippotrack_question($numq->id, $hippotrack);
 
-        // Run as the user and make an attempt on the quiz.
+        // Run as the user and make an attempt on the hippotrack.
         $this->setUser($user);
         $starttime = time();
-        $quizobj = \quiz::create($quiz->id, $user->id);
-        $context = $quizobj->get_context();
+        $hippotrackobj = \hippotrack::create($hippotrack->id, $user->id);
+        $context = $hippotrackobj->get_context();
 
-        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
-        $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
+        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $hippotrackobj->get_context());
+        $quba->set_preferred_behaviour($hippotrackobj->get_hippotrack()->preferredbehaviour);
 
         // Start the attempt.
-        $attempt = quiz_create_attempt($quizobj, 1, false, $starttime, true, $user->id);
-        quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $starttime);
-        quiz_attempt_save_started($quizobj, $quba, $attempt);
+        $attempt = hippotrack_create_attempt($hippotrackobj, 1, false, $starttime, true, $user->id);
+        hippotrack_start_new_attempt($hippotrackobj, $quba, $attempt, 1, $starttime);
+        hippotrack_attempt_save_started($hippotrackobj, $quba, $attempt);
 
         // Answer the questions.
-        $attemptobj = \quiz_attempt::create($attempt->id);
+        $attemptobj = \hippotrack_attempt::create($attempt->id);
 
         $tosubmit = [
             1 => ['answer' => 'frog'],
@@ -268,7 +268,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $attemptobj->process_submitted_actions($starttime, false, $tosubmit);
 
         // Finish the attempt.
-        $attemptobj = \quiz_attempt::create($attempt->id);
+        $attemptobj = \hippotrack_attempt::create($attempt->id);
         $this->assertTrue($attemptobj->has_response_to_at_least_one_graded_question());
         $attemptobj->process_finish($starttime, false);
 
@@ -279,7 +279,7 @@ class provider_test extends \core_privacy\tests\provider_testcase {
     }
 
     /**
-     * Export + Delete quiz data for a user who has made a single attempt.
+     * Export + Delete hippotrack data for a user who has made a single attempt.
      */
     public function test_delete_data_for_all_users_in_context() {
         global $DB;
@@ -289,52 +289,52 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $user = $this->getDataGenerator()->create_user();
         $otheruser = $this->getDataGenerator()->create_user();
 
-        // Make a quiz with an override.
+        // Make a hippotrack with an override.
         $this->setUser();
-        $quiz = $this->create_test_quiz($course);
-        $DB->insert_record('quiz_overrides', [
-                'quiz' => $quiz->id,
+        $hippotrack = $this->create_test_hippotrack($course);
+        $DB->insert_record('hippotrack_overrides', [
+                'hippotrack' => $hippotrack->id,
                 'userid' => $user->id,
                 'timeclose' => 1300,
                 'timelimit' => null,
             ]);
 
-        // Run as the user and make an attempt on the quiz.
-        list($quizobj, $quba, $attemptobj) = $this->attempt_quiz($quiz, $user);
-        list($quizobj, $quba, $attemptobj) = $this->attempt_quiz($quiz, $otheruser);
+        // Run as the user and make an attempt on the hippotrack.
+        list($hippotrackobj, $quba, $attemptobj) = $this->attempt_hippotrack($hippotrack, $user);
+        list($hippotrackobj, $quba, $attemptobj) = $this->attempt_hippotrack($hippotrack, $otheruser);
 
-        // Create another quiz and questions, and repeat the data insertion.
+        // Create another hippotrack and questions, and repeat the data insertion.
         $this->setUser();
-        $otherquiz = $this->create_test_quiz($course);
-        $DB->insert_record('quiz_overrides', [
-                'quiz' => $otherquiz->id,
+        $otherhippotrack = $this->create_test_hippotrack($course);
+        $DB->insert_record('hippotrack_overrides', [
+                'hippotrack' => $otherhippotrack->id,
                 'userid' => $user->id,
                 'timeclose' => 1300,
                 'timelimit' => null,
             ]);
 
-        // Run as the user and make an attempt on the quiz.
-        list($otherquizobj, $otherquba, $otherattemptobj) = $this->attempt_quiz($otherquiz, $user);
-        list($otherquizobj, $otherquba, $otherattemptobj) = $this->attempt_quiz($otherquiz, $otheruser);
+        // Run as the user and make an attempt on the hippotrack.
+        list($otherhippotrackobj, $otherquba, $otherattemptobj) = $this->attempt_hippotrack($otherhippotrack, $user);
+        list($otherhippotrackobj, $otherquba, $otherattemptobj) = $this->attempt_hippotrack($otherhippotrack, $otheruser);
 
         // Delete all data for all users in the context under test.
         $this->setUser();
-        $context = $quizobj->get_context();
+        $context = $hippotrackobj->get_context();
         provider::delete_data_for_all_users_in_context($context);
 
-        // The quiz attempt should have been deleted from this quiz.
-        $this->assertCount(0, $DB->get_records('quiz_attempts', ['quiz' => $quizobj->get_quizid()]));
-        $this->assertCount(0, $DB->get_records('quiz_overrides', ['quiz' => $quizobj->get_quizid()]));
+        // The hippotrack attempt should have been deleted from this hippotrack.
+        $this->assertCount(0, $DB->get_records('hippotrack_attempts', ['hippotrack' => $hippotrackobj->get_hippotrackid()]));
+        $this->assertCount(0, $DB->get_records('hippotrack_overrides', ['hippotrack' => $hippotrackobj->get_hippotrackid()]));
         $this->assertCount(0, $DB->get_records('question_attempts', ['questionusageid' => $quba->get_id()]));
 
-        // But not for the other quiz.
-        $this->assertNotCount(0, $DB->get_records('quiz_attempts', ['quiz' => $otherquizobj->get_quizid()]));
-        $this->assertNotCount(0, $DB->get_records('quiz_overrides', ['quiz' => $otherquizobj->get_quizid()]));
+        // But not for the other hippotrack.
+        $this->assertNotCount(0, $DB->get_records('hippotrack_attempts', ['hippotrack' => $otherhippotrackobj->get_hippotrackid()]));
+        $this->assertNotCount(0, $DB->get_records('hippotrack_overrides', ['hippotrack' => $otherhippotrackobj->get_hippotrackid()]));
         $this->assertNotCount(0, $DB->get_records('question_attempts', ['questionusageid' => $otherquba->get_id()]));
     }
 
     /**
-     * Export + Delete quiz data for a user who has made a single attempt.
+     * Export + Delete hippotrack data for a user who has made a single attempt.
      */
     public function test_wrong_context() {
         global $DB;
@@ -389,17 +389,17 @@ class provider_test extends \core_privacy\tests\provider_testcase {
     }
 
     /**
-     * Create a test quiz for the specified course.
+     * Create a test hippotrack for the specified course.
      *
      * @param   \stdClass $course
      * @return  array
      */
-    protected function create_test_quiz($course) {
+    protected function create_test_hippotrack($course) {
         global $DB;
 
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
 
-        $quiz = $quizgenerator->create_instance([
+        $hippotrack = $hippotrackgenerator->create_instance([
                 'course' => $course->id,
                 'questionsperpage' => 0,
                 'grade' => 100.0,
@@ -411,37 +411,37 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $cat = $questiongenerator->create_question_category();
 
         $saq = $questiongenerator->create_question('shortanswer', null, array('category' => $cat->id));
-        quiz_add_quiz_question($saq->id, $quiz);
+        hippotrack_add_hippotrack_question($saq->id, $hippotrack);
         $numq = $questiongenerator->create_question('numerical', null, array('category' => $cat->id));
-        quiz_add_quiz_question($numq->id, $quiz);
+        hippotrack_add_hippotrack_question($numq->id, $hippotrack);
 
-        return $quiz;
+        return $hippotrack;
     }
 
     /**
-     * Answer questions for a quiz + user.
+     * Answer questions for a hippotrack + user.
      *
-     * @param   \stdClass   $quiz
+     * @param   \stdClass   $hippotrack
      * @param   \stdClass   $user
      * @return  array
      */
-    protected function attempt_quiz($quiz, $user) {
+    protected function attempt_hippotrack($hippotrack, $user) {
         $this->setUser($user);
 
         $starttime = time();
-        $quizobj = \quiz::create($quiz->id, $user->id);
-        $context = $quizobj->get_context();
+        $hippotrackobj = \hippotrack::create($hippotrack->id, $user->id);
+        $context = $hippotrackobj->get_context();
 
-        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
-        $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
+        $quba = \question_engine::make_questions_usage_by_activity('mod_hippotrack', $hippotrackobj->get_context());
+        $quba->set_preferred_behaviour($hippotrackobj->get_hippotrack()->preferredbehaviour);
 
         // Start the attempt.
-        $attempt = quiz_create_attempt($quizobj, 1, false, $starttime, false, $user->id);
-        quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $starttime);
-        quiz_attempt_save_started($quizobj, $quba, $attempt);
+        $attempt = hippotrack_create_attempt($hippotrackobj, 1, false, $starttime, false, $user->id);
+        hippotrack_start_new_attempt($hippotrackobj, $quba, $attempt, 1, $starttime);
+        hippotrack_attempt_save_started($hippotrackobj, $quba, $attempt);
 
         // Answer the questions.
-        $attemptobj = \quiz_attempt::create($attempt->id);
+        $attemptobj = \hippotrack_attempt::create($attempt->id);
 
         $tosubmit = [
             1 => ['answer' => 'frog'],
@@ -451,12 +451,12 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $attemptobj->process_submitted_actions($starttime, false, $tosubmit);
 
         // Finish the attempt.
-        $attemptobj = \quiz_attempt::create($attempt->id);
+        $attemptobj = \hippotrack_attempt::create($attempt->id);
         $attemptobj->process_finish($starttime, false);
 
         $this->setUser();
 
-        return [$quizobj, $quba, $attemptobj];
+        return [$hippotrackobj, $quba, $attemptobj];
     }
 
     /**
@@ -471,21 +471,21 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $anotheruser = $this->getDataGenerator()->create_user();
         $extrauser = $this->getDataGenerator()->create_user();
 
-        // Make a quiz.
+        // Make a hippotrack.
         $this->setUser();
-        $quiz = $this->create_test_quiz($course);
+        $hippotrack = $this->create_test_hippotrack($course);
 
         // Create an override for user1.
-        $DB->insert_record('quiz_overrides', [
-            'quiz' => $quiz->id,
+        $DB->insert_record('hippotrack_overrides', [
+            'hippotrack' => $hippotrack->id,
             'userid' => $user->id,
             'timeclose' => 1300,
             'timelimit' => null,
         ]);
 
-        // Make an attempt on the quiz as user2.
-        list($quizobj, $quba, $attemptobj) = $this->attempt_quiz($quiz, $anotheruser);
-        $context = $quizobj->get_context();
+        // Make an attempt on the hippotrack as user2.
+        list($hippotrackobj, $quba, $attemptobj) = $this->attempt_hippotrack($hippotrack, $anotheruser);
+        $context = $hippotrackobj->get_context();
 
         // Fetch users - user1 and user2 should be returned.
         $userlist = new \core_privacy\local\request\userlist($context, 'mod_hippotrack');
@@ -509,47 +509,47 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $course1 = $this->getDataGenerator()->create_course();
         $course2 = $this->getDataGenerator()->create_course();
 
-        // Make a quiz in each course.
-        $quiz1 = $this->create_test_quiz($course1);
-        $quiz2 = $this->create_test_quiz($course2);
+        // Make a hippotrack in each course.
+        $hippotrack1 = $this->create_test_hippotrack($course1);
+        $hippotrack2 = $this->create_test_hippotrack($course2);
 
-        // Attempt quiz1 as user1 and user2.
-        list($quiz1obj) = $this->attempt_quiz($quiz1, $user1);
-        $this->attempt_quiz($quiz1, $user2);
+        // Attempt hippotrack1 as user1 and user2.
+        list($hippotrack1obj) = $this->attempt_hippotrack($hippotrack1, $user1);
+        $this->attempt_hippotrack($hippotrack1, $user2);
 
-        // Create an override in quiz1 for user3.
-        $DB->insert_record('quiz_overrides', [
-            'quiz' => $quiz1->id,
+        // Create an override in hippotrack1 for user3.
+        $DB->insert_record('hippotrack_overrides', [
+            'hippotrack' => $hippotrack1->id,
             'userid' => $user3->id,
             'timeclose' => 1300,
             'timelimit' => null,
         ]);
 
-        // Attempt quiz2 as user1.
-        $this->attempt_quiz($quiz2, $user1);
+        // Attempt hippotrack2 as user1.
+        $this->attempt_hippotrack($hippotrack2, $user1);
 
         // Delete the data for user1 and user3 in course1 and check it is removed.
-        $quiz1context = $quiz1obj->get_context();
-        $approveduserlist = new \core_privacy\local\request\approved_userlist($quiz1context, 'mod_hippotrack',
+        $hippotrack1context = $hippotrack1obj->get_context();
+        $approveduserlist = new \core_privacy\local\request\approved_userlist($hippotrack1context, 'mod_hippotrack',
                 [$user1->id, $user3->id]);
         provider::delete_data_for_users($approveduserlist);
 
-        // Only the attempt of user2 should be remained in quiz1.
+        // Only the attempt of user2 should be remained in hippotrack1.
         $this->assertEquals(
                 [$user2->id],
-                $DB->get_fieldset_select('quiz_attempts', 'userid', 'quiz = ?', [$quiz1->id])
+                $DB->get_fieldset_select('hippotrack_attempts', 'userid', 'hippotrack = ?', [$hippotrack1->id])
         );
 
-        // The attempt that user1 made in quiz2 should be remained.
+        // The attempt that user1 made in hippotrack2 should be remained.
         $this->assertEquals(
                 [$user1->id],
-                $DB->get_fieldset_select('quiz_attempts', 'userid', 'quiz = ?', [$quiz2->id])
+                $DB->get_fieldset_select('hippotrack_attempts', 'userid', 'hippotrack = ?', [$hippotrack2->id])
         );
 
-        // The quiz override in quiz1 that we had for user3 should be deleted.
+        // The hippotrack override in hippotrack1 that we had for user3 should be deleted.
         $this->assertEquals(
                 [],
-                $DB->get_fieldset_select('quiz_overrides', 'userid', 'quiz = ?', [$quiz1->id])
+                $DB->get_fieldset_select('hippotrack_overrides', 'userid', 'hippotrack = ?', [$hippotrack1->id])
         );
     }
 }

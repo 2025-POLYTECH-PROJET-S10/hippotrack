@@ -14,40 +14,40 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quizaccess_delaybetweenattempts;
+namespace hippotrackaccess_delaybetweenattempts;
 
-use quiz;
-use quizaccess_delaybetweenattempts;
+use hippotrack;
+use hippotrackaccess_delaybetweenattempts;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/accessrule/delaybetweenattempts/rule.php');
+require_once($CFG->dirroot . '/mod/hippotrack/accessrule/delaybetweenattempts/rule.php');
 
 
 /**
- * Unit tests for the quizaccess_delaybetweenattempts plugin.
+ * Unit tests for the hippotrackaccess_delaybetweenattempts plugin.
  *
- * @package    quizaccess_delaybetweenattempts
+ * @package    hippotrackaccess_delaybetweenattempts
  * @category   test
  * @copyright  2008 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class rule_test extends \basic_testcase {
     public function test_just_first_delay() {
-        $quiz = new \stdClass();
-        $quiz->attempts = 3;
-        $quiz->timelimit = 0;
-        $quiz->delay1 = 1000;
-        $quiz->delay2 = 0;
-        $quiz->timeclose = 0;
+        $hippotrack = new \stdClass();
+        $hippotrack->attempts = 3;
+        $hippotrack->timelimit = 0;
+        $hippotrack->delay1 = 1000;
+        $hippotrack->delay2 = 0;
+        $hippotrack->timeclose = 0;
         $cm = new \stdClass();
         $cm->id = 0;
-        $quizobj = new quiz($quiz, $cm, null);
+        $hippotrackobj = new hippotrack($hippotrack, $cm, null);
         $attempt = new \stdClass();
         $attempt->timefinish = 10000;
 
-        $rule = new quizaccess_delaybetweenattempts($quizobj, 10000);
+        $rule = new hippotrackaccess_delaybetweenattempts($hippotrackobj, 10000);
         $this->assertEmpty($rule->description());
         $this->assertFalse($rule->prevent_access());
         $this->assertFalse($rule->is_finished(0, $attempt));
@@ -57,31 +57,31 @@ class rule_test extends \basic_testcase {
         $this->assertFalse($rule->prevent_new_attempt(0, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(3, $attempt));
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(11000)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(11000)));
         $this->assertFalse($rule->prevent_new_attempt(2, $attempt));
         $attempt->timefinish = 9000;
         $this->assertFalse($rule->prevent_new_attempt(1, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(2, $attempt));
         $attempt->timefinish = 9001;
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(10001)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(10001)));
         $this->assertFalse($rule->prevent_new_attempt(2, $attempt));
     }
 
     public function test_just_second_delay() {
-        $quiz = new \stdClass();
-        $quiz->attempts = 5;
-        $quiz->timelimit = 0;
-        $quiz->delay1 = 0;
-        $quiz->delay2 = 1000;
-        $quiz->timeclose = 0;
+        $hippotrack = new \stdClass();
+        $hippotrack->attempts = 5;
+        $hippotrack->timelimit = 0;
+        $hippotrack->delay1 = 0;
+        $hippotrack->delay2 = 1000;
+        $hippotrack->timeclose = 0;
         $cm = new \stdClass();
         $cm->id = 0;
-        $quizobj = new quiz($quiz, $cm, null);
+        $hippotrackobj = new hippotrack($hippotrack, $cm, null);
         $attempt = new \stdClass();
         $attempt->timefinish = 10000;
 
-        $rule = new quizaccess_delaybetweenattempts($quizobj, 10000);
+        $rule = new hippotrackaccess_delaybetweenattempts($hippotrackobj, 10000);
         $this->assertEmpty($rule->description());
         $this->assertFalse($rule->prevent_access());
         $this->assertFalse($rule->is_finished(0, $attempt));
@@ -92,9 +92,9 @@ class rule_test extends \basic_testcase {
         $this->assertFalse($rule->prevent_new_attempt(5, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(1, $attempt));
         $this->assertEquals($rule->prevent_new_attempt(2, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(11000)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(11000)));
         $this->assertEquals($rule->prevent_new_attempt(3, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(11000)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(11000)));
         $attempt->timefinish = 9000;
         $this->assertFalse($rule->prevent_new_attempt(1, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(2, $attempt));
@@ -102,25 +102,25 @@ class rule_test extends \basic_testcase {
         $attempt->timefinish = 9001;
         $this->assertFalse($rule->prevent_new_attempt(1, $attempt));
         $this->assertEquals($rule->prevent_new_attempt(2, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(10001)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(10001)));
         $this->assertEquals($rule->prevent_new_attempt(4, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(10001)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(10001)));
     }
 
     public function test_just_both_delays() {
-        $quiz = new \stdClass();
-        $quiz->attempts = 5;
-        $quiz->timelimit = 0;
-        $quiz->delay1 = 2000;
-        $quiz->delay2 = 1000;
-        $quiz->timeclose = 0;
+        $hippotrack = new \stdClass();
+        $hippotrack->attempts = 5;
+        $hippotrack->timelimit = 0;
+        $hippotrack->delay1 = 2000;
+        $hippotrack->delay2 = 1000;
+        $hippotrack->timeclose = 0;
         $cm = new \stdClass();
         $cm->id = 0;
-        $quizobj = new quiz($quiz, $cm, null);
+        $hippotrackobj = new hippotrack($hippotrack, $cm, null);
         $attempt = new \stdClass();
         $attempt->timefinish = 10000;
 
-        $rule = new quizaccess_delaybetweenattempts($quizobj, 10000);
+        $rule = new hippotrackaccess_delaybetweenattempts($hippotrackobj, 10000);
         $this->assertEmpty($rule->description());
         $this->assertFalse($rule->prevent_access());
         $this->assertFalse($rule->is_finished(0, $attempt));
@@ -130,48 +130,48 @@ class rule_test extends \basic_testcase {
         $this->assertFalse($rule->prevent_new_attempt(0, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(5, $attempt));
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(12000)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(12000)));
         $this->assertEquals($rule->prevent_new_attempt(2, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(11000)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(11000)));
         $this->assertEquals($rule->prevent_new_attempt(3, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(11000)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(11000)));
         $attempt->timefinish = 8000;
         $this->assertFalse($rule->prevent_new_attempt(1, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(2, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(3, $attempt));
         $attempt->timefinish = 8001;
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(10001)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(10001)));
         $this->assertFalse($rule->prevent_new_attempt(2, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(4, $attempt));
         $attempt->timefinish = 9000;
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(11000)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(11000)));
         $this->assertFalse($rule->prevent_new_attempt(2, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(3, $attempt));
         $attempt->timefinish = 9001;
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(11001)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(11001)));
         $this->assertEquals($rule->prevent_new_attempt(2, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(10001)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(10001)));
         $this->assertEquals($rule->prevent_new_attempt(4, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(10001)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(10001)));
     }
 
     public function test_with_close_date() {
-        $quiz = new \stdClass();
-        $quiz->attempts = 5;
-        $quiz->timelimit = 0;
-        $quiz->delay1 = 2000;
-        $quiz->delay2 = 1000;
-        $quiz->timeclose = 15000;
+        $hippotrack = new \stdClass();
+        $hippotrack->attempts = 5;
+        $hippotrack->timelimit = 0;
+        $hippotrack->delay1 = 2000;
+        $hippotrack->delay2 = 1000;
+        $hippotrack->timeclose = 15000;
         $cm = new \stdClass();
         $cm->id = 0;
-        $quizobj = new quiz($quiz, $cm, null);
+        $hippotrackobj = new hippotrack($hippotrack, $cm, null);
         $attempt = new \stdClass();
         $attempt->timefinish = 13000;
 
-        $rule = new quizaccess_delaybetweenattempts($quizobj, 10000);
+        $rule = new hippotrackaccess_delaybetweenattempts($hippotrackobj, 10000);
         $this->assertEmpty($rule->description());
         $this->assertFalse($rule->prevent_access());
         $this->assertFalse($rule->is_finished(0, $attempt));
@@ -180,30 +180,30 @@ class rule_test extends \basic_testcase {
 
         $attempt->timefinish = 13000;
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(15000)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(15000)));
         $attempt->timefinish = 13001;
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youcannotwait', 'quizaccess_delaybetweenattempts'));
+            get_string('youcannotwait', 'hippotrackaccess_delaybetweenattempts'));
         $attempt->timefinish = 14000;
         $this->assertEquals($rule->prevent_new_attempt(2, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(15000)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(15000)));
         $attempt->timefinish = 14001;
         $this->assertEquals($rule->prevent_new_attempt(2, $attempt),
-            get_string('youcannotwait', 'quizaccess_delaybetweenattempts'));
+            get_string('youcannotwait', 'hippotrackaccess_delaybetweenattempts'));
 
-        $rule = new quizaccess_delaybetweenattempts($quizobj, 15000);
+        $rule = new hippotrackaccess_delaybetweenattempts($hippotrackobj, 15000);
         $attempt->timefinish = 13000;
         $this->assertFalse($rule->prevent_new_attempt(1, $attempt));
         $attempt->timefinish = 13001;
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youcannotwait', 'quizaccess_delaybetweenattempts'));
+            get_string('youcannotwait', 'hippotrackaccess_delaybetweenattempts'));
         $attempt->timefinish = 14000;
         $this->assertFalse($rule->prevent_new_attempt(2, $attempt));
         $attempt->timefinish = 14001;
         $this->assertEquals($rule->prevent_new_attempt(2, $attempt),
-            get_string('youcannotwait', 'quizaccess_delaybetweenattempts'));
+            get_string('youcannotwait', 'hippotrackaccess_delaybetweenattempts'));
 
-        $rule = new quizaccess_delaybetweenattempts($quizobj, 15001);
+        $rule = new hippotrackaccess_delaybetweenattempts($hippotrackobj, 15001);
         $attempt->timefinish = 13000;
         $this->assertFalse($rule->prevent_new_attempt(1, $attempt));
         $attempt->timefinish = 13001;
@@ -215,20 +215,20 @@ class rule_test extends \basic_testcase {
     }
 
     public function test_time_limit_and_overdue() {
-        $quiz = new \stdClass();
-        $quiz->attempts = 5;
-        $quiz->timelimit = 100;
-        $quiz->delay1 = 2000;
-        $quiz->delay2 = 1000;
-        $quiz->timeclose = 0;
+        $hippotrack = new \stdClass();
+        $hippotrack->attempts = 5;
+        $hippotrack->timelimit = 100;
+        $hippotrack->delay1 = 2000;
+        $hippotrack->delay2 = 1000;
+        $hippotrack->timeclose = 0;
         $cm = new \stdClass();
         $cm->id = 0;
-        $quizobj = new quiz($quiz, $cm, null);
+        $hippotrackobj = new hippotrack($hippotrack, $cm, null);
         $attempt = new \stdClass();
         $attempt->timestart = 9900;
         $attempt->timefinish = 10100;
 
-        $rule = new quizaccess_delaybetweenattempts($quizobj, 10000);
+        $rule = new hippotrackaccess_delaybetweenattempts($hippotrackobj, 10000);
         $this->assertEmpty($rule->description());
         $this->assertFalse($rule->prevent_access());
         $this->assertFalse($rule->is_finished(0, $attempt));
@@ -238,11 +238,11 @@ class rule_test extends \basic_testcase {
         $this->assertFalse($rule->prevent_new_attempt(0, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(5, $attempt));
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(12000)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(12000)));
         $this->assertEquals($rule->prevent_new_attempt(2, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(11000)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(11000)));
         $this->assertEquals($rule->prevent_new_attempt(3, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(11000)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(11000)));
         $attempt->timestart = 7950;
         $attempt->timefinish = 8000;
         $this->assertFalse($rule->prevent_new_attempt(1, $attempt));
@@ -251,36 +251,36 @@ class rule_test extends \basic_testcase {
         $attempt->timestart = 7950;
         $attempt->timefinish = 8001;
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(10001)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(10001)));
         $this->assertFalse($rule->prevent_new_attempt(2, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(4, $attempt));
         $attempt->timestart = 8950;
         $attempt->timefinish = 9000;
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(11000)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(11000)));
         $this->assertFalse($rule->prevent_new_attempt(2, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(3, $attempt));
         $attempt->timestart = 8950;
         $attempt->timefinish = 9001;
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(11001)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(11001)));
         $this->assertEquals($rule->prevent_new_attempt(2, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(10001)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(10001)));
         $this->assertEquals($rule->prevent_new_attempt(4, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(10001)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(10001)));
         $attempt->timestart = 8900;
         $attempt->timefinish = 9100;
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(11000)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(11000)));
         $this->assertFalse($rule->prevent_new_attempt(2, $attempt));
         $this->assertFalse($rule->prevent_new_attempt(3, $attempt));
         $attempt->timestart = 8901;
         $attempt->timefinish = 9100;
         $this->assertEquals($rule->prevent_new_attempt(1, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(11001)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(11001)));
         $this->assertEquals($rule->prevent_new_attempt(2, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(10001)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(10001)));
         $this->assertEquals($rule->prevent_new_attempt(4, $attempt),
-            get_string('youmustwait', 'quizaccess_delaybetweenattempts', userdate(10001)));
+            get_string('youmustwait', 'hippotrackaccess_delaybetweenattempts', userdate(10001)));
     }
 }

@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file defines the quiz responses table for showing first or all tries at a question.
+ * This file defines the hippotrack responses table for showing first or all tries at a question.
  *
- * @package   quiz_responses
+ * @package   hippotrack_responses
  * @copyright 2014 The Open University
  * @author    Jamie Pratt <me@jamiep.org>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,14 +26,14 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * This is a table subclass for displaying the quiz responses report, showing first or all tries.
+ * This is a table subclass for displaying the hippotrack responses report, showing first or all tries.
  *
- * @package   quiz_responses
+ * @package   hippotrack_responses
  * @copyright 2014 The Open University
  * @author    Jamie Pratt <me@jamiep.org>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_first_or_all_responses_table extends quiz_last_responses_table {
+class hippotrack_first_or_all_responses_table extends hippotrack_last_responses_table {
 
     /**
      * The full question usage object for each try shown in report.
@@ -86,7 +86,7 @@ class quiz_first_or_all_responses_table extends quiz_last_responses_table {
                 $newtablerow = clone($attempt);
                 $newtablerow->lasttryforallparts = ($try == $maxtriesinanyslot);
                 if ($try !== $maxtriesinanyslot) {
-                    $newtablerow->state = quiz_attempt::IN_PROGRESS;
+                    $newtablerow->state = hippotrack_attempt::IN_PROGRESS;
                 }
                 $newtablerow->try = $try;
                 $newrawdata[] = $newtablerow;
@@ -254,10 +254,10 @@ class quiz_first_or_all_responses_table extends quiz_last_responses_table {
      */
     public function col_sumgrades($tablerow) {
         if ($tablerow->try == 0) {
-            // We are showing a user without a quiz attempt.
+            // We are showing a user without a hippotrack attempt.
             return '-';
         } else if (!$tablerow->lasttryforallparts) {
-            // There are more rows to come for this quiz attempt, so we will show this later.
+            // There are more rows to come for this hippotrack attempt, so we will show this later.
             return '';
         } else {
             // Last row for this attempt. Now is the time to show attempt-related data.
@@ -267,10 +267,10 @@ class quiz_first_or_all_responses_table extends quiz_last_responses_table {
 
     public function col_state($tablerow) {
         if ($tablerow->try == 0) {
-            // We are showing a user without a quiz attempt.
+            // We are showing a user without a hippotrack attempt.
             return '-';
         } else if (!$tablerow->lasttryforallparts) {
-            // There are more rows to come for this quiz attempt, so we will show this later.
+            // There are more rows to come for this hippotrack attempt, so we will show this later.
             return '';
         } else {
             // Last row for this attempt. Now is the time to show attempt-related data.

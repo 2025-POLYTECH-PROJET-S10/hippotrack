@@ -1,8 +1,8 @@
 @mod @mod_hippotrack
-Feature: Display of information before starting a quiz
+Feature: Display of information before starting a hippotrack
   As a student
-  In order to start a quiz with confidence
-  I need information about the quiz settings before I start an attempt
+  In order to start a hippotrack with confidence
+  I need information about the hippotrack settings before I start an attempt
 
   Background:
     Given the following "users" exist:
@@ -24,11 +24,11 @@ Feature: Display of information before starting a quiz
   Scenario: Check the pass grade is displayed
     Given the following "activities" exist:
       | activity   | name   | intro              | course | idnumber | gradepass |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    | 60.00     |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | 60.00     |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
     Then I should see "Grade to pass: 60.00 out of 100.00"
 
   Scenario: Check the pass grade is displayed with custom decimal separator
@@ -37,19 +37,19 @@ Feature: Display of information before starting a quiz
       | core_langconfig | decsep   | #     |
     And the following "activities" exist:
       | activity   | name   | intro              | course | idnumber | gradepass |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    | 60#00     |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | 60#00     |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
     Then I should see "Grade to pass: 60#00 out of 100#00"
 
   Scenario: Check the pass grade is not displayed if not set
     Given the following "activities" exist:
       | activity   | name   | intro              | course | idnumber | gradepass |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    |           |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    |           |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
-    When I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student"
+    When I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student"
     Then I should not see "Grade to pass: 0.00"

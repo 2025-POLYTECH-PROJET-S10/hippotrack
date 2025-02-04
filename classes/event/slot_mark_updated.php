@@ -30,7 +30,7 @@ namespace mod_hippotrack\event;
  * @property-read array $other {
  *      Extra information about event.
  *
- *      - int quizid: the id of the quiz.
+ *      - int hippotrackid: the id of the hippotrack.
  *      - int previousmaxmark: the previous max mark value.
  *      - int newmaxmark: the new max mark value.
  * }
@@ -41,7 +41,7 @@ namespace mod_hippotrack\event;
  */
 class slot_mark_updated extends \core\event\base {
     protected function init() {
-        $this->data['objecttable'] = 'quiz_slots';
+        $this->data['objecttable'] = 'hippotrack_slots';
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
     }
@@ -52,12 +52,12 @@ class slot_mark_updated extends \core\event\base {
 
     public function get_description() {
         return "The user with id '$this->userid' updated the slot with id '{$this->objectid}' " .
-            "belonging to the quiz with course module id '$this->contextinstanceid'. " .
+            "belonging to the hippotrack with course module id '$this->contextinstanceid'. " .
             "Its max mark was changed from '{$this->other['previousmaxmark']}' to '{$this->other['newmaxmark']}'.";
     }
 
     public function get_url() {
-        return new \moodle_url('/mod/quiz/edit.php', [
+        return new \moodle_url('/mod/hippotrack/edit.php', [
             'cmid' => $this->contextinstanceid
         ]);
     }
@@ -73,8 +73,8 @@ class slot_mark_updated extends \core\event\base {
             throw new \coding_exception('The \'contextinstanceid\' value must be set.');
         }
 
-        if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+        if (!isset($this->other['hippotrackid'])) {
+            throw new \coding_exception('The \'hippotrackid\' value must be set in other.');
         }
 
         if (!isset($this->other['previousmaxmark'])) {
@@ -87,12 +87,12 @@ class slot_mark_updated extends \core\event\base {
     }
 
     public static function get_objectid_mapping() {
-        return ['db' => 'quiz_slots', 'restore' => 'quiz_question_instance'];
+        return ['db' => 'hippotrack_slots', 'restore' => 'hippotrack_question_instance'];
     }
 
     public static function get_other_mapping() {
         $othermapped = [];
-        $othermapped['quizid'] = ['db' => 'quiz', 'restore' => 'quiz'];
+        $othermapped['hippotrackid'] = ['db' => 'hippotrack', 'restore' => 'hippotrack'];
 
         return $othermapped;
     }

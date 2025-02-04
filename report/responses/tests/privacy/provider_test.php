@@ -17,14 +17,14 @@
 /**
  * Privacy provider tests.
  *
- * @package    quiz_responses
+ * @package    hippotrack_responses
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace quiz_responses\privacy;
+namespace hippotrack_responses\privacy;
 
 use core_privacy\local\metadata\collection;
-use quiz_responses\privacy\provider;
+use hippotrack_responses\privacy\provider;
 use core_privacy\local\request\writer;
 use core_privacy\local\request\transform;
 
@@ -36,7 +36,7 @@ require_once($CFG->dirroot . '/question/engine/questionattempt.php');
 /**
  * Privacy provider tests class.
  *
- * @package    quiz_responses
+ * @package    hippotrack_responses
  * @copyright  2018 Andrew Nicols <andrew@nicols.co.uk>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -64,16 +64,16 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        set_user_preference('quiz_report_responses_qtext', true);
-        set_user_preference('quiz_report_responses_resp', true);
-        set_user_preference('quiz_report_responses_right', true);
+        set_user_preference('hippotrack_report_responses_qtext', true);
+        set_user_preference('hippotrack_report_responses_resp', true);
+        set_user_preference('hippotrack_report_responses_right', true);
 
         provider::export_user_preferences($USER->id);
 
         $writer = writer::with_context(\context_system::instance());
         $this->assertTrue($writer->has_any_data());
 
-        $preferences = $writer->get_user_preferences('quiz_responses');
+        $preferences = $writer->get_user_preferences('hippotrack_responses');
 
         $this->assertNotEmpty($preferences->qtext);
         $this->assertEquals(transform::yesno(1), $preferences->qtext->value);
@@ -94,16 +94,16 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        set_user_preference('quiz_report_responses_qtext', false);
-        set_user_preference('quiz_report_responses_resp', false);
-        set_user_preference('quiz_report_responses_right', false);
+        set_user_preference('hippotrack_report_responses_qtext', false);
+        set_user_preference('hippotrack_report_responses_resp', false);
+        set_user_preference('hippotrack_report_responses_right', false);
 
         provider::export_user_preferences($USER->id);
 
         $writer = writer::with_context(\context_system::instance());
         $this->assertTrue($writer->has_any_data());
 
-        $preferences = $writer->get_user_preferences('quiz_responses');
+        $preferences = $writer->get_user_preferences('hippotrack_responses');
 
         $this->assertNotEmpty($preferences->qtext);
         $this->assertEquals(transform::yesno(0), $preferences->qtext->value);
@@ -124,16 +124,16 @@ class provider_test extends \core_privacy\tests\provider_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
 
-        set_user_preference('quiz_report_responses_which_tries', \question_attempt::FIRST_TRY);
+        set_user_preference('hippotrack_report_responses_which_tries', \question_attempt::FIRST_TRY);
 
         provider::export_user_preferences($USER->id);
 
         $writer = writer::with_context(\context_system::instance());
         $this->assertTrue($writer->has_any_data());
 
-        $preferences = $writer->get_user_preferences('quiz_responses');
+        $preferences = $writer->get_user_preferences('hippotrack_responses');
 
-        $expected = get_string("privacy:preference:which_tries:first", 'quiz_responses');
+        $expected = get_string("privacy:preference:which_tries:first", 'hippotrack_responses');
         $this->assertNotEmpty($preferences->which_tries);
         $this->assertEquals($expected, $preferences->which_tries->value);
     }

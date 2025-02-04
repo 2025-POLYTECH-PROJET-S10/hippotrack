@@ -1,13 +1,13 @@
-This files describes API changes in /mod/quiz/report/statistics/*,
+This files describes API changes in /mod/hippotrack/report/statistics/*,
 information provided here is intended especially for developers.
 
 === 4.1.4 ===
 
-* The methods quiz_statistics_report::calculate_questions_stats_for_question_bank and get_all_stats_and_analysis
-  (which are really private to the quiz, and not part of any API you should be using) now have a new
+* The methods hippotrack_statistics_report::calculate_questions_stats_for_question_bank and get_all_stats_and_analysis
+  (which are really private to the hippotrack, and not part of any API you should be using) now have a new
   optional argument $calculateifrequired.
 
-* In the past, the methods \quiz_statistics\calculator::get_last_calculated_time() and calculator::get_cached()
+* In the past, the methods \hippotrack_statistics\calculator::get_last_calculated_time() and calculator::get_cached()
   only returned the pre-computed statistics if they were computed less than 15 minutes ago. Now, they will
   always return any computed statistics that exist. The constant calculator::TIME_TO_CACHE will be
   deprecated in Moodle 4.2.
@@ -15,7 +15,7 @@ information provided here is intended especially for developers.
 
 === 3.2 ===
 
-* The function quiz_statistics_graph_get_new_colour() is deprecated in favour of the
+* The function hippotrack_statistics_graph_get_new_colour() is deprecated in favour of the
   funtionality present in the new charting library.
-* The function quiz_statistics_renumber_placeholders() is removed as the changes
+* The function hippotrack_statistics_renumber_placeholders() is removed as the changes
   in MDL-31243 and MDL-27072 make this redundant.

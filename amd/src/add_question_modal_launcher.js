@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Initialise the an add question modal on the quiz page.
+ * Initialise the an add question modal on the hippotrack page.
  *
  * @module    mod_hippotrack/add_question_modal_launcher
  * @copyright 2018 Ryan Wyllie <ryan@moodle.com>

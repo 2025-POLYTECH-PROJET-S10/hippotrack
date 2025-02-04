@@ -25,7 +25,7 @@
 namespace mod_hippotrack;
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
  * Group observers class.
@@ -62,10 +62,10 @@ class group_observers {
     public static function course_reset_ended($event) {
         if (!empty(self::$resetinprogress)) {
             if (!empty($event->other['reset_options']['reset_groups_remove'])) {
-                quiz_process_group_deleted_in_course($event->courseid);
+                hippotrack_process_group_deleted_in_course($event->courseid);
             }
             if (!empty($event->other['reset_options']['reset_groups_members'])) {
-                quiz_update_open_attempts(array('courseid' => $event->courseid));
+                hippotrack_update_open_attempts(array('courseid' => $event->courseid));
             }
         }
 
@@ -83,7 +83,7 @@ class group_observers {
             // We will take care of that once the course reset ends.
             return;
         }
-        quiz_process_group_deleted_in_course($event->courseid);
+        hippotrack_process_group_deleted_in_course($event->courseid);
     }
 
     /**
@@ -93,7 +93,7 @@ class group_observers {
      * @return void
      */
     public static function group_member_added($event) {
-        quiz_update_open_attempts(array('userid' => $event->relateduserid, 'groupid' => $event->objectid));
+        hippotrack_update_open_attempts(array('userid' => $event->relateduserid, 'groupid' => $event->objectid));
     }
 
     /**
@@ -107,7 +107,7 @@ class group_observers {
             // We will take care of that once the course reset ends.
             return;
         }
-        quiz_update_open_attempts(array('userid' => $event->relateduserid, 'groupid' => $event->objectid));
+        hippotrack_update_open_attempts(array('userid' => $event->relateduserid, 'groupid' => $event->objectid));
     }
 
 }

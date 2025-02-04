@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Makes some protected methods of quiz_attempts_report public to facilitate testing.
+ * Makes some protected methods of hippotrack_attempts_report public to facilitate testing.
  *
- * @package   quiz_overview
+ * @package   hippotrack_overview
  * @copyright 2020 Huong Nguyen <huongnv13@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,35 +25,35 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/report/attemptsreport.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/attemptsreport.php');
 
 /**
- * Makes some protected methods of quiz_attempts_report public to facilitate testing.
+ * Makes some protected methods of hippotrack_attempts_report public to facilitate testing.
  *
  * @copyright 2020 Huong Nguyen <huongnv13@gmail.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class testable_quiz_attempts_report extends quiz_attempts_report {
+class testable_hippotrack_attempts_report extends hippotrack_attempts_report {
 
     /**
      * Override this function to displays the report.
-     * @param object $cm the course-module for this quiz.
+     * @param object $cm the course-module for this hippotrack.
      * @param object $course the course we are in.
-     * @param object $quiz this quiz.
+     * @param object $hippotrack this hippotrack.
      */
-    public function display($cm, $course, $quiz) {
+    public function display($cm, $course, $hippotrack) {
 
     }
 
     /**
      * Testable delete_selected_attempts function.
      *
-     * @param object $quiz
+     * @param object $hippotrack
      * @param object $cm
      * @param array $attemptids
      * @param \core\dml\sql_join $allowedjoins
      */
-    public function delete_selected_attempts($quiz, $cm, $attemptids, \core\dml\sql_join $allowedjoins) {
-        parent::delete_selected_attempts($quiz, $cm, $attemptids, $allowedjoins);
+    public function delete_selected_attempts($hippotrack, $cm, $attemptids, \core\dml\sql_join $allowedjoins) {
+        parent::delete_selected_attempts($hippotrack, $cm, $attemptids, $allowedjoins);
     }
 }

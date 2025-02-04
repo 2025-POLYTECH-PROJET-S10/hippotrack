@@ -1,6 +1,6 @@
-@mod @mod_hippotrack @quiz @quiz_statistics
+@mod @mod_hippotrack @hippotrack @hippotrack_statistics
 Feature: Statistics calculations with random questions
-  In order to verify my quizzes are performing well
+  In order to verify my hippotrackzes are performing well
   As a teacher
   I need the statistics to analyse any random questions they contain
 
@@ -28,15 +28,15 @@ Feature: Statistics calculations with random questions
       | Test questions   | random |          | Random (Test questions) | 0            |
     And the following "activities" exist:
       | activity   | name   | course | idnumber |
-      | quiz       | Quiz 1 | C1     | quiz1    |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | C1     | hippotrack1    |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question                | page |
       | Random (Test questions) | 1    |
-    And user "student" has attempted "Quiz 1" with responses:
+    And user "student" has attempted "HippoTrack 1" with responses:
       | slot | response                   |
       |   1  | Here is my wonderful essay |
-    When I am on the "Quiz 1" "mod_hippotrack > Statistics report" page logged in as teacher
-    Then I should see "No attempts have been made at this quiz, or all attempts have questions that need manual grading."
+    When I am on the "HippoTrack 1" "mod_hippotrack > Statistics report" page logged in as teacher
+    Then I should see "No attempts have been made at this hippotrack, or all attempts have questions that need manual grading."
 
   Scenario: View details works for random questions
     Given the following "questions" exist:
@@ -46,13 +46,13 @@ Feature: Statistics calculations with random questions
       | Test questions   | random      |             | Random (Test questions) | 0            |
     And the following "activities" exist:
       | activity   | name   | course | idnumber |
-      | quiz       | Quiz 1 | C1     | quiz1    |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | C1     | hippotrack1    |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question                | page |
       | Random (Test questions) | 1    |
-    And user "student" has attempted "Quiz 1" with responses:
+    And user "student" has attempted "HippoTrack 1" with responses:
       | slot | response |
       |   1  | One      |
-    When I am on the "Quiz 1" "mod_hippotrack > Statistics report" page logged in as teacher
+    When I am on the "HippoTrack 1" "mod_hippotrack > Statistics report" page logged in as teacher
     And I follow "View details"
     Then I should see "Structural analysis for question number 1"

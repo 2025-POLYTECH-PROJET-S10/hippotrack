@@ -70,7 +70,7 @@ define([
             this.loadedForm = false;
         };
 
-        ModalAddRandomQuestion.TYPE = 'mod_hippotrack-quiz-add-random-question';
+        ModalAddRandomQuestion.TYPE = 'mod_hippotrack-hippotrack-add-random-question';
         ModalAddRandomQuestion.prototype = Object.create(Modal.prototype);
         ModalAddRandomQuestion.prototype.constructor = ModalAddRandomQuestion;
 
@@ -97,7 +97,7 @@ define([
 
         /**
          * Set the id of the page that the question should be added to
-         * when the user clicks the add to quiz link.
+         * when the user clicks the add to hippotrack link.
          *
          * @method setAddOnPageId
          * @param {int} id

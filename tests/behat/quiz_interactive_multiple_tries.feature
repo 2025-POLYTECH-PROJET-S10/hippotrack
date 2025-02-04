@@ -1,6 +1,6 @@
 @mod @mod_hippotrack
-Feature: Set a quiz to be interactive with multiple tries
-  In order to attempt an interactive quiz multiple times
+Feature: Set a hippotrack to be interactive with multiple tries
+  In order to attempt an interactive hippotrack multiple times
   As a teacher
   I should be able to set how questions behave to interactive with multiple tries
 
@@ -25,16 +25,16 @@ Feature: Set a quiz to be interactive with multiple tries
       | Test questions   | multichoice | MC2  | Second question | one_of_four | Hint 1 | Hint 2 | 0              |
     And the following "activities" exist:
       | activity | name   | course | preferredbehaviour     | specificfeedbackduring |
-      | quiz     | Quiz 1 | C1     | interactive            | 1                      |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack     | HippoTrack 1 | C1     | interactive            | 1                      |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page |
       | MC1      | 1    |
       | MC2      | 2    |
 
   @javascript
-  Scenario: Attempt an interactive quiz with multiple tries
-    Given I am on the "Quiz 1" "quiz activity" page logged in as student1
-    And I press "Attempt quiz"
+  Scenario: Attempt an interactive hippotrack with multiple tries
+    Given I am on the "HippoTrack 1" "hippotrack activity" page logged in as student1
+    And I press "Attempt hippotrack"
     # Answer the question incorrectly.
     And I click on "Two" "qtype_multichoice > Answer" in the "Question 1" "question"
     When I press "Check"

@@ -17,7 +17,7 @@
 namespace mod_hippotrack;
 
 /**
- * Quiz attempt walk through using data from csv file.
+ * HippoTrack attempt walk through using data from csv file.
  *
  * @package    mod_hippotrack
  * @category   test
@@ -31,7 +31,7 @@ class attempt_walkthrough_from_csv_test extends \mod_hippotrack\tests\attempt_wa
         global $CFG;
 
         parent::setUpBeforeClass();
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+        require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
     }
 
     #[\Override]

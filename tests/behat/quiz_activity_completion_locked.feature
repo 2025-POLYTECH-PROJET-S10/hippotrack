@@ -1,8 +1,8 @@
 @mod @mod_hippotrack @core_completion
-Feature: Ensure saving a quiz does not modify the completion settings.
+Feature: Ensure saving a hippotrack does not modify the completion settings.
   In order to reliably use completion
   As a teacher
-  I need to be able to update the quiz
+  I need to be able to update the hippotrack
   without changing the completion settings.
 
   Background:
@@ -26,10 +26,10 @@ Feature: Ensure saving a quiz does not modify the completion settings.
       | questioncategory | qtype     | name           | questiontext              |
       | Test questions   | truefalse | First question | Answer the first question |
     And the following "activity" exists:
-      | activity                     | quiz      |
+      | activity                     | hippotrack      |
       | course                       | C1        |
-      | idnumber                     | quiz1     |
-      | name                         | Test quiz |
+      | idnumber                     | hippotrack1     |
+      | name                         | Test hippotrack |
       | section                      | 1         |
       | attempts                     | 2         |
       | gradepass                    | 5.00      |
@@ -38,15 +38,15 @@ Feature: Ensure saving a quiz does not modify the completion settings.
       | completionusegrade           | 1         |
       | completionpassgrade          | 1         |
       | completionattemptsexhausted  | 1         |
-    And quiz "Test quiz" contains the following questions:
+    And hippotrack "Test hippotrack" contains the following questions:
       | question       | page |
       | First question | 1    |
-    And user "student1" has attempted "Test quiz" with responses:
+    And user "student1" has attempted "Test hippotrack" with responses:
       | slot | response |
       |   1  | True     |
 
-  Scenario: Ensure saving quiz activty does not change completion settings
-    Given I am on the "Test quiz" "mod_hippotrack > View" page logged in as "teacher1"
+  Scenario: Ensure saving hippotrack activty does not change completion settings
+    Given I am on the "Test hippotrack" "mod_hippotrack > View" page logged in as "teacher1"
     When I navigate to "Settings" in current page administration
     Then the "completionattemptsexhausted" "field" should be disabled
     And the field "completionattemptsexhausted" matches value "1"

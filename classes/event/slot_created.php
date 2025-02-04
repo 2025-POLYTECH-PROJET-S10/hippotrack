@@ -30,8 +30,8 @@ namespace mod_hippotrack\event;
  * @property-read array $other {
  *      Extra information about event.
  *
- *      - int quizid: the id of the quiz.
- *      - int slotnumber: the slot number in quiz.
+ *      - int hippotrackid: the id of the hippotrack.
+ *      - int slotnumber: the slot number in hippotrack.
  *      - int page: page number.
  * }
  *
@@ -41,7 +41,7 @@ namespace mod_hippotrack\event;
  */
 class slot_created extends \core\event\base {
     protected function init() {
-        $this->data['objecttable'] = 'quiz_slots';
+        $this->data['objecttable'] = 'hippotrack_slots';
         $this->data['crud'] = 'c';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
     }
@@ -54,11 +54,11 @@ class slot_created extends \core\event\base {
         return "The user with id '$this->userid' created a new slot with id '{$this->objectid}' " .
             "and slot number '{$this->other['slotnumber']}' " .
             "on page '{$this->other['page']}' " .
-            "of the quiz with course module id '$this->contextinstanceid'.";
+            "of the hippotrack with course module id '$this->contextinstanceid'.";
     }
 
     public function get_url() {
-        return new \moodle_url('/mod/quiz/edit.php', [
+        return new \moodle_url('/mod/hippotrack/edit.php', [
             'cmid' => $this->contextinstanceid
         ]);
     }
@@ -74,8 +74,8 @@ class slot_created extends \core\event\base {
             throw new \coding_exception('The \'contextinstanceid\' value must be set.');
         }
 
-        if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+        if (!isset($this->other['hippotrackid'])) {
+            throw new \coding_exception('The \'hippotrackid\' value must be set in other.');
         }
 
         if (!isset($this->other['slotnumber'])) {
@@ -88,12 +88,12 @@ class slot_created extends \core\event\base {
     }
 
     public static function get_objectid_mapping() {
-        return ['db' => 'quiz_slots', 'restore' => 'quiz_question_instance'];
+        return ['db' => 'hippotrack_slots', 'restore' => 'hippotrack_question_instance'];
     }
 
     public static function get_other_mapping() {
         $othermapped = [];
-        $othermapped['quizid'] = ['db' => 'quiz', 'restore' => 'quiz'];
+        $othermapped['hippotrackid'] = ['db' => 'hippotrack', 'restore' => 'hippotrack'];
 
         return $othermapped;
     }

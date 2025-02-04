@@ -14,32 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quizaccess_offlineattempts;
+namespace hippotrackaccess_offlineattempts;
 
-use quiz;
-use quizaccess_offlineattempts;
+use hippotrack;
+use hippotrackaccess_offlineattempts;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/accessrule/offlineattempts/rule.php');
+require_once($CFG->dirroot . '/mod/hippotrack/accessrule/offlineattempts/rule.php');
 
 
 /**
- * Unit tests for the quizaccess_offlineattempts plugin.
+ * Unit tests for the hippotrackaccess_offlineattempts plugin.
  *
- * @package    quizaccess_offlineattempts
+ * @package    hippotrackaccess_offlineattempts
  * @copyright  2016 Juan Leyva
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class rule_test extends \basic_testcase {
     public function test_offlineattempts_access_rule() {
-        $quiz = new \stdClass();
-        $quiz->allowofflineattempts = 1;
+        $hippotrack = new \stdClass();
+        $hippotrack->allowofflineattempts = 1;
         $cm = new \stdClass();
         $cm->id = 0;
-        $quizobj = new quiz($quiz, $cm, null);
-        $rule = new quizaccess_offlineattempts($quizobj, 0);
+        $hippotrackobj = new hippotrack($hippotrack, $cm, null);
+        $rule = new hippotrackaccess_offlineattempts($hippotrackobj, 0);
         $attempt = new \stdClass();
 
         $this->assertFalse($rule->prevent_access());

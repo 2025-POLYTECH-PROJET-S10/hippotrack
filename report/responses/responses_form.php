@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file defines the setting form for the quiz responses report.
+ * This file defines the setting form for the hippotrack responses report.
  *
- * @package   quiz_responses
+ * @package   hippotrack_responses
  * @copyright 2008 Jean-Michel Vedrine
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,37 +25,37 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/report/attemptsreport_form.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/attemptsreport_form.php');
 
 
 /**
- * Quiz responses report settings form.
+ * HippoTrack responses report settings form.
  *
  * @copyright 2008 Jean-Michel Vedrine
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_responses_settings_form extends mod_hippotrack_attempts_report_form {
+class hippotrack_responses_settings_form extends mod_hippotrack_attempts_report_form {
 
     protected function other_preference_fields(MoodleQuickForm $mform) {
         $mform->addGroup(array(
             $mform->createElement('advcheckbox', 'qtext', '',
-                get_string('questiontext', 'quiz_responses')),
+                get_string('questiontext', 'hippotrack_responses')),
             $mform->createElement('advcheckbox', 'resp', '',
-                get_string('response', 'quiz_responses')),
+                get_string('response', 'hippotrack_responses')),
             $mform->createElement('advcheckbox', 'right', '',
-                get_string('rightanswer', 'quiz_responses')),
-        ), 'coloptions', get_string('showthe', 'quiz_responses'), array(' '), false);
-        $mform->disabledIf('qtext', 'attempts', 'eq', quiz_attempts_report::ENROLLED_WITHOUT);
-        $mform->disabledIf('resp',  'attempts', 'eq', quiz_attempts_report::ENROLLED_WITHOUT);
-        $mform->disabledIf('right', 'attempts', 'eq', quiz_attempts_report::ENROLLED_WITHOUT);
+                get_string('rightanswer', 'hippotrack_responses')),
+        ), 'coloptions', get_string('showthe', 'hippotrack_responses'), array(' '), false);
+        $mform->disabledIf('qtext', 'attempts', 'eq', hippotrack_attempts_report::ENROLLED_WITHOUT);
+        $mform->disabledIf('resp',  'attempts', 'eq', hippotrack_attempts_report::ENROLLED_WITHOUT);
+        $mform->disabledIf('right', 'attempts', 'eq', hippotrack_attempts_report::ENROLLED_WITHOUT);
     }
 
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
 
-        if ($data['attempts'] != quiz_attempts_report::ENROLLED_WITHOUT && !(
+        if ($data['attempts'] != hippotrack_attempts_report::ENROLLED_WITHOUT && !(
                 $data['qtext'] || $data['resp'] || $data['right'])) {
-            $errors['coloptions'] = get_string('reportmustselectstate', 'quiz');
+            $errors['coloptions'] = get_string('reportmustselectstate', 'hippotrack');
         }
 
         return $errors;
@@ -63,14 +63,14 @@ class quiz_responses_settings_form extends mod_hippotrack_attempts_report_form {
 
     protected function other_attempt_fields(MoodleQuickForm $mform) {
         parent::other_attempt_fields($mform);
-        if (quiz_allows_multiple_tries($this->_customdata['quiz'])) {
+        if (hippotrack_allows_multiple_tries($this->_customdata['hippotrack'])) {
             $mform->addElement('select', 'whichtries', get_string('whichtries', 'question'), array(
                                            question_attempt::FIRST_TRY    => get_string('firsttry', 'question'),
                                            question_attempt::LAST_TRY     => get_string('lasttry', 'question'),
                                            question_attempt::ALL_TRIES    => get_string('alltries', 'question'))
             );
             $mform->setDefault('whichtries', question_attempt::LAST_TRY);
-            $mform->disabledIf('whichtries', 'attempts', 'eq', quiz_attempts_report::ENROLLED_WITHOUT);
+            $mform->disabledIf('whichtries', 'attempts', 'eq', hippotrack_attempts_report::ENROLLED_WITHOUT);
         }
     }
 }

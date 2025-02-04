@@ -24,15 +24,15 @@ Feature: Teachers can override the grade for any question
       | Test questions   | essay       | TF1   | First question  | 20          |
     And the following "activities" exist:
       | activity   | name   | intro              | course | idnumber | grade |
-      | quiz       | Quiz 1 | Quiz 1 description | C1     | quiz1    | 20    |
-    And quiz "Quiz 1" contains the following questions:
+      | hippotrack       | HippoTrack 1 | HippoTrack 1 description | C1     | hippotrack1    | 20    |
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question | page |
       | TF1      | 1    |
     And the following "user private files" exist:
       | user     | filepath                                |
-      | teacher1 | mod/quiz/tests/fixtures/moodle_logo.jpg |
-    And I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student1"
-    And I press "Attempt quiz"
+      | teacher1 | mod/hippotrack/tests/fixtures/moodle_logo.jpg |
+    And I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student1"
+    And I press "Attempt hippotrack"
     And I follow "Finish attempt ..."
     And I press "Submit all and finish"
     And I click on "Submit all and finish" "button" in the "Submit all your answers and finish?" "dialogue"
@@ -40,7 +40,7 @@ Feature: Teachers can override the grade for any question
 
   @javascript @_switch_window @_bug_phantomjs
   Scenario: Validating the marking of an essay question attempt.
-    When I am on the "Quiz 1 > student1 > Attempt 1" "mod_hippotrack > Attempt review" page logged in as "teacher1"
+    When I am on the "HippoTrack 1 > student1 > Attempt 1" "mod_hippotrack > Attempt review" page logged in as "teacher1"
     And I follow "Make comment or override mark"
     And I switch to "commentquestion" window
     And I set the field "Mark" to "25"
@@ -59,7 +59,7 @@ Feature: Teachers can override the grade for any question
   @javascript @_switch_window @_file_upload @_bug_phantomjs @editor_tiny
   Scenario: Comment on a response to an essay question attempt.
     When I log in as "teacher1"
-    And I am on the "Quiz 1 > student1 > Attempt 1" "mod_hippotrack > Attempt review" page
+    And I am on the "HippoTrack 1 > student1 > Attempt 1" "mod_hippotrack > Attempt review" page
     And I follow "Make comment or override mark"
     And I switch to "commentquestion" window
     And I set the field "Comment" to "Administrator's comment"

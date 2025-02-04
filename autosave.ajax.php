@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Thisscript processes ajax auto-save requests during the quiz.
+ * Thisscript processes ajax auto-save requests during the hippotrack.
  *
  * @package    mod_hippotrack
  * @copyright  2013 The Open University
@@ -25,7 +25,7 @@
 define('AJAX_SCRIPT', true);
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 // Remember the current time as the time any responses were submitted
 // (so as to make sure students don't get penalized for slow processing on this page).
@@ -38,24 +38,24 @@ $thispage  = optional_param('thispage', 0, PARAM_INT);
 $cmid      = optional_param('cmid', null, PARAM_INT);
 
 $transaction = $DB->start_delegated_transaction();
-$attemptobj = quiz_create_attempt_handling_errors($attemptid, $cmid);
+$attemptobj = hippotrack_create_attempt_handling_errors($attemptid, $cmid);
 
 // Check login.
 require_login($attemptobj->get_course(), false, $attemptobj->get_cm());
 
 // Check that this attempt belongs to this user.
 if ($attemptobj->get_userid() != $USER->id) {
-    throw new moodle_quiz_exception($attemptobj->get_quizobj(), 'notyourattempt');
+    throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(), 'notyourattempt');
 }
 
 // Check capabilities.
 if (!$attemptobj->is_preview_user()) {
-    $attemptobj->require_capability('mod/quiz:attempt');
+    $attemptobj->require_capability('mod/hippotrack:attempt');
 }
 
 // If the attempt is already closed, send them to the review page.
 if ($attemptobj->is_finished()) {
-    throw new moodle_quiz_exception($attemptobj->get_quizobj(),
+    throw new moodle_hippotrack_exception($attemptobj->get_hippotrackobj(),
             'attemptalreadyclosed', null, $attemptobj->review_url());
 }
 
@@ -65,7 +65,7 @@ $transaction->allow_commit();
 // Calculate time remaining.
 $timeleft = $attemptobj->get_time_left_display($timenow);
 
-// Build response, only returning timeleft if quiz in-progress
+// Build response, only returning timeleft if hippotrack in-progress
 // has a time limit.
 $r = new stdClass();
 $r->status = "OK";

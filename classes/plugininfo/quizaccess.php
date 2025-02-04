@@ -28,7 +28,7 @@ use core\plugininfo\base;
 defined('MOODLE_INTERNAL') || die();
 
 
-class quizaccess extends base {
+class hippotrackaccess extends base {
     public function is_uninstall_allowed() {
         // Only allow uninstall of non-core access rules.
         return !$this->is_standard();

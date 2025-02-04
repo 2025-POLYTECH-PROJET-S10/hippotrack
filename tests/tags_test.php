@@ -17,7 +17,7 @@
 namespace mod_hippotrack;
 
 use mod_hippotrack\question\bank\qbank_helper;
-use quiz;
+use hippotrack;
 
 /**
  * Test the restore of random question tags.
@@ -33,7 +33,7 @@ class tags_test extends \advanced_testcase {
         global $CFG, $USER, $DB;
 
         require_once($CFG->dirroot . '/backup/util/includes/restore_includes.php');
-        require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+        require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -41,7 +41,7 @@ class tags_test extends \advanced_testcase {
         $backupid = 'abc';
         $backuppath = make_backup_temp_directory($backupid);
         get_file_packer('application/vnd.moodle.backup')->extract_to_pathname(
-                __DIR__ . "/fixtures/random_by_tag_quiz.mbz", $backuppath);
+                __DIR__ . "/fixtures/random_by_tag_hippotrack.mbz", $backuppath);
 
         // Do the restore to new course with default settings.
         $categoryid = $DB->get_field_sql("SELECT MIN(id) FROM {course_categories}");
@@ -55,17 +55,17 @@ class tags_test extends \advanced_testcase {
 
         // Get the information about the resulting course and check that it is set up correctly.
         $modinfo = get_fast_modinfo($newcourseid);
-        $quiz = array_values($modinfo->get_instances_of('quiz'))[0];
-        $quizobj = quiz::create($quiz->instance);
-        $structure = structure::create_for_quiz($quizobj);
+        $hippotrack = array_values($modinfo->get_instances_of('hippotrack'))[0];
+        $hippotrackobj = hippotrack::create($hippotrack->instance);
+        $structure = structure::create_for_hippotrack($hippotrackobj);
 
         // Are the correct slots returned?
         $slots = $structure->get_slots();
         $this->assertCount(1, $slots);
 
-        $quizobj->preload_questions();
-        $quizobj->load_questions();
-        $questions = $quizobj->get_questions();
+        $hippotrackobj->preload_questions();
+        $hippotrackobj->load_questions();
+        $questions = $hippotrackobj->get_questions();
 
         $this->assertCount(1, $questions);
 

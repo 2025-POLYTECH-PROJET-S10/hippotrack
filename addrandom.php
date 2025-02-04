@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Fallback page of /mod/quiz/edit.php add random question dialog,
+ * Fallback page of /mod/hippotrack/edit.php add random question dialog,
  * for users who do not use javascript.
  *
  * @package   mod_hippotrack
@@ -25,14 +25,14 @@
 
 
 require_once(__DIR__ . '/../../config.php');
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-require_once($CFG->dirroot . '/mod/quiz/addrandomform.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/addrandomform.php');
 require_once($CFG->dirroot . '/question/editlib.php');
 
 use qbank_managecategories\question_category_object;
 
-list($thispageurl, $contexts, $cmid, $cm, $quiz, $pagevars) =
-        question_edit_setup('editq', '/mod/quiz/addrandom.php', true);
+list($thispageurl, $contexts, $cmid, $cm, $hippotrack, $pagevars) =
+        question_edit_setup('editq', '/mod/hippotrack/addrandom.php', true);
 
 // These params are only passed from page request to request while we stay on
 // this page otherwise they would go in question_edit_setup.
@@ -42,12 +42,12 @@ $category = optional_param('category', 0, PARAM_INT);
 $scrollpos = optional_param('scrollpos', 0, PARAM_INT);
 
 // Get the course object and related bits.
-if (!$course = $DB->get_record('course', array('id' => $quiz->course))) {
+if (!$course = $DB->get_record('course', array('id' => $hippotrack->course))) {
     throw new \moodle_exception('invalidcourseid');
 }
-// You need mod/quiz:manage in addition to question capabilities to access this page.
+// You need mod/hippotrack:manage in addition to question capabilities to access this page.
 // You also need the moodle/question:useall capability somewhere.
-require_capability('mod/quiz:manage', $contexts->lowest());
+require_capability('mod/hippotrack:manage', $contexts->lowest());
 if (!$contexts->having_cap('moodle/question:useall')) {
     throw new \moodle_exception('nopermissions', '', '', 'use');
 }
@@ -57,7 +57,7 @@ $PAGE->set_url($thispageurl);
 if ($returnurl) {
     $returnurl = new moodle_url($returnurl);
 } else {
-    $returnurl = new moodle_url('/mod/quiz/edit.php', array('cmid' => $cmid));
+    $returnurl = new moodle_url('/mod/hippotrack/edit.php', array('cmid' => $cmid));
 }
 if ($scrollpos) {
     $returnurl->param('scrollpos', $scrollpos);
@@ -75,7 +75,7 @@ $qcobject = new question_category_object(
     null,
     $contexts->having_cap('moodle/question:add'));
 
-$mform = new quiz_add_random_form(new moodle_url('/mod/quiz/addrandom.php'),
+$mform = new hippotrack_add_random_form(new moodle_url('/mod/hippotrack/addrandom.php'),
                 array('contexts' => $contexts, 'cat' => $pagevars['cat']));
 
 if ($mform->is_cancelled()) {
@@ -111,9 +111,9 @@ if ($data = $mform->get_data()) {
         return (int)explode(',', $tagstrings)[0];
     }, $data->fromtags);
 
-    quiz_add_random_questions($quiz, $addonpage, $categoryid, $data->numbertoadd, $includesubcategories, $tagids);
-    quiz_delete_previews($quiz);
-    quiz_update_sumgrades($quiz);
+    hippotrack_add_random_questions($hippotrack, $addonpage, $categoryid, $data->numbertoadd, $includesubcategories, $tagids);
+    hippotrack_delete_previews($hippotrack);
+    hippotrack_update_sumgrades($hippotrack);
     redirect($returnurl);
 }
 
@@ -125,17 +125,17 @@ $mform->set_data(array(
 ));
 
 // Setup $PAGE.
-$streditingquiz = get_string('editinga', 'moodle', get_string('modulename', 'quiz'));
-$PAGE->navbar->add($streditingquiz);
-$PAGE->set_title($streditingquiz);
+$streditinghippotrack = get_string('editinga', 'moodle', get_string('modulename', 'hippotrack'));
+$PAGE->navbar->add($streditinghippotrack);
+$PAGE->set_title($streditinghippotrack);
 $PAGE->set_heading($course->fullname);
 echo $OUTPUT->header();
 
-if (!$quizname = $DB->get_field($cm->modname, 'name', array('id' => $cm->instance))) {
+if (!$hippotrackname = $DB->get_field($cm->modname, 'name', array('id' => $cm->instance))) {
             throw new \moodle_exception('invalidcoursemodule');
 }
 
-echo $OUTPUT->heading(get_string('addrandomquestiontoquiz', 'quiz', $quizname), 2);
+echo $OUTPUT->heading(get_string('addrandomquestiontohippotrack', 'hippotrack', $hippotrackname), 2);
 $mform->display();
 echo $OUTPUT->footer();
 

@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class to store the options for a {@link quiz_responses_report}.
+ * Class to store the options for a {@link hippotrack_responses_report}.
  *
- * @package   quiz_responses
+ * @package   hippotrack_responses
  * @copyright 2012 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,16 +25,16 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/report/attemptsreport_options.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/attemptsreport_options.php');
 
 
 /**
- * Class to store the options for a {@link quiz_responses_report}.
+ * Class to store the options for a {@link hippotrack_responses_report}.
  *
  * @copyright 2012 The Open University
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_responses_options extends mod_hippotrack_attempts_report_options {
+class hippotrack_responses_options extends mod_hippotrack_attempts_report_options {
 
     /** @var bool whether to show the question text columns. */
     public $showqtext = false;
@@ -53,7 +53,7 @@ class quiz_responses_options extends mod_hippotrack_attempts_report_options {
         $params['qtext']      = $this->showqtext;
         $params['resp']       = $this->showresponses;
         $params['right']      = $this->showright;
-        if (quiz_allows_multiple_tries($this->quiz)) {
+        if (hippotrack_allows_multiple_tries($this->hippotrack)) {
             $params['whichtries'] = $this->whichtries;
         }
         return $params;
@@ -64,7 +64,7 @@ class quiz_responses_options extends mod_hippotrack_attempts_report_options {
         $toform->qtext      = $this->showqtext;
         $toform->resp       = $this->showresponses;
         $toform->right      = $this->showright;
-        if (quiz_allows_multiple_tries($this->quiz)) {
+        if (hippotrack_allows_multiple_tries($this->hippotrack)) {
             $toform->whichtries = $this->whichtries;
         }
 
@@ -77,7 +77,7 @@ class quiz_responses_options extends mod_hippotrack_attempts_report_options {
         $this->showqtext     = $fromform->qtext;
         $this->showresponses = $fromform->resp;
         $this->showright     = $fromform->right;
-        if (quiz_allows_multiple_tries($this->quiz)) {
+        if (hippotrack_allows_multiple_tries($this->hippotrack)) {
             $this->whichtries = $fromform->whichtries;
         }
     }
@@ -88,7 +88,7 @@ class quiz_responses_options extends mod_hippotrack_attempts_report_options {
         $this->showqtext     = optional_param('qtext', $this->showqtext,     PARAM_BOOL);
         $this->showresponses = optional_param('resp',  $this->showresponses, PARAM_BOOL);
         $this->showright     = optional_param('right', $this->showright,     PARAM_BOOL);
-        if (quiz_allows_multiple_tries($this->quiz)) {
+        if (hippotrack_allows_multiple_tries($this->hippotrack)) {
             $this->whichtries    = optional_param('whichtries', $this->whichtries, PARAM_ALPHA);
         }
     }
@@ -96,22 +96,22 @@ class quiz_responses_options extends mod_hippotrack_attempts_report_options {
     public function setup_from_user_preferences() {
         parent::setup_from_user_preferences();
 
-        $this->showqtext     = get_user_preferences('quiz_report_responses_qtext', $this->showqtext);
-        $this->showresponses = get_user_preferences('quiz_report_responses_resp',  $this->showresponses);
-        $this->showright     = get_user_preferences('quiz_report_responses_right', $this->showright);
-        if (quiz_allows_multiple_tries($this->quiz)) {
-            $this->whichtries    = get_user_preferences('quiz_report_responses_which_tries', $this->whichtries);
+        $this->showqtext     = get_user_preferences('hippotrack_report_responses_qtext', $this->showqtext);
+        $this->showresponses = get_user_preferences('hippotrack_report_responses_resp',  $this->showresponses);
+        $this->showright     = get_user_preferences('hippotrack_report_responses_right', $this->showright);
+        if (hippotrack_allows_multiple_tries($this->hippotrack)) {
+            $this->whichtries    = get_user_preferences('hippotrack_report_responses_which_tries', $this->whichtries);
         }
     }
 
     public function update_user_preferences() {
         parent::update_user_preferences();
 
-        set_user_preference('quiz_report_responses_qtext', $this->showqtext);
-        set_user_preference('quiz_report_responses_resp',  $this->showresponses);
-        set_user_preference('quiz_report_responses_right', $this->showright);
-        if (quiz_allows_multiple_tries($this->quiz)) {
-            set_user_preference('quiz_report_responses_which_tries', $this->whichtries);
+        set_user_preference('hippotrack_report_responses_qtext', $this->showqtext);
+        set_user_preference('hippotrack_report_responses_resp',  $this->showresponses);
+        set_user_preference('hippotrack_report_responses_right', $this->showright);
+        if (hippotrack_allows_multiple_tries($this->hippotrack)) {
+            set_user_preference('hippotrack_report_responses_which_tries', $this->whichtries);
         }
     }
 
@@ -125,7 +125,7 @@ class quiz_responses_options extends mod_hippotrack_attempts_report_options {
 
         // We only want to show the checkbox to delete attempts
         // if the user has permissions and if the report mode is showing attempts.
-        $this->checkboxcolumn = has_capability('mod/quiz:deleteattempts', context_module::instance($this->cm->id))
-                && ($this->attempts != quiz_attempts_report::ENROLLED_WITHOUT);
+        $this->checkboxcolumn = has_capability('mod/hippotrack:deleteattempts', context_module::instance($this->cm->id))
+                && ($this->attempts != hippotrack_attempts_report::ENROLLED_WITHOUT);
     }
 }

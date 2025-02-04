@@ -26,7 +26,7 @@ namespace mod_hippotrack\local\structure;
  */
 class slot_random {
 
-    /** @var \stdClass Slot's properties. A record retrieved from the quiz_slots table. */
+    /** @var \stdClass Slot's properties. A record retrieved from the hippotrack_slots table. */
     protected $record;
 
     /**
@@ -35,9 +35,9 @@ class slot_random {
     protected $referencerecord;
 
     /**
-     * @var \stdClass The quiz this question slot belongs to.
+     * @var \stdClass The hippotrack this question slot belongs to.
      */
-    protected $quiz = null;
+    protected $hippotrack = null;
 
     /**
      * @var \core_tag_tag[] List of tags for this slot.
@@ -52,13 +52,13 @@ class slot_random {
     /**
      * slot_random constructor.
      *
-     * @param \stdClass $slotrecord Represents a record in the quiz_slots table.
+     * @param \stdClass $slotrecord Represents a record in the hippotrack_slots table.
      */
     public function __construct($slotrecord = null) {
         $this->record = new \stdClass();
         $this->referencerecord = new \stdClass();
 
-        $slotproperties = ['id', 'slot', 'quizid', 'page', 'requireprevious', 'maxmark'];
+        $slotproperties = ['id', 'slot', 'hippotrackid', 'page', 'requireprevious', 'maxmark'];
         $setreferenceproperties = ['usingcontextid', 'questionscontextid'];
 
         foreach ($slotproperties as $property) {
@@ -75,39 +75,39 @@ class slot_random {
     }
 
     /**
-     * Returns the quiz for this question slot.
-     * The quiz is fetched the first time it is requested and then stored in a member variable to be returned each subsequent time.
+     * Returns the hippotrack for this question slot.
+     * The hippotrack is fetched the first time it is requested and then stored in a member variable to be returned each subsequent time.
      *
      * @return mixed
      * @throws \coding_exception
      */
-    public function get_quiz() {
+    public function get_hippotrack() {
         global $DB;
 
-        if (empty($this->quiz)) {
-            if (empty($this->record->quizid)) {
-                throw new \coding_exception('quizid is not set.');
+        if (empty($this->hippotrack)) {
+            if (empty($this->record->hippotrackid)) {
+                throw new \coding_exception('hippotrackid is not set.');
             }
-            $this->quiz = $DB->get_record('quiz', array('id' => $this->record->quizid));
+            $this->hippotrack = $DB->get_record('hippotrack', array('id' => $this->record->hippotrackid));
         }
 
-        return $this->quiz;
+        return $this->hippotrack;
     }
 
     /**
-     * Sets the quiz object for the quiz slot.
-     * It is not mandatory to set the quiz as the quiz slot can fetch it the first time it is accessed,
-     * however it helps with the performance to set the quiz if you already have it.
+     * Sets the hippotrack object for the hippotrack slot.
+     * It is not mandatory to set the hippotrack as the hippotrack slot can fetch it the first time it is accessed,
+     * however it helps with the performance to set the hippotrack if you already have it.
      *
-     * @param \stdClass $quiz The qui object.
+     * @param \stdClass $hippotrack The qui object.
      */
-    public function set_quiz($quiz) {
-        $this->quiz = $quiz;
-        $this->record->quizid = $quiz->id;
+    public function set_hippotrack($hippotrack) {
+        $this->hippotrack = $hippotrack;
+        $this->record->hippotrackid = $hippotrack->id;
     }
 
     /**
-     * Set some tags for this quiz slot.
+     * Set some tags for this hippotrack slot.
      *
      * @param \core_tag_tag[] $tags
      */
@@ -121,7 +121,7 @@ class slot_random {
     }
 
     /**
-     * Set some tags for this quiz slot. This function uses tag ids to find tags.
+     * Set some tags for this hippotrack slot. This function uses tag ids to find tags.
      *
      * @param int[] $tagids
      */
@@ -143,17 +143,17 @@ class slot_random {
     }
 
     /**
-     * Inserts the quiz slot at the $page page.
-     * It is required to call this function if you are building a quiz slot object from scratch.
+     * Inserts the hippotrack slot at the $page page.
+     * It is required to call this function if you are building a hippotrack slot object from scratch.
      *
      * @param int $page The page that this slot will be inserted at.
      */
     public function insert($page) {
         global $DB;
 
-        $slots = $DB->get_records('quiz_slots', array('quizid' => $this->record->quizid),
+        $slots = $DB->get_records('hippotrack_slots', array('hippotrackid' => $this->record->hippotrackid),
                 'slot', 'id, slot, page');
-        $quiz = $this->get_quiz();
+        $hippotrack = $this->get_hippotrack();
 
         $trans = $DB->start_delegated_transaction();
 
@@ -173,7 +173,7 @@ class slot_random {
             $lastslotbefore = 0;
             foreach (array_reverse($slots) as $otherslot) {
                 if ($otherslot->page > $page) {
-                    $DB->set_field('quiz_slots', 'slot', $otherslot->slot + 1, array('id' => $otherslot->id));
+                    $DB->set_field('hippotrack_slots', 'slot', $otherslot->slot + 1, array('id' => $otherslot->id));
                 } else {
                     $lastslotbefore = $otherslot->slot;
                     break;
@@ -182,7 +182,7 @@ class slot_random {
             $this->record->slot = $lastslotbefore + 1;
             $this->record->page = min($page, $maxpage + 1);
 
-            quiz_update_section_firstslots($this->record->quizid, 1, max($lastslotbefore, 1));
+            hippotrack_update_section_firstslots($this->record->hippotrackid, 1, max($lastslotbefore, 1));
         } else {
             $lastslot = end($slots);
             if ($lastslot) {
@@ -190,14 +190,14 @@ class slot_random {
             } else {
                 $this->record->slot = 1;
             }
-            if ($quiz->questionsperpage && $numonlastpage >= $quiz->questionsperpage) {
+            if ($hippotrack->questionsperpage && $numonlastpage >= $hippotrack->questionsperpage) {
                 $this->record->page = $maxpage + 1;
             } else {
                 $this->record->page = $maxpage;
             }
         }
 
-        $this->record->id = $DB->insert_record('quiz_slots', $this->record);
+        $this->record->id = $DB->insert_record('hippotrack_slots', $this->record);
 
         $this->referencerecord->component = 'mod_hippotrack';
         $this->referencerecord->questionarea = 'slot';
@@ -208,12 +208,12 @@ class slot_random {
         $trans->allow_commit();
 
         // Log slot created event.
-        $cm = get_coursemodule_from_instance('quiz', $quiz->id);
+        $cm = get_coursemodule_from_instance('hippotrack', $hippotrack->id);
         $event = \mod_hippotrack\event\slot_created::create([
             'context' => \context_module::instance($cm->id),
             'objectid' => $this->record->id,
             'other' => [
-                'quizid' => $quiz->id,
+                'hippotrackid' => $hippotrack->id,
                 'slotnumber' => $this->record->slot,
                 'page' => $this->record->page
             ]

@@ -21,10 +21,10 @@ use mod_hippotrack\question\bank\qbank_helper;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
+require_once(__DIR__ . '/hippotrack_question_helper_test_trait.php');
 
 /**
- * Question versions test for quiz.
+ * Question versions test for hippotrack.
  *
  * @package    mod_hippotrack
  * @category   test
@@ -33,8 +33,8 @@ require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @coversDefaultClass \mod_hippotrack\question\bank\qbank_helper
  */
-class quiz_question_version_test extends \advanced_testcase {
-    use \quiz_question_helper_test_trait;
+class hippotrack_question_version_test extends \advanced_testcase {
+    use \hippotrack_question_helper_test_trait;
 
     /**
      * Called before every test.
@@ -49,15 +49,15 @@ class quiz_question_version_test extends \advanced_testcase {
     }
 
     /**
-     * Test the quiz question data for changed version in the slots.
+     * Test the hippotrack question data for changed version in the slots.
      *
      * @covers ::get_version_options
      */
-    public function test_quiz_questions_for_changed_versions() {
+    public function test_hippotrack_questions_for_changed_versions() {
         $this->resetAfterTest();
-        $quiz = $this->create_test_quiz($this->course);
+        $hippotrack = $this->create_test_hippotrack($this->course);
         // Test for questions from a different context.
-        $context = \context_module::instance(get_coursemodule_from_instance("quiz", $quiz->id, $this->course->id)->id);
+        $context = \context_module::instance(get_coursemodule_from_instance("hippotrack", $hippotrack->id, $this->course->id)->id);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         // Create a couple of questions.
         $cat = $questiongenerator->create_question_category(['contextid' => $context->id]);
@@ -66,30 +66,30 @@ class quiz_question_version_test extends \advanced_testcase {
         // Create two version.
         $questiongenerator->update_question($numq, null, ['name' => 'This is the second version']);
         $questiongenerator->update_question($numq, null, ['name' => 'This is the third version']);
-        quiz_add_quiz_question($numq->id, $quiz);
-        // Create the quiz object.
-        $quizobj = \quiz::create($quiz->id);
-        $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
+        hippotrack_add_hippotrack_question($numq->id, $hippotrack);
+        // Create the hippotrack object.
+        $hippotrackobj = \hippotrack::create($hippotrack->id);
+        $structure = \mod_hippotrack\structure::create_for_hippotrack($hippotrackobj);
         $slots = $structure->get_slots();
         $slot = reset($slots);
         // Test that the version added is 'always latest'.
         $this->assertEquals(3, $slot->version);
-        $quizobj->preload_questions();
-        $quizobj->load_questions();
-        $questions = $quizobj->get_questions();
+        $hippotrackobj->preload_questions();
+        $hippotrackobj->load_questions();
+        $questions = $hippotrackobj->get_questions();
         $question = reset($questions);
         $this->assertEquals(3, $question->version);
         $this->assertEquals('This is the third version', $question->name);
         // Create another version.
         $questiongenerator->update_question($numq, null, ['name' => 'This is the latest version']);
         // Check that 'Always latest is working'.
-        $quizobj->preload_questions();
-        $quizobj->load_questions();
-        $questions = $quizobj->get_questions();
+        $hippotrackobj->preload_questions();
+        $hippotrackobj->load_questions();
+        $questions = $hippotrackobj->get_questions();
         $question = reset($questions);
         $this->assertEquals(4, $question->version);
         $this->assertEquals('This is the latest version', $question->name);
-        $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
+        $structure = \mod_hippotrack\structure::create_for_hippotrack($hippotrackobj);
         $slots = $structure->get_slots();
         $slot = reset($slots);
         $this->assertEquals(4, $slot->version);
@@ -105,25 +105,25 @@ class quiz_question_version_test extends \advanced_testcase {
         }
         // Change to version 1.
         submit_question_version::execute($slot->id, (int)$selectversions[1]->version);
-        $quizobj->preload_questions();
-        $quizobj->load_questions();
-        $questions = $quizobj->get_questions();
+        $hippotrackobj->preload_questions();
+        $hippotrackobj->load_questions();
+        $questions = $hippotrackobj->get_questions();
         $question = reset($questions);
         $this->assertEquals(1, $question->version);
         $this->assertEquals('This is the first version', $question->name);
-        $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
+        $structure = \mod_hippotrack\structure::create_for_hippotrack($hippotrackobj);
         $slots = $structure->get_slots();
         $slot = reset($slots);
         $this->assertEquals(1, $slot->version);
         // Change to version 2.
         submit_question_version::execute($slot->id, $selectversions[2]->version);
-        $quizobj->preload_questions();
-        $quizobj->load_questions();
-        $questions = $quizobj->get_questions();
+        $hippotrackobj->preload_questions();
+        $hippotrackobj->load_questions();
+        $questions = $hippotrackobj->get_questions();
         $question = reset($questions);
         $this->assertEquals(2, $question->version);
         $this->assertEquals('This is the second version', $question->name);
-        $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
+        $structure = \mod_hippotrack\structure::create_for_hippotrack($hippotrackobj);
         $slots = $structure->get_slots();
         $slot = reset($slots);
         $this->assertEquals(2, $slot->version);
@@ -134,11 +134,11 @@ class quiz_question_version_test extends \advanced_testcase {
      *
      * @covers ::get_version_options
      */
-    public function test_quiz_question_attempts_with_changed_version() {
+    public function test_hippotrack_question_attempts_with_changed_version() {
         $this->resetAfterTest();
-        $quiz = $this->create_test_quiz($this->course);
+        $hippotrack = $this->create_test_hippotrack($this->course);
         // Test for questions from a different context.
-        $context = \context_module::instance(get_coursemodule_from_instance("quiz", $quiz->id, $this->course->id)->id);
+        $context = \context_module::instance(get_coursemodule_from_instance("hippotrack", $hippotrack->id, $this->course->id)->id);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         // Create a couple of questions.
         $cat = $questiongenerator->create_question_category(['contextid' => $context->id]);
@@ -147,12 +147,12 @@ class quiz_question_version_test extends \advanced_testcase {
         // Create two version.
         $questiongenerator->update_question($numq, null, ['name' => 'This is the second version']);
         $questiongenerator->update_question($numq, null, ['name' => 'This is the third version']);
-        quiz_add_quiz_question($numq->id, $quiz);
-        list($quizobj, $quba, $attemptobj) = $this->attempt_quiz($quiz, $this->student);
+        hippotrack_add_hippotrack_question($numq->id, $hippotrack);
+        list($hippotrackobj, $quba, $attemptobj) = $this->attempt_hippotrack($hippotrack, $this->student);
         $this->assertEquals('This is the third version', $attemptobj->get_question_attempt(1)->get_question()->name);
-        // Create the quiz object.
-        $quizobj = \quiz::create($quiz->id);
-        $structure = \mod_hippotrack\structure::create_for_quiz($quizobj);
+        // Create the hippotrack object.
+        $hippotrackobj = \hippotrack::create($hippotrack->id);
+        $structure = \mod_hippotrack\structure::create_for_hippotrack($hippotrackobj);
         $slots = $structure->get_slots();
         $slot = reset($slots);
         // Now change the version using the external service.
@@ -168,17 +168,17 @@ class quiz_question_version_test extends \advanced_testcase {
         // Change to version 1.
         $this->expectException('moodle_exception');
         submit_question_version::execute($slot->id, (int)$selectversions[1]->version);
-        list($quizobj, $quba, $attemptobj) = $this->attempt_quiz($quiz, $this->student, 2);
+        list($hippotrackobj, $quba, $attemptobj) = $this->attempt_hippotrack($hippotrack, $this->student, 2);
         $this->assertEquals('This is the first version', $attemptobj->get_question_attempt(1)->get_question()->name);
         // Change to version 2.
         submit_question_version::execute($slot->id, (int)$selectversions[2]->version);
-        list($quizobj, $quba, $attemptobj) = $this->attempt_quiz($quiz, $this->student, 3);
+        list($hippotrackobj, $quba, $attemptobj) = $this->attempt_hippotrack($hippotrack, $this->student, 3);
         $this->assertEquals('This is the second version', $attemptobj->get_question_attempt(1)->get_question()->name);
         // Create another version.
         $questiongenerator->update_question($numq, null, ['name' => 'This is the latest version']);
         // Change to always latest.
         submit_question_version::execute($slot->id, 0);
-        list($quizobj, $quba, $attemptobj) = $this->attempt_quiz($quiz, $this->student, 4);
+        list($hippotrackobj, $quba, $attemptobj) = $this->attempt_hippotrack($hippotrack, $this->student, 4);
         $this->assertEquals('This is the latest version', $attemptobj->get_question_attempt(1)->get_question()->name);
     }
 }

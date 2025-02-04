@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz overview report upgrade script.
+ * HippoTrack overview report upgrade script.
  *
- * @package   quiz_overview
+ * @package   hippotrack_overview
  * @copyright 2008 Jamie Pratt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,10 +25,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Quiz overview report upgrade function.
+ * HippoTrack overview report upgrade function.
  * @param number $oldversion
  */
-function xmldb_quiz_overview_upgrade($oldversion) {
+function xmldb_hippotrack_overview_upgrade($oldversion) {
     global $DB;
 
     // Automatically generated Moodle v3.9.0 release upgrade line.

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines backup_quiz_activity_task class
+ * Defines backup_hippotrack_activity_task class
  *
  * @package     mod_hippotrack
  * @category    backup
@@ -25,15 +25,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/backup_quiz_stepslib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/backup/moodle2/backup_hippotrack_stepslib.php');
 
 /**
- * Provides the steps to perform one complete backup of the Quiz instance
+ * Provides the steps to perform one complete backup of the HippoTrack instance
  *
  * @copyright  2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class backup_quiz_activity_task extends backup_activity_task {
+class backup_hippotrack_activity_task extends backup_activity_task {
 
     /**
      * No specific settings for this activity
@@ -45,12 +45,12 @@ class backup_quiz_activity_task extends backup_activity_task {
      * Defines backup steps to store the instance data and required questions
      */
     protected function define_my_steps() {
-        // Generate the quiz.xml file containing all the quiz information
+        // Generate the hippotrack.xml file containing all the hippotrack information
         // and annotating used questions.
-        $this->add_step(new backup_quiz_activity_structure_step('quiz_structure', 'quiz.xml'));
+        $this->add_step(new backup_hippotrack_activity_structure_step('hippotrack_structure', 'hippotrack.xml'));
 
         // Note: Following  steps must be present
-        // in all the activities using question banks (only quiz for now)
+        // in all the activities using question banks (only hippotrack for now)
         // TODO: Specialise these step to a new subclass of backup_activity_task.
 
         // Process all the annotated questions to calculate the question
@@ -75,17 +75,17 @@ class backup_quiz_activity_task extends backup_activity_task {
 
         $base = preg_quote($CFG->wwwroot, '/');
 
-        // Link to the list of quizzes.
-        $search="/(".$base."\/mod\/quiz\/index.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@QUIZINDEX*$2@$', $content);
+        // Link to the list of hippotrackzes.
+        $search="/(".$base."\/mod\/hippotrack\/index.php\?id\=)([0-9]+)/";
+        $content= preg_replace($search, '$@HIPPOTRACKINDEX*$2@$', $content);
 
-        // Link to quiz view by moduleid.
-        $search="/(".$base."\/mod\/quiz\/view.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@QUIZVIEWBYID*$2@$', $content);
+        // Link to hippotrack view by moduleid.
+        $search="/(".$base."\/mod\/hippotrack\/view.php\?id\=)([0-9]+)/";
+        $content= preg_replace($search, '$@HIPPOTRACKVIEWBYID*$2@$', $content);
 
-        // Link to quiz view by quizid.
-        $search="/(".$base."\/mod\/quiz\/view.php\?q\=)([0-9]+)/";
-        $content= preg_replace($search, '$@QUIZVIEWBYQ*$2@$', $content);
+        // Link to hippotrack view by hippotrackid.
+        $search="/(".$base."\/mod\/hippotrack\/view.php\?q\=)([0-9]+)/";
+        $content= preg_replace($search, '$@HIPPOTRACKVIEWBYQ*$2@$', $content);
 
         return $content;
     }

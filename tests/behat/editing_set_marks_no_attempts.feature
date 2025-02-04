@@ -1,8 +1,8 @@
 @mod @mod_hippotrack
-Feature: Edit quiz marks with no attempts
-  In order to create a quiz that awards marks the way I want
+Feature: Edit hippotrack marks with no attempts
+  In order to create a hippotrack that awards marks the way I want
   As a teacher
-  I must be able to set the marks I want on the Edit quiz page.
+  I must be able to set the marks I want on the Edit hippotrack page.
 
   Background:
     Given the following "users" exist:
@@ -16,7 +16,7 @@ Feature: Edit quiz marks with no attempts
       | teacher1 | C1     | editingteacher |
     And the following "activities" exist:
       | activity   | name   | course | idnumber | grade | decimalpoints | questiondecimalpoints |
-      | quiz       | Quiz 1 | C1     | quiz1    | 20    | 2             | -1                    |
+      | hippotrack       | HippoTrack 1 | C1     | hippotrack1    | 20    | 2             | -1                    |
 
     And the following "question categories" exist:
       | contextlevel | reference | name           |
@@ -25,11 +25,11 @@ Feature: Edit quiz marks with no attempts
       | questioncategory | qtype     | name            | questiontext |
       | Test questions   | truefalse | First question  | Answer me    |
       | Test questions   | truefalse | Second question | Answer again |
-    And quiz "Quiz 1" contains the following questions:
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question        | page | maxmark |
       | First question  | 1    | 2.0     |
       | Second question | 1    | 3.0     |
-    And I am on the "Quiz 1" "mod_hippotrack > Edit" page logged in as "teacher1"
+    And I am on the "HippoTrack 1" "mod_hippotrack > Edit" page logged in as "teacher1"
     And I change window size to "large"
 
   @javascript
@@ -56,7 +56,7 @@ Feature: Edit quiz marks with no attempts
     And I should see "Total of marks: 5.00"
 
   @javascript
-  Scenario: Verify the number of decimal places shown is what the quiz settings say it should be.
+  Scenario: Verify the number of decimal places shown is what the hippotrack settings say it should be.
     # Then the field "maxgrade" matches value "20.00" -- with exact match on decimal places.
     Then "//input[@name = 'maxgrade' and @value = '20.00']" "xpath_element" should exist
     And I should see "2.00"
@@ -65,12 +65,12 @@ Feature: Edit quiz marks with no attempts
     And I should not see "2.000"
     And I should not see "3.000"
     And I should not see "Total of marks: 5.000"
-    And I am on the "Quiz 1" "quiz activity editing" page
+    And I am on the "HippoTrack 1" "hippotrack activity editing" page
     When I set the following fields to these values:
       | Decimal places in grades | 3 |
       | Decimal places in marks for questions | 5 |
     And I press "Save and display"
-    When I am on the "Quiz 1" "mod_hippotrack > Edit" page
+    When I am on the "HippoTrack 1" "mod_hippotrack > Edit" page
     # Then the field "maxgrade" matches value "20.000" -- with exact match on decimal places.
     Then "//input[@name = 'maxgrade' and @value = '20.000']" "xpath_element" should exist
     And I should see "2.00000"

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Add event handlers for the quiz
+ * Add event handlers for the hippotrack
  *
  * @package    mod_hippotrack
  * @category   event
@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $observers = array(
 
-    // Handle group events, so that open quiz attempts with group overrides get updated check times.
+    // Handle group events, so that open hippotrack attempts with group overrides get updated check times.
     array(
         'eventname' => '\core\event\course_reset_started',
         'callback' => '\mod_hippotrack\group_observers::course_reset_started',
@@ -54,8 +54,8 @@ $observers = array(
     // send confirmation messages asynchronously.
     array(
         'eventname' => '\mod_hippotrack\event\attempt_submitted',
-        'includefile'     => '/mod/quiz/locallib.php',
-        'callback' => 'quiz_attempt_submitted_handler',
+        'includefile'     => '/mod/hippotrack/locallib.php',
+        'callback' => 'hippotrack_attempt_submitted_handler',
         'internal' => false
     ),
 );

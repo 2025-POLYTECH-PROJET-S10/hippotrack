@@ -1,5 +1,5 @@
 {
-    "moodle-mod_hippotrack-quizbase": {
+    "moodle-mod_hippotrack-hippotrackbase": {
         "requires": [
             "base",
             "node"

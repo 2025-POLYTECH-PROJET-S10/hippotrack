@@ -18,16 +18,16 @@ namespace mod_hippotrack;
 
 use core_question\local\bank\question_version_status;
 use question_engine;
-use quiz;
-use quiz_attempt;
+use hippotrack;
+use hippotrack_attempt;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
- * Tests for the quiz_attempt class.
+ * Tests for the hippotrack_attempt class.
  *
  * @package   mod_hippotrack
  * @category  test
@@ -37,28 +37,28 @@ require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 class attempt_test extends \advanced_testcase {
 
     /**
-     * Create quiz and attempt data with layout.
+     * Create hippotrack and attempt data with layout.
      *
-     * @param string $layout layout to set. Like quiz attempt.layout. E.g. '1,2,0,3,4,0,'.
-     * @param string $navmethod quiz navigation method (defaults to free)
-     * @return quiz_attempt the new quiz_attempt object
+     * @param string $layout layout to set. Like hippotrack attempt.layout. E.g. '1,2,0,3,4,0,'.
+     * @param string $navmethod hippotrack navigation method (defaults to free)
+     * @return hippotrack_attempt the new hippotrack_attempt object
      */
-    protected function create_quiz_and_attempt_with_layout($layout, $navmethod = QUIZ_NAVMETHOD_FREE) {
+    protected function create_hippotrack_and_attempt_with_layout($layout, $navmethod = HIPPOTRACK_NAVMETHOD_FREE) {
         $this->resetAfterTest(true);
 
-        // Make a user to do the quiz.
+        // Make a user to do the hippotrack.
         $user = $this->getDataGenerator()->create_user();
         $course = $this->getDataGenerator()->create_course();
-        // Make a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(['course' => $course->id,
+        // Make a hippotrack.
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(['course' => $course->id,
             'grade' => 100.0, 'sumgrades' => 2, 'layout' => $layout, 'navmethod' => $navmethod]);
 
-        $quizobj = quiz::create($quiz->id, $user->id);
+        $hippotrackobj = hippotrack::create($hippotrack->id, $user->id);
 
 
-        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
-        $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $hippotrackobj->get_context());
+        $quba->set_preferred_behaviour($hippotrackobj->get_hippotrack()->preferredbehaviour);
 
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
@@ -71,23 +71,23 @@ class attempt_test extends \advanced_testcase {
             }
 
             $question = $questiongenerator->create_question('shortanswer', null, ['category' => $cat->id]);
-            quiz_add_quiz_question($question->id, $quiz, $page);
+            hippotrack_add_hippotrack_question($question->id, $hippotrack, $page);
         }
 
         $timenow = time();
-        $attempt = quiz_create_attempt($quizobj, 1, false, $timenow, false, $user->id);
-        quiz_start_new_attempt($quizobj, $quba, $attempt, 1, $timenow);
-        quiz_attempt_save_started($quizobj, $quba, $attempt);
+        $attempt = hippotrack_create_attempt($hippotrackobj, 1, false, $timenow, false, $user->id);
+        hippotrack_start_new_attempt($hippotrackobj, $quba, $attempt, 1, $timenow);
+        hippotrack_attempt_save_started($hippotrackobj, $quba, $attempt);
 
-        return quiz_attempt::create($attempt->id);
+        return hippotrack_attempt::create($attempt->id);
     }
 
     public function test_attempt_url() {
-        $attempt = $this->create_quiz_and_attempt_with_layout('1,2,0,3,4,0,5,6,0');
+        $attempt = $this->create_hippotrack_and_attempt_with_layout('1,2,0,3,4,0,5,6,0');
 
         $attemptid = $attempt->get_attempt()->id;
         $cmid = $attempt->get_cmid();
-        $url = '/mod/quiz/attempt.php';
+        $url = '/mod/hippotrack/attempt.php';
         $params = ['attempt' => $attemptid, 'cmid' => $cmid, 'page' => 2];
 
         $this->assertEquals(new \moodle_url($url, $params), $attempt->attempt_url(null, 2));
@@ -109,12 +109,12 @@ class attempt_test extends \advanced_testcase {
         $this->assertEquals(new \moodle_url(null, null, $expecteanchor, null), $attempt->attempt_url(4, -1, 1));
 
         // Summary page.
-        $url = '/mod/quiz/summary.php';
+        $url = '/mod/hippotrack/summary.php';
         unset($params['page']);
         $this->assertEquals(new \moodle_url($url, $params), $attempt->summary_url());
 
         // Review page.
-        $url = '/mod/quiz/review.php';
+        $url = '/mod/hippotrack/review.php';
         $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url());
 
         $params['page'] = 1;
@@ -161,7 +161,7 @@ class attempt_test extends \advanced_testcase {
         $this->assertEquals(new \moodle_url($url, $params), $attempt->review_url(3, -1, false, 0));
 
         // Setup another attempt.
-        $attempt = $this->create_quiz_and_attempt_with_layout(
+        $attempt = $this->create_hippotrack_and_attempt_with_layout(
             '1,2,3,4,5,6,7,8,9,10,0,11,12,13,14,15,16,17,18,19,20,0,' .
             '21,22,23,24,25,26,27,28,29,30,0,31,32,33,34,35,36,37,38,39,40,0,' .
             '41,42,43,44,45,46,47,48,49,50,0,51,52,53,54,55,56,57,58,59,60,0');
@@ -227,61 +227,61 @@ class attempt_test extends \advanced_testcase {
      * Tests attempt page titles when all questions are on a single page.
      */
     public function test_attempt_titles_single() {
-        $attempt = $this->create_quiz_and_attempt_with_layout('1,2,0');
+        $attempt = $this->create_hippotrack_and_attempt_with_layout('1,2,0');
 
         // Attempt page.
-        $this->assertEquals('Quiz 1', $attempt->attempt_page_title(0));
+        $this->assertEquals('HippoTrack 1', $attempt->attempt_page_title(0));
 
         // Summary page.
-        $this->assertEquals('Quiz 1: Attempt summary', $attempt->summary_page_title());
+        $this->assertEquals('HippoTrack 1: Attempt summary', $attempt->summary_page_title());
 
         // Review page.
-        $this->assertEquals('Quiz 1: Attempt review', $attempt->review_page_title(0));
+        $this->assertEquals('HippoTrack 1: Attempt review', $attempt->review_page_title(0));
     }
 
     /**
      * Tests attempt page titles when questions are on multiple pages, but are reviewed on a single page.
      */
     public function test_attempt_titles_multiple_single() {
-        $attempt = $this->create_quiz_and_attempt_with_layout('1,2,0,3,4,0,5,6,0');
+        $attempt = $this->create_hippotrack_and_attempt_with_layout('1,2,0,3,4,0,5,6,0');
 
         // Attempt page.
-        $this->assertEquals('Quiz 1 (page 1 of 3)', $attempt->attempt_page_title(0));
-        $this->assertEquals('Quiz 1 (page 2 of 3)', $attempt->attempt_page_title(1));
-        $this->assertEquals('Quiz 1 (page 3 of 3)', $attempt->attempt_page_title(2));
+        $this->assertEquals('HippoTrack 1 (page 1 of 3)', $attempt->attempt_page_title(0));
+        $this->assertEquals('HippoTrack 1 (page 2 of 3)', $attempt->attempt_page_title(1));
+        $this->assertEquals('HippoTrack 1 (page 3 of 3)', $attempt->attempt_page_title(2));
 
         // Summary page.
-        $this->assertEquals('Quiz 1: Attempt summary', $attempt->summary_page_title());
+        $this->assertEquals('HippoTrack 1: Attempt summary', $attempt->summary_page_title());
 
         // Review page.
-        $this->assertEquals('Quiz 1: Attempt review', $attempt->review_page_title(0, true));
+        $this->assertEquals('HippoTrack 1: Attempt review', $attempt->review_page_title(0, true));
     }
 
     /**
      * Tests attempt page titles when questions are on multiple pages, and they are reviewed on multiple pages as well.
      */
     public function test_attempt_titles_multiple_multiple() {
-        $attempt = $this->create_quiz_and_attempt_with_layout(
+        $attempt = $this->create_hippotrack_and_attempt_with_layout(
                 '1,2,3,4,5,6,7,8,9,10,0,11,12,13,14,15,16,17,18,19,20,0,' .
                 '21,22,23,24,25,26,27,28,29,30,0,31,32,33,34,35,36,37,38,39,40,0,' .
                 '41,42,43,44,45,46,47,48,49,50,0,51,52,53,54,55,56,57,58,59,60,0');
 
         // Attempt page.
-        $this->assertEquals('Quiz 1 (page 1 of 6)', $attempt->attempt_page_title(0));
-        $this->assertEquals('Quiz 1 (page 2 of 6)', $attempt->attempt_page_title(1));
-        $this->assertEquals('Quiz 1 (page 6 of 6)', $attempt->attempt_page_title(5));
+        $this->assertEquals('HippoTrack 1 (page 1 of 6)', $attempt->attempt_page_title(0));
+        $this->assertEquals('HippoTrack 1 (page 2 of 6)', $attempt->attempt_page_title(1));
+        $this->assertEquals('HippoTrack 1 (page 6 of 6)', $attempt->attempt_page_title(5));
 
         // Summary page.
-        $this->assertEquals('Quiz 1: Attempt summary', $attempt->summary_page_title());
+        $this->assertEquals('HippoTrack 1: Attempt summary', $attempt->summary_page_title());
 
         // Review page.
-        $this->assertEquals('Quiz 1: Attempt review (page 1 of 6)', $attempt->review_page_title(0));
-        $this->assertEquals('Quiz 1: Attempt review (page 2 of 6)', $attempt->review_page_title(1));
-        $this->assertEquals('Quiz 1: Attempt review (page 6 of 6)', $attempt->review_page_title(5));
+        $this->assertEquals('HippoTrack 1: Attempt review (page 1 of 6)', $attempt->review_page_title(0));
+        $this->assertEquals('HippoTrack 1: Attempt review (page 2 of 6)', $attempt->review_page_title(1));
+        $this->assertEquals('HippoTrack 1: Attempt review (page 6 of 6)', $attempt->review_page_title(5));
 
         // When all questions are shown.
-        $this->assertEquals('Quiz 1: Attempt review', $attempt->review_page_title(0, true));
-        $this->assertEquals('Quiz 1: Attempt review', $attempt->review_page_title(1, true));
+        $this->assertEquals('HippoTrack 1: Attempt review', $attempt->review_page_title(0, true));
+        $this->assertEquals('HippoTrack 1: Attempt review', $attempt->review_page_title(1, true));
     }
 
     public function test_is_participant() {
@@ -291,38 +291,38 @@ class attempt_test extends \advanced_testcase {
         $course = $this->getDataGenerator()->create_course();
         $student = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $student2 = $this->getDataGenerator()->create_and_enrol($course, 'student', [], 'manual', 0, 0, ENROL_USER_SUSPENDED);
-        $quiz = $this->getDataGenerator()->create_module('quiz', array('course' => $course->id));
-        $quizobj = quiz::create($quiz->id);
+        $hippotrack = $this->getDataGenerator()->create_module('hippotrack', array('course' => $course->id));
+        $hippotrackobj = hippotrack::create($hippotrack->id);
 
         // Login as student.
         $this->setUser($student);
         // Convert to a lesson object.
-        $this->assertEquals(true, $quizobj->is_participant($student->id),
+        $this->assertEquals(true, $hippotrackobj->is_participant($student->id),
             'Student is enrolled, active and can participate');
 
         // Login as student2.
         $this->setUser($student2);
-        $this->assertEquals(false, $quizobj->is_participant($student2->id),
+        $this->assertEquals(false, $hippotrackobj->is_participant($student2->id),
             'Student is enrolled, suspended and can NOT participate');
 
         // Login as an admin.
         $this->setAdminUser();
-        $this->assertEquals(false, $quizobj->is_participant($USER->id),
+        $this->assertEquals(false, $hippotrackobj->is_participant($USER->id),
             'Admin is not enrolled and can NOT participate');
 
         $this->getDataGenerator()->enrol_user(2, $course->id);
-        $this->assertEquals(true, $quizobj->is_participant($USER->id),
+        $this->assertEquals(true, $hippotrackobj->is_participant($USER->id),
             'Admin is enrolled and can participate');
 
         $this->getDataGenerator()->enrol_user(2, $course->id, [], 'manual', 0, 0, ENROL_USER_SUSPENDED);
-        $this->assertEquals(true, $quizobj->is_participant($USER->id),
+        $this->assertEquals(true, $hippotrackobj->is_participant($USER->id),
             'Admin is enrolled, suspended and can participate');
     }
 
     /**
-     * Test quiz_prepare_and_start_new_attempt function
+     * Test hippotrack_prepare_and_start_new_attempt function
      */
-    public function test_quiz_prepare_and_start_new_attempt() {
+    public function test_hippotrack_prepare_and_start_new_attempt() {
         global $USER;
         $this->resetAfterTest();
 
@@ -331,44 +331,44 @@ class attempt_test extends \advanced_testcase {
         // Create students.
         $student1 = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $student2 = $this->getDataGenerator()->create_and_enrol($course, 'student');
-        // Create quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(['course' => $course->id, 'grade' => 100.0, 'sumgrades' => 2, 'layout' => '1,0']);
-        // Create question and add it to quiz.
+        // Create hippotrack.
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(['course' => $course->id, 'grade' => 100.0, 'sumgrades' => 2, 'layout' => '1,0']);
+        // Create question and add it to hippotrack.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
         $question = $questiongenerator->create_question('shortanswer', null, ['category' => $cat->id]);
-        quiz_add_quiz_question($question->id, $quiz, 1);
+        hippotrack_add_hippotrack_question($question->id, $hippotrack, 1);
 
-        $quizobj = quiz::create($quiz->id);
+        $hippotrackobj = hippotrack::create($hippotrack->id);
 
         // Login as student1.
         $this->setUser($student1);
         // Create attempt for student1.
-        $attempt = quiz_prepare_and_start_new_attempt($quizobj, 1, null, false, [], []);
+        $attempt = hippotrack_prepare_and_start_new_attempt($hippotrackobj, 1, null, false, [], []);
         $this->assertEquals($student1->id, $attempt->userid);
         $this->assertEquals(0, $attempt->preview);
 
         // Login as student2.
         $this->setUser($student2);
         // Create attempt for student2.
-        $attempt = quiz_prepare_and_start_new_attempt($quizobj, 1, null, false, [], []);
+        $attempt = hippotrack_prepare_and_start_new_attempt($hippotrackobj, 1, null, false, [], []);
         $this->assertEquals($student2->id, $attempt->userid);
         $this->assertEquals(0, $attempt->preview);
 
         // Login as admin.
         $this->setAdminUser();
         // Create attempt for student1.
-        $attempt = quiz_prepare_and_start_new_attempt($quizobj, 2, null, false, [], [], $student1->id);
+        $attempt = hippotrack_prepare_and_start_new_attempt($hippotrackobj, 2, null, false, [], [], $student1->id);
         $this->assertEquals($student1->id, $attempt->userid);
         $this->assertEquals(0, $attempt->preview);
         $student1attempt = $attempt; // Save for extra verification below.
         // Create attempt for student2.
-        $attempt = quiz_prepare_and_start_new_attempt($quizobj, 2, null, false, [], [], $student2->id);
+        $attempt = hippotrack_prepare_and_start_new_attempt($hippotrackobj, 2, null, false, [], [], $student2->id);
         $this->assertEquals($student2->id, $attempt->userid);
         $this->assertEquals(0, $attempt->preview);
         // Create attempt for user id that the same with current $USER->id.
-        $attempt = quiz_prepare_and_start_new_attempt($quizobj, 2, null, false, [], [], $USER->id);
+        $attempt = hippotrack_prepare_and_start_new_attempt($hippotrackobj, 2, null, false, [], [], $USER->id);
         $this->assertEquals($USER->id, $attempt->userid);
         $this->assertEquals(1, $attempt->preview);
 
@@ -381,13 +381,13 @@ class attempt_test extends \advanced_testcase {
 
     /**
      * Test check_page_access function
-     * @covers \quiz_attempt::check_page_access
+     * @covers \hippotrack_attempt::check_page_access
      */
     public function test_check_page_access() {
         $timenow = time();
 
         // Free navigation.
-        $attempt = $this->create_quiz_and_attempt_with_layout('1,0,2,0,3,0,4,0,5,0', QUIZ_NAVMETHOD_FREE);
+        $attempt = $this->create_hippotrack_and_attempt_with_layout('1,0,2,0,3,0,4,0,5,0', HIPPOTRACK_NAVMETHOD_FREE);
 
         // Check access.
         $this->assertTrue($attempt->check_page_access(4));
@@ -399,7 +399,7 @@ class attempt_test extends \advanced_testcase {
 
         // Access page 2.
         $attempt->set_currentpage(2);
-        $attempt = quiz_attempt::create($attempt->get_attempt()->id);
+        $attempt = hippotrack_attempt::create($attempt->get_attempt()->id);
 
         // Check access.
         $this->assertTrue($attempt->check_page_access(0));
@@ -409,7 +409,7 @@ class attempt_test extends \advanced_testcase {
         $this->assertTrue($attempt->check_page_access(4));
 
         // Sequential navigation.
-        $attempt = $this->create_quiz_and_attempt_with_layout('1,0,2,0,3,0,4,0,5,0', QUIZ_NAVMETHOD_SEQ);
+        $attempt = $this->create_hippotrack_and_attempt_with_layout('1,0,2,0,3,0,4,0,5,0', HIPPOTRACK_NAVMETHOD_SEQ);
 
         // Check access.
         $this->assertTrue($attempt->check_page_access(0));
@@ -420,12 +420,12 @@ class attempt_test extends \advanced_testcase {
 
         // Access page 1.
         $attempt->set_currentpage(1);
-        $attempt = quiz_attempt::create($attempt->get_attempt()->id);
+        $attempt = hippotrack_attempt::create($attempt->get_attempt()->id);
         $this->assertTrue($attempt->check_page_access(1));
 
         // Access page 2.
         $attempt->set_currentpage(2);
-        $attempt = quiz_attempt::create($attempt->get_attempt()->id);
+        $attempt = hippotrack_attempt::create($attempt->get_attempt()->id);
         $this->assertTrue($attempt->check_page_access(2));
 
         $this->assertTrue($attempt->check_page_access(3));
@@ -436,7 +436,7 @@ class attempt_test extends \advanced_testcase {
     /**
      * Starting a new attempt with a question in draft status should throw an exception.
      *
-     * @covers ::quiz_start_new_attempt()
+     * @covers ::hippotrack_start_new_attempt()
      * @return void
      */
     public function test_start_new_attempt_with_draft(): void {
@@ -447,32 +447,32 @@ class attempt_test extends \advanced_testcase {
         // Create students.
         $student1 = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $student2 = $this->getDataGenerator()->create_and_enrol($course, 'student');
-        // Create quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(['course' => $course->id, 'grade' => 100.0, 'sumgrades' => 2, 'layout' => '1,0']);
-        // Create question and add it to quiz.
+        // Create hippotrack.
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(['course' => $course->id, 'grade' => 100.0, 'sumgrades' => 2, 'layout' => '1,0']);
+        // Create question and add it to hippotrack.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
         $question = $questiongenerator->create_question('shortanswer', null,
                 ['category' => $cat->id, 'status' => question_version_status::QUESTION_STATUS_DRAFT]);
-        quiz_add_quiz_question($question->id, $quiz, 1);
+        hippotrack_add_hippotrack_question($question->id, $hippotrack, 1);
 
-        $quizobj = quiz::create($quiz->id);
-        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
-        $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
-        $attempt = quiz_create_attempt($quizobj, 1, false, time(), false, $student1->id);
+        $hippotrackobj = hippotrack::create($hippotrack->id);
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $hippotrackobj->get_context());
+        $quba->set_preferred_behaviour($hippotrackobj->get_hippotrack()->preferredbehaviour);
+        $attempt = hippotrack_create_attempt($hippotrackobj, 1, false, time(), false, $student1->id);
 
         $this->expectExceptionObject(new \moodle_exception('questiondraftonly', 'mod_hippotrack', '', $question->name));
-        quiz_start_new_attempt($quizobj, $quba, $attempt, 1, time());
+        hippotrack_start_new_attempt($hippotrackobj, $quba, $attempt, 1, time());
     }
 
     /**
      * Starting a new attempt built on last with a question in draft status should throw an exception.
      *
-     * @covers ::quiz_start_attempt_built_on_last()
+     * @covers ::hippotrack_start_attempt_built_on_last()
      * @return void
      */
-    public function test_quiz_start_attempt_built_on_last_with_draft(): void {
+    public function test_hippotrack_start_attempt_built_on_last_with_draft(): void {
         global $DB;
         $this->resetAfterTest();
 
@@ -481,31 +481,31 @@ class attempt_test extends \advanced_testcase {
         // Create students.
         $student1 = $this->getDataGenerator()->create_and_enrol($course, 'student');
         $student2 = $this->getDataGenerator()->create_and_enrol($course, 'student');
-        // Create quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
-        $quiz = $quizgenerator->create_instance(['course' => $course->id, 'grade' => 100.0, 'sumgrades' => 2, 'layout' => '1,0']);
-        // Create question and add it to quiz.
+        // Create hippotrack.
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $hippotrack = $hippotrackgenerator->create_instance(['course' => $course->id, 'grade' => 100.0, 'sumgrades' => 2, 'layout' => '1,0']);
+        // Create question and add it to hippotrack.
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
         $cat = $questiongenerator->create_question_category();
         $question = $questiongenerator->create_question('shortanswer', null, ['category' => $cat->id]);
-        quiz_add_quiz_question($question->id, $quiz, 1);
+        hippotrack_add_hippotrack_question($question->id, $hippotrack, 1);
 
-        $quizobj = quiz::create($quiz->id);
-        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
-        $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
-        $attempt = quiz_create_attempt($quizobj, 1, false, time(), false, $student1->id);
-        $attempt = quiz_start_new_attempt($quizobj, $quba, $attempt, 1, time());
-        $attempt = quiz_attempt_save_started($quizobj, $quba, $attempt);
+        $hippotrackobj = hippotrack::create($hippotrack->id);
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $hippotrackobj->get_context());
+        $quba->set_preferred_behaviour($hippotrackobj->get_hippotrack()->preferredbehaviour);
+        $attempt = hippotrack_create_attempt($hippotrackobj, 1, false, time(), false, $student1->id);
+        $attempt = hippotrack_start_new_attempt($hippotrackobj, $quba, $attempt, 1, time());
+        $attempt = hippotrack_attempt_save_started($hippotrackobj, $quba, $attempt);
 
         $DB->set_field('question_versions', 'status', question_version_status::QUESTION_STATUS_DRAFT,
                 ['questionid' => $question->id]);
-        $quizobj = quiz::create($quiz->id);
-        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $quizobj->get_context());
-        $quba->set_preferred_behaviour($quizobj->get_quiz()->preferredbehaviour);
-        $newattempt = quiz_create_attempt($quizobj, 2, $attempt, time(), false, $student1->id);
+        $hippotrackobj = hippotrack::create($hippotrack->id);
+        $quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $hippotrackobj->get_context());
+        $quba->set_preferred_behaviour($hippotrackobj->get_hippotrack()->preferredbehaviour);
+        $newattempt = hippotrack_create_attempt($hippotrackobj, 2, $attempt, time(), false, $student1->id);
 
         $this->expectExceptionObject(new \moodle_exception('questiondraftonly', 'mod_hippotrack', '', $question->name));
-        quiz_start_attempt_built_on_last($quba, $newattempt, $attempt);
+        hippotrack_start_attempt_built_on_last($quba, $newattempt, $attempt);
     }
 
     /**
@@ -519,12 +519,12 @@ class attempt_test extends \advanced_testcase {
 
         $timenow = time();
         // Create attempt object.
-        $attempt = $this->create_quiz_and_attempt_with_layout('1,1,0');
+        $attempt = $this->create_hippotrack_and_attempt_with_layout('1,1,0');
         // Finish attempt.
         $attempt->process_finish($timenow, false);
 
-        $quiz = $attempt->get_quiz();
-        $context = $attempt->get_quizobj()->get_context();
+        $hippotrack = $attempt->get_hippotrack();
+        $context = $attempt->get_hippotrackobj()->get_context();
 
         // Prepare view object.
         $viewobj = new \mod_hippotrack_view_object();
@@ -535,15 +535,15 @@ class attempt_test extends \advanced_testcase {
         $viewobj->mygrade = 0.00;
         $viewobj->feedbackcolumn = false;
         $viewobj->attempts = $attempt;
-        $viewobj->attemptobjs[] = new quiz_attempt($attempt->get_attempt(),
-            $quiz, $attempt->get_cm(), $attempt->get_course(), false);
-        $viewobj->accessmanager = new \quiz_access_manager($attempt->get_quizobj(), $timenow,
-            has_capability('mod/quiz:ignoretimelimits', $context, null, false));
+        $viewobj->attemptobjs[] = new hippotrack_attempt($attempt->get_attempt(),
+            $hippotrack, $attempt->get_cm(), $attempt->get_course(), false);
+        $viewobj->accessmanager = new \hippotrack_access_manager($attempt->get_hippotrackobj(), $timenow,
+            has_capability('mod/hippotrack:ignoretimelimits', $context, null, false));
 
         // Render summary previous attempts table.
         $renderer = $PAGE->get_renderer('mod_hippotrack');
-        $table = $renderer->view_table($quiz, $context, $viewobj);
-        $captionpattern = '/<caption\b[^>]*>' . get_string('summaryofattempts', 'quiz') . '<\/caption>/';
+        $table = $renderer->view_table($hippotrack, $context, $viewobj);
+        $captionpattern = '/<caption\b[^>]*>' . get_string('summaryofattempts', 'hippotrack') . '<\/caption>/';
 
         // Check caption existed.
         $this->assertMatchesRegularExpression($captionpattern, $table);
@@ -553,7 +553,7 @@ class attempt_test extends \advanced_testcase {
         $this->assertMatchesRegularExpression('/<td\b[^>]*>' . ucfirst($attempt->get_state()) . '.+?<\/td>/', $table);
         // Check column marks.
         $this->assertMatchesRegularExpression('/<td\b[^>]* c2.+?' .
-            quiz_format_grade($quiz, $attempt->get_sum_marks()) .'<\/td>/', $table);
+            hippotrack_format_grade($hippotrack, $attempt->get_sum_marks()) .'<\/td>/', $table);
         // Check column grades.
         $this->assertMatchesRegularExpression('/<td\b[^>]* c2.+?0\.00<\/td>/', $table);
         // Check column review.

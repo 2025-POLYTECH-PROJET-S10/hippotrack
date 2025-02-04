@@ -17,46 +17,46 @@
 namespace mod_hippotrack;
 
 use mod_hippotrack_display_options;
-use quiz;
+use hippotrack;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
- * Unit tests for the quiz class
+ * Unit tests for the hippotrack class
  *
  * @package    mod_hippotrack
  * @copyright  2008 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quizobj_test extends \basic_testcase {
+class hippotrackobj_test extends \basic_testcase {
     public function test_cannot_review_message() {
-        $quiz = new \stdClass();
-        $quiz->reviewattempt = 0x10010;
-        $quiz->timeclose = 0;
-        $quiz->attempts = 0;
+        $hippotrack = new \stdClass();
+        $hippotrack->reviewattempt = 0x10010;
+        $hippotrack->timeclose = 0;
+        $hippotrack->attempts = 0;
 
         $cm = new \stdClass();
         $cm->id = 123;
 
-        $quizobj = new quiz($quiz, $cm, new \stdClass(), false);
+        $hippotrackobj = new hippotrack($hippotrack, $cm, new \stdClass(), false);
 
         $this->assertEquals('',
-            $quizobj->cannot_review_message(mod_hippotrack_display_options::DURING));
+            $hippotrackobj->cannot_review_message(mod_hippotrack_display_options::DURING));
         $this->assertEquals('',
-            $quizobj->cannot_review_message(mod_hippotrack_display_options::IMMEDIATELY_AFTER));
-        $this->assertEquals(get_string('noreview', 'quiz'),
-            $quizobj->cannot_review_message(mod_hippotrack_display_options::LATER_WHILE_OPEN));
-        $this->assertEquals(get_string('noreview', 'quiz'),
-            $quizobj->cannot_review_message(mod_hippotrack_display_options::AFTER_CLOSE));
+            $hippotrackobj->cannot_review_message(mod_hippotrack_display_options::IMMEDIATELY_AFTER));
+        $this->assertEquals(get_string('noreview', 'hippotrack'),
+            $hippotrackobj->cannot_review_message(mod_hippotrack_display_options::LATER_WHILE_OPEN));
+        $this->assertEquals(get_string('noreview', 'hippotrack'),
+            $hippotrackobj->cannot_review_message(mod_hippotrack_display_options::AFTER_CLOSE));
 
         $closetime = time() + 10000;
-        $quiz->timeclose = $closetime;
-        $quizobj = new quiz($quiz, $cm, new \stdClass(), false);
+        $hippotrack->timeclose = $closetime;
+        $hippotrackobj = new hippotrack($hippotrack, $cm, new \stdClass(), false);
 
-        $this->assertEquals(get_string('noreviewuntil', 'quiz', userdate($closetime)),
-            $quizobj->cannot_review_message(mod_hippotrack_display_options::LATER_WHILE_OPEN));
+        $this->assertEquals(get_string('noreviewuntil', 'hippotrack', userdate($closetime)),
+            $hippotrackobj->cannot_review_message(mod_hippotrack_display_options::LATER_WHILE_OPEN));
     }
 }

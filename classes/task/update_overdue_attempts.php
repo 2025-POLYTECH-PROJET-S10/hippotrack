@@ -26,7 +26,7 @@ namespace mod_hippotrack\task;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
 /**
  * Update Overdue Attempts Task
@@ -50,16 +50,16 @@ class update_overdue_attempts extends \core\task\scheduled_task {
     public function execute() {
         global $CFG;
 
-        require_once($CFG->dirroot . '/mod/quiz/cronlib.php');
+        require_once($CFG->dirroot . '/mod/hippotrack/cronlib.php');
         $timenow = time();
         $overduehander = new \mod_hippotrack_overdue_attempt_updater();
 
-        $processto = $timenow - get_config('quiz', 'graceperiodmin');
+        $processto = $timenow - get_config('hippotrack', 'graceperiodmin');
 
-        mtrace('  Looking for quiz overdue quiz attempts...');
+        mtrace('  Looking for hippotrack overdue hippotrack attempts...');
 
-        list($count, $quizcount) = $overduehander->update_overdue_attempts($timenow, $processto);
+        list($count, $hippotrackcount) = $overduehander->update_overdue_attempts($timenow, $processto);
 
-        mtrace('  Considered ' . $count . ' attempts in ' . $quizcount . ' quizzes.');
+        mtrace('  Considered ' . $count . ' attempts in ' . $hippotrackcount . ' hippotrackzes.');
     }
 }

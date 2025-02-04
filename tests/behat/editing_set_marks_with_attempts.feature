@@ -1,8 +1,8 @@
 @mod @mod_hippotrack
-Feature: Edit quiz marks with attempts
-  In order to create a quiz that awards marks the way I want
+Feature: Edit hippotrack marks with attempts
+  In order to create a hippotrack that awards marks the way I want
   As a teacher
-  I must be able to set the marks I want on the Edit quiz page (even after the quiz has been attempted).
+  I must be able to set the marks I want on the Edit hippotrack page (even after the hippotrack has been attempted).
 
   Background:
     Given the following "users" exist:
@@ -18,22 +18,22 @@ Feature: Edit quiz marks with attempts
       | student1 | C1     | student        |
     And the following "activities" exist:
       | activity   | name   | course | idnumber | grade | decimalpoints | questiondecimalpoints |
-      | quiz       | Quiz 1 | C1     | quiz1    | 20    | 2             | -1                    |
+      | hippotrack       | HippoTrack 1 | C1     | hippotrack1    | 20    | 2             | -1                    |
     And I log in as "teacher1"
-    And I add a "True/False" question to the "Quiz 1" quiz with:
+    And I add a "True/False" question to the "HippoTrack 1" hippotrack with:
       | Question name | First question |
       | Question text | Answer me      |
       | Default mark  | 2.0            |
-    And I add a "True/False" question to the "Quiz 1" quiz with:
+    And I add a "True/False" question to the "HippoTrack 1" hippotrack with:
       | Question name | Second question |
       | Question text | Answer again    |
       | Default mark  | 3.0             |
     And I log out
-    And I am on the "Quiz 1" "mod_hippotrack > View" page logged in as "student1"
-    And I press "Attempt quiz"
+    And I am on the "HippoTrack 1" "mod_hippotrack > View" page logged in as "student1"
+    And I press "Attempt hippotrack"
     And I log out
     And I log in as "teacher1"
-    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
+    And I am on the "HippoTrack 1" "mod_hippotrack > Edit" page
 
   @javascript
   Scenario: Set the max mark for a question.
@@ -59,7 +59,7 @@ Feature: Edit quiz marks with attempts
     And I should see "Total of marks: 5.00"
 
   @javascript
-  Scenario: Verify the number of decimal places shown is what the quiz settings say it should be.
+  Scenario: Verify the number of decimal places shown is what the hippotrack settings say it should be.
     Given I change window size to "large"
     # Then the field "maxgrade" matches value "20.00" -- with exact match on decimal places.
     And "//input[@name = 'maxgrade' and @value = '20.00']" "xpath_element" should exist
@@ -69,12 +69,12 @@ Feature: Edit quiz marks with attempts
     And I should not see "2.000"
     And I should not see "3.000"
     And I should not see "Total of marks: 5.000"
-    When I am on the "Quiz 1" "quiz activity editing" page
+    When I am on the "HippoTrack 1" "hippotrack activity editing" page
     And I set the following fields to these values:
       | Decimal places in grades | 3 |
       | Decimal places in marks for questions | 5 |
     And I press "Save and display"
-    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
+    And I am on the "HippoTrack 1" "mod_hippotrack > Edit" page
     # Then the field "maxgrade" matches value "20.000" -- with exact match on decimal places.
     Then "//input[@name = 'maxgrade' and @value = '20.000']" "xpath_element" should exist
     And I should see "2.00000"

@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Quiz statistics report version information.
+ * HippoTrack statistics report version information.
  *
- * @package   quiz_statistics
+ * @package   hippotrack_statistics
  * @copyright 2008 Jamie Pratt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,4 +26,4 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version   = 2022112804;
 $plugin->requires  = 2022111800;
-$plugin->component = 'quiz_statistics';
+$plugin->component = 'hippotrack_statistics';

@@ -17,7 +17,7 @@
 namespace mod_hippotrack\question\bank;
 
 /**
- * A column type for the add this question to the quiz action.
+ * A column type for the add this question to the hippotrack action.
  *
  * @package    mod_hippotrack
  * @category   question
@@ -32,17 +32,17 @@ class add_action_column extends \core_question\local\bank\action_column_base {
 
     public function init(): void {
         parent::init();
-        $this->stradd = get_string('addtoquiz', 'quiz');
+        $this->stradd = get_string('addtohippotrack', 'hippotrack');
     }
 
     public function get_name() {
-        return 'addtoquizaction';
+        return 'addtohippotrackaction';
     }
 
     protected function display_content($question, $rowclasses) {
         if (!question_has_capability_on($question, 'use')) {
             return;
         }
-        $this->print_icon('t/add', $this->stradd, $this->qbank->add_to_quiz_url($question->id));
+        $this->print_icon('t/add', $this->stradd, $this->qbank->add_to_hippotrack_url($question->id));
     }
 }

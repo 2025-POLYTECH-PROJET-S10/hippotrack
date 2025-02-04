@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Contains the class containing unit tests for the quiz notify attempt manual grading completed cron task.
+ * Contains the class containing unit tests for the hippotrack notify attempt manual grading completed cron task.
  *
  * @package   mod_hippotrack
  * @copyright 2021 The Open University
@@ -27,30 +27,30 @@ namespace mod_hippotrack;
 use advanced_testcase;
 use context_course;
 use context_module;
-use mod_hippotrack\task\quiz_notify_attempt_manual_grading_completed;
+use mod_hippotrack\task\hippotrack_notify_attempt_manual_grading_completed;
 use question_engine;
-use quiz;
-use quiz_attempt;
+use hippotrack;
+use hippotrack_attempt;
 use stdClass;
 
 defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * Class containing unit tests for the quiz notify attempt manual grading completed cron task.
+ * Class containing unit tests for the hippotrack notify attempt manual grading completed cron task.
  *
  * @package mod_hippotrack
  * @copyright 2021 The Open University
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_notify_attempt_manual_grading_completed_test extends advanced_testcase {
-    /** @var \stdClass $course Test course to contain quiz. */
+class hippotrack_notify_attempt_manual_grading_completed_test extends advanced_testcase {
+    /** @var \stdClass $course Test course to contain hippotrack. */
     protected $course;
 
-    /** @var \stdClass $quiz A test quiz. */
-    protected $quiz;
+    /** @var \stdClass $hippotrack A test hippotrack. */
+    protected $hippotrack;
 
-    /** @var context The quiz context. */
+    /** @var context The hippotrack context. */
     protected $context;
 
     /** @var stdClass The course_module. */
@@ -62,19 +62,19 @@ class quiz_notify_attempt_manual_grading_completed_test extends advanced_testcas
     /** @var stdClass The teacher test. */
     protected $teacher;
 
-    /** @var quiz Object containing the quiz settings. */
-    protected $quizobj;
+    /** @var hippotrack Object containing the hippotrack settings. */
+    protected $hippotrackobj;
 
-    /** @var question_usage_by_activity The question usage for this quiz attempt. */
+    /** @var question_usage_by_activity The question usage for this hippotrack attempt. */
     protected $quba;
 
     /**
      * Standard test setup.
      *
-     * Create a course with a quiz and a student and a(n editing) teacher.
-     * the quiz has a truefalse question and an essay question.
+     * Create a course with a hippotrack and a student and a(n editing) teacher.
+     * the hippotrack has a truefalse question and an essay question.
      *
-     * Also create some bits of a quiz attempt to be used later.
+     * Also create some bits of a hippotrack attempt to be used later.
      */
     public function setUp(): void {
         global $DB;
@@ -84,9 +84,9 @@ class quiz_notify_attempt_manual_grading_completed_test extends advanced_testcas
 
         // Setup test data.
         $this->course = $this->getDataGenerator()->create_course();
-        $this->quiz = $this->getDataGenerator()->create_module('quiz', ['course' => $this->course->id]);
-        $this->context = context_module::instance($this->quiz->cmid);
-        $this->cm = get_coursemodule_from_instance('quiz', $this->quiz->id);
+        $this->hippotrack = $this->getDataGenerator()->create_module('hippotrack', ['course' => $this->course->id]);
+        $this->context = context_module::instance($this->hippotrack->cmid);
+        $this->cm = get_coursemodule_from_instance('hippotrack', $this->hippotrack->id);
 
         // Create users.
         $this->student = self::getDataGenerator()->create_user();
@@ -98,14 +98,14 @@ class quiz_notify_attempt_manual_grading_completed_test extends advanced_testcas
 
         // Allow student to receive messages.
         $coursecontext = context_course::instance($this->course->id);
-        assign_capability('mod/quiz:emailnotifyattemptgraded', CAP_ALLOW, $studentrole->id, $coursecontext, true);
+        assign_capability('mod/hippotrack:emailnotifyattemptgraded', CAP_ALLOW, $studentrole->id, $coursecontext, true);
 
         $this->getDataGenerator()->enrol_user($this->student->id, $this->course->id, $studentrole->id);
         $this->getDataGenerator()->enrol_user($this->teacher->id, $this->course->id, $teacherrole->id);
 
-        // Make a quiz.
-        $quizgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
-        $this->quiz = $quizgenerator->create_instance(['course' => $this->course->id, 'questionsperpage' => 0,
+        // Make a hippotrack.
+        $hippotrackgenerator = $this->getDataGenerator()->get_plugin_generator('mod_hippotrack');
+        $this->hippotrack = $hippotrackgenerator->create_instance(['course' => $this->course->id, 'questionsperpage' => 0,
             'grade' => 100.0, 'sumgrades' => 2]);
 
         // Create a truefalse question and an essay question.
@@ -114,13 +114,13 @@ class quiz_notify_attempt_manual_grading_completed_test extends advanced_testcas
         $truefalse = $questiongenerator->create_question('truefalse', null, ['category' => $cat->id]);
         $essay = $questiongenerator->create_question('essay', null, ['category' => $cat->id]);
 
-        // Add them to the quiz.
-        quiz_add_quiz_question($truefalse->id, $this->quiz);
-        quiz_add_quiz_question($essay->id, $this->quiz);
+        // Add them to the hippotrack.
+        hippotrack_add_hippotrack_question($truefalse->id, $this->hippotrack);
+        hippotrack_add_hippotrack_question($essay->id, $this->hippotrack);
 
-        $this->quizobj = quiz::create($this->quiz->id);
-        $this->quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $this->quizobj->get_context());
-        $this->quba->set_preferred_behaviour($this->quizobj->get_quiz()->preferredbehaviour);
+        $this->hippotrackobj = hippotrack::create($this->hippotrack->id);
+        $this->quba = question_engine::make_questions_usage_by_activity('mod_hippotrack', $this->hippotrackobj->get_context());
+        $this->quba->set_preferred_behaviour($this->hippotrackobj->get_hippotrack()->preferredbehaviour);
     }
 
     /**
@@ -132,12 +132,12 @@ class quiz_notify_attempt_manual_grading_completed_test extends advanced_testcas
         $timenow = time();
 
         // Create an attempt to be completely graded (one hour ago).
-        $attempt1 = quiz_create_attempt($this->quizobj, 1, null, $timenow - HOURSECS, false, $this->student->id);
-        quiz_start_new_attempt($this->quizobj, $this->quba, $attempt1, 1, $timenow - HOURSECS);
-        quiz_attempt_save_started($this->quizobj, $this->quba, $attempt1);
+        $attempt1 = hippotrack_create_attempt($this->hippotrackobj, 1, null, $timenow - HOURSECS, false, $this->student->id);
+        hippotrack_start_new_attempt($this->hippotrackobj, $this->quba, $attempt1, 1, $timenow - HOURSECS);
+        hippotrack_attempt_save_started($this->hippotrackobj, $this->quba, $attempt1);
 
         // Process some responses from the student (30 mins ago) and submit (20 mins ago).
-        $attemptobj1 = quiz_attempt::create($attempt1->id);
+        $attemptobj1 = hippotrack_attempt::create($attempt1->id);
         $tosubmit = [2 => ['answer' => 'Student 1 answer', 'answerformat' => FORMAT_HTML]];
         $attemptobj1->process_submitted_actions($timenow - 30 * MINSECS, false, $tosubmit);
         $attemptobj1->process_finish($timenow - 20 * MINSECS, false);
@@ -150,11 +150,11 @@ class quiz_notify_attempt_manual_grading_completed_test extends advanced_testcas
         $update->id = $attemptobj1->get_attemptid();
         $update->timemodified = $timenow;
         $update->sumgrades = $attemptobj1->get_question_usage()->get_total_mark();
-        $DB->update_record('quiz_attempts', $update);
-        quiz_save_best_grade($attemptobj1->get_quiz(), $this->student->id);
+        $DB->update_record('hippotrack_attempts', $update);
+        hippotrack_save_best_grade($attemptobj1->get_hippotrack(), $this->student->id);
 
         // Not quite time to send yet.
-        $task = new quiz_notify_attempt_manual_grading_completed();
+        $task = new hippotrack_notify_attempt_manual_grading_completed();
         $task->set_time_for_testing($timenow + 5 * HOURSECS - 1);
         $attempts = $task->get_list_of_attempts();
         $this->assertEquals(0, iterator_count($attempts));
@@ -173,18 +173,18 @@ class quiz_notify_attempt_manual_grading_completed_test extends advanced_testcas
         $timenow = time();
 
         // Create an attempt which won't be graded (1 hour ago).
-        $attempt2 = quiz_create_attempt($this->quizobj, 2, null, $timenow - HOURSECS, false, $this->student->id);
-        quiz_start_new_attempt($this->quizobj, $this->quba, $attempt2, 2, $timenow - HOURSECS);
-        quiz_attempt_save_started($this->quizobj, $this->quba, $attempt2);
+        $attempt2 = hippotrack_create_attempt($this->hippotrackobj, 2, null, $timenow - HOURSECS, false, $this->student->id);
+        hippotrack_start_new_attempt($this->hippotrackobj, $this->quba, $attempt2, 2, $timenow - HOURSECS);
+        hippotrack_attempt_save_started($this->hippotrackobj, $this->quba, $attempt2);
 
         // Process some responses from the student (30 mins ago) and submit (now).
-        $attemptobj2 = quiz_attempt::create($attempt2->id);
+        $attemptobj2 = hippotrack_attempt::create($attempt2->id);
         $tosubmit = [2 => ['answer' => 'Answer of student 2.', 'answerformat' => FORMAT_HTML]];
         $attemptobj2->process_submitted_actions($timenow - 30 * MINSECS, false, $tosubmit);
         $attemptobj2->process_finish($timenow, false);
 
         // After time to notify, except attempt not graded, so it won't appear.
-        $task = new quiz_notify_attempt_manual_grading_completed();
+        $task = new hippotrack_notify_attempt_manual_grading_completed();
         $task->set_time_for_testing($timenow + 5 * HOURSECS + 1);
         $attempts = $task->get_list_of_attempts();
 
@@ -199,12 +199,12 @@ class quiz_notify_attempt_manual_grading_completed_test extends advanced_testcas
 
         // Create an attempt for a user without the capability.
         $timenow = time();
-        $attempt = quiz_create_attempt($this->quizobj, 3, null, $timenow, false, $this->teacher->id);
-        quiz_start_new_attempt($this->quizobj, $this->quba, $attempt, 3, $timenow - HOURSECS);
-        quiz_attempt_save_started($this->quizobj, $this->quba, $attempt);
+        $attempt = hippotrack_create_attempt($this->hippotrackobj, 3, null, $timenow, false, $this->teacher->id);
+        hippotrack_start_new_attempt($this->hippotrackobj, $this->quba, $attempt, 3, $timenow - HOURSECS);
+        hippotrack_attempt_save_started($this->hippotrackobj, $this->quba, $attempt);
 
         // Process some responses and submit.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $tosubmit = [2 => ['answer' => 'Answer of teacher.', 'answerformat' => FORMAT_HTML]];
         $attemptobj->process_submitted_actions($timenow - 30 * MINSECS, false, $tosubmit);
         $attemptobj->process_finish($timenow - 20 * MINSECS, false);
@@ -217,17 +217,17 @@ class quiz_notify_attempt_manual_grading_completed_test extends advanced_testcas
         $update->id = $attemptobj->get_attemptid();
         $update->timemodified = $timenow;
         $update->sumgrades = $attemptobj->get_question_usage()->get_total_mark();
-        $DB->update_record('quiz_attempts', $update);
-        quiz_save_best_grade($attemptobj->get_quiz(), $this->student->id);
+        $DB->update_record('hippotrack_attempts', $update);
+        hippotrack_save_best_grade($attemptobj->get_hippotrack(), $this->student->id);
 
-        // Run the quiz notify attempt manual graded task.
+        // Run the hippotrack notify attempt manual graded task.
         ob_start();
-        $task = new quiz_notify_attempt_manual_grading_completed();
+        $task = new hippotrack_notify_attempt_manual_grading_completed();
         $task->set_time_for_testing($timenow + 5 * HOURSECS + 1);
         $task->execute();
         ob_get_clean();
 
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $this->assertEquals($attemptobj->get_attempt()->timefinish, $attemptobj->get_attempt()->gradednotificationsenttime);
     }
 
@@ -239,12 +239,12 @@ class quiz_notify_attempt_manual_grading_completed_test extends advanced_testcas
 
         // Create an attempt with capability.
         $timenow = time();
-        $attempt = quiz_create_attempt($this->quizobj, 4, null, $timenow, false, $this->student->id);
-        quiz_start_new_attempt($this->quizobj, $this->quba, $attempt, 4, $timenow - HOURSECS);
-        quiz_attempt_save_started($this->quizobj, $this->quba, $attempt);
+        $attempt = hippotrack_create_attempt($this->hippotrackobj, 4, null, $timenow, false, $this->student->id);
+        hippotrack_start_new_attempt($this->hippotrackobj, $this->quba, $attempt, 4, $timenow - HOURSECS);
+        hippotrack_attempt_save_started($this->hippotrackobj, $this->quba, $attempt);
 
         // Process some responses from the student.
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
         $tosubmit = [2 => ['answer' => 'Answer of student.', 'answerformat' => FORMAT_HTML]];
         $attemptobj->process_submitted_actions($timenow - 30 * MINSECS, false, $tosubmit);
         $attemptobj->process_finish($timenow - 20 * MINSECS, false);
@@ -257,17 +257,17 @@ class quiz_notify_attempt_manual_grading_completed_test extends advanced_testcas
         $update->id = $attemptobj->get_attemptid();
         $update->timemodified = $timenow;
         $update->sumgrades = $attemptobj->get_question_usage()->get_total_mark();
-        $DB->update_record('quiz_attempts', $update);
-        quiz_save_best_grade($attemptobj->get_quiz(), $this->student->id);
+        $DB->update_record('hippotrack_attempts', $update);
+        hippotrack_save_best_grade($attemptobj->get_hippotrack(), $this->student->id);
 
-        // Run the quiz notify attempt manual graded task.
+        // Run the hippotrack notify attempt manual graded task.
         ob_start();
-        $task = new quiz_notify_attempt_manual_grading_completed();
+        $task = new hippotrack_notify_attempt_manual_grading_completed();
         $task->set_time_for_testing($timenow + 5 * HOURSECS + 1);
         $task->execute();
         ob_get_clean();
 
-        $attemptobj = quiz_attempt::create($attempt->id);
+        $attemptobj = hippotrack_attempt::create($attempt->id);
 
         $this->assertNotEquals(null, $attemptobj->get_attempt()->gradednotificationsenttime);
         $this->assertNotEquals($attemptobj->get_attempt()->timefinish, $attemptobj->get_attempt()->gradednotificationsenttime);

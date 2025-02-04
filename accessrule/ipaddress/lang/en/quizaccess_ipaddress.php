@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for the quizaccess_ipaddress plugin.
+ * Strings for the hippotrackaccess_ipaddress plugin.
  *
- * @package    quizaccess
+ * @package    hippotrackaccess
  * @subpackage ipaddress
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -27,6 +27,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 
-$string['pluginname'] = 'IP address quiz access rule';
-$string['privacy:metadata'] = 'The IP address quiz access rule plugin does not store any personal data.';
-$string['subnetwrong'] = 'This quiz is only accessible from certain locations, and this computer is not on the allowed list.';
+$string['pluginname'] = 'IP address hippotrack access rule';
+$string['privacy:metadata'] = 'The IP address hippotrack access rule plugin does not store any personal data.';
+$string['subnetwrong'] = 'This hippotrack is only accessible from certain locations, and this computer is not on the allowed list.';

@@ -30,7 +30,7 @@ namespace mod_hippotrack\event;
  * @property-read array $other {
  *      Extra information about event.
  *
- *      - int quizid: the id of the quiz.
+ *      - int hippotrackid: the id of the hippotrack.
  *      - int page: the page number of attempt.
  * }
  *
@@ -44,7 +44,7 @@ class attempt_updated extends \core\event\base {
      * Init method.
      */
     protected function init() {
-        $this->data['objecttable'] = 'quiz_attempts';
+        $this->data['objecttable'] = 'hippotrack_attempts';
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
     }
@@ -68,7 +68,7 @@ class attempt_updated extends \core\event\base {
 
         return "The user with id '$this->userid' has updated responses on page '{$pagenumber}' of the attempt " .
             "with id '$this->objectid' belonging to the user " .
-            "with id '$this->relateduserid' for the quiz with course module id '$this->contextinstanceid'.";
+            "with id '$this->relateduserid' for the hippotrack with course module id '$this->contextinstanceid'.";
     }
 
     /**
@@ -77,7 +77,7 @@ class attempt_updated extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/quiz/review.php', [
+        return new \moodle_url('/mod/hippotrack/review.php', [
             'attempt' => $this->objectid,
             'page' => $this->other['page']
         ]);
@@ -96,8 +96,8 @@ class attempt_updated extends \core\event\base {
             throw new \coding_exception('The \'relateduserid\' must be set.');
         }
 
-        if (!isset($this->other['quizid'])) {
-            throw new \coding_exception('The \'quizid\' value must be set in other.');
+        if (!isset($this->other['hippotrackid'])) {
+            throw new \coding_exception('The \'hippotrackid\' value must be set in other.');
         }
 
         if (!isset($this->other['page'])) {
@@ -112,7 +112,7 @@ class attempt_updated extends \core\event\base {
      * @return array Mapping of object id.
      */
     public static function get_objectid_mapping() {
-        return ['db' => 'quiz_attempts', 'restore' => 'quiz_attempt'];
+        return ['db' => 'hippotrack_attempts', 'restore' => 'hippotrack_attempt'];
     }
 
     /**
@@ -123,7 +123,7 @@ class attempt_updated extends \core\event\base {
      */
     public static function get_other_mapping() {
         $othermapped = [];
-        $othermapped['quizid'] = ['db' => 'quiz', 'restore' => 'quiz'];
+        $othermapped['hippotrackid'] = ['db' => 'hippotrack', 'restore' => 'hippotrack'];
 
         return $othermapped;
     }

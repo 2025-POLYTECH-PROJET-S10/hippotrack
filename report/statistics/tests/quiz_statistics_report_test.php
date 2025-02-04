@@ -14,28 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace quiz_statistics;
+namespace hippotrack_statistics;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/mod/quiz/report/statistics/report.php');
-require_once($CFG->dirroot . '/mod/quiz/report/statistics/statisticslib.php');
-require_once($CFG->dirroot . '/mod/quiz/report/reportlib.php');
-require_once($CFG->dirroot . '/mod/quiz/tests/quiz_question_helper_test_trait.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/statistics/report.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/statistics/statisticslib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/reportlib.php');
+require_once($CFG->dirroot . '/mod/hippotrack/tests/hippotrack_question_helper_test_trait.php');
 
 /**
  * Tests for statistics report
  *
- * @package   quiz_statistics
+ * @package   hippotrack_statistics
  * @copyright 2023 onwards Catalyst IT EU {@link https://catalyst-eu.net}
  * @author    Mark Johnson <mark.johnson@catalyst-eu.net>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers    \quiz_statistics_report
+ * @covers    \hippotrack_statistics_report
  */
-class quiz_statistics_report_test extends \advanced_testcase {
+class hippotrack_statistics_report_test extends \advanced_testcase {
 
-    use \quiz_question_helper_test_trait;
+    use \hippotrack_question_helper_test_trait;
 
     /**
      * Secondary database connection for creating locks.
@@ -63,7 +63,7 @@ class quiz_statistics_report_test extends \advanced_testcase {
         self::$lockdb->connect($CFG->dbhost, $CFG->dbuser, $CFG->dbpass, $CFG->dbname, $CFG->prefix, $CFG->dboptions);
 
         $lockfactoryclass = \core\lock\lock_config::get_lock_factory_class();
-        $lockfactory = new $lockfactoryclass('quiz_statistics_get_stats');
+        $lockfactory = new $lockfactoryclass('hippotrack_statistics_get_stats');
 
         // Iterate lock factory hierarchy to see if it contains a 'db' property we can use.
         $reflectionclass = new \ReflectionClass($lockfactory);
@@ -94,20 +94,20 @@ class quiz_statistics_report_test extends \advanced_testcase {
     }
 
     /**
-     * Return a generated quiz
+     * Return a generated hippotrack
      *
      * @return \stdClass
      */
-    protected function create_and_attempt_quiz(): \stdClass {
+    protected function create_and_attempt_hippotrack(): \stdClass {
         $course = $this->getDataGenerator()->create_course();
         $user = $this->getDataGenerator()->create_user();
-        $quiz = $this->create_test_quiz($course);
-        $quizcontext = \context_module::instance($quiz->cmid);
+        $hippotrack = $this->create_test_hippotrack($course);
+        $hippotrackcontext = \context_module::instance($hippotrack->cmid);
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
-        $this->add_two_regular_questions($questiongenerator, $quiz, ['contextid' => $quizcontext->id]);
-        $this->attempt_quiz($quiz, $user);
+        $this->add_two_regular_questions($questiongenerator, $hippotrack, ['contextid' => $hippotrackcontext->id]);
+        $this->attempt_hippotrack($hippotrack, $user);
 
-        return $quiz;
+        return $hippotrack;
     }
 
     /**
@@ -122,17 +122,17 @@ class quiz_statistics_report_test extends \advanced_testcase {
      */
     public function test_get_all_stats_and_analysis_locking(): void {
         $this->resetAfterTest(true);
-        $quiz = $this->create_and_attempt_quiz();
-        $whichattempts = QUIZ_GRADEAVERAGE; // All attempts.
+        $hippotrack = $this->create_and_attempt_hippotrack();
+        $whichattempts = HIPPOTRACK_GRADEAVERAGE; // All attempts.
         $whichtries = \question_attempt::ALL_TRIES;
         $groupstudentsjoins = new \core\dml\sql_join();
-        $qubaids = quiz_statistics_qubaids_condition($quiz->id, $groupstudentsjoins, $whichattempts);
+        $qubaids = hippotrack_statistics_qubaids_condition($hippotrack->id, $groupstudentsjoins, $whichattempts);
 
-        $report = new \quiz_statistics_report();
-        $questions = $report->load_and_initialise_questions_for_calculations($quiz);
+        $report = new \hippotrack_statistics_report();
+        $questions = $report->load_and_initialise_questions_for_calculations($hippotrack);
 
         $timeoutseconds = 20;
-        set_config('getstatslocktimeout', $timeoutseconds, 'quiz_statistics');
+        set_config('getstatslocktimeout', $timeoutseconds, 'hippotrack_statistics');
         $lock = self::$lockfactory->get_lock($qubaids->get_hash_code(), 0);
 
         $progress = new \core\progress\none();
@@ -141,7 +141,7 @@ class quiz_statistics_report_test extends \advanced_testcase {
         $timebefore = microtime(true);
         try {
             $result = $report->get_all_stats_and_analysis(
-                $quiz,
+                $hippotrack,
                 $whichattempts,
                 $whichtries,
                 $groupstudentsjoins,
@@ -153,7 +153,7 @@ class quiz_statistics_report_test extends \advanced_testcase {
             // Verify that we waited as long as the timeout.
             $this->assertEqualsWithDelta($timeoutseconds, $timeafter - $timebefore, 1);
             $this->assertDebuggingCalled('Could not get lock on ' .
-                    $qubaids->get_hash_code() . ' (Quiz ID ' . $quiz->id . ') after ' .
+                    $qubaids->get_hash_code() . ' (HippoTrack ID ' . $hippotrack->id . ') after ' .
                     $timeoutseconds . ' seconds');
             $this->assertEquals([null, null], $result);
         } finally {
@@ -162,7 +162,7 @@ class quiz_statistics_report_test extends \advanced_testcase {
 
         $this->resetDebugging();
         $result = $report->get_all_stats_and_analysis(
-            $quiz,
+            $hippotrack,
             $whichattempts,
             $whichtries,
             $groupstudentsjoins,
@@ -182,18 +182,18 @@ class quiz_statistics_report_test extends \advanced_testcase {
      */
     public function test_get_all_stats_and_analysis_locking_no_calculation(): void {
         $this->resetAfterTest(true);
-        $quiz = $this->create_and_attempt_quiz();
+        $hippotrack = $this->create_and_attempt_hippotrack();
 
-        $whichattempts = QUIZ_GRADEAVERAGE; // All attempts.
+        $whichattempts = HIPPOTRACK_GRADEAVERAGE; // All attempts.
         $whichtries = \question_attempt::ALL_TRIES;
         $groupstudentsjoins = new \core\dml\sql_join();
-        $qubaids = quiz_statistics_qubaids_condition($quiz->id, $groupstudentsjoins, $whichattempts);
+        $qubaids = hippotrack_statistics_qubaids_condition($hippotrack->id, $groupstudentsjoins, $whichattempts);
 
-        $report = new \quiz_statistics_report();
-        $questions = $report->load_and_initialise_questions_for_calculations($quiz);
+        $report = new \hippotrack_statistics_report();
+        $questions = $report->load_and_initialise_questions_for_calculations($hippotrack);
 
         $timeoutseconds = 20;
-        set_config('getstatslocktimeout', $timeoutseconds, 'quiz_statistics');
+        set_config('getstatslocktimeout', $timeoutseconds, 'hippotrack_statistics');
 
         $lock = self::$lockfactory->get_lock($qubaids->get_hash_code(), 0);
 
@@ -203,7 +203,7 @@ class quiz_statistics_report_test extends \advanced_testcase {
 
             $timebefore = microtime(true);
             $result = $report->get_all_stats_and_analysis(
-                $quiz,
+                $hippotrack,
                 $whichattempts,
                 $whichtries,
                 $groupstudentsjoins,

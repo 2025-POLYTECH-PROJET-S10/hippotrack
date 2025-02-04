@@ -22,10 +22,10 @@ use mod_hippotrack\question\bank\qbank_helper;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
+require_once(__DIR__ . '/hippotrack_question_helper_test_trait.php');
 
 /**
- * Qbank helper test for quiz.
+ * Qbank helper test for hippotrack.
  *
  * @package    mod_hippotrack
  * @category   test
@@ -35,7 +35,7 @@ require_once(__DIR__ . '/quiz_question_helper_test_trait.php');
  * @coversDefaultClass \mod_hippotrack\question\bank\qbank_helper
  */
 class qbank_helper_test extends \advanced_testcase {
-    use \quiz_question_helper_test_trait;
+    use \hippotrack_question_helper_test_trait;
 
     /**
      * @var \stdClass test student user.
@@ -62,9 +62,9 @@ class qbank_helper_test extends \advanced_testcase {
     public function test_reference_records() {
         $this->resetAfterTest();
 
-        $quiz = $this->create_test_quiz($this->course);
+        $hippotrack = $this->create_test_hippotrack($this->course);
         // Test for questions from a different context.
-        $context = \context_module::instance($quiz->cmid);
+        $context = \context_module::instance($hippotrack->cmid);
 
         // Create a couple of questions.
         /** @var \core_question_generator $questiongenerator */
@@ -76,32 +76,32 @@ class qbank_helper_test extends \advanced_testcase {
         // Create two version.
         $questiongenerator->update_question($numq, null, ['name' => 'This is the second version']);
         $questiongenerator->update_question($numq, null, ['name' => 'This is the third version']);
-        quiz_add_quiz_question($numq->id, $quiz);
+        hippotrack_add_hippotrack_question($numq->id, $hippotrack);
 
-        // Create the quiz object.
-        $quizobj = \quiz::create($quiz->id);
-        $quizobj->preload_questions();
-        $quizobj->load_questions();
-        $questions = $quizobj->get_questions();
+        // Create the hippotrack object.
+        $hippotrackobj = \hippotrack::create($hippotrack->id);
+        $hippotrackobj->preload_questions();
+        $hippotrackobj->load_questions();
+        $questions = $hippotrackobj->get_questions();
         $question = reset($questions);
-        $structure = structure::create_for_quiz($quizobj);
+        $structure = structure::create_for_hippotrack($hippotrackobj);
         $slots = $structure->get_slots();
         $slot = reset($slots);
         $this->assertEquals(3, count(qbank_helper::get_version_options($question->id)));
         $this->assertEquals($question->id, qbank_helper::choose_question_for_redo(
-                $quiz->id, $context, $slot->id, new \qubaid_list([])));
+                $hippotrack->id, $context, $slot->id, new \qubaid_list([])));
 
         // Create another version.
         $questiongenerator->update_question($numq, null, ['name' => 'This is the latest version']);
 
         // Change to always latest.
         submit_question_version::execute($slot->id, 0);
-        $quizobj->preload_questions();
-        $quizobj->load_questions();
-        $questions = $quizobj->get_questions();
+        $hippotrackobj->preload_questions();
+        $hippotrackobj->load_questions();
+        $questions = $hippotrackobj->get_questions();
         $question = reset($questions);
         $this->assertEquals($question->id, qbank_helper::choose_question_for_redo(
-                $quiz->id, $context, $slot->id, new \qubaid_list([])));
+                $hippotrack->id, $context, $slot->id, new \qubaid_list([])));
     }
 
     /**
@@ -113,14 +113,14 @@ class qbank_helper_test extends \advanced_testcase {
     public function test_get_question_structure() {
         $this->resetAfterTest();
 
-        // Create a quiz.
-        $quiz = $this->create_test_quiz($this->course);
-        $quizcontext = \context_module::instance(get_coursemodule_from_instance("quiz", $quiz->id, $this->course->id)->id);
+        // Create a hippotrack.
+        $hippotrack = $this->create_test_hippotrack($this->course);
+        $hippotrackcontext = \context_module::instance(get_coursemodule_from_instance("hippotrack", $hippotrack->id, $this->course->id)->id);
 
-        // Create a question in the quiz question bank.
+        // Create a question in the hippotrack question bank.
         /** @var \core_question_generator $questiongenerator */
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
-        $cat = $questiongenerator->create_question_category(['contextid' => $quizcontext->id]);
+        $cat = $questiongenerator->create_question_category(['contextid' => $hippotrackcontext->id]);
         $q = $questiongenerator->create_question('essay', null,
             ['category' => $cat->id, 'name' => 'This is the first version']);
 
@@ -128,18 +128,18 @@ class qbank_helper_test extends \advanced_testcase {
         $questiongenerator->update_question($q, null, ['name' => 'This is the second version']);
         $finalq = $questiongenerator->update_question($q, null, ['name' => 'This is the third version']);
 
-        // Add the question to the quiz.
-        quiz_add_quiz_question($q->id, $quiz);
+        // Add the question to the hippotrack.
+        hippotrack_add_hippotrack_question($q->id, $hippotrack);
 
-        // Load the quiz object and check.
-        $quizobj = \quiz::create($quiz->id);
-        $quizobj->preload_questions();
-        $quizobj->load_questions();
-        $questions = $quizobj->get_questions();
+        // Load the hippotrack object and check.
+        $hippotrackobj = \hippotrack::create($hippotrack->id);
+        $hippotrackobj->preload_questions();
+        $hippotrackobj->load_questions();
+        $questions = $hippotrackobj->get_questions();
         $question = reset($questions);
         $this->assertEquals($finalq->id, $question->id);
 
-        $structure = structure::create_for_quiz($quizobj);
+        $structure = structure::create_for_hippotrack($hippotrackobj);
         $slots = $structure->get_slots();
         $slot = reset($slots);
         $this->assertEquals($finalq->id, $slot->questionid);
@@ -154,14 +154,14 @@ class qbank_helper_test extends \advanced_testcase {
     public function test_get_question_structure_with_drafts(): void {
         $this->resetAfterTest();
 
-        // Create a quiz.
-        $quiz = $this->create_test_quiz($this->course);
-        $quizcontext = \context_module::instance(get_coursemodule_from_instance("quiz", $quiz->id, $this->course->id)->id);
+        // Create a hippotrack.
+        $hippotrack = $this->create_test_hippotrack($this->course);
+        $hippotrackcontext = \context_module::instance(get_coursemodule_from_instance("hippotrack", $hippotrack->id, $this->course->id)->id);
 
-        // Create some questions with drafts in the quiz question bank.
+        // Create some questions with drafts in the hippotrack question bank.
         /** @var \core_question_generator $questiongenerator */
         $questiongenerator = $this->getDataGenerator()->get_plugin_generator('core_question');
-        $cat = $questiongenerator->create_question_category(['contextid' => $quizcontext->id]);
+        $cat = $questiongenerator->create_question_category(['contextid' => $hippotrackcontext->id]);
         $q1 = $questiongenerator->create_question('essay', null,
                 ['category' => $cat->id, 'name' => 'This is q1 the first version']);
         $q2 = $questiongenerator->create_question('essay', null,
@@ -177,16 +177,16 @@ class qbank_helper_test extends \advanced_testcase {
         $q3final = $questiongenerator->update_question(clone $q3, null,
                 ['name' => 'This is q3 the second version', 'status' => question_version_status::QUESTION_STATUS_DRAFT]);
 
-        // Add the questions to the quiz.
-        quiz_add_quiz_question($q1->id, $quiz);
-        quiz_add_quiz_question($q2->id, $quiz);
-        quiz_add_quiz_question($q3->id, $quiz);
+        // Add the questions to the hippotrack.
+        hippotrack_add_hippotrack_question($q1->id, $hippotrack);
+        hippotrack_add_hippotrack_question($q2->id, $hippotrack);
+        hippotrack_add_hippotrack_question($q3->id, $hippotrack);
 
-        // Load the quiz object and check.
-        $quizobj = \quiz::create($quiz->id);
-        $quizobj->preload_questions();
-        $quizobj->load_questions();
-        $questions = $quizobj->get_questions();
+        // Load the hippotrack object and check.
+        $hippotrackobj = \hippotrack::create($hippotrack->id);
+        $hippotrackobj->preload_questions();
+        $hippotrackobj->load_questions();
+        $questions = $hippotrackobj->get_questions();
         $this->assertCount(3, $questions);
         // When a question has a Ready version, we should get that and not he draft.
         $this->assertTrue(array_key_exists($q1->id, $questions));

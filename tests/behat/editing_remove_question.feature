@@ -1,6 +1,6 @@
 @mod @mod_hippotrack
-Feature: Edit quiz page - remove questions
-  In order to change the layout of a quiz I built
+Feature: Edit hippotrack page - remove questions
+  In order to change the layout of a hippotrack I built
   As a teacher
   I need to be able to delete questions.
 
@@ -19,7 +19,7 @@ Feature: Edit quiz page - remove questions
       | Course       | C1        | Test questions |
     And the following "activities" exist:
       | activity   | name   | course | idnumber |
-      | quiz       | Quiz 1 | C1     | quiz1    |
+      | hippotrack       | HippoTrack 1 | C1     | hippotrack1    |
     And I log in as "teacher1"
 
   @javascript
@@ -29,37 +29,37 @@ Feature: Edit quiz page - remove questions
       | Test questions   | truefalse | Question A | This is question 01 |
       | Test questions   | truefalse | Question B | This is question 02 |
       | Test questions   | truefalse | Question C | This is question 03 |
-    And quiz "Quiz 1" contains the following questions:
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question   | page |
       | Question A | 1    |
       | Question B | 1    |
       | Question C | 2    |
-    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
+    And I am on the "HippoTrack 1" "mod_hippotrack > Edit" page
 
     # Confirm the starting point.
-    Then I should see "Question A" on quiz page "1"
-    And I should see "Question B" on quiz page "1"
-    And I should see "Question C" on quiz page "2"
+    Then I should see "Question A" on hippotrack page "1"
+    And I should see "Question B" on hippotrack page "1"
+    And I should see "Question C" on hippotrack page "2"
     And I should see "Total of marks: 3.00"
     And I should see "Questions: 3"
-    And I should see "This quiz is open"
+    And I should see "This hippotrack is open"
 
     # Delete last question in last page. Page contains multiple questions
-    When I delete "Question C" in the quiz by clicking the delete icon
-    Then I should see "Question A" on quiz page "1"
-    And I should see "Question B" on quiz page "1"
-    And I should not see "Question C" on quiz page "2"
+    When I delete "Question C" in the hippotrack by clicking the delete icon
+    Then I should see "Question A" on hippotrack page "1"
+    And I should see "Question B" on hippotrack page "1"
+    And I should not see "Question C" on hippotrack page "2"
     And I should see "Total of marks: 2.00"
     And I should see "Questions: 2"
 
     # Delete last question in last page. The page contains multiple questions and there are multiple pages.
     When I click on the "Add" page break icon after question "Question A"
-    Then I should see "Question B" on quiz page "2"
+    Then I should see "Question B" on hippotrack page "2"
     And the "Remove" page break icon after question "Question A" should exist
-    And I delete "Question A" in the quiz by clicking the delete icon
-    Then I should see "Question B" on quiz page "1"
+    And I delete "Question A" in the hippotrack by clicking the delete icon
+    Then I should see "Question B" on hippotrack page "1"
     And I should not see "Page 2"
-    And I should not see "Question A" on quiz page "2"
+    And I should not see "Question A" on hippotrack page "2"
     And the "Remove" page break icon after question "Question B" should not exist
     And I should see "Total of marks: 1.00"
 
@@ -70,28 +70,28 @@ Feature: Edit quiz page - remove questions
       | Test questions   | truefalse | Question A | This is question 01 |
       | Test questions   | truefalse | Question B | This is question 02 |
       | Test questions   | truefalse | Question C | This is question 03 |
-    And quiz "Quiz 1" contains the following questions:
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question   | page |
       | Question A | 1    |
       | Question B | 1    |
       | Question C | 2    |
-    And quiz "Quiz 1" contains the following sections:
+    And hippotrack "HippoTrack 1" contains the following sections:
       | heading   | firstslot | shuffle |
       | Heading 1 | 1         | 1       |
       | Heading 2 | 2         | 1       |
-    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
+    And I am on the "HippoTrack 1" "mod_hippotrack > Edit" page
     Then "Delete" "link" in the "Question A" "list_item" should not be visible
     Then "Delete" "link" in the "Question B" "list_item" should be visible
     Then "Delete" "link" in the "Question C" "list_item" should be visible
 
   @javascript
-  Scenario: Can delete the last question in a quiz.
+  Scenario: Can delete the last question in a hippotrack.
     Given the following "questions" exist:
       | questioncategory | qtype     | name       | questiontext        |
       | Test questions   | truefalse | Question A | This is question 01 |
-    And quiz "Quiz 1" contains the following questions:
+    And hippotrack "HippoTrack 1" contains the following questions:
       | question   | page |
       | Question A | 1    |
-    And I am on the "Quiz 1" "mod_hippotrack > Edit" page
-    When I delete "Question A" in the quiz by clicking the delete icon
+    And I am on the "HippoTrack 1" "mod_hippotrack > Edit" page
+    When I delete "Question A" in the hippotrack by clicking the delete icon
     Then I should see "Questions: 0"

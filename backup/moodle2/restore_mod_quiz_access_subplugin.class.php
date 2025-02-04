@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Restore code for the quizaccess_honestycheck plugin.
+ * Restore code for the hippotrackaccess_honestycheck plugin.
  *
  * @package   mod_hippotrack
  * @copyright 2011 The Open University
@@ -27,8 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * Base class for restoring up all the quiz settings and attempt data for an
- * access rule quiz sub-plugin.
+ * Base class for restoring up all the hippotrack settings and attempt data for an
+ * access rule hippotrack sub-plugin.
  *
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -37,15 +37,15 @@ class restore_mod_hippotrack_access_subplugin extends restore_subplugin {
 
     /**
      * Use this method to describe the XML paths that store your sub-plugin's
-     * settings for a particular quiz.
+     * settings for a particular hippotrack.
      */
-    protected function define_quiz_subplugin_structure() {
+    protected function define_hippotrack_subplugin_structure() {
         // Do nothing by default.
     }
 
     /**
      * Use this method to describe the XML paths that store your sub-plugin's
-     * settings for a particular quiz attempt.
+     * settings for a particular hippotrack attempt.
      */
     protected function define_attempt_subplugin_structure() {
         // Do nothing by default.

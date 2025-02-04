@@ -28,7 +28,7 @@ use core\plugininfo\base;
 defined('MOODLE_INTERNAL') || die();
 
 
-class quiz extends base {
+class hippotrack extends base {
     public function is_uninstall_allowed() {
         return true;
     }
@@ -46,7 +46,7 @@ class quiz extends base {
 
         // Do the opposite of db/install.php scripts - deregister the report.
 
-        $DB->delete_records('quiz_reports', array('name'=>$this->name));
+        $DB->delete_records('hippotrack_reports', array('name'=>$this->name));
 
         parent::uninstall_cleanup();
     }

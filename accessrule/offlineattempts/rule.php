@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Implementaton of the quizaccess_offlineattempts plugin.
+ * Implementaton of the hippotrackaccess_offlineattempts plugin.
  *
- * @package    quizaccess_offlineattempts
+ * @package    hippotrackaccess_offlineattempts
  * @copyright  2016 Juan Leyva
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
+require_once($CFG->dirroot . '/mod/hippotrack/accessrule/accessrulebase.php');
 
 /**
  * A rule implementing the offlineattempts check.
@@ -34,17 +34,17 @@ require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.2
  */
-class quizaccess_offlineattempts extends quiz_access_rule_base {
+class hippotrackaccess_offlineattempts extends hippotrack_access_rule_base {
 
-    public static function make(quiz $quizobj, $timenow, $canignoretimelimits) {
+    public static function make(hippotrack $hippotrackobj, $timenow, $canignoretimelimits) {
         global $CFG;
 
         // If mobile services are off, the user won't be able to use any external app.
-        if (empty($CFG->enablemobilewebservice) or empty($quizobj->get_quiz()->allowofflineattempts)) {
+        if (empty($CFG->enablemobilewebservice) or empty($hippotrackobj->get_hippotrack()->allowofflineattempts)) {
             return null;
         }
 
-        return new self($quizobj, $timenow);
+        return new self($hippotrackobj, $timenow);
     }
 
     public function is_preflight_check_required($attemptid) {
@@ -52,29 +52,29 @@ class quizaccess_offlineattempts extends quiz_access_rule_base {
 
         // First, check if the user did something offline.
         if (!empty($attemptid)) {
-            $timemodifiedoffline = $DB->get_field('quiz_attempts', 'timemodifiedoffline', array('id' => $attemptid));
+            $timemodifiedoffline = $DB->get_field('hippotrack_attempts', 'timemodifiedoffline', array('id' => $attemptid));
             if (empty($timemodifiedoffline)) {
                 return false;
             }
-            return empty($SESSION->offlineattemptscheckedquizzes[$this->quiz->id]);
+            return empty($SESSION->offlineattemptscheckedhippotrackzes[$this->hippotrack->id]);
         } else {
             // Starting a new attempt, we don't have to check anything here.
             return false;
         }
     }
 
-    public function add_preflight_check_form_fields(mod_hippotrack_preflight_check_form $quizform,
+    public function add_preflight_check_form_fields(mod_hippotrack_preflight_check_form $hippotrackform,
             MoodleQuickForm $mform, $attemptid) {
         global $DB;
 
-        $timemodifiedoffline = $DB->get_field('quiz_attempts', 'timemodifiedoffline', array('id' => $attemptid));
+        $timemodifiedoffline = $DB->get_field('hippotrack_attempts', 'timemodifiedoffline', array('id' => $attemptid));
         $lasttime = format_time(time() - $timemodifiedoffline);
 
-        $mform->addElement('header', 'offlineattemptsheader', get_string('mobileapp', 'quizaccess_offlineattempts'));
+        $mform->addElement('header', 'offlineattemptsheader', get_string('mobileapp', 'hippotrackaccess_offlineattempts'));
         $mform->addElement('static', 'offlinedatamessage', '',
-                get_string('offlinedatamessage', 'quizaccess_offlineattempts', $lasttime));
+                get_string('offlinedatamessage', 'hippotrackaccess_offlineattempts', $lasttime));
         $mform->addElement('advcheckbox', 'confirmdatasaved', null,
-                get_string('confirmdatasaved', 'quizaccess_offlineattempts'));
+                get_string('confirmdatasaved', 'hippotrackaccess_offlineattempts'));
     }
 
     public function validate_preflight_check($data, $files, $errors, $attemptid) {
@@ -84,32 +84,32 @@ class quizaccess_offlineattempts extends quiz_access_rule_base {
             return $errors;
         }
 
-        $errors['confirmdatasaved'] = get_string('pleaseconfirm', 'quizaccess_offlineattempts');
+        $errors['confirmdatasaved'] = get_string('pleaseconfirm', 'hippotrackaccess_offlineattempts');
         return $errors;
     }
 
     public function notify_preflight_check_passed($attemptid) {
         global $SESSION;
-        $SESSION->offlineattemptscheckedquizzes[$this->quiz->id] = true;
+        $SESSION->offlineattemptscheckedhippotrackzes[$this->hippotrack->id] = true;
     }
 
     public function current_attempt_finished() {
         global $SESSION;
         // Clear the flag in the session that says that the user has already agreed to the notice.
-        if (!empty($SESSION->offlineattemptscheckedquizzes[$this->quiz->id])) {
-            unset($SESSION->offlineattemptscheckedquizzes[$this->quiz->id]);
+        if (!empty($SESSION->offlineattemptscheckedhippotrackzes[$this->hippotrack->id])) {
+            unset($SESSION->offlineattemptscheckedhippotrackzes[$this->hippotrack->id]);
         }
     }
 
     public static function add_settings_form_fields(
-            mod_hippotrack_mod_form $quizform, MoodleQuickForm $mform) {
+            mod_hippotrack_mod_form $hippotrackform, MoodleQuickForm $mform) {
         global $CFG;
 
         // Allow to enable the access rule only if the Mobile services are enabled.
         if ($CFG->enablemobilewebservice) {
             $mform->addElement('selectyesno', 'allowofflineattempts',
-                                get_string('allowofflineattempts', 'quizaccess_offlineattempts'));
-            $mform->addHelpButton('allowofflineattempts', 'allowofflineattempts', 'quizaccess_offlineattempts');
+                                get_string('allowofflineattempts', 'hippotrackaccess_offlineattempts'));
+            $mform->addHelpButton('allowofflineattempts', 'allowofflineattempts', 'hippotrackaccess_offlineattempts');
             $mform->setDefault('allowofflineattempts', 0);
             $mform->setAdvanced('allowofflineattempts');
             $mform->disabledIf('allowofflineattempts', 'timelimit[number]', 'neq', 0);
@@ -119,21 +119,21 @@ class quizaccess_offlineattempts extends quiz_access_rule_base {
     }
 
     public static function validate_settings_form_fields(array $errors,
-            array $data, $files, mod_hippotrack_mod_form $quizform) {
+            array $data, $files, mod_hippotrack_mod_form $hippotrackform) {
         global $CFG;
 
         if ($CFG->enablemobilewebservice) {
             // Do not allow offline attempts if:
-            // - The quiz uses a timer.
-            // - The quiz is restricted by subnet.
+            // - The hippotrack uses a timer.
+            // - The hippotrack is restricted by subnet.
             // - The question behaviour is not deferred feedback or deferred feedback with CBM.
-            // - The quiz uses the sequential navigation.
+            // - The hippotrack uses the sequential navigation.
             if (!empty($data['allowofflineattempts']) &&
                 (!empty($data['timelimit']) || !empty($data['subnet']) ||
                 $data['navmethod'] === 'sequential' ||
                 ($data['preferredbehaviour'] != 'deferredfeedback' && $data['preferredbehaviour'] != 'deferredcbm'))) {
 
-                $errors['allowofflineattempts'] = get_string('offlineattemptserror', 'quizaccess_offlineattempts');
+                $errors['allowofflineattempts'] = get_string('offlineattemptserror', 'hippotrackaccess_offlineattempts');
             }
         }
 

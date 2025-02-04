@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file defines the setting form for the quiz grading report.
+ * This file defines the setting form for the hippotrack grading report.
  *
- * @package   quiz_grading
+ * @package   hippotrack_grading
  * @copyright 2010 Tim Hunt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,12 +29,12 @@ require_once($CFG->libdir . '/formslib.php');
 
 
 /**
- * Quiz grading report settings form.
+ * HippoTrack grading report settings form.
  *
  * @copyright 2010 Tim Hunt
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_grading_settings_form extends moodleform {
+class hippotrack_grading_settings_form extends moodleform {
     protected $includeauto;
     protected $hidden = array();
     protected $counts;
@@ -43,11 +43,11 @@ class quiz_grading_settings_form extends moodleform {
     /** @var bool $showcustomfields whether custom field values should be shown. */
     protected $showcustomfields;
 
-    /** @var stdClass $context the quiz context. */
+    /** @var stdClass $context the hippotrack context. */
     protected $context;
 
     /**
-     * quiz_grading_settings_form constructor.
+     * hippotrack_grading_settings_form constructor.
      *
      * @param array $hidden Array of options form.
      * @param stdClass $counts object that stores the number of each type of attempt.
@@ -63,13 +63,13 @@ class quiz_grading_settings_form extends moodleform {
         $this->shownames = $shownames;
         $this->showcustomfields = $showcustomfields;
         $this->context = $context;
-        parent::__construct($CFG->wwwroot . '/mod/quiz/report.php');
+        parent::__construct($CFG->wwwroot . '/mod/hippotrack/report.php');
     }
 
     protected function definition() {
         $mform = $this->_form;
 
-        $mform->addElement('header', 'options', get_string('options', 'quiz_grading'));
+        $mform->addElement('header', 'options', get_string('options', 'hippotrack_grading'));
 
         $gradeoptions = array();
         foreach (array('needsgrading', 'manuallygraded', 'autograded', 'all') as $type) {
@@ -79,19 +79,19 @@ class quiz_grading_settings_form extends moodleform {
             if ($type == 'autograded' && !$this->includeauto) {
                 continue;
             }
-            $gradeoptions[$type] = get_string('gradeattempts' . $type, 'quiz_grading',
+            $gradeoptions[$type] = get_string('gradeattempts' . $type, 'hippotrack_grading',
                     $this->counts->$type);
         }
-        $mform->addElement('select', 'grade', get_string('attemptstograde', 'quiz_grading'),
+        $mform->addElement('select', 'grade', get_string('attemptstograde', 'hippotrack_grading'),
                 $gradeoptions);
 
-        $mform->addElement('text', 'pagesize', get_string('questionsperpage', 'quiz_grading'),
+        $mform->addElement('text', 'pagesize', get_string('questionsperpage', 'hippotrack_grading'),
                 array('size' => 3));
         $mform->addRule('pagesize', null, 'positiveint', null, 'client');
         $mform->setType('pagesize', PARAM_INT);
 
         $orderoptions = [
-            'random' => get_string('random', 'quiz_grading'),
+            'random' => get_string('random', 'hippotrack_grading'),
             'date' => get_string('date')
         ];
         if ($this->shownames) {
@@ -105,7 +105,7 @@ class quiz_grading_settings_form extends moodleform {
                 $orderoptions[s($field)] = \core_user\fields::get_display_name(s($field));
             }
         }
-        $mform->addElement('select', 'order', get_string('orderattemptsby', 'quiz_grading'),
+        $mform->addElement('select', 'order', get_string('orderattemptsby', 'hippotrack_grading'),
                 $orderoptions);
 
         foreach ($this->hidden as $name => $value) {
@@ -117,6 +117,6 @@ class quiz_grading_settings_form extends moodleform {
             }
         }
 
-        $mform->addElement('submit', 'submitbutton', get_string('changeoptions', 'quiz_grading'));
+        $mform->addElement('submit', 'submitbutton', get_string('changeoptions', 'hippotrack_grading'));
     }
 }

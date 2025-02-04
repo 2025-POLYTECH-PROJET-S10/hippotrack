@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file defines the quiz responses report class.
+ * This file defines the hippotrack responses report class.
  *
- * @package   quiz_responses
+ * @package   hippotrack_responses
  * @copyright 2006 Jean-Michel Vedrine
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,15 +25,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quiz/report/attemptsreport.php');
-require_once($CFG->dirroot . '/mod/quiz/report/responses/responses_options.php');
-require_once($CFG->dirroot . '/mod/quiz/report/responses/responses_form.php');
-require_once($CFG->dirroot . '/mod/quiz/report/responses/last_responses_table.php');
-require_once($CFG->dirroot . '/mod/quiz/report/responses/first_or_all_responses_table.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/attemptsreport.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/responses/responses_options.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/responses/responses_form.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/responses/last_responses_table.php');
+require_once($CFG->dirroot . '/mod/hippotrack/report/responses/first_or_all_responses_table.php');
 
 
 /**
- * Quiz report subclass for the responses report.
+ * HippoTrack report subclass for the responses report.
  *
  * This report lists some combination of
  *  * what question each student saw (this makes sense if random questions were used).
@@ -46,15 +46,15 @@ require_once($CFG->dirroot . '/mod/quiz/report/responses/first_or_all_responses_
  * @copyright 1999 onwards Martin Dougiamas and others {@link http://moodle.com}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_responses_report extends quiz_attempts_report {
+class hippotrack_responses_report extends hippotrack_attempts_report {
 
-    public function display($quiz, $cm, $course) {
+    public function display($hippotrack, $cm, $course) {
         global $OUTPUT, $DB;
 
         list($currentgroup, $studentsjoins, $groupstudentsjoins, $allowedjoins) = $this->init(
-                'responses', 'quiz_responses_settings_form', $quiz, $cm, $course);
+                'responses', 'hippotrack_responses_settings_form', $hippotrack, $cm, $course);
 
-        $options = new quiz_responses_options('responses', $quiz, $cm, $course);
+        $options = new hippotrack_responses_options('responses', $hippotrack, $cm, $course);
 
         if ($fromform = $this->form->get_data()) {
             $options->process_settings_from_form($fromform);
@@ -66,22 +66,22 @@ class quiz_responses_report extends quiz_attempts_report {
         $this->form->set_data($options->get_initial_form_data());
 
         // Load the required questions.
-        $questions = quiz_report_get_significant_questions($quiz);
+        $questions = hippotrack_report_get_significant_questions($hippotrack);
 
         // Prepare for downloading, if applicable.
         $courseshortname = format_string($course->shortname, true,
                 array('context' => context_course::instance($course->id)));
         if ($options->whichtries === question_attempt::LAST_TRY) {
-            $tableclassname = 'quiz_last_responses_table';
+            $tableclassname = 'hippotrack_last_responses_table';
         } else {
-            $tableclassname = 'quiz_first_or_all_responses_table';
+            $tableclassname = 'hippotrack_first_or_all_responses_table';
         }
-        $table = new $tableclassname($quiz, $this->context, $this->qmsubselect,
+        $table = new $tableclassname($hippotrack, $this->context, $this->qmsubselect,
                 $options, $groupstudentsjoins, $studentsjoins, $questions, $options->get_url());
-        $filename = quiz_report_download_filename(get_string('responsesfilename', 'quiz_responses'),
-                $courseshortname, $quiz->name);
+        $filename = hippotrack_report_download_filename(get_string('responsesfilename', 'hippotrack_responses'),
+                $courseshortname, $hippotrack->name);
         $table->is_downloading($options->download, $filename,
-                $courseshortname . ' ' . format_string($quiz->name, true));
+                $courseshortname . ' ' . format_string($hippotrack->name, true));
         if ($table->is_downloading()) {
             raise_memory_limit(MEMORY_EXTRA);
         }
@@ -104,19 +104,19 @@ class quiz_responses_report extends quiz_attempts_report {
         }
         if ($options->attempts == self::ALL_WITH) {
             // This option is only available to users who can access all groups in
-            // groups mode, so setting allowed to empty (which means all quiz attempts
+            // groups mode, so setting allowed to empty (which means all hippotrack attempts
             // are accessible, is not a security problem.
             $allowedjoins = new \core\dml\sql_join();
         }
 
-        $this->process_actions($quiz, $cm, $currentgroup, $groupstudentsjoins, $allowedjoins, $options->get_url());
+        $this->process_actions($hippotrack, $cm, $currentgroup, $groupstudentsjoins, $allowedjoins, $options->get_url());
 
-        $hasquestions = quiz_has_questions($quiz->id);
+        $hasquestions = hippotrack_has_questions($hippotrack->id);
 
         // Start output.
         if (!$table->is_downloading()) {
             // Only print headers if not asked to download data.
-            $this->print_standard_header_and_messages($cm, $course, $quiz,
+            $this->print_standard_header_and_messages($cm, $course, $hippotrack,
                     $options, $currentgroup, $hasquestions, $hasstudents);
 
             // Print the display options.
@@ -130,9 +130,9 @@ class quiz_responses_report extends quiz_attempts_report {
 
             if (!$table->is_downloading()) {
                 // Print information on the grading method.
-                if ($strattempthighlight = quiz_report_highlighting_grading_method(
-                        $quiz, $this->qmsubselect, $options->onlygraded)) {
-                    echo '<div class="quizattemptcounts">' . $strattempthighlight . '</div>';
+                if ($strattempthighlight = hippotrack_report_highlighting_grading_method(
+                        $hippotrack, $this->qmsubselect, $options->onlygraded)) {
+                    echo '<div class="hippotrackattemptcounts">' . $strattempthighlight . '</div>';
                 }
             }
 
@@ -153,7 +153,7 @@ class quiz_responses_report extends quiz_attempts_report {
                 $this->add_time_columns($columns, $headers);
             }
 
-            $this->add_grade_columns($quiz, $options->usercanseegrades, $columns, $headers);
+            $this->add_grade_columns($hippotrack, $options->usercanseegrades, $columns, $headers);
 
             foreach ($questions as $id => $question) {
                 if ($options->showqtext) {
@@ -162,11 +162,11 @@ class quiz_responses_report extends quiz_attempts_report {
                 }
                 if ($options->showresponses) {
                     $columns[] = 'response' . $id;
-                    $headers[] = get_string('responsex', 'quiz_responses', $question->number);
+                    $headers[] = get_string('responsex', 'hippotrack_responses', $question->number);
                 }
                 if ($options->showright) {
                     $columns[] = 'right' . $id;
-                    $headers[] = get_string('rightanswerx', 'quiz_responses', $question->number);
+                    $headers[] = get_string('rightanswerx', 'hippotrack_responses', $question->number);
                 }
             }
 
