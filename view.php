@@ -32,13 +32,14 @@ $id = optional_param('id', 0, PARAM_INT);
 $h = optional_param('h', 0, PARAM_INT);
 
 if ($id) {
-    $cmid = get_coursemodule_from_id('hippotrack', $id, 0, false, MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $cmid->course), '*', MUST_EXIST);
-    $moduleinstance = $DB->get_record('hippotrack', array('id' => $cmid->instance), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_id('hippotrack', $id, 0, false, MUST_EXIST);
+    $cmid = $cm->id;
+    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $moduleinstance = $DB->get_record('hippotrack', array('id' => $cm->instance), '*', MUST_EXIST);
 } else {
     $moduleinstance = $DB->get_record('hippotrack', array('id' => $h), '*', MUST_EXIST);
     $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
-    $cmid = get_coursemodule_from_instance('hippotrack', $moduleinstance->id, $course->id, false, MUST_EXIST);
+    $cm = get_coursemodule_from_instance('hippotrack', $moduleinstance->id, $course->id, false, MUST_EXIST);
 }
 
 
@@ -56,7 +57,7 @@ if ($id) {
 // }
 
 
-$PAGE->set_cm($cmid);
+$PAGE->set_cm($cm);
 $PAGE->set_context($context);
 $PAGE->set_url('/mod/hippotrack/view.php', array('id' => $id));
 
@@ -71,7 +72,7 @@ echo $OUTPUT->header();
 // Title Poll
 $divTitle = '<div id=divTitle>';
 $divTitle .= '<h2 id=namePoll>';
-$divTitle .= get_string('title', 'mod_hippotrack', $cmid->name);
+$divTitle .= get_string('title', 'mod_hippotrack', $cm->name);
 $divTitle .= '</h2>';
 $divTitle .= '<div>';
 
@@ -103,6 +104,7 @@ $url_edit = new moodle_url('/mod/hippotrack/edit.php');
 
 echo '<a href="' . $url_edit .
     '?id=' . $id .
+    '&cmid=' . $cmid .
     '">' . get_string('editPageLink', component: 'mod_hippotrack') . '<br></a>';
 
 
