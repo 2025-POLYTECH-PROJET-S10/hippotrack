@@ -32,33 +32,37 @@ $id = optional_param('id', 0, PARAM_INT);
 $h = optional_param('h', 0, PARAM_INT);
 
 if ($id) {
-    $cm = get_coursemodule_from_id('hippotrack', $id, 0, false, MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $moduleinstance = $DB->get_record('hippotrack', array('id' => $cm->instance), '*', MUST_EXIST);
+    $cmid = get_coursemodule_from_id('hippotrack', $id, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $cmid->course), '*', MUST_EXIST);
+    $moduleinstance = $DB->get_record('hippotrack', array('id' => $cmid->instance), '*', MUST_EXIST);
 } else {
     $moduleinstance = $DB->get_record('hippotrack', array('id' => $h), '*', MUST_EXIST);
     $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance('hippotrack', $moduleinstance->id, $course->id, false, MUST_EXIST);
+    $cmid = get_coursemodule_from_instance('hippotrack', $moduleinstance->id, $course->id, false, MUST_EXIST);
 }
 
 
 
-// if (!$cm = get_coursemodule_from_id('hippotrack', $id)) {
+// if (!$cmid = get_coursemodule_from_id('hippotrack', $id)) {
 //     throw new moodle_exception('invalidcoursemodule');
 // }
 
-// if (!$course = $DB->get_record("course", array("id" => $cm->course))) {
+// if (!$course = $DB->get_record("course", array("id" => $cmid->course))) {
 //     throw new moodle_exception('coursemisconf');
 // }
 
-// if (!$module = $DB->get_record('hippotrack', ['id' => $cm->instance])) {
+// if (!$module = $DB->get_record('hippotrack', ['id' => $cmid->instance])) {
 //     throw new moodle_exception('DataBase for hippotrack not found');
 // }
 
 
-$PAGE->set_cm($cm);
+$PAGE->set_cm($cmid);
 $PAGE->set_context($context);
 $PAGE->set_url('/mod/hippotrack/view.php', array('id' => $id));
+
+
+
+
 
 //Debut de l'affichage
 echo $OUTPUT->header();
@@ -67,7 +71,7 @@ echo $OUTPUT->header();
 // Title Poll
 $divTitle = '<div id=divTitle>';
 $divTitle .= '<h2 id=namePoll>';
-$divTitle .= get_string('title', 'mod_hippotrack', $cm->name);
+$divTitle .= get_string('title', 'mod_hippotrack', $cmid->name);
 $divTitle .= '</h2>';
 $divTitle .= '<div>';
 
@@ -94,6 +98,21 @@ $url_dbaction = new moodle_url('/mod/hippotrack/dbaction.php');
 echo '<a href="' . $url_dbaction .
     '?id=' . $id .
     '">' . get_string('dbPageLink', component: 'mod_hippotrack') . '<br></a>';
+
+$url_edit = new moodle_url('/mod/hippotrack/edit.php');
+
+echo '<a href="' . $url_edit .
+    '?id=' . $id .
+    '">' . get_string('editPageLink', component: 'mod_hippotrack') . '<br></a>';
+
+
+
+$PAGE->requires->js_call_amd('mod_hippotrack/view', 'init', ['cmid' => $cmid]);
+echo '<button id="addQuestionButton">' . get_string('add_question', 'mod_hippotrack') . '</button>'; //redirected by javascript
+
+
+
+
 
 
 echo $OUTPUT->footer();

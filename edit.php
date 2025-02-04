@@ -23,7 +23,7 @@
  */
 
 require_once("../../config.php");
-// require_once(__DIR__ . '/classes/edit_question_form.php');
+require_once(__DIR__ . '/classes/edit_form.php');
 global $PAGE, $OUTPUT;
 
 $id = required_param('id', PARAM_INT);
@@ -59,22 +59,46 @@ $PAGE->activityheader->set_description('');
 
 
 
-$myURL = new moodle_url('/mod/hippotrack/dbaction.php');
+$myURL = new moodle_url('/mod/hippotrack/edit.php');
 $PAGE->set_url($myURL);
-
 
 
 // Le formulaire n'a pas été soumis ni annulé, donc il faut l'afficher (on a chargé la page normalement)
 echo $OUTPUT->header();
 
-echo 'ceci est la page db cette ligne sera a suprimé <br>';
 
 
-// $PAGE->requires->js_call_amd('mod_hippotrack/dbaction', 'init', ['cmid' => $cmid]);
-$questionTypeList = get_string('difficulty_type', 'mod_hippotrack');
-$questionTypeList .= '<select id="quizzTypeSelector">';
-$questionTypeList .= '<option value="Fa">' . get_string('easy', 'mod_hippotrack') . '</option>';
-$questionTypeList .= '<option value="Di">' . get_string('hard', 'mod_hippotrack') . '</option>';
-$questionTypeList .= '</select>';
-echo $questionTypeList;
+
+$form = new \mod_hippotrack\edit_form($PAGE->url, $cmid->id);
+// $form = new \mod_easyvote\edit_question_form($PAGE->url);
+
+$formdata = $form->get_data();
+if ($formdata !== null) {
+    // // Le formulaire a été soumis. On peut traiter les données (i.e. les ajouter à la DB)
+
+
+    // if ($questionType == ('C' || 'M')) {
+    //     if ($questionDB = $DB->get_record('easyvote_questions', ['id' => $questionid])) {
+    //         edit_question_update_instance($formdata, $questionDB, $questionid);
+    //     } else {
+    //         $easyvoteid = get_fast_modinfo($COURSE->id, -1)->get_cm($cmid)->instance;
+    //         $questionDB = $DB->get_records('easyvote_questions', ['easyvoteid' => $easyvoteid]);
+    //         $questionNum = count($questionDB);
+
+    //         edit_question_add_questions($formdata, $questionNum, $cmid);
+    //     }
+    // } 
+
+
+    // On redirige vers view.php.
+    redirect('/mod/hippocrate/view.php?id=' . $cmid);
+} else if ($form->is_cancelled()) {
+    // Le formulaire a été annulé, on redirige vers view.php.
+    redirect('/mod/hippocrate/view.php?id=' . $cmid);
+}
+
+
+$PAGE->requires->js_call_amd('mod_hippotrack/edit', 'init', ['cmid' => $cmid]);
+$form->display();
+
 echo $OUTPUT->footer();
