@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Custom installation procedure for the hippotrack module.
  */
-function xmldb_mod_hippotrack_install()
+function xmldb_hippotrack_install()
 {
     // Log a message for debugging purposes.
     debugging('Installing the hippotrack module', DEBUG_DEVELOPER);

@@ -300,7 +300,7 @@ class restore_hippotrack_activity_structure_step extends restore_questions_activ
             $sebsettings->timecreated = time();
             $sebsettings->timemodified = time();
 
-            $DB->insert_record('hippotrackaccess_seb_hippotracksettings', $sebsettings);
+            $DB->insert_record('hippotrack_seb_settings', $sebsettings);
         }
 
         // If we are dealing with a backup from < 4.0 then we need to move completionpass to core.
