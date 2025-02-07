@@ -21,25 +21,25 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'core/log'], function ($, Log) {
-    'use strict';
-    var cmid;
+// define(['jquery', 'core/log'], function ($, Log) {
+//     'use strict';
+//     var cmid;
 
-    function init(value) {
-        cmid = value;
-        console.log(cmid);
-    }
+//     function init(value) {
+//         cmid = value;
+//         console.log(cmid);
+//     }
 
-    //Add question button, this redirect the user to edit_question.php when used
-    document.getElementById('addQuestionButton').addEventListener('click', function () {
-        var url_dbaction = "/mod/hippotrack/dbaction.php";
-        window.location.href = url_dbaction + "?cmid=" + cmid;
-        // window.location.href = url_dbaction;
-    });
+//     //Add question button, this redirect the user to edit_question.php when used
+//     document.getElementById('addQuestionButton').addEventListener('click', function () {
+//         var url_dbaction = "/mod/hippotrack/dbaction.php";
+//         window.location.href = url_dbaction + "?cmid=" + cmid;
+//         // window.location.href = url_dbaction;
+//     });
 
 
-    return {
-        init: init
-    };
-});
+//     return {
+//         init: init
+//     };
+// });
 

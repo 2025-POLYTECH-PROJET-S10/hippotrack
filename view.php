@@ -100,17 +100,11 @@ echo '<a href="' . $url_dbaction .
     '?id=' . $id .
     '">' . get_string('dbPageLink', component: 'mod_hippotrack') . '<br></a>';
 
-$url_edit = new moodle_url('/mod/hippotrack/edit.php');
-
-echo '<a href="' . $url_edit .
-    '?id=' . $id .
-    '&cmid=' . $cmid .
-    '">' . get_string('editPageLink', component: 'mod_hippotrack') . '<br></a>';
 
 
 
-$PAGE->requires->js_call_amd('mod_hippotrack/view', 'init', ['cmid' => $cmid]);
-echo '<button id="addQuestionButton">' . get_string('add_question', 'mod_hippotrack') . '</button>'; //redirected by javascript
+// $PAGE->requires->js_call_amd('mod_hippotrack/view', 'init', ['cmid' => $cmid]);
+// echo '<button id="addQuestionButton">' . get_string('add_question', 'mod_hippotrack') . '</button>'; //redirected by javascript
 
 
 

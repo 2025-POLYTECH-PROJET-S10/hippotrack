@@ -38,40 +38,37 @@ if ($id) {
     $cmid = get_coursemodule_from_instance('hippotrack', $moduleinstance->id, $course->id, false, MUST_EXIST);
 }
 
-// if (!$cmid = get_coursemodule_from_id('hippotrack', $id)) {
-//     throw new moodle_exception('invalidcoursemodule');
-// }
-
-// if (!$course = $DB->get_record("course", array("id" => $cmid->course))) {
-//     throw new moodle_exception('coursemisconf');
-// }
-
-// if (!$module = $DB->get_record('hippotrack', ['id' => $cmid->instance])) {
-//     throw new moodle_exception('DataBase for hippotrack not found');
-// }
-
-
-
 $PAGE->set_context(context_module::instance($cmid->id));
 $PAGE->set_cm($cmid);
-$PAGE->activityheader->set_description('');
+$PAGE->set_url(new moodle_url('/mod/hippotrack/exercise.php'));
 
 
+$PAGE->requires->js_call_amd('mod_hippotrack/exercise', 'init');
 
-
-$myURL = new moodle_url('/mod/easyvote/exercise.php');
-$PAGE->set_url($myURL);
-
-
-
-
-
-// Le formulaire n'a pas été soumis ni annulé, donc il faut l'afficher (on a chargé la page normalement)
 echo $OUTPUT->header();
 
-echo 'ceci est la page exercise';
+
+echo '<div id="bassin" style="position: relative; width: 480px; height: 280px; background: url(' . new moodle_url('/mod/hippotrack/pix/bassin.png') . ') no-repeat center center; background-size: cover; z-index: 2;">';
+
+echo '    <img id="partogramme_contour" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour.png') . '" style="position: absolute; left: 50%; top: 30%; transform: translateX(-50%); width: 100px; cursor: grab; z-index: 1;">';
+echo '    <img id="partogramme_interieur" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_interieur.png') . '" style="position: absolute; left: 50%; top: 30%; transform: translateX(-50%); width: 100px; cursor: grab; z-index: 1;">';
+
+echo '</div>';
+
+echo '<label for="rotate-slider">Rotation:</label>';
+echo '<input type="range" id="rotate-slider" min="0" max="360" value="0"><br>';
+
+echo '<label for="move-axis-slider">Move Up/Down:</label>';
+echo '<input type="range" id="move-axis-slider" min="-50" max="50" value="0">';
+
+
+
+
+
+
+
+
+
+
+
 echo $OUTPUT->footer();
-
-
-
-

@@ -32,10 +32,12 @@ class edit_form extends moodleform
 {
 	public $cmid;
 
-	function __construct($pageURL, $cmid)
+	function __construct($pageURL, $cmid, $id)
 	{
+
 		$this->cmid = $cmid;
-		parent::__construct($pageURL, ['cmid' => $cmid]);
+		$this->id = $id;
+		parent::__construct($pageURL);
 	}
 
 	public function definition()
@@ -84,7 +86,6 @@ class edit_form extends moodleform
 		// Add cmid as a hidden field
 		$mform->addElement('hidden', 'cmid', $cmid);
 		// $mform->setType('cmid', PARAM_INT);
-
 
 		// Add submit buttons
 		$this->add_action_buttons();
