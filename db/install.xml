@@ -178,7 +178,6 @@
         <INDEX NAME="name" UNIQUE="true" FIELDS="name" />
       </INDEXES>
     </TABLE>
-    </TABLE>
     <TABLE NAME="hippotrack_datasets" COMMENT="Stocke les ensembles de données pour l'exercice">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
