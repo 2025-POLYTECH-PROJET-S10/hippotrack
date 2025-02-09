@@ -107,7 +107,7 @@ if (has_capability('mod/hippotrack:viewreports', $coursecontext)) {
 
 $table = new html_table();
 $table->head = $headings;
-$table->align = $align;
+$table->align = $align; 
 
 // Populate the table with the list of instances.
 $currentsection = '';

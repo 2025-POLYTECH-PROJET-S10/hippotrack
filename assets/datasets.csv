@@ -1,0 +1,17 @@
+Nom,Sigle,Partogramme,Vue antérieure,Vue latérale (coupe sagittale)
+Occipito-Sacrée,OS,0;1,bb_vue_ante_bf_1.png,bb_vue_lat_bf_1.png
+Occipito-Iliaque Droite Postérieure,OIDP,45;1,bb_vue_ante_bf_2.png,bb_vue_lat_bf_2.png
+Occipito-Iliaque Droite Transverse,OIDT,90;1,bb_vue_ante_bf_3.png,bb_vue_lat_bf_3.png
+Occipito-Iliaque Droite Antérieure,OIDA,135;1,bb_vue_ante_bf_4.png,bb_vue_lat_bf_4.png
+Occipito-Pubien,OP,180;1,bb_vue_ante_bf_5.png,bb_vue_lat_bf_5.png
+Occipito-Iliaque Gauche Antérieur,OIGA,225;1,bb_vue_ante_bf_6.png,bb_vue_lat_bf_6.png
+Occipito-Iliaque Gauche Transverse,OIGT,270;1,bb_vue_ante_bf_7.png,bb_vue_lat_bf_7.png
+Occipito-Iliaque Gauche Postérieure,OIGP,315;1,bb_vue_ante_bf_8.png,bb_vue_lat_bf_8.png
+Occipito-Sacrée,OS,0;-1,bb_vue_ante_mf_1.png,bb_vue_lat_mf_1.png
+Occipito-Iliaque Droite Postérieure,OIDP,45;-1,bb_vue_ante_mf_2.png,bb_vue_lat_mf_2.png
+Occipito-Iliaque Droite Transverse,OIDT,90;-1,bb_vue_ante_mf_3.png,bb_vue_lat_mf_3.png
+Occipito-Iliaque Droite Antérieure,OIDA,135;-1,bb_vue_ante_mf_4.png,bb_vue_lat_mf_4.png
+Occipito-Pubien,OP,180;-1,bb_vue_ante_mf_5.png,bb_vue_lat_mf_5.png
+Occipito-Iliaque Gauche Antérieur,OIGA,225;-1,bb_vue_ante_mf_6.png,bb_vue_lat_mf_6.png
+Occipito-Iliaque Gauche Transverse,OIGT,270;-1,bb_vue_ante_mf_7.png,bb_vue_lat_mf_7.png
+Occipito-Iliaque Gauche Postérieure,OIGP,315;-1,bb_vue_ante_mf_8.png,bb_vue_lat_mf_8.png

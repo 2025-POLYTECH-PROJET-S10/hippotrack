@@ -56,6 +56,8 @@ if ($id) {
 require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/hippotrack:view', $context);
+// ! The require_capability function checks if the user has the capability to view the hippotrack.
+// ! Those rules are defined in the access.php file.
 
 // Cache some other capabilities we use several times.
 $canattempt = has_capability('mod/hippotrack:attempt', $context);

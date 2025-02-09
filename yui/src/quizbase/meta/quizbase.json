@@ -1,8 +1,0 @@
-{
-    "moodle-mod_hippotrack-hippotrackbase": {
-        "requires": [
-            "base",
-            "node"
-        ]
-    }
-}

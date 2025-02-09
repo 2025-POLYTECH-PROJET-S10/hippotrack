@@ -29,11 +29,73 @@ defined('MOODLE_INTERNAL') || die();
  */
 function xmldb_hippotrack_install()
 {
+    global $DB, $CFG;
+    
+    // 📌 Chemin du fichier CSV contenant les ensembles de données
+    $csv_file = $CFG->dirroot . '/mod/hippotrack/assets/datasets.csv';
+
     // Log a message for debugging purposes.
     debugging('Installing the hippotrack module', DEBUG_DEVELOPER);
 
-    // You could add further custom installation code here,
-    // such as creating additional directories, seeding lookup tables, etc.
+
+    // 📌 Vérifier si le fichier existe
+    if (!file_exists($csv_file)) {
+        debugging('⚠️ Fichier CSV introuvable : ' . $csv_file, DEBUG_DEVELOPER);
+        return true;
+    }
+
+    // 📌 Ouvrir le fichier CSV
+    $handle = fopen($csv_file, 'r');
+    if (!$handle) {
+        debugging('⚠️ Impossible d’ouvrir le fichier CSV.', DEBUG_DEVELOPER);
+        return true;
+    }
+
+    $line_number = 0;
+    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {  
+        $line_number++;
+        if ($line_number == 1) {
+            continue; // Ignorer l'en-tête
+        }
+
+        // 📌 Vérifier que toutes les colonnes sont bien présentes
+        if (count($data) < 5) {  // ⚠️ Suppression de `schema_simplifie`, donc 5 colonnes au lieu de 6
+            debugging("⚠️ Ligne $line_number mal formatée dans le CSV.", DEBUG_DEVELOPER);
+            continue;
+        }
+
+        // 📌 Assignation correcte des valeurs
+        $name = trim($data[0]);
+        $sigle = trim($data[1]);
+        $partogramme = trim($data[2]);
+        $vue_anterieure = trim($data[3]);
+        $vue_laterale = trim($data[4]);
+
+        // 📌 Séparer la rotation et l’inclinaison
+        if (strpos($partogramme, ';') !== false) {
+            list($rotation, $inclinaison) = explode(';', $partogramme);
+        } else {
+            $rotation = 0;
+            $inclinaison = 0;
+        }
+
+        // 📌 Préparer l'objet à insérer en base
+        $record = new stdClass();
+        $record->name = $name;
+        $record->sigle = $sigle;
+        $record->rotation = (int) $rotation;
+        $record->inclinaison = (int) $inclinaison;
+        $record->vue_anterieure = $vue_anterieure;
+        $record->vue_laterale = $vue_laterale;
+
+        // 📌 Insérer en base
+        $DB->insert_record('hippotrack_datasets', $record);
+    }
+
+    fclose($handle);
+
+    debugging('✅ Importation des données initiales terminée avec succès.', DEBUG_DEVELOPER);
+    return true;
 
     return true;
 }

@@ -28,6 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
 require_once($CFG->dirroot . '/mod/hippotrack/locallib.php');
 
+// ! This page is used to define the settings form for the hippotrack module.
+// ! Here we need to add the question combination settings
 
 /**
  * Settings form for the hippotrack module.

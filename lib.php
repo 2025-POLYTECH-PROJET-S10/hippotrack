@@ -1727,8 +1727,10 @@ function hippotrack_extend_settings_navigation(settings_navigation $settings, na
         $settingsoverride = $hippotracknode->add_node($node, $beforekey);
     }
 
+    // ! Here we are checking if the user has the capability to manage the questions
+    // ! and if they do, we add the questions node to the settings navigation.
     if (has_capability('mod/hippotrack:manage', $settings->get_page()->cm->context)) {
-        $node = navigation_node::create(get_string('questions', 'hippotrack'),
+        $node = navigation_node::create(get_string('stats', 'hippotrack'),
             new moodle_url('/mod/hippotrack/edit.php', array('cmid' => $settings->get_page()->cm->id)),
             navigation_node::TYPE_SETTING, null, 'mod_hippotrack_edit', new pix_icon('t/edit', ''));
         $hippotracknode->add_node($node, $beforekey);

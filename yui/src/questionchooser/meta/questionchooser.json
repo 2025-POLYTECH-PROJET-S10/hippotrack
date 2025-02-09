@@ -1,9 +1,0 @@
-{
-    "moodle-mod_hippotrack-questionchooser": {
-        "requires": [
-            "moodle-core-chooserdialogue",
-            "moodle-mod_hippotrack-util",
-            "querystring-parse"
-        ]
-    }
-}

@@ -1062,6 +1062,9 @@ $string['questionversionlatest'] = 'v{$a} (latest)';
 $string['alwayslatest'] = 'Always latest';
 $string['gobacktohippotrack'] = 'Go back';
 
+// Statsitiques
+$string['stats'] = 'Statistics';
+
 // Deprecated since Moodle 3.11.
 $string['completionattemptsexhausteddesc'] = 'Complete if all available attempts are exhausted';
 

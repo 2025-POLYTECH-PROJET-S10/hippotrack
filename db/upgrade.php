@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
  * HippoTrack module upgrade function.
  * @param string $oldversion the version we are upgrading from.
  */
-function xmldb_mod_hippotrack_upgrade($oldversion) {
+function xmldb_hippotrack_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager();
