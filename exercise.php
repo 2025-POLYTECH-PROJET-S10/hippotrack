@@ -23,7 +23,6 @@
  */
 
 require_once("../../config.php");
-// require_once(__DIR__ . '/classes/edit_question_form.php');
 global $PAGE, $OUTPUT;
 
 $id = required_param('id', PARAM_INT);
@@ -42,7 +41,6 @@ $PAGE->set_context(context_module::instance($cmid->id));
 $PAGE->set_cm($cmid);
 $PAGE->set_url(new moodle_url('/mod/hippotrack/exercise.php'));
 
-
 $PAGE->requires->js_call_amd('mod_hippotrack/exercise', 'init');
 
 echo $OUTPUT->header();
@@ -59,46 +57,24 @@ echo '    <img id="partogramme_contour" class="partogramme_contour" src="' . new
 
 echo '</div>';
 
-
-// echo '<div id="bassin" class="bassin">';
-
-// echo '    <img id="partogramme_contour2" class="partogramme_contour2" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour2.png') . '">';
-
-// echo '    <img id="partogramme_interieur" class="partogramme_interieur" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_interieur.png') . '">';
-
-// echo '    <img id="partogramme_contour" class="partogramme_contour" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour.png') . '">';
-
-// echo '</div>';
-
-
-//              echo '    <img id="partogramme_contour2" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour2.png') . '" 
-//              style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 300px; cursor: grab; z-index: 3;">';
-
-// echo '    <img id="partogramme_interieur" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_interieur.png') . '" 
-//              style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 100px; cursor: grab; z-index: 2;">';
-
-// echo '    <img id="partogramme_contour" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour.png') . '" 
-//              style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 100px; cursor: grab; z-index: 1;">';
-
-
-
-echo '</div>';
-
+// Form for submitting slider values
+echo '<form method="post">';
 
 echo '<label for="rotate-slider">Rotation:</label>';
-echo '<input type="range" id="rotate-slider" min="0" max="360" value="0"><br>';
+echo '<input type="range" id="rotate-slider" name="rotation" min="0" max="360" value="0"><br>';
 
 echo '<label for="move-axis-slider">Move Up/Down:</label>';
-echo '<input type="range" id="move-axis-slider" min="-50" max="50" value="0">';
+echo '<input type="range" id="move-axis-slider" name="movement" min="-50" max="50" value="0"><br>';
 
-
-
-
-
-
-
-
-
-
+echo '<button type="submit" name="validate">Validate</button>';
+echo '</form>';
 
 echo $OUTPUT->footer();
+
+// Handle form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate'])) {
+    $rotation = isset($_POST['rotation']) ? intval($_POST['rotation']) : 0;
+    $movement = isset($_POST['movement']) ? intval($_POST['movement']) : 0;
+
+    echo "<script>alert('Rotation: $rotation, Movement: $movement');</script>";
+}
