@@ -27,33 +27,48 @@ define(['jquery'], function ($) {
                 let angle = 0; // Rotation angle in degrees
                 let moveOffset = 0; // Distance moved along the rotated axis
 
-                // Function to update position of partogramme_interieur along the rotated direction
-                function updateInterieurPosition() {
+                // Function to get the center of the reference element (#partogramme_contour)
+                function getCenter(element) {
+                    let $el = $(element);
+                    return {
+                        x: $el.position().left + $el.width() / 2,
+                        y: $el.position().top + $el.height() / 2
+                    };
+                }
+
+                // Function to update rotation and positioning
+                function updatePositions() {
                     let radians = (angle * Math.PI) / 180;
                     let xOffset = Math.sin(radians) * moveOffset; // Moves along rotated axis
                     let yOffset = -Math.cos(radians) * moveOffset; // Moves along rotated axis
 
+                    // Apply rotation to all elements
+                    $('#partogramme_contour, #partogramme_contour2, #partogramme_interieur').css({
+                        transform: `rotate(${angle}deg)`,
+                        transformOrigin: 'center center'
+                    });
+
+                    // Move partogramme_interieur along the rotated axis
                     $('#partogramme_interieur').css({
-                        transform: `translate(${xOffset}px, ${yOffset}px) rotate(${angle}deg)`, // Moves and rotates
+                        transform: `translate(${xOffset}px, ${yOffset}px) rotate(${angle}deg)`,
                         transformOrigin: 'center center'
                     });
                 }
 
-                // Rotate both elements together
+                // Handle rotation slider
                 $('#rotate-slider').on('input', function () {
                     angle = parseFloat($(this).val()); // Get the slider value
-                    $('#partogramme_contour, #partogramme_interieur').css({
-                        transform: `rotate(${angle}deg)`,
-                        transformOrigin: 'center center'
-                    });
-                    updateInterieurPosition(); // Update translation when rotation changes
+                    updatePositions(); // Update rotation
                 });
 
-                // Move partogramme_interieur along the rotated direction
+                // Handle translation slider
                 $('#move-axis-slider').on('input', function () {
                     moveOffset = parseFloat($(this).val()); // Get the slider value
-                    updateInterieurPosition(); // Apply translation
+                    updatePositions(); // Update movement
                 });
+
+                // Ensure initial positioning
+                updatePositions();
             });
         }
     };

@@ -47,13 +47,43 @@ $PAGE->requires->js_call_amd('mod_hippotrack/exercise', 'init');
 
 echo $OUTPUT->header();
 
+echo '<div id="container" class="container">';
 
-echo '<div id="bassin" style="position: relative; width: 480px; height: 280px; background: url(' . new moodle_url('/mod/hippotrack/pix/bassin.png') . ') no-repeat center center; background-size: cover; z-index: 2;">';
+echo '    <img id="bassin" class="bassin" src="' . new moodle_url('/mod/hippotrack/pix/bassin.png') . '">';
 
-echo '    <img id="partogramme_contour" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour.png') . '" style="position: absolute; left: 50%; top: 30%; transform: translateX(-50%); width: 100px; cursor: grab; z-index: 1;">';
-echo '    <img id="partogramme_interieur" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_interieur.png') . '" style="position: absolute; left: 50%; top: 30%; transform: translateX(-50%); width: 100px; cursor: grab; z-index: 1;">';
+echo '    <img id="partogramme_contour2" class="partogramme_contour2" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour2.png') . '">';
+
+echo '    <img id="partogramme_interieur" class="partogramme_interieur" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_interieur.png') . '">';
+
+echo '    <img id="partogramme_contour" class="partogramme_contour" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour.png') . '">';
 
 echo '</div>';
+
+
+// echo '<div id="bassin" class="bassin">';
+
+// echo '    <img id="partogramme_contour2" class="partogramme_contour2" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour2.png') . '">';
+
+// echo '    <img id="partogramme_interieur" class="partogramme_interieur" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_interieur.png') . '">';
+
+// echo '    <img id="partogramme_contour" class="partogramme_contour" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour.png') . '">';
+
+// echo '</div>';
+
+
+//              echo '    <img id="partogramme_contour2" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour2.png') . '" 
+//              style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 300px; cursor: grab; z-index: 3;">';
+
+// echo '    <img id="partogramme_interieur" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_interieur.png') . '" 
+//              style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 100px; cursor: grab; z-index: 2;">';
+
+// echo '    <img id="partogramme_contour" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour.png') . '" 
+//              style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 100px; cursor: grab; z-index: 1;">';
+
+
+
+echo '</div>';
+
 
 echo '<label for="rotate-slider">Rotation:</label>';
 echo '<input type="range" id="rotate-slider" min="0" max="360" value="0"><br>';
