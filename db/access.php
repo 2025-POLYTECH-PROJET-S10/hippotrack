@@ -18,17 +18,16 @@
  * Version information
  *
  * @package    mod_hippotrack
- * @copyright   2025 Lionel Di Marco <LDiMarco@chu-grenoble.fr>
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2025 Lionel Di Marco <LDiMarco@chu-grenoble.fr>
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-
+    // 📌 Permission pour ajouter une instance du plugin (déjà existante)
     'mod/hippotrack:addinstance' => array(
         'riskbitmask' => RISK_XSS,
-
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => array(
@@ -36,9 +35,35 @@ $capabilities = array(
             'manager' => CAP_ALLOW
         ),
         'clonepermissionsfrom' => 'moodle/course:manageactivities'
+    ),
+
+    // 📌 Permission pour que les enseignants puissent gérer le plugin
+    'mod/hippotrack:manage' => array(
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
+    ),
+
+    // 📌 Permission pour que les étudiants puissent tenter l'exercice
+    'mod/hippotrack:attempt' => array(
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'student' => CAP_ALLOW
+        )
+    ),
+
+    // 📌 🔥 Nouvelle permission pour permettre aux enseignants de voir les statistiques
+    'mod/hippotrack:viewstats' => array(
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        )
     )
-
-
 );
-
-

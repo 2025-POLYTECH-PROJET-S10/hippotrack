@@ -26,6 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_hippotrack';// Full name of the plugin (used for diagnostics)
 $plugin->release = '0.1.0';
-$plugin->version = 2025013000;  // The current module version (Date: YYYYMMDDXX) 
+$plugin->version = 2025021001;  // The current module version (Date: YYYYMMDDXX) 
 $plugin->requires = 2022112800;// Requires this Moodle version
 $plugin->maturity = MATURITY_ALPHA;

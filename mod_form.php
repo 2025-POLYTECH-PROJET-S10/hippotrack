@@ -18,7 +18,7 @@
  * The main hippotrack configuration form.
  *
  * @package     mod_hippotrack
- * @copyright   2025 Lionel Di Marco <LDiMarco@chu-grenoble.fr>
+ * @copyright   2025 Lionel Di Marco
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,34 +30,39 @@ require_once($CFG->dirroot . '/course/moodleform_mod.php');
  * Module instance settings form.
  *
  * @package     mod_hippotrack
- * @copyright   2025 Lionel Di Marco <LDiMarco@chu-grenoble.fr>
+ * @copyright   2025 Lionel Di Marco
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_hippotrack_mod_form extends moodleform_mod
 {
+    /**
+     * Defines forms elements
+     */
+    public function definition()
+    {
+        global $CFG, $DB, $PAGE, $USER, $COURSE;
 
-	/**
-	 * Defines forms elements
-	 */
-	public function definition()
-	{
+        $mform = &$this->_form;
 
-		global $CFG, $DB, $PAGE, $USER, $COURSE;
+        // 📌 Titre principal
+        $mform->addElement('header', 'general', "Paramètres de l’activité");
 
-		$mform = &$this->_form;
+        // 📌 Nom de l'instance du plugin
+        $mform->addElement('text', 'name', 'Nom de l’activité', array('size' => '40'));
+        $mform->setType('name', PARAM_TEXT);
+        $mform->addRule('name', 'Veuillez entrer un nom.', 'required', null, 'client');
 
-		//Add header
-		$mform->addElement('header', 'general', "Option du cours:");
-		$mform->addElement('text', 'name', 'Name', array('size' => '20'));
-		$mform->setType('name', PARAM_TEXT);// $mform -> addElement('course', $COURSE -> id);
+        // 📌 Description de l'activité
+        $this->standard_intro_elements('Description');
 
-		// Adding the standard "Description" field.
-		$this->standard_intro_elements('Description');
+        // 📌 (Optionnel) Ajouter un champ pour un paramètre futur (ex: mode d’affichage)
+        $mform->addElement('advcheckbox', 'show_statistics', 'Afficher les statistiques aux étudiants', null, array('group' => 1));
+        $mform->setDefault('show_statistics', 1);
 
-		// Add standard elements, common to all modules.
-		$this->standard_coursemodule_elements();
-		// Add standard buttons, common to all modules.
-		$this->add_action_buttons();
+        // 📌 Ajout des éléments standards communs à toutes les activités
+        $this->standard_coursemodule_elements();
 
-	}
+        // 📌 Boutons d'action (valider / annuler)
+        $this->add_action_buttons();
+    }
 }
