@@ -42,7 +42,7 @@ if ($is_teacher) {
     }
 
     // 📂 Gérer les ensembles
-    $manage_url = new moodle_url('/mod/hippotrack/manage_datasets.php', array('id' => $id));
+    $manage_url = new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $id));
     if (page_exists('manage_datasets.php')) {
         echo $OUTPUT->single_button($manage_url, '➕ Gérer les ensembles', 'get');
     } else {

@@ -3,12 +3,11 @@ require(__DIR__ . '/../../config.php');
 require_once(__DIR__ . '/classes/form/db_form.php');
 
 // 📌 Parameter Validation
-$id = required_param('id', PARAM_INT);
-debugging("Received ID: " . $id, DEBUG_DEVELOPER);
+$cmid = required_param('cmid', PARAM_INT);
 $userid = $USER->id;
 
 // 📌 Retrieve Course Module and Context
-$cm = get_coursemodule_from_id('hippotrack', $id, 0, false, MUST_EXIST);
+$cm = get_coursemodule_from_id('hippotrack', $cmid, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 $context = context_module::instance($cm->id);
 
@@ -19,7 +18,7 @@ require_capability('mod/hippotrack:manage', $context);
 // 📌 Page Configuration
 $PAGE->set_cm($cm);
 $PAGE->set_context($context);
-$PAGE->set_url('/mod/hippotrack/manage_datasets.php', array('id' => $id));
+$PAGE->set_url('/mod/hippotrack/manage_datasets.php', array('id' => $cmid));
 $PAGE->set_title("Gestion des ensembles de données");
 $PAGE->set_heading("Gestion des ensembles de données");
 
@@ -33,14 +32,14 @@ if ($deleting && confirm_sesskey()) {
     try {
         $DB->delete_records('hippotrack_datasets', array('id' => $deleting));
         redirect(
-            new moodle_url('/mod/hippotrack/manage_datasets.php', array('id' => $id)),
+            new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid)),
             "Entrée supprimée avec succès.",
             null,
             \core\output\notification::NOTIFY_SUCCESS
         );
     } catch (Exception $e) {
         redirect(
-            new moodle_url('/mod/hippotrack/manage_datasets.php', array('id' => $id)),
+            new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid)),
             "Une erreur est survenue lors de la suppression de l'entrée.",
             null,
             \core\output\notification::NOTIFY_ERROR
@@ -49,15 +48,18 @@ if ($deleting && confirm_sesskey()) {
 }
 
 // 📌 Handle Form Submission
-$mform = new manage_datasets_form();
+$mform = new manage_datasets_form($action= new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid)));
 if ($showform || $editing) {
     if ($mform->is_cancelled()) {
         // Cancel operation
-        redirect(new moodle_url('/mod/hippotrack/manage_datasets.php', array('id' => $id)));
+        redirect(new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid)));
     } else if ($data = $mform->get_data()) {
         try {
             $draftitemid_vue_anterieure = file_get_submitted_draft_itemid('vue_anterieure');
             $draftitemid_vue_laterale = file_get_submitted_draft_itemid('vue_laterale');
+
+            var_dump($data);
+            die();
 
             if ($editing) {
                 // Update existing entry
@@ -76,37 +78,21 @@ if ($showform || $editing) {
                 $record->sigle = $data->sigle;
                 $record->rotation = $data->rotation;
                 $record->inclinaison = $data->inclinaison;
+                // $record->vue_anterieure = $data->vue_anterieure;
+                // $record->vue_laterale = $data->vue_laterale;
                 $newid = $DB->insert_record('hippotrack_datasets', $record);
-
-                // Save uploaded files
-                file_save_draft_area_files(
-                    $draftitemid_vue_anterieure,
-                    $context->id,
-                    'mod_hippotrack',
-                    'vue_anterieure',
-                    $newid,
-                    array('subdirs' => 0, 'maxfiles' => 1)
-                );
-                file_save_draft_area_files(
-                    $draftitemid_vue_laterale,
-                    $context->id,
-                    'mod_hippotrack',
-                    'vue_laterale',
-                    $newid,
-                    array('subdirs' => 0, 'maxfiles' => 1)
-                );
             }
 
             // Redirect with success message
             redirect(
-                new moodle_url('/mod/hippotrack/manage_datasets.php', array('id' => $id)),
+                new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid)),
                 "Entrée enregistrée avec succès.",
                 null,
                 \core\output\notification::NOTIFY_SUCCESS
             );
         } catch (Exception $e) {
             redirect(
-                new moodle_url('/mod/hippotrack/manage_datasets.php', array('id' => $id)),
+                new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid)),
                 "Une erreur est survenue lors de l'enregistrement de l'entrée.",
                 null,
                 \core\output\notification::NOTIFY_ERROR
@@ -117,7 +103,7 @@ if ($showform || $editing) {
 
 
 // 📌 Helper Function to Render Datasets Table
-function render_datasets_table($datasets, $context, $id, $OUTPUT) {
+function render_datasets_table($datasets, $context, $cmid, $OUTPUT) {
     if (empty($datasets)) {
         return html_writer::tag('p', "Aucune donnée disponible.", array('class' => 'alert alert-warning'));
     }
@@ -145,8 +131,8 @@ function render_datasets_table($datasets, $context, $id, $OUTPUT) {
         $table_html .= html_writer::tag('td', html_writer::empty_tag('img', array('src' => $vue_laterale_url, 'width' => 50)));
 
         // Actions (Edit and Delete)
-        $edit_url = new moodle_url('/mod/hippotrack/manage_datasets.php', array('id' => $id, 'edit' => $dataset->id));
-        $delete_url = new moodle_url('/mod/hippotrack/manage_datasets.php', array('id' => $id, 'delete' => $dataset->id, 'sesskey' => sesskey()));
+        $edit_url = new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid, 'edit' => $dataset->id));
+        $delete_url = new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid, 'delete' => $dataset->id, 'sesskey' => sesskey()));
         $table_html .= html_writer::tag('td',
             $OUTPUT->single_button($edit_url, 'Modifier', 'get') .
             $OUTPUT->single_button($delete_url, 'Supprimer', 'post')
@@ -166,10 +152,10 @@ if (!$showform && !$editing) {
     // Display datasets table
     echo html_writer::tag('h2', "Liste des ensembles de données");
     $datasets = $DB->get_records('hippotrack_datasets', array(), 'id ASC');
-    echo render_datasets_table($datasets, $context, $id, $OUTPUT);
+    echo render_datasets_table($datasets, $context, $cmid, $OUTPUT);
 
     // Add new entry button
-    $addnew_url = new moodle_url('/mod/hippotrack/manage_datasets.php', array('id' => $id, 'addnew' => 1));
+    $addnew_url = new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid, 'addnew' => 1));
     echo $OUTPUT->single_button($addnew_url, "Ajouter une nouvelle entrée", "get");
 } else {
     // Display form for adding/editing
