@@ -64,8 +64,8 @@ function xmldb_hippotrack_install() {
         $name = trim($data[0]);
         $sigle = trim($data[1]);
         $partogramme = trim($data[2]);
-        $vue_anterieure = trim($data[3]);
-        $vue_laterale = trim($data[4]);
+        $nom_vue_anterieure = trim($data[3]);
+        $nom_vue_laterale = trim($data[4]);
 
         // 📌 Séparer la rotation et l’inclinaison
         if (strpos($partogramme, ';') !== false) {
@@ -81,8 +81,8 @@ function xmldb_hippotrack_install() {
         $record->sigle = $sigle;
         $record->rotation = (int) $rotation;
         $record->inclinaison = (int) $inclinaison;
-        $record->vue_anterieure = $vue_anterieure;
-        $record->vue_laterale = $vue_laterale;
+        $record->vue_anterieure = $nom_vue_anterieure;
+        $record->vue_laterale = $nom_vue_laterale;
 
         // 📌 Insérer en base
         $DB->insert_record('hippotrack_datasets', $record);

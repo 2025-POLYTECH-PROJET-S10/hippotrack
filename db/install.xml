@@ -29,8 +29,8 @@
         <FIELD NAME="sigle" TYPE="char" LENGTH="10" NOTNULL="true" COMMENT="Sigle de la position"/>
         <FIELD NAME="rotation" TYPE="int" LENGTH="3" NOTNULL="true" COMMENT="Angle de rotation en degrés"/>
         <FIELD NAME="inclinaison" TYPE="int" LENGTH="1" NOTNULL="true" COMMENT="Inclinaison (1 = bien fléchi, -1 = mal fléchi)"/>
-        <FIELD NAME="vue_anterieure" TYPE="char" LENGTH="255" NOTNULL="true" COMMENT="Nom du fichier image de la vue antérieure"/>
-        <FIELD NAME="vue_laterale" TYPE="char" LENGTH="255" NOTNULL="true" COMMENT="Nom du fichier image de la vue latérale"/>
+        <FIELD NAME="vue_anterieure" TYPE="text" NOTNULL="true" COMMENT="Image de la vue antérieure"/>
+        <FIELD NAME="vue_laterale" TYPE="text" NOTNULL="true" COMMENT="Image de vue latérale"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
