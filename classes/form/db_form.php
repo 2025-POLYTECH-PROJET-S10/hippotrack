@@ -46,8 +46,16 @@ class manage_datasets_form extends moodleform {
         $mform->addRule('inclinaison', 'Inclinaison requise', 'required');
 
         // Add file pickers
-        $mform->addElement('filepicker', 'vue_anterieure', 'Vue Antérieure', null, array('accepted_types' => '*'));
-        $mform->addElement('filepicker', 'vue_laterale', 'Vue Latérale', null, array('accepted_types' => '*'));
+        // $mform->addElement('filepicker', 'vue_anterieure', 'Vue Antérieure', null, array('accepted_types' => '*'));
+        // $mform->addElement('filepicker', 'vue_laterale', 'Vue Latérale', null, array('accepted_types' => '*'));
+
+        $mform->addElement('text', 'vue_anterieure', 'Vue Antérieure');
+        $mform->setType('vue_anterieure', PARAM_TEXT);
+        $mform->addRule('vue_anterieure', 'Vue Antérieure requise', 'required');
+
+        $mform->addElement('text', 'vue_laterale', 'Vue Latérale');
+        $mform->setType('vue_laterale', PARAM_TEXT);
+        $mform->addRule('vue_laterale', 'Vue Latérale requise', 'required');
 
         // Add hidden field for dataset_id (used for editing)
         $mform->addElement('hidden', 'id');
@@ -57,7 +65,7 @@ class manage_datasets_form extends moodleform {
         $this->add_action_buttons(true, "Enregistrer");
     }
 
-    public function validation($data, $files) {
-        return true;
-    }
+    // function validation($data, $files) {
+    //     return true;
+    // }
 }

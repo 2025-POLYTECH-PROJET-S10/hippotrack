@@ -49,117 +49,6 @@ if ($deleting && confirm_sesskey()) {
     }
 }
 
-/**
- * Save the form data to the database.
-* This should be called after the form is submitted and validated.
-*/
-function _save_submission($data) {
-    global $DB, $context;
-
-    if ($data) {
-        $record = new stdClass();
-        $record->name = $data["name"];
-        $record->sigle = $data["sigle"];
-        $record->rotation = $data["rotation"];
-        $record->inclinaison = $data["inclinaison"];
-
-        // Save filepicker data
-        $fs = get_file_storage();
-        $draftitemid_vue_anterieure = file_get_submitted_draft_itemid('vue_anterieure');
-        $draftitemid_vue_laterale = file_get_submitted_draft_itemid('vue_laterale');
-
-        if ($data->id) {
-            // Update existing record
-            $record->id = $data->id;
-            $DB->update_record('hippotrack_datasets', $record);
-
-            // Save files to the appropriate file areas
-            file_save_draft_area_files($draftitemid_vue_anterieure, $context->id, 'mod_hippotrack', 'vue_anterieure', $record->id);
-            file_save_draft_area_files($draftitemid_vue_laterale, $context->id, 'mod_hippotrack', 'vue_laterale', $record->id);
-        } else {
-            // Insert a new record
-            $record->id = $DB->insert_record('hippotrack_datasets', $record);
-
-            // Save files to the appropriate file areas
-            file_save_draft_area_files($draftitemid_vue_anterieure, $context->id, 'mod_hippotrack', 'vue_anterieure', $record->id);
-            file_save_draft_area_files($draftitemid_vue_laterale, $context->id, 'mod_hippotrack', 'vue_laterale', $record->id);
-        }
-    }
-}
-
-if ($savedata) {
-    // get the sent data from parameters:
-    $data = array(
-        'id'=> required_param('id', PARAM_INT),
-        'name' => required_param('name', PARAM_TEXT),
-        'sigle' => required_param('sigle', PARAM_TEXT),
-        'sigle' => required_param('rotation', PARAM_INT),
-        'inclinaison' => required_param('inclinaison', PARAM_INT),
-        'vue_anterieure' => required_param('vue_anterieure', PARAM_TEXT),
-        'vue_laterale' => required_param('vue_laterale', PARAM_TEXT),
-    );
-
-    _save_submission($data);
-}
-
-// 📌 Handle Form Submission
-$mform = new manage_datasets_form($action= new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid, 'save_data' => 1)));
-if ($showform || $editing) {
-    if ($mform->is_cancelled()) {
-        // Cancel operation
-        redirect(new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid)));
-    } else if ($data = $mform->get_data()) {
-        try {
-            $draftitemid_vue_anterieure = file_get_submitted_draft_itemid('vue_anterieure');
-            $draftitemid_vue_laterale = file_get_submitted_draft_itemid('vue_laterale');
-
-            var_dump($data);
-            die();
-
-            if ($editing) {
-                // Update existing entry
-                $dataset = $DB->get_record('hippotrack_datasets', array('id' => $editing), '*', MUST_EXIST);
-                // Set existing data to form
-                $mform->set_data($dataset);
-                $dataset->name = $data->name;
-                $dataset->sigle = $data->sigle;
-                $dataset->rotation = $data->rotation;
-                $dataset->inclinaison = $data->inclinaison;
-                // $record->vue_anterieure = $data->vue_anterieure;
-                // $record->vue_laterale = $data->vue_laterale;
-                $DB->update_record('hippotrack_datasets', $dataset);
-                error_log("Update record called for ID: " . $dataset->id);
-            } else {
-                // Insert new entry
-                $record = new stdClass();
-                $record->name = $data->name;
-                $record->sigle = $data->sigle;
-                $record->rotation = $data->rotation;
-                $record->inclinaison = $data->inclinaison;
-                // $record->vue_anterieure = $data->vue_anterieure;
-                // $record->vue_laterale = $data->vue_laterale;
-                $newid = $DB->insert_record('hippotrack_datasets', $record);
-                error_log("Insert record called for new ID: " . $newid);
-            }
-
-            // Redirect with success message
-            redirect(
-                new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid)),
-                "Entrée enregistrée avec succès.",
-                null,
-                \core\output\notification::NOTIFY_SUCCESS
-            );
-        } catch (Exception $e) {
-            redirect(
-                new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid)),
-                "Une erreur est survenue lors de l'enregistrement de l'entrée.",
-                null,
-                \core\output\notification::NOTIFY_ERROR
-            );
-        }
-    }
-}
-
 
 // 📌 Helper Function to Render Datasets Table
 function render_datasets_table($datasets, $context, $cmid, $OUTPUT) {
@@ -190,7 +79,7 @@ function render_datasets_table($datasets, $context, $cmid, $OUTPUT) {
         $table_html .= html_writer::tag('td', html_writer::empty_tag('img', array('src' => $vue_laterale_url, 'width' => 50)));
 
         // Actions (Edit and Delete)
-        $edit_url = new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid, 'edit' => $dataset->id));
+        $edit_url = new moodle_url('/mod/hippotrack/db_form_submission.php', array('cmid' => $cmid, 'edit' => $dataset->id));
         $delete_url = new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid, 'delete' => $dataset->id, 'sesskey' => sesskey()));
         $table_html .= html_writer::tag('td',
             $OUTPUT->single_button($edit_url, 'Modifier', 'get') .
@@ -214,12 +103,15 @@ if (!$showform && !$editing) {
     echo render_datasets_table($datasets, $context, $cmid, $OUTPUT);
 
     // Add new entry button
-    $addnew_url = new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid, 'addnew' => 1));
+    $addnew_url = new moodle_url('/mod/hippotrack/db_form_submission.php', array('cmid' => $cmid, 'addnew' => 1));
     echo $OUTPUT->single_button($addnew_url, "Ajouter une nouvelle entrée", "get");
 } else {
-    // Display form for adding/editing
-    echo html_writer::tag('h2', $editing ? "Modifier l'entrée" : "Ajouter une nouvelle entrée");
-    $mform->display();
+    if ($editing) {
+        redirect(new moodle_url('/mod/hippotrack/db_form_submission.php', array('cmid' => $cmid, 'edit' => $editing)));
+    }
+    else {
+        redirect(new moodle_url('/mod/hippotrack/db_form_submission.php', array('cmid' => $cmid, 'addnew' => 1)));
+    }
 }
 
 echo $OUTPUT->footer();
