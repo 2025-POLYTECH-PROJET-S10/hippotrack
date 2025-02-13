@@ -4,6 +4,8 @@ require_once(__DIR__ . '/classes/form/db_form.php');
 
 // 📌 Parameter Validation
 $cmid = required_param('cmid', PARAM_INT);
+$savedata = optional_param('save_data',0, PARAM_INT);
+debugging('save_data' . $savedata, DEBUG_DEVELOPER);
 $userid = $USER->id;
 
 // 📌 Retrieve Course Module and Context
@@ -47,8 +49,61 @@ if ($deleting && confirm_sesskey()) {
     }
 }
 
+/**
+ * Save the form data to the database.
+* This should be called after the form is submitted and validated.
+*/
+function _save_submission($data) {
+    global $DB, $context;
+
+    if ($data) {
+        $record = new stdClass();
+        $record->name = $data["name"];
+        $record->sigle = $data["sigle"];
+        $record->rotation = $data["rotation"];
+        $record->inclinaison = $data["inclinaison"];
+
+        // Save filepicker data
+        $fs = get_file_storage();
+        $draftitemid_vue_anterieure = file_get_submitted_draft_itemid('vue_anterieure');
+        $draftitemid_vue_laterale = file_get_submitted_draft_itemid('vue_laterale');
+
+        if ($data->id) {
+            // Update existing record
+            $record->id = $data->id;
+            $DB->update_record('hippotrack_datasets', $record);
+
+            // Save files to the appropriate file areas
+            file_save_draft_area_files($draftitemid_vue_anterieure, $context->id, 'mod_hippotrack', 'vue_anterieure', $record->id);
+            file_save_draft_area_files($draftitemid_vue_laterale, $context->id, 'mod_hippotrack', 'vue_laterale', $record->id);
+        } else {
+            // Insert a new record
+            $record->id = $DB->insert_record('hippotrack_datasets', $record);
+
+            // Save files to the appropriate file areas
+            file_save_draft_area_files($draftitemid_vue_anterieure, $context->id, 'mod_hippotrack', 'vue_anterieure', $record->id);
+            file_save_draft_area_files($draftitemid_vue_laterale, $context->id, 'mod_hippotrack', 'vue_laterale', $record->id);
+        }
+    }
+}
+
+if ($savedata) {
+    // get the sent data from parameters:
+    $data = array(
+        'id'=> required_param('id', PARAM_INT),
+        'name' => required_param('name', PARAM_TEXT),
+        'sigle' => required_param('sigle', PARAM_TEXT),
+        'sigle' => required_param('rotation', PARAM_INT),
+        'inclinaison' => required_param('inclinaison', PARAM_INT),
+        'vue_anterieure' => required_param('vue_anterieure', PARAM_TEXT),
+        'vue_laterale' => required_param('vue_laterale', PARAM_TEXT),
+    );
+
+    _save_submission($data);
+}
+
 // 📌 Handle Form Submission
-$mform = new manage_datasets_form($action= new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid)));
+$mform = new manage_datasets_form($action= new moodle_url('/mod/hippotrack/manage_datasets.php', array('cmid' => $cmid, 'save_data' => 1)));
 if ($showform || $editing) {
     if ($mform->is_cancelled()) {
         // Cancel operation
@@ -70,7 +125,10 @@ if ($showform || $editing) {
                 $dataset->sigle = $data->sigle;
                 $dataset->rotation = $data->rotation;
                 $dataset->inclinaison = $data->inclinaison;
+                // $record->vue_anterieure = $data->vue_anterieure;
+                // $record->vue_laterale = $data->vue_laterale;
                 $DB->update_record('hippotrack_datasets', $dataset);
+                error_log("Update record called for ID: " . $dataset->id);
             } else {
                 // Insert new entry
                 $record = new stdClass();
@@ -81,6 +139,7 @@ if ($showform || $editing) {
                 // $record->vue_anterieure = $data->vue_anterieure;
                 // $record->vue_laterale = $data->vue_laterale;
                 $newid = $DB->insert_record('hippotrack_datasets', $record);
+                error_log("Insert record called for new ID: " . $newid);
             }
 
             // Redirect with success message

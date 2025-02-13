@@ -22,7 +22,7 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- require_once("$CFG->libdir/formslib.php");
+require_once("$CFG->libdir/formslib.php");
 
 class manage_datasets_form extends moodleform {
     public function definition() {
@@ -54,11 +54,10 @@ class manage_datasets_form extends moodleform {
         $mform->setType('id', PARAM_INT);
 
         // Add submit and cancel buttons
-        $this->add_action_buttons(true, 'Submit', "Enregistrer");
-        // $mform->addElement('submit', 'submitbutton', 'Valider');
+        $this->add_action_buttons(true, "Enregistrer");
     }
-    
-    public function set_data($default_values) {
-        parent::set_data($default_values);
+
+    public function validation($data, $files) {
+        return true;
     }
 }
