@@ -49,19 +49,19 @@ $session = $DB->get_record('hippotrack_training_sessions', array(
 ));
 
 // 📌 🔥 CORRECTION : Définir toujours $possible_inputs avant toute logique
-$possible_inputs = ($difficulty === 'easy') ? 
-    ['name', 'sigle', 'partogramme', 'shema_simplifie', 'vue_anterieure', 'vue_laterale'] : 
+$possible_inputs = ($difficulty === 'easy') ?
+    ['name', 'sigle', 'partogramme', 'shema_simplifie', 'vue_anterieure', 'vue_laterale'] :
     ['name', 'sigle', 'partogramme', 'shema_simplifie'];
 
 // 📌 S'assurer qu'on a bien une question dès la première session
 if (!$session || $new_question == 1) {
     $random_entry = $DB->get_record_sql("SELECT * FROM {hippotrack_datasets} ORDER BY RAND() LIMIT 1");
-    $possible_inputs = ($difficulty === 'easy') ? 
-        ['name', 'sigle', 'partogramme', 'shema_simplifie', 'vue_anterieure', 'vue_laterale'] : 
+    $possible_inputs = ($difficulty === 'easy') ?
+        ['name', 'sigle', 'partogramme', 'shema_simplifie', 'vue_anterieure', 'vue_laterale'] :
         ['name', 'sigle', 'partogramme', 'shema_simplifie'];
 
     $random_input = $possible_inputs[array_rand($possible_inputs)];
-    
+
 
     if (!$session) {
         // 📌 Nouvelle session -> On génère une question dès le départ
@@ -103,65 +103,65 @@ if ($submitted) {
             // 🔥 Correction spéciale pour partogramme et schéma simplifié (ils utilisent rotation + inclinaison)
             $student_inclinaison = required_param("inclinaison_$field", PARAM_RAW);
             $student_rotation = required_param("rotation_$field", PARAM_RAW);
-            
+
             $correct_inclinaison = $random_entry->inclinaison;
             $correct_rotation = $random_entry->rotation;
-        
+
             // Vérification des deux valeurs ensemble
             if ($student_inclinaison != $correct_inclinaison || $student_rotation != $correct_rotation) {
                 $is_correct = false;
                 $feedback = "Oops, certaines réponses sont incorrectes. Vérifiez et essayez encore !";
             }
-        
+
             echo html_writer::tag('p', "<strong>$field :</strong> Votre inclinaison : $student_inclinaison | Rotation : $student_rotation <br> Réponse correcte : Inclinaison $correct_inclinaison | Rotation $correct_rotation");
         } else {
             // 🔥 Cas normal (name, sigle, vue_anterieure, vue_laterale)
             $student_answer = required_param($field, PARAM_RAW);
             $correct_answer = $random_entry->$field;
-        
+
             if ($student_answer != $correct_answer) {
                 $is_correct = false;
                 $feedback = "Oops, certaines réponses sont incorrectes. Vérifiez et essayez encore !";
             }
-        
+
             echo html_writer::tag('p', "<strong>$field :</strong> Votre réponse : $student_answer | Réponse correcte : $correct_answer");
         }
-        
 
-        
+
+
     }
 
     echo html_writer::tag('p', $feedback, array('class' => $is_correct ? 'correct' : 'incorrect'));
 
     // 📌 Enregistrer les réponses de l'étudiant dans la base de données
-foreach ($possible_inputs as $field) {
-    $attempt = new stdClass();
-    $attempt->sessionid = $session->id;
-    $attempt->datasetid = $random_entry->id;
-    $attempt->input_type = $field;
-    $attempt->timeanswered = time();
+    foreach ($possible_inputs as $field) {
+        $attempt = new stdClass();
+        $attempt->sessionid = $session->id;
+        $attempt->datasetid = $random_entry->id;
+        $attempt->input_type = $field;
+        $attempt->timeanswered = time();
 
-    if ($field === 'partogramme' || $field === 'shema_simplifie') {
-        // 🔥 Cas spécial : Stocker la rotation et l'inclinaison pour partogramme et schéma
-        $student_inclinaison = required_param("inclinaison_$field", PARAM_RAW);
-        $student_rotation = required_param("rotation_$field", PARAM_RAW);
-        $correct_inclinaison = $random_entry->inclinaison;
-        $correct_rotation = $random_entry->rotation;
+        if ($field === 'partogramme' || $field === 'shema_simplifie') {
+            // 🔥 Cas spécial : Stocker la rotation et l'inclinaison pour partogramme et schéma
+            $student_inclinaison = required_param("inclinaison_$field", PARAM_RAW);
+            $student_rotation = required_param("rotation_$field", PARAM_RAW);
+            $correct_inclinaison = $random_entry->inclinaison;
+            $correct_rotation = $random_entry->rotation;
 
-        $attempt->student_response = "Inclinaison: $student_inclinaison, Rotation: $student_rotation";
-        $attempt->is_correct = ($student_inclinaison == $correct_inclinaison && $student_rotation == $correct_rotation) ? 1 : 0;
-    } else {
-        // 🔥 Cas normal (name, sigle, vue_anterieure, vue_laterale)
-        $student_answer = required_param($field, PARAM_RAW);
-        $correct_answer = $random_entry->$field;
+            $attempt->student_response = "Inclinaison: $student_inclinaison, Rotation: $student_rotation";
+            $attempt->is_correct = ($student_inclinaison == $correct_inclinaison && $student_rotation == $correct_rotation) ? 1 : 0;
+        } else {
+            // 🔥 Cas normal (name, sigle, vue_anterieure, vue_laterale)
+            $student_answer = required_param($field, PARAM_RAW);
+            $correct_answer = $random_entry->$field;
 
-        $attempt->student_response = $student_answer;
-        $attempt->is_correct = ($student_answer == $correct_answer) ? 1 : 0;
+            $attempt->student_response = $student_answer;
+            $attempt->is_correct = ($student_answer == $correct_answer) ? 1 : 0;
+        }
+
+        // 📌 Insérer la tentative en base
+        $DB->insert_record('hippotrack_attempts', $attempt);
     }
-
-    // 📌 Insérer la tentative en base
-    $DB->insert_record('hippotrack_attempts', $attempt);
-}
 
 
     // 📌 Boutons "Nouvelle Question" et "Terminer"
@@ -185,18 +185,52 @@ foreach ($possible_inputs as $field) {
 
     if ($field === 'partogramme' || $field === 'shema_simplifie') {
         echo html_writer::tag('h4', $label);
-        echo html_writer::tag('label', "Inclinaison", array('for' => "inclinaison_$field"));
-        echo html_writer::empty_tag('input', array('type' => 'text', 'name' => "inclinaison_$field", 'id' => "inclinaison_$field", 'value' => $is_given_input ? $random_entry->inclinaison : '', 'required' => true, $readonly => $readonly));
-        echo "<br>";
 
-        echo html_writer::tag('label', "Rotation", array('for' => "rotation_$field"));
-        echo html_writer::empty_tag('input', array('type' => 'text', 'name' => "rotation_$field", 'id' => "rotation_$field", 'value' => $is_given_input ? $random_entry->rotation : '', 'required' => true, $readonly => $readonly));
-        echo "<br>";
+        $PAGE->requires->js_call_amd('mod_hippotrack/attempt', 'init');
+
+        // Choose the correct image for each schematic
+        $interior_image = ($field === 'partogramme') ? 'partogramme_interieur' : 'partogramme_interieur_simplifie';
+        $background_image = ($field === 'partogramme') ? 'bassin' : 'null';
+
+        echo '<form method="post">';
+
+        echo '<div class="container" data-schema-type="' . $field . '">'; // Added data-schema-type
+        echo '    <img class="' . $background_image . '" src="' . new moodle_url('/mod/hippotrack/pix/' . $background_image . '.png') . '">';
+        // echo '    <img class="bassin" src="' . new moodle_url('/mod/hippotrack/pix/bassin.png') . '">';
+        echo '    <img class="partogramme_contour2" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour2.png') . '">';
+
+        // echo '    <img class="partogramme_interieur" src="' . new moodle_url('/mod/hippotrack/pix/' . $interior_image) . '">';
+        echo '    <img class="' . $interior_image . '" src="' . new moodle_url('/mod/hippotrack/pix/' . $interior_image) . '.png">';
+        // echo '    <img class="' . '"' . "$interior_image." . '"' . ' src="' . new moodle_url('/mod/hippotrack/pix/' . $interior_image) . '.png">';
+
+        echo '    <img class="partogramme_contour" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour.png') . '">';
+        echo '</div>';
+
+        echo '<label for="rotate-slider">Rotation:</label>';
+        echo '<input type="range" class="rotate-slider" name="rotation" min="0" max="360" value="0"><br>';
+
+        echo '<label for="move-axis-slider">Move Up/Down:</label>';
+        echo '<input type="range" class="move-axis-slider" name="movement" min="-50" max="50" value="0"><br>';
+
+        echo '<button type="submit" name="validate">Validate</button>';
+        echo '</form>';
+
+        echo '<br>';
+
+        // Handle form submission
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate'])) {
+            $rotation = isset($_POST['rotation']) ? intval($_POST['rotation']) : 0;
+            $movement = isset($_POST['movement']) ? intval($_POST['movement']) : 0;
+
+            echo "<script>alert('Rotation: $rotation, Movement: $movement');</script>";
+        }
     } else {
         echo html_writer::tag('label', $label, array('for' => $field));
         echo html_writer::empty_tag('input', array('type' => 'text', 'name' => $field, 'id' => $field, 'value' => $is_given_input ? $pre_filled_value : '', 'required' => true, $readonly => $readonly));
         echo "<br>";
     }
+
+
 }
 
 // 📌 Bouton de validation
