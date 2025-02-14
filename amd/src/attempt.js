@@ -56,13 +56,13 @@ define(['jquery'], function ($) {
                         console.log(`Updated ${schemaType} -> Angle: ${angle}, Move Offset: ${moveOffset}`);
                     }
 
-                    // Handle rotation slider
+                    // Handle rotation slider (using updated name)
                     $container.closest("form").find(".rotate-slider").on("input", function () {
                         angle = parseFloat($(this).val());
                         updatePositions();
                     });
 
-                    // Handle movement slider
+                    // Handle inclinaison slider (using updated name)
                     $container.closest("form").find(".move-axis-slider").on("input", function () {
                         moveOffset = parseFloat($(this).val());
                         updatePositions();

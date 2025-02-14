@@ -22,6 +22,38 @@ $PAGE->set_url('/mod/hippotrack/attempt.php', array('id' => $id));
 $PAGE->set_title("Session d'entraînement");
 $PAGE->set_heading("Session d'entraînement");
 
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate'])) {
+    foreach ($_POST as $key => $value) {
+        if (strpos($key, 'rotation_') === 0) {
+            $field = str_replace('rotation_', '', $key);
+            $rotation = intval($value);
+            $movement = optional_param("movement_$field", 0, PARAM_INT);
+
+            // Debugging
+            error_log("Processing: $field | Rotation: $rotation | Movement: $movement");
+        }
+    }
+
+    // Redirect to avoid form resubmission
+    redirect(new moodle_url('/mod/hippotrack/attempt.php', [
+        'id' => $id,
+        'difficulty' => $difficulty,
+        'submitted' => 1
+    ]));
+    exit;
+}
+
+
+// if ($_SERVER["REQUEST_METHOD"] == "POST") {
+//     echo "<pre>";
+//     print_r($_POST);
+//     echo "</pre>";
+//     exit();
+// }
+
+
+
 echo $OUTPUT->header();
 
 // 📌 Étape 1 : Sélection de la difficulté
@@ -175,7 +207,6 @@ if ($submitted) {
     exit;
 }
 
-// 📌 Affichage du formulaire d'exercice
 echo html_writer::start_tag('form', array('method' => 'post', 'action' => 'attempt.php?id=' . $id . '&difficulty=' . $difficulty . '&submitted=1'));
 
 foreach ($possible_inputs as $field) {
@@ -188,53 +219,51 @@ foreach ($possible_inputs as $field) {
 
         $PAGE->requires->js_call_amd('mod_hippotrack/attempt', 'init');
 
-        // Choose the correct image for each schematic
         $interior_image = ($field === 'partogramme') ? 'partogramme_interieur' : 'partogramme_interieur_simplifie';
         $background_image = ($field === 'partogramme') ? 'bassin' : 'null';
 
-        echo '<form method="post">';
-
-        echo '<div class="container" data-schema-type="' . $field . '">'; // Added data-schema-type
-        echo '    <img class="' . $background_image . '" src="' . new moodle_url('/mod/hippotrack/pix/' . $background_image . '.png') . '">';
-        // echo '    <img class="bassin" src="' . new moodle_url('/mod/hippotrack/pix/bassin.png') . '">';
-        echo '    <img class="partogramme_contour2" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour2.png') . '">';
-
-        // echo '    <img class="partogramme_interieur" src="' . new moodle_url('/mod/hippotrack/pix/' . $interior_image) . '">';
-        echo '    <img class="' . $interior_image . '" src="' . new moodle_url('/mod/hippotrack/pix/' . $interior_image) . '.png">';
-        // echo '    <img class="' . '"' . "$interior_image." . '"' . ' src="' . new moodle_url('/mod/hippotrack/pix/' . $interior_image) . '.png">';
-
-        echo '    <img class="partogramme_contour" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour.png') . '">';
+        echo '<div class="container" data-schema-type="' . $field . '">';
+        if ($background_image !== 'null') {
+            echo '<img class="' . $background_image . '" src="' . new moodle_url('/mod/hippotrack/pix/' . $background_image . '.png') . '">';
+        }
+        echo '<img class="partogramme_contour2" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour2.png') . '">';
+        echo '<img class="' . $interior_image . '" src="' . new moodle_url('/mod/hippotrack/pix/' . $interior_image) . '.png">';
+        echo '<img class="partogramme_contour" src="' . new moodle_url('/mod/hippotrack/pix/partogramme_contour.png') . '">';
         echo '</div>';
 
+        // 🚀 Ensure we always include this field in the form submission
+        echo '<input type="hidden" name="' . $field . '" value="submitted">';
+
+        // Rotation slider (name = "rotation_partogramme")
         echo '<label for="rotate-slider">Rotation:</label>';
-        echo '<input type="range" class="rotate-slider" name="rotation" min="0" max="360" value="0"><br>';
+        echo '<input type="range" class="rotate-slider" name="rotation_' . $field . '" min="0" max="360" value="0"><br>';
 
-        echo '<label for="move-axis-slider">Move Up/Down:</label>';
-        echo '<input type="range" class="move-axis-slider" name="movement" min="-50" max="50" value="0"><br>';
+        // Inclinaison slider (name = "inclinaison_partogramme" now)
+        echo '<label for="move-axis-slider">Move Up/Down (Inclinaison):</label>';
+        echo '<input type="range" class="move-axis-slider" name="inclinaison_' . $field . '" min="-50" max="50" value="0"><br>';
 
-        echo '<button type="submit" name="validate">Validate</button>';
-        echo '</form>';
 
-        echo '<br>';
-
-        // Handle form submission
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['validate'])) {
-            $rotation = isset($_POST['rotation']) ? intval($_POST['rotation']) : 0;
-            $movement = isset($_POST['movement']) ? intval($_POST['movement']) : 0;
-
-            echo "<script>alert('Rotation: $rotation, Movement: $movement');</script>";
-        }
     } else {
         echo html_writer::tag('label', $label, array('for' => $field));
-        echo html_writer::empty_tag('input', array('type' => 'text', 'name' => $field, 'id' => $field, 'value' => $is_given_input ? $pre_filled_value : '', 'required' => true, $readonly => $readonly));
+        echo html_writer::empty_tag('input', array(
+            'type' => 'text',
+            'name' => $field, // ✅ Ensure the correct name is included
+            'id' => $field,
+            'value' => $is_given_input ? $pre_filled_value : '',
+            'required' => true,
+            $readonly => $readonly
+        ));
         echo "<br>";
     }
-
-
 }
+
+// 📌 Hidden field to debug missing parameters
+echo '<input type="hidden" name="debug_submission" value="1">';
 
 // 📌 Bouton de validation
 echo html_writer::empty_tag('input', array('type' => 'submit', 'value' => 'Valider'));
 
 echo html_writer::end_tag('form');
+
+
 echo $OUTPUT->footer();
